@@ -1,0 +1,45 @@
+2025-06-05 13:33:34.117 | INFO     | utils.logger:setup_logging:60 - Logging initialized. Log directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs
+2025-06-05 13:33:34.118 | INFO     | utils.logger:setup_logging:61 - Main log file: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs\comfy_to_c4d_20250605_133334.log
+2025-06-05 13:33:34.118 | INFO     | __main__:main:27 - Starting ComfyUI to Cinema4D Bridge Application
+2025-06-05 13:33:34.841 | INFO     | core.app:_apply_styles:1092 - Applied monospace theme successfully
+2025-06-05 13:33:34.959 | INFO     | core.app:initialize:1144 - Initializing application...
+2025-06-05 13:33:34.960 | INFO     | ui.fonts:load_project_fonts:76 - Available font files: ['basis-grotesque-regular-pro.woff', 'basis-grotesque-regular.woff2', 'Kalice-Italic.woff', 'Kalice-Italic.woff2', 'Kalice-Regular.woff', 'Kalice-Regular.woff2']
+2025-06-05 13:33:34.961 | INFO     | ui.fonts:load_project_fonts:80 - Using CSS fallback fonts for typography
+2025-06-05 13:33:34.963 | INFO     | core.app:_setup_file_monitoring:1173 - Setting up file monitoring...
+2025-06-05 13:33:34.964 | INFO     | core.app:_setup_file_monitoring:1184 - Monitoring images directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\images
+2025-06-05 13:33:34.965 | INFO     | core.file_monitor:add_directory:122 - Added monitor for images: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\images
+2025-06-05 13:33:34.965 | INFO     | core.app:_setup_file_monitoring:1193 - Monitoring 3D models directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\3D\Hy3D
+2025-06-05 13:33:34.966 | INFO     | core.file_monitor:add_directory:122 - Added monitor for models: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\3D\Hy3D
+2025-06-05 13:33:34.988 | INFO     | core.file_monitor:start:146 - Started monitoring images
+2025-06-05 13:33:34.989 | INFO     | core.file_monitor:start:146 - Started monitoring models
+2025-06-05 13:33:34.990 | INFO     | core.app:_setup_file_monitoring:1202 - File monitoring started successfully
+2025-06-05 13:33:34.990 | INFO     | core.app:_setup_file_monitoring:1205 - Monitoring directory exists: True
+2025-06-05 13:33:34.991 | INFO     | core.app:_setup_file_monitoring:1208 - Found 33 existing images at startup
+2025-06-05 13:33:35.278 | INFO     | mcp.comfyui_client:connect:50 - Connected to ComfyUI at http://localhost:8188
+2025-06-05 13:33:35.278 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for progress
+2025-06-05 13:33:35.279 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for execution_complete
+2025-06-05 13:33:35.279 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for execution_error
+2025-06-05 13:33:36.776 | WARNING  | mcp.cinema4d_client:connect:66 - Cinema4D socket server not available. Please:
+2025-06-05 13:33:36.776 | WARNING  | mcp.cinema4d_client:connect:67 - 1. Start Cinema4D
+2025-06-05 13:33:36.777 | WARNING  | mcp.cinema4d_client:connect:68 - 2. Load c4d_mcp_server.py in Script Manager
+2025-06-05 13:33:36.777 | WARNING  | mcp.cinema4d_client:connect:69 - 3. Run the script to start socket server
+2025-06-05 13:34:37.300 | INFO     | core.app:_load_image_to_grid:1671 - Loaded image ComfyUI_0033.png into slot 1
+2025-06-05 13:34:37.307 | INFO     | core.app:_load_image_to_grid:1671 - Loaded image ComfyUI_0032.png into slot 2
+2025-06-05 13:34:37.315 | INFO     | core.app:_load_image_to_grid:1671 - Loaded image ComfyUI_0031.png into slot 3
+2025-06-05 13:34:37.322 | INFO     | core.app:_load_image_to_grid:1671 - Loaded image ComfyUI_0030.png into slot 4
+2025-06-05 13:34:37.323 | INFO     | core.app:_load_existing_images:1722 - Loaded 4 existing images
+2025-06-05 13:34:37.323 | INFO     | core.app:initialize:1169 - Application initialized
+2025-06-05 13:34:38.780 | INFO     | core.app:_on_generate_images:1314 - UI Parameters - CFG: 1.0, Sampler: euler, Scheduler: simple, Steps: 20, Seed Control: increment
+2025-06-05 13:34:38.781 | INFO     | core.workflow_manager:load_workflow:41 - Loaded workflow: generate_images_api.json
+2025-06-05 13:34:38.782 | INFO     | core.workflow_manager:_inject_params_ui_format:406 - Injected dimensions/batch into node 8: [512, 512, 4]
+2025-06-05 13:34:38.782 | INFO     | core.workflow_manager:_inject_params_ui_format:385 - Injected positive prompt into node 12
+2025-06-05 13:34:38.783 | INFO     | core.workflow_manager:_inject_params_ui_format:393 - Injected negative prompt into node 13
+2025-06-05 13:34:38.783 | INFO     | core.workflow_manager:_inject_params_ui_format:439 - Injected checkpoint into node 5: flux1-dev-fp8.safetensors
+2025-06-05 13:34:38.784 | INFO     | core.workflow_manager:_inject_lora_ui_format:471 - Injected lora2: aidmaFLUXpro1.1-FLUX-V0.1.safetensors @ 0.6
+2025-06-05 13:34:38.784 | INFO     | core.workflow_manager:_inject_params_ui_format:428 - Injected KSampler params into node 10
+2025-06-05 13:34:38.784 | INFO     | core.workflow_manager:_inject_lora_ui_format:471 - Injected lora1: deep_sea_creatures_cts.safetensors @ 0.8
+2025-06-05 13:34:38.785 | DEBUG    | core.workflow_manager:_convert_ui_to_api_format:221 - Skipping Note node 1 in API conversion
+2025-06-05 13:34:38.785 | DEBUG    | core.workflow_manager:_convert_ui_to_api_format:277 - Converted UI workflow to API format with 9 nodes
+2025-06-05 13:34:38.786 | INFO     | core.workflow_manager:inject_parameters_comfyui:108 - Converted UI workflow to API format with 9 nodes
+2025-06-05 13:34:38.793 | DEBUG    | mcp.comfyui_client:queue_prompt:185 - Queuing prompt with 9 nodes
+2025-06-05 13:34:39.076 | ERROR    | mcp.comfyui_client:queue_prompt:203 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'prompt_outputs_failed_validation', 'message': 'Prompt outputs failed validation', 'details': 'Required input is missing: dpi\nRequired input is missing: optimize_image\nRequired input is missing: overwrite_mode\nRequired input is missing: show_history_by_prefix\nRequired input is missing: filename_number_padding\nRequired input is missing: lossless_webp\nRequired input is missing: show_history\nRequired input is missing: filename_delimiter\nRequired input is missing: embed_workflow\nRequired input is missing: extension\nRequired input is missing: output_path\nRequired input is missing: filename_prefix\nRequired input is missing: show_previews\nRequired input is missing: filename_number_start\nRequired input is missing: quality', 'extra_info': {}}, 'node_errors': {'17': {'errors': [{'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'dpi', 'extra_info': {'input_name': 'dpi'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'optimize_image', 'extra_info': {'input_name': 'optimize_image'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'overwrite_mode', 'extra_info': {'input_name': 'overwrite_mode'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'show_history_by_prefix', 'extra_info': {'input_name': 'show_history_by_prefix'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'filename_number_padding', 'extra_info': {'input_name': 'filename_number_padding'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'lossless_webp', 'extra_info': {'input_name': 'lossless_webp'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'show_history', 'extra_info': {'input_name': 'show_history'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'filename_delimiter', 'extra_info': {'input_name': 'filename_delimiter'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'embed_workflow', 'extra_info': {'input_name': 'embed_workflow'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'extension', 'extra_info': {'input_name': 'extension'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'output_path', 'extra_info': {'input_name': 'output_path'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'filename_prefix', 'extra_info': {'input_name': 'filename_prefix'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'show_previews', 'extra_info': {'input_name': 'show_previews'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'filename_number_start', 'extra_info': {'input_name': 'filename_number_start'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'quality', 'extra_info': {'input_name': 'quality'}}], 'dependent_outputs': ['17'], 'class_type': 'Image Save'}}}

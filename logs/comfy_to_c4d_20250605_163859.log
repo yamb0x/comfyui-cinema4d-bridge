@@ -1,0 +1,31 @@
+2025-06-05 16:38:59.292 | INFO     | utils.logger:setup_logging:60 - Logging initialized. Log directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs
+2025-06-05 16:38:59.292 | INFO     | utils.logger:setup_logging:61 - Main log file: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs\comfy_to_c4d_20250605_163859.log
+2025-06-05 16:38:59.292 | INFO     | __main__:main:27 - Starting ComfyUI to Cinema4D Bridge Application
+2025-06-05 16:38:59.979 | INFO     | core.app:_apply_styles:1320 - Applied black theme successfully
+2025-06-05 16:39:00.063 | INFO     | core.app:initialize:1372 - Initializing application...
+2025-06-05 16:39:00.063 | INFO     | ui.fonts:load_project_fonts:76 - Available font files: ['basis-grotesque-regular-pro.woff', 'basis-grotesque-regular.woff2', 'Kalice-Italic.woff', 'Kalice-Italic.woff2', 'Kalice-Regular.woff', 'Kalice-Regular.woff2']
+2025-06-05 16:39:00.064 | INFO     | ui.fonts:load_project_fonts:80 - Using CSS fallback fonts for typography
+2025-06-05 16:39:00.065 | INFO     | core.app:_setup_file_monitoring:1401 - Setting up file monitoring...
+2025-06-05 16:39:00.067 | INFO     | core.app:_setup_file_monitoring:1412 - Monitoring images directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\images
+2025-06-05 16:39:00.067 | INFO     | core.file_monitor:add_directory:122 - Added monitor for images: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\images
+2025-06-05 16:39:00.068 | INFO     | core.app:_setup_file_monitoring:1421 - Monitoring 3D models directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\3D\Hy3D
+2025-06-05 16:39:00.068 | INFO     | core.file_monitor:add_directory:122 - Added monitor for models: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\3D\Hy3D
+2025-06-05 16:39:00.076 | INFO     | core.file_monitor:start:146 - Started monitoring images
+2025-06-05 16:39:00.077 | INFO     | core.file_monitor:start:146 - Started monitoring models
+2025-06-05 16:39:00.078 | INFO     | core.app:_setup_file_monitoring:1430 - File monitoring started successfully
+2025-06-05 16:39:00.078 | INFO     | core.app:_setup_file_monitoring:1433 - Monitoring directory exists: True
+2025-06-05 16:39:00.080 | INFO     | core.app:_setup_file_monitoring:1436 - Found 56 existing images at startup
+2025-06-05 16:39:00.376 | INFO     | mcp.comfyui_client:connect:50 - Connected to ComfyUI at http://localhost:8188
+2025-06-05 16:39:00.376 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for progress
+2025-06-05 16:39:00.377 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for execution_complete
+2025-06-05 16:39:00.377 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for execution_error
+2025-06-05 16:39:01.589 | WARNING  | mcp.cinema4d_client:connect:66 - Cinema4D socket server not available. Please:
+2025-06-05 16:39:01.590 | WARNING  | mcp.cinema4d_client:connect:67 - 1. Start Cinema4D
+2025-06-05 16:39:01.590 | WARNING  | mcp.cinema4d_client:connect:68 - 2. Load c4d_mcp_server.py in Script Manager
+2025-06-05 16:39:01.591 | WARNING  | mcp.cinema4d_client:connect:69 - 3. Run the script to start socket server
+2025-06-05 16:39:02.953 | INFO     | core.app:_load_image_to_grid:1903 - Loaded image 0017_ComfyUI.png into slot 1
+2025-06-05 16:39:02.960 | INFO     | core.app:_load_image_to_grid:1903 - Loaded image 0016_ComfyUI.png into slot 2
+2025-06-05 16:39:02.967 | INFO     | core.app:_load_image_to_grid:1903 - Loaded image 0015_ComfyUI.png into slot 3
+2025-06-05 16:39:02.974 | INFO     | core.app:_load_image_to_grid:1903 - Loaded image 0014_ComfyUI.png into slot 4
+2025-06-05 16:39:02.975 | INFO     | core.app:_load_existing_images:1954 - Loaded 4 existing images
+2025-06-05 16:39:02.976 | INFO     | core.app:initialize:1397 - Application initialized

@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComfyUI → Cinema4D Pipeline Tool</title>
+    <style>
+        @font-face {
+            font-family: 'Basis Grotesque';
+            src: url('basis-grotesque-regular-pro.woff') format('woff'),
+                 url('basis-grotesque-regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Kalice';
+            src: url('Kalice-Regular.woff') format('woff'),
+                 url('Kalice-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f8f8;
+            --text-primary: #000000;
+            --text-secondary: #666666;
+            --border-color: #000000;
+            --header-height: 60px;
+        }
+
+        body {
+            font-family: 'Basis Grotesque', -apple-system, system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            font-size: 14px;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .main-header {
+            height: var(--header-height);
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .magic-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+
+        .magic-btn:hover {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+        }
+
+        .object-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .object-number {
+            width: 40px;
+            padding: 4px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .main-header h1 {
+            font-family: 'Kalice', serif;
+            font-size: 24px;
+            font-weight: 400;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .main-header .subtitle {
+            font-family: 'Basis Grotesque', sans-serif;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.7;
+        }
+
+        .app-container {
+            display: flex;
+            height: calc(100vh - var(--header-height));
+            width: 100vw;
+        }
+
+        /* Aligned panel headers */
+        .panel-header {
+            height: 80px;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .panel-header h2 {
+            font-family: 'Kalice', serif;
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
+
+        .panel-header p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Left Panel */
+        .left-panel {
+            width: 320px;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+        }
+
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        /* Object List for Scene Assembly */
+        .object-list {
+            display: none;
+        }
+
+        .object-list.active {
+            display: block;
+        }
+
+        .object-item {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .object-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .object-item.selected {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+        }
+
+        .object-type {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        .object-count {
+            background: var(--bg-secondary);
+            padding: 2px 8px;
+            font-size: 11px;
+            border-radius: 10px;
+        }
+
+        .object-item.selected .object-count {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        /* Center Panel */
+        .center-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-secondary);
+        }
+
+        .pipeline-status {
+            height: 80px;
+            padding: 20px;
+            background: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .pipeline-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 8px;
+        }
+
+        .pipeline-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .pipeline-step::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 15px;
+            width: calc(100% - 30px);
+            height: 1px;
+            background: var(--text-secondary);
+            transform: translateX(50%);
+        }
+
+        .pipeline-step:last-child::after {
+            display: none;
+        }
+
+        .step-indicator {
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-primary);
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+            cursor: pointer;
+        }
+
+        .step-indicator.active {
+            background: var(--text-primary);
+            color: white;
+        }
+
+        .step-indicator.completed {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border-color: var(--text-primary);
+        }
+
+        .step-indicator.completed::after {
+            content: '✓';
+            position: absolute;
+            font-size: 14px;
+        }
+
+        .step-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            background: var(--bg-primary);
+            padding: 2px 6px;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .stage-content {
+            display: none;
+        }
+
+        .stage-content.active {
+            display: block;
+        }
+
+        /* 3D Viewport */
+        .model-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .model-preview {
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            padding: 15px;
+        }
+
+        .model-viewport {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: #f0f0f0;
+            border: 1px solid var(--border-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .model-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .model-name {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .model-polycount {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .model-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 12px;
+        }
+
+        /* Scene Assembly */
+        .scene-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .control-group {
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            background: var(--bg-primary);
+        }
+
+        .control-group h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 15px;
+        }
+
+        /* Form Elements */
+        .dropdown {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            font-family: 'Basis Grotesque', sans-serif;
+            font-size: 13px;
+            outline: none;
+            cursor: pointer;
+            margin-bottom: 10px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 36px;
+        }
+
+        .parameter {
+            margin-bottom: 15px;
+        }
+
+        .parameter label {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 5px;
+            color: var(--text-secondary);
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            font-family: 'Basis Grotesque', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn:hover {
+            background: var(--text-primary);
+            color: white;
+        }
+
+        .btn.primary {
+            background: var(--text-primary);
+            color: white;
+        }
+
+        .btn.primary:hover {
+            opacity: 0.8;
+        }
+
+        .object-selector {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-top: 5px;
+        }
+
+        .object-tag {
+            padding: 4px 10px;
+            border: 1px solid var(--border-color);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .object-tag:hover {
+            background: var(--bg-secondary);
+        }
+
+        .object-tag.selected {
+            background: var(--text-primary);
+            color: white;
+        }
+
+        /* Python Scripts */
+        .script-item {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .script-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .script-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .script-description {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* Right Panel */
+        .right-panel {
+            width: 280px;
+            border-left: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Bottom Panel */
+        .bottom-panel {
+            height: 180px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            background: var(--bg-primary);
+        }
+
+        .console-section {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            background: #f5f5f5;
+        }
+
+        .actions-section {
+            width: 200px;
+            padding: 15px;
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            position: relative;
+            margin-right: 8px;
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: -2px;
+            left: 2px;
+            font-size: 12px;
+            color: var(--text-primary);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 2px;
+            background: var(--border-color);
+            outline: none;
+            -webkit-appearance: none;
+            margin: 10px 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            background: var(--text-primary);
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            background: var(--text-primary);
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+        }
+
+        .range-value {
+            text-align: right;
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-family: monospace;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--text-secondary);
+        }
+
+        .prompt-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            font-family: 'Basis Grotesque', monospace;
+            font-size: 13px;
+            resize: vertical;
+            outline: none;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            font-family: 'Basis Grotesque', sans-serif;
+            font-size: 12px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <h1>ComfyUI → Cinema4D Pipeline Tool</h1>
+        <div class="subtitle">BY YAMBO × CLAUDE</div>
+    </header>
+
+    <div class="app-container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <div class="panel-header">
+                <h2 id="left-panel-title">Scene Generator</h2>
+                <p id="left-panel-subtitle">AI-Powered 3D Scene Creation</p>
+            </div>
+            <div class="panel-content">
+                <!-- Initial Scene Generator Content -->
+                <div id="scene-generator-content">
+                    <div class="section">
+                        <div class="section-title">Scene Description</div>
+                        <textarea class="prompt-input" id="scene-prompt" placeholder="Describe your 3D scene...">A mystical underwater scene with glowing corals, exotic fish, and ancient ruins</textarea>
+                        <button class="magic-btn" onclick="generateRandomPrompt()" title="Generate random prompt">✨</button>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Negative Prompt</div>
+                        <textarea class="prompt-input" style="min-height: 60px;" placeholder="What to avoid...">low quality, blurry, artifacts, distorted</textarea>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Style Preset</div>
+                        <select class="dropdown">
+                            <option>Clean Studio - White Background</option>
+                            <option>Clean Studio - Transparent</option>
+                            <option>Minimal Clay Render</option>
+                            <option>Wireframe Preview</option>
+                            <option>Flat Illustration</option>
+                            <option>Technical Blueprint</option>
+                        </select>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Object Generation Preview</div>
+                        <div style="border: 1px solid var(--border-color); padding: 15px; background: var(--bg-secondary);">
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span>Corals</span>
+                                    <input type="number" class="object-number" value="3" min="0" max="10">
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span>Fish</span>
+                                    <input type="number" class="object-number" value="5" min="0" max="20">
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span>Ruins</span>
+                                    <input type="number" class="object-number" value="4" min="0" max="10">
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span>Seaweed</span>
+                                    <input type="number" class="object-number" value="8" min="0" max="15">
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>AI Creatures</span>
+                                    <input type="number" class="object-number" value="2" min="0" max="5">
+                                </div>
+                            </div>
+                            <div style="font-size: 11px; color: var(--text-secondary); text-align: right;">
+                                Total: <strong>22 objects</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Object List for Scene Assembly -->
+                <div id="object-list-content" class="object-list">
+                    <div class="section-title">Scene Objects</div>
+                    <div class="object-item selected" onclick="selectObject(this)">
+                        <div>
+                            <div>Glowing_Coral_01</div>
+                            <div class="object-type">Organic • 12.5k polys</div>
+                        </div>
+                        <div class="object-count">×3</div>
+                    </div>
+                    <div class="object-item" onclick="selectObject(this)">
+                        <div>
+                            <div>Exotic_Fish_Blue</div>
+                            <div class="object-type">Creature • 8.2k polys</div>
+                        </div>
+                        <div class="object-count">×5</div>
+                    </div>
+                    <div class="object-item" onclick="selectObject(this)">
+                        <div>
+                            <div>Ancient_Column</div>
+                            <div class="object-type">Architecture • 24.1k polys</div>
+                        </div>
+                        <div class="object-count">×4</div>
+                    </div>
+                    <div class="object-item" onclick="selectObject(this)">
+                        <div>
+                            <div>Seaweed_Cluster</div>
+                            <div class="object-type">Vegetation • 5.3k polys</div>
+                        </div>
+                        <div class="object-count">×8</div>
+                    </div>
+                    <div class="object-item" onclick="selectObject(this)">
+                        <div>
+                            <div>Rock_Formation</div>
+                            <div class="object-type">Environment • 15.7k polys</div>
+                        </div>
+                        <div class="object-count">×6</div>
+                    </div>
+                    <div class="object-item" onclick="selectObject(this)">
+                        <div>
+                            <div>AI_Creature_Alpha</div>
+                            <div class="object-type">Abstract • 32.4k polys</div>
+                        </div>
+                        <div class="object-count">×2</div>
+                    </div>
+                    <div class="object-item" onclick="selectObject(this)">
+                        <div>
+                            <div>Bubble_System</div>
+                            <div class="object-type">Particle • 1.2k polys</div>
+                        </div>
+                        <div class="object-count">×15</div>
+                    </div>
+                    <div class="object-item" onclick="selectObject(this)">
+                        <div>
+                            <div>Light_Shaft</div>
+                            <div class="object-type">Volume • 0.5k polys</div>
+                        </div>
+                        <div class="object-count">×10</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel -->
+        <div class="center-panel">
+            <div class="pipeline-status">
+                <div class="section-title">Generation Pipeline</div>
+                <div class="pipeline-flow">
+                    <div class="pipeline-step">
+                        <div class="step-indicator completed" onclick="switchStage(1)">1</div>
+                        <div class="step-label">Image Generation</div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-indicator active" onclick="switchStage(2)">2</div>
+                        <div class="step-label">3D Models</div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-indicator" onclick="switchStage(3)">3</div>
+                        <div class="step-label">Scene Assembly</div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-indicator" onclick="switchStage(4)">4</div>
+                        <div class="step-label">C4D Export</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <!-- Stage 1: Image Generation -->
+                <div class="stage-content" id="stage-1">
+                    <div class="section-title">Generated Images</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px;">
+                        <div style="aspect-ratio: 1; border: 2px solid #000; background: #f0f0f0; cursor: pointer;">
+                            <div style="padding: 10px; text-align: center; color: #666;">Image 1</div>
+                        </div>
+                        <div style="aspect-ratio: 1; border: 1px solid #000; background: #f0f0f0; cursor: pointer;">
+                            <div style="padding: 10px; text-align: center; color: #666;">Image 2</div>
+                        </div>
+                        <div style="aspect-ratio: 1; border: 1px solid #000; background: #f0f0f0; cursor: pointer;">
+                            <div style="padding: 10px; text-align: center; color: #666;">Image 3</div>
+                        </div>
+                        <div style="aspect-ratio: 1; border: 1px solid #000; background: #f0f0f0; cursor: pointer;">
+                            <div style="padding: 10px; text-align: center; color: #666;">Image 4</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stage 2: 3D Models (Active by default) -->
+                <div class="stage-content active" id="stage-2">
+                    <div class="section-title">3D Model Preview</div>
+                    <div class="model-grid">
+                        <div class="model-preview">
+                            <div class="model-viewport">
+                                <div style="position: absolute; top: 10px; right: 10px; font-size: 10px;">
+                                    LOD: High
+                                </div>
+                                3D Viewport
+                            </div>
+                            <div class="model-info">
+                                <div class="model-name">Glowing_Coral_01</div>
+                                <div class="model-polycount">12,542 tris</div>
+                            </div>
+                            <div class="model-controls">
+                                <label><input type="checkbox" checked> Include</label>
+                                <span style="font-size: 11px; color: #666;">UV: ✓ Normal: ✓</span>
+                            </div>
+                        </div>
+                        <div class="model-preview">
+                            <div class="model-viewport">
+                                <div style="position: absolute; top: 10px; right: 10px; font-size: 10px;">
+                                    LOD: Medium
+                                </div>
+                                3D Viewport
+                            </div>
+                            <div class="model-info">
+                                <div class="model-name">Exotic_Fish_Blue</div>
+                                <div class="model-polycount">8,234 tris</div>
+                            </div>
+                            <div class="model-controls">
+                                <label><input type="checkbox" checked> Include</label>
+                                <span style="font-size: 11px; color: #666;">UV: ✓ Normal: ✓</span>
+                            </div>
+                        </div>
+                        <div class="model-preview">
+                            <div class="model-viewport">
+                                <div style="position: absolute; top: 10px; right: 10px; font-size: 10px;">
+                                    LOD: Ultra
+                                </div>
+                                3D Viewport
+                            </div>
+                            <div class="model-info">
+                                <div class="model-name">Ancient_Column</div>
+                                <div class="model-polycount">24,128 tris</div>
+                            </div>
+                            <div class="model-controls">
+                                <label><input type="checkbox" checked> Include</label>
+                                <span style="font-size: 11px; color: #666;">UV: ✓ Normal: ✓</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stage 3: Scene Assembly -->
+                <div class="stage-content" id="stage-3">
+                    <div class="section-title">Scene Assembly</div>
+                    <div class="scene-controls">
+                        <!-- Deformers -->
+                        <div class="control-group">
+                            <h3>Deformers & Modifiers</h3>
+                            <div class="parameter">
+                                <label>Target Object</label>
+                                <select class="dropdown" id="deformer-target">
+                                    <option>Select Object...</option>
+                                    <option>Glowing_Coral_01</option>
+                                    <option>Exotic_Fish_Blue</option>
+                                    <option>Ancient_Column</option>
+                                    <option>Seaweed_Cluster</option>
+                                    <option>Rock_Formation</option>
+                                    <option>AI_Creature_Alpha</option>
+                                </select>
+                            </div>
+                            <div class="parameter">
+                                <label>Add Deformer</label>
+                                <select class="dropdown">
+                                    <option>None</option>
+                                    <option>Bend</option>
+                                    <option>Twist</option>
+                                    <option>Bulge</option>
+                                    <option>Wind</option>
+                                    <option>Displacer</option>
+                                    <option>Jiggle</option>
+                                    <option>Smoothing</option>
+                                </select>
+                            </div>
+                            <div class="parameter">
+                                <label>Deformer Strength</label>
+                                <input type="range" min="0" max="100" value="50" oninput="updateRangeValue(this)">
+                                <div class="range-value">50%</div>
+                            </div>
+                        </div>
+
+                        <!-- MoGraph -->
+                        <div class="control-group">
+                            <h3>MoGraph System</h3>
+                            <div class="parameter">
+                                <label>Objects for Cloner</label>
+                                <div class="object-selector">
+                                    <div class="object-tag selected">Bubble_System</div>
+                                    <div class="object-tag">Exotic_Fish_Blue</div>
+                                    <div class="object-tag">Seaweed_Cluster</div>
+                                    <div class="object-tag selected">Light_Shaft</div>
+                                </div>
+                            </div>
+                            <div class="parameter">
+                                <label>Cloner Type</label>
+                                <select class="dropdown">
+                                    <option>Linear</option>
+                                    <option>Radial</option>
+                                    <option>Grid</option>
+                                    <option selected>Object Surface</option>
+                                    <option>Spline</option>
+                                    <option>Volume</option>
+                                </select>
+                            </div>
+                            <div class="parameter">
+                                <label>Count</label>
+                                <input type="range" min="1" max="500" value="50" oninput="updateRangeValue(this)">
+                                <div class="range-value">50</div>
+                            </div>
+                            <div class="parameter">
+                                <label>Fields</label>
+                                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                                    <button class="btn" style="padding: 5px 10px;">Linear Field</button>
+                                    <button class="btn" style="padding: 5px 10px;">Spherical Field</button>
+                                    <button class="btn" style="padding: 5px 10px;">Random Field</button>
+                                    <button class="btn" style="padding: 5px 10px;">Shader Field</button>
+                                    <button class="btn" style="padding: 5px 10px;">Noise Field</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Animation -->
+                        <div class="control-group">
+                            <h3>Procedural Animation</h3>
+                            <div class="parameter">
+                                <label>Dynamics</label>
+                                <div style="display: grid; gap: 10px;">
+                                    <button class="btn">Apply Rigid Body</button>
+                                    <button class="btn">Apply Soft Body</button>
+                                    <button class="btn">Cloth Simulation</button>
+                                    <button class="btn">Hair Dynamics</button>
+                                </div>
+                            </div>
+                            <div class="parameter">
+                                <label>Camera Animation</label>
+                                <select class="dropdown">
+                                    <option>Static</option>
+                                    <option>Orbit Around Scene</option>
+                                    <option>Follow Spline Path</option>
+                                    <option>Track to Object</option>
+                                    <option>Handheld Shake</option>
+                                    <option>Cinematic Dolly</option>
+                                </select>
+                                <button class="btn" style="margin-top: 5px; width: 100%;">Create Camera Path</button>
+                            </div>
+                            <div class="parameter">
+                                <label>Spline Controls</label>
+                                <button class="btn" style="width: 100%;">Create Spline Around Selected</button>
+                                <div style="margin-top: 10px;">
+                                    <label style="font-size: 11px;">Spline Type</label>
+                                    <select class="dropdown">
+                                        <option>Bezier</option>
+                                        <option>B-Spline</option>
+                                        <option>Linear</option>
+                                        <option>Akima</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="parameter">
+                                <label>Abstract Forms</label>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="number" value="3" min="1" max="20" style="width: 60px;">
+                                    <button class="btn" style="flex: 1;">Generate Abstract Shapes</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Python Scripts -->
+                        <div class="control-group">
+                            <h3>Smart Python Scripts</h3>
+                            <div class="script-item" onclick="executeScript('scatter')">
+                                <div class="script-title">Intelligent Object Scattering</div>
+                                <div class="script-description">AI-driven placement based on natural distribution patterns, avoiding collisions and creating organic clusters</div>
+                            </div>
+                            <div class="script-item" onclick="executeScript('growth')">
+                                <div class="script-title">Organic Growth System</div>
+                                <div class="script-description">Simulate coral growth, branching structures, and L-system based vegetation with time-based animation</div>
+                            </div>
+                            <div class="script-item" onclick="executeScript('swarm')">
+                                <div class="script-title">Swarm Intelligence</div>
+                                <div class="script-description">Create flocking behavior for fish and particles with collision avoidance and group dynamics</div>
+                            </div>
+                            <div class="script-item" onclick="executeScript('fracture')">
+                                <div class="script-title">Procedural Destruction</div>
+                                <div class="script-description">Generate Voronoi fractures on ruins with physics-ready chunks and debris</div>
+                            </div>
+                            <div class="script-item" onclick="executeScript('lighting')">
+                                <div class="script-title">Volumetric Light Setup</div>
+                                <div class="script-description">Automatically create god rays, caustics, and underwater lighting with proper falloff</div>
+                            </div>
+                            <div class="script-item" onclick="executeScript('materials')">
+                                <div class="script-title">Smart Material Assignment</div>
+                                <div class="script-description">AI-based material creation with subsurface scattering for organics and aged textures for ruins</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stage 4: C4D Export -->
+                <div class="stage-content" id="stage-4">
+                    <div class="section-title">Cinema4D Export</div>
+                    <div class="model-viewport" style="width: 100%; max-width: 800px; margin: 0 auto 20px; aspect-ratio: 16/9; background: #1a1a1a;">
+                        <div style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px 10px; font-size: 11px;">
+                            FPS: 60 | Total Polys: 245,832 | Objects: 53 | Dynamics: Active
+                        </div>
+                        <span style="color: #999;">Live C4D Viewport</span>
+                    </div>
+                    <div class="scene-controls">
+                        <div class="control-group">
+                            <h3>Export Settings</h3>
+                            <div class="parameter">
+                                <label>Project Name</label>
+                                <input type="text" value="underwater_mystical_v001" style="width: 100%;">
+                            </div>
+                            <div class="parameter">
+                                <label>Hierarchy Organization</label>
+                                <select class="dropdown">
+                                    <option>By Type (Geometry/Lights/Cameras)</option>
+                                    <option>By Material</option>
+                                    <option>By Animation</option>
+                                    <option>Keep AI Structure</option>
+                                </select>
+                            </div>
+                            <div class="parameter">
+                                <label>Optimization</label>
+                                <label><input type="checkbox" checked> Merge duplicate materials</label>
+                                <label><input type="checkbox" checked> Instance identical objects</label>
+                                <label><input type="checkbox"> Bake procedural animations</label>
+                                <label><input type="checkbox" checked> Optimize mesh topology</label>
+                            </div>
+                            <div class="parameter">
+                                <button class="btn primary" style="width: 100%; padding: 15px; font-size: 14px;">SEND TO CINEMA4D</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <div class="panel-header">
+                <h2>Parameters</h2>
+                <p id="stage-title">3D Model Settings</p>
+            </div>
+            <div class="panel-content" id="right-panel-content">
+                <!-- Dynamic content will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Panel -->
+    <div class="bottom-panel">
+        <div class="console-section">
+            <div style="color: #666;">[12:34:56] ComfyUI → C4D Bridge initialized</div>
+            <div style="color: #000;">[12:34:57] Connected to local MCP server</div>
+            <div style="color: #000;">[12:35:02] Scene analysis complete: 15 unique objects detected</div>
+            <div style="color: #000;">[12:35:15] 3D model generation in progress...</div>
+            <div style="color: #00a000;">[12:35:30] Successfully generated 15 3D models</div>
+            <div style="color: #666;">[12:35:31] Applying smart UV unwrapping...</div>
+        </div>
+        <div class="actions-section">
+            <button class="btn" onclick="generateImages()">Generate Images</button>
+            <button class="btn primary" onclick="generate3D()">Generate 3D</button>
+            <button class="btn" onclick="assembleScene()">Assemble Scene</button>
+            <button class="btn" onclick="exportC4D()">Export to C4D</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedObject = 'Glowing_Coral_01';
+
+        // Switch stages
+        function switchStage(stage) {
+            document.querySelectorAll('.stage-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`stage-${stage}`).classList.add('active');
+            
+            document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                if (index < stage - 1) {
+                    indicator.classList.add('completed');
+                    indicator.classList.remove('active');
+                    indicator.textContent = '✓';
+                } else if (index === stage - 1) {
+                    indicator.classList.add('active');
+                    indicator.classList.remove('completed');
+                    indicator.textContent = index + 1;
+                } else {
+                    indicator.classList.remove('active', 'completed');
+                    indicator.textContent = index + 1;
+                }
+            });
+
+            // Update left panel for stage 3
+            if (stage === 3) {
+                document.getElementById('scene-generator-content').style.display = 'none';
+                document.getElementById('object-list-content').classList.add('active');
+                document.getElementById('left-panel-title').textContent = 'Scene Objects';
+                document.getElementById('left-panel-subtitle').textContent = 'Select objects to modify';
+            } else {
+                document.getElementById('scene-generator-content').style.display = 'block';
+                document.getElementById('object-list-content').classList.remove('active');
+                document.getElementById('left-panel-title').textContent = 'Scene Generator';
+                document.getElementById('left-panel-subtitle').textContent = 'AI-Powered 3D Scene Creation';
+            }
+            
+            updateRightPanel(stage);
+        }
+
+        // Update right panel based on stage
+        function updateRightPanel(stage) {
+            const contentElement = document.getElementById('right-panel-content');
+            const titleElement = document.getElementById('stage-title');
+            
+            let content = '';
+            
+            switch(stage) {
+                case 1:
+                    titleElement.textContent = 'Image Generation Settings';
+                    content = `
+                        <div class="parameter">
+                            <label>Resolution</label>
+                            <select class="dropdown">
+                                <option>512x512</option>
+                                <option selected>1024x1024</option>
+                                <option>2048x2048</option>
+                            </select>
+                        </div>
+                        <div class="parameter">
+                            <label>Sampling Steps</label>
+                            <input type="range" min="20" max="150" value="50" oninput="updateRangeValue(this)">
+                            <div class="range-value">50</div>
+                        </div>
+                        <div class="parameter">
+                            <label>CFG Scale</label>
+                            <input type="range" min="1" max="20" value="7" step="0.5" oninput="updateRangeValue(this)">
+                            <div class="range-value">7</div>
+                        </div>
+                        <div class="parameter">
+                            <label>Sampler</label>
+                            <select class="dropdown">
+                                <option>DPM++ 2M Karras</option>
+                                <option>Euler a</option>
+                                <option>DDIM</option>
+                                <option>LMS</option>
+                                <option>Heun</option>
+                            </select>
+                        </div>
+                        <div class="parameter">
+                            <label>Model</label>
+                            <select class="dropdown">
+                                <option>SDXL 1.0</option>
+                                <option>SD 1.5</option>
+                                <option>Midjourney v6</option>
+                                <option>Custom Fine-tuned</option>
+                            </select>
+                        </div>
+                        <div class="parameter">
+                            <label>Seed</label>
+                            <input type="number" value="-1" style="width: 100%;">
+                        </div>
+                        <div class="parameter">
+                            <label>Batch Size</label>
+                            <input type="number" value="8" min="1" max="16" style="width: 100%;">
+                        </div>
+                    `;
+                    break;
+                    
+                case 2:
+                    titleElement.textContent = '3D Model Settings';
+                    content = `
+                        <div class="parameter">
+                            <label>Mesh Density</label>
+                            <select class="dropdown">
+                                <option>Low (5k polys)</option>
+                                <option selected>Medium (15k polys)</option>
+                                <option>High (50k polys)</option>
+                                <option>Ultra (100k+ polys)</option>
+                            </select>
+                        </div>
+                        <div class="parameter">
+                            <label>Texture Resolution</label>
+                            <select class="dropdown">
+                                <option>1024x1024</option>
+                                <option selected>2048x2048</option>
+                                <option>4096x4096</option>
+                            </select>
+                        </div>
+                        <div class="parameter">
+                            <label>Normal Map</label>
+                            <label><input type="checkbox" checked> Generate Normal Maps</label>
+                        </div>
+                        <div class="parameter">
+                            <label>UV Unwrap</label>
+                            <label><input type="checkbox" checked> Auto UV Unwrap</label>
+                        </div>
+                        <div class="parameter">
+                            <label>Decimation</label>
+                            <input type="range" min="0" max="100" value="0" oninput="updateRangeValue(this)">
+                            <div class="range-value">0%</div>
+                        </div>
+                        <div class="parameter">
+                            <label>Smoothing</label>
+                            <input type="range" min="0" max="100" value="30" oninput="updateRangeValue(this)">
+                            <div class="range-value">30%</div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 3:
+                    titleElement.textContent = 'Object Properties';
+                    content = `
+                        <div class="parameter-group" style="margin-bottom: 20px;">
+                            <div class="section-title">Selected: ${selectedObject}</div>
+                            <div class="parameter">
+                                <label>Position</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px;">
+                                    <input type="number" value="0" step="0.1" style="width: 100%;" placeholder="X">
+                                    <input type="number" value="0" step="0.1" style="width: 100%;" placeholder="Y">
+                                    <input type="number" value="0" step="0.1" style="width: 100%;" placeholder="Z">
+                                </div>
+                            </div>
+                            <div class="parameter">
+                                <label>Rotation</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px;">
+                                    <input type="number" value="0" step="1" style="width: 100%;" placeholder="H">
+                                    <input type="number" value="0" step="1" style="width: 100%;" placeholder="P">
+                                    <input type="number" value="0" step="1" style="width: 100%;" placeholder="B">
+                                </div>
+                            </div>
+                            <div class="parameter">
+                                <label>Scale</label>
+                                <input type="range" min="10" max="200" value="100" oninput="updateRangeValue(this)">
+                                <div class="range-value">100%</div>
+                            </div>
+                            <div class="parameter">
+                                <label>Visibility</label>
+                                <label><input type="checkbox" checked> Visible</label>
+                                <label><input type="checkbox" checked> Render</label>
+                            </div>
+                        </div>
+                        <div class="parameter-group">
+                            <div class="section-title">Object Deformers</div>
+                            <div id="object-deformers" style="font-size: 12px; color: var(--text-secondary);">
+                                No deformers applied
+                            </div>
+                            <button class="btn" style="width: 100%; margin-top: 10px;" onclick="addDeformerToSelected()">Add Deformer</button>
+                        </div>
+                        <div class="parameter-group">
+                            <div class="section-title">Object Dynamics</div>
+                            <div id="object-dynamics" style="font-size: 12px; color: var(--text-secondary);">
+                                No dynamics applied
+                            </div>
+                            <button class="btn" style="width: 100%; margin-top: 10px;" onclick="addDynamicsToSelected()">Add Dynamics</button>
+                        </div>
+                    `;
+                    break;
+                    
+                case 4:
+                    titleElement.textContent = 'Export Configuration';
+                    content = `
+                        <div class="parameter">
+                            <label>File Format</label>
+                            <select class="dropdown">
+                                <option selected>C4D Native</option>
+                                <option>FBX</option>
+                                <option>OBJ + MTL</option>
+                                <option>Alembic</option>
+                                <option>USD</option>
+                            </select>
+                        </div>
+                        <div class="parameter">
+                            <label>Cinema 4D Version</label>
+                            <select class="dropdown">
+                                <option>2024</option>
+                                <option selected>2023</option>
+                                <option>R25</option>
+                                <option>R23</option>
+                            </select>
+                        </div>
+                        <div class="parameter">
+                            <label>Export Options</label>
+                            <label><input type="checkbox" checked> Include Textures</label>
+                            <label><input type="checkbox" checked> Optimize Hierarchy</label>
+                            <label><input type="checkbox"> Bake Animations</label>
+                            <label><input type="checkbox" checked> Merge Materials</label>
+                        </div>
+                        <div class="parameter">
+                            <label>Texture Handling</label>
+                            <select class="dropdown">
+                                <option>Copy to Project</option>
+                                <option>Embed in File</option>
+                                <option>Reference External</option>
+                            </select>
+                        </div>
+                        <div class="parameter">
+                            <label>Scale Factor</label>
+                            <input type="number" value="1.0" step="0.1" style="width: 100%;">
+                        </div>
+                    `;
+                    break;
+            }
+            
+            contentElement.innerHTML = content;
+        }
+
+        // Select object
+        function selectObject(element) {
+            document.querySelectorAll('.object-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            // Update selected object
+            selectedObject = element.querySelector('div > div').textContent;
+            
+            // Update right panel if in assembly stage
+            if (document.getElementById('stage-3').classList.contains('active')) {
+                updateRightPanel(3);
+            }
+            
+            // Update deformer target dropdown
+            const deformerTarget = document.getElementById('deformer-target');
+            if (deformerTarget) {
+                deformerTarget.value = selectedObject;
+            }
+        }
+
+        // Generate random prompt
+        function generateRandomPrompt() {
+            const scenes = [
+                "A futuristic cityscape with floating buildings, neon lights, and flying vehicles",
+                "An enchanted forest with bioluminescent plants, fairy creatures, and crystal formations",
+                "A steampunk workshop filled with gears, pipes, steam engines, and mechanical inventions",
+                "An alien planet surface with strange rock formations, exotic vegetation, and mysterious structures",
+                "A post-apocalyptic wasteland with ruined buildings, overgrown vegetation, and makeshift shelters",
+                "A magical library with floating books, glowing orbs, and spiraling staircases",
+                "An underwater temple with ancient statues, coral gardens, and schools of tropical fish",
+                "A cyberpunk alley with holographic signs, rain effects, and tech-modified characters"
+            ];
+            
+            const randomScene = scenes[Math.floor(Math.random() * scenes.length)];
+            document.getElementById('scene-prompt').value = randomScene;
+            log('Generated new random scene prompt');
+        }
+
+        // Add deformer to selected object
+        function addDeformerToSelected() {
+            const deformer = document.querySelector('.control-group select').value;
+            if (deformer && deformer !== 'None') {
+                document.getElementById('object-deformers').innerHTML = `Applied: ${deformer}`;
+                log(`Added ${deformer} deformer to ${selectedObject}`);
+            }
+        }
+
+        // Add dynamics to selected object
+        function addDynamicsToSelected() {
+            document.getElementById('object-dynamics').innerHTML = 'Rigid Body applied';
+            log(`Applied Rigid Body dynamics to ${selectedObject}`);
+        }
+
+        // Object tag selection
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('object-tag')) {
+                e.target.classList.toggle('selected');
+            }
+        });
+
+        // Update range values
+        function updateRangeValue(slider) {
+            const valueDisplay = slider.parentElement.querySelector('.range-value');
+            if (valueDisplay) {
+                let value = slider.value;
+                const text = valueDisplay.textContent;
+                if (text.includes('%')) {
+                    valueDisplay.textContent = value + '%';
+                } else if (text.includes('objects')) {
+                    valueDisplay.textContent = value + ' objects';
+                } else {
+                    valueDisplay.textContent = value;
+                }
+            }
+        }
+
+        // Console logging
+        function log(message, type = '') {
+            const console = document.querySelector('.console-section');
+            const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+            let color = '#666';
+            if (type === 'success') color = '#00a000';
+            if (type === 'error') color = '#ff0000';
+            console.innerHTML += `<div style="color: ${color}">[${time}] ${message}</div>`;
+            console.scrollTop = console.scrollHeight;
+        }
+
+        // Script execution
+        function executeScript(scriptType) {
+            const scripts = {
+                scatter: 'Executing intelligent scattering algorithm...',
+                growth: 'Generating organic growth patterns...',
+                swarm: 'Initializing swarm behavior simulation...',
+                fracture: 'Creating procedural fractures...',
+                lighting: 'Setting up volumetric lighting...',
+                materials: 'Applying smart materials...'
+            };
+            log(scripts[scriptType]);
+            setTimeout(() => log(`${scriptType} script completed successfully`, 'success'), 1500);
+        }
+
+        // Action buttons
+        function generateImages() {
+            log('Starting image generation with ComfyUI...');
+            switchStage(1);
+        }
+
+        function generate3D() {
+            log('Converting images to 3D models...');
+            switchStage(2);
+        }
+
+        function assembleScene() {
+            log('Assembling scene with smart placement...');
+            switchStage(3);
+        }
+
+        function exportC4D() {
+            log('Preparing Cinema4D export...');
+            switchStage(4);
+        }
+
+        // Initialize with stage 2
+        updateRightPanel(2);
+    </script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+{
+  "8": {
+    "class_type": "EmptySD3LatentImage",
+    "inputs": {
+      "width": 512,
+      "height": 512,
+      "batch_size": 1
+    }
+  },
+  "11": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "10",
+        0
+      ],
+      "vae": [
+        "5",
+        2
+      ]
+    }
+  },
+  "17": {
+    "class_type": "Image Save",
+    "inputs": {
+      "output_path": "D:/Yambo Studio Dropbox/Admin/_studio-dashboard-app-dev/comfy-to-c4d/images",
+      "filename_prefix": "ComfyUI",
+      "filename_delimiter": "_",
+      "filename_number_start": "true",
+      "overwrite_mode": "false",
+      "extension": "png",
+      "quality": 100,
+      "dpi": 95,
+      "optimize_image": "false",
+      "lossless_webp": "false",
+      "embed_workflow": "false",
+      "show_previews": "false",
+      "show_history": "false",
+      "show_history_by_prefix": "false",
+      "filename_number_padding": 4,
+      "images": [
+        "11",
+        0
+      ]
+    }
+  },
+  "12": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "test prompt",
+      "clip": [
+        "19",
+        1
+      ]
+    }
+  },
+  "13": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "test negative",
+      "clip": [
+        "19",
+        1
+      ]
+    }
+  },
+  "5": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "flux1-dev-fp8.safetensors"
+    }
+  },
+  "19": {
+    "class_type": "LoraLoader",
+    "inputs": {
+      "lora_name": "aidmaFLUXpro1.1-FLUX-V0.1.safetensors",
+      "strength_model": 0.7,
+      "strength_clip": 0.7,
+      "model": [
+        "18",
+        0
+      ],
+      "clip": [
+        "18",
+        1
+      ]
+    }
+  },
+  "10": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 999,
+      "steps": 15,
+      "cfg": 2.5,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1.0,
+      "model": [
+        "19",
+        0
+      ],
+      "positive": [
+        "12",
+        0
+      ],
+      "negative": [
+        "13",
+        0
+      ],
+      "latent_image": [
+        "8",
+        0
+      ]
+    }
+  },
+  "18": {
+    "class_type": "LoraLoader",
+    "inputs": {
+      "lora_name": "deep_sea_creatures_cts.safetensors",
+      "strength_model": 0.9,
+      "strength_clip": 0.9,
+      "model": [
+        "5",
+        0
+      ],
+      "clip": [
+        "5",
+        1
+      ]
+    }
+  }
+}

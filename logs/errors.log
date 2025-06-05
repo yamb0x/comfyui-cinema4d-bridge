@@ -1,0 +1,399 @@
+2025-06-04 22:05:19.550 | ERROR    | __main__:<module>:63 - Unhandled exception: 13 validation errors for AppConfig
+workflows_dir
+  Input is not a valid path for <class 'pathlib._local.Path'> [type=path_type, input_value=None, input_type=NoneType]
+images_dir
+  Input is not a valid path for <class 'pathlib._local.Path'> [type=path_type, input_value=None, input_type=NoneType]
+models_3d_dir
+  Input is not a valid path for <class 'pathlib._local.Path'> [type=path_type, input_value=None, input_type=NoneType]
+config_dir
+  Input is not a valid path for <class 'pathlib._local.Path'> [type=path_type, input_value=None, input_type=NoneType]
+comfyui_path
+  Extra inputs are not permitted [type=extra_forbidden, input_value='D:/Comfy3D_WinPortable', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+comfyui_server_url
+  Extra inputs are not permitted [type=extra_forbidden, input_value='http://localhost:8188', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+comfyui_websocket_url
+  Extra inputs are not permitted [type=extra_forbidden, input_value='ws://localhost:8188/ws', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+cinema4d_path
+  Extra inputs are not permitted [type=extra_forbidden, input_value='C:/Program Files/Maxon Cinema 4D 2024', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+cinema4d_mcp_host
+  Extra inputs are not permitted [type=extra_forbidden, input_value='localhost', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+cinema4d_mcp_port
+  Extra inputs are not permitted [type=extra_forbidden, input_value='5000', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+log_level
+  Extra inputs are not permitted [type=extra_forbidden, input_value='INFO', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+file_monitor_delay
+  Extra inputs are not permitted [type=extra_forbidden, input_value='1.0', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+auto_save_interval
+  Extra inputs are not permitted [type=extra_forbidden, input_value='300', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+Traceback (most recent call last):
+
+> File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 59, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x000002D1FE7505E0>
+    │       └ <function run at 0x000002D1FC754EA0>
+    └ <module 'asyncio' from 'C:\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x000002D1FD0F7D30>
+           │      └ <function Runner.run at 0x000002D1FC83F240>
+           └ <asyncio.runners.Runner object at 0x000002D1FE5B3A10>
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │                        └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+           │    └ None
+           └ <asyncio.runners.Runner object at 0x000002D1FE5B3A10>
+  File "C:\Python313\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           │      └ <method 'result' of '_asyncio.Task' objects>
+           └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 30, in main
+    config = AppConfig.load()
+             │         └ <classmethod(<function AppConfig.load at 0x000002D1FDEB02C0>)>
+             └ <class 'src.core.config.AppConfig'>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\config.py", line 156, in load
+    config = cls()
+             └ <class 'src.core.config.AppConfig'>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\config.py", line 97, in __init__
+    super().__init__(**data)
+                       └ {}
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\venv\Lib\site-packages\pydantic_settings\main.py", line 176, in __init__
+    super().__init__(
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\venv\Lib\site-packages\pydantic\main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     │    │                      │               │                   └ AppConfig()
+                     │    │                      │               └ {'max_recent_projects': '10', 'comfyui_path': 'D:/Comfy3D_WinPortable', 'comfyui_server_url': 'http://localhost:8188', 'comfy...
+                     │    │                      └ <method 'validate_python' of 'pydantic_core._pydantic_core.SchemaValidator' objects>
+                     │    └ SchemaValidator(title="AppConfig", validator=Model(
+                     │          ModelValidator {
+                     │              revalidate: Never,
+                     │              validator: ModelF...
+                     └ AppConfig()
+
+pydantic_core._pydantic_core.ValidationError: 13 validation errors for AppConfig
+workflows_dir
+  Input is not a valid path for <class 'pathlib._local.Path'> [type=path_type, input_value=None, input_type=NoneType]
+images_dir
+  Input is not a valid path for <class 'pathlib._local.Path'> [type=path_type, input_value=None, input_type=NoneType]
+models_3d_dir
+  Input is not a valid path for <class 'pathlib._local.Path'> [type=path_type, input_value=None, input_type=NoneType]
+config_dir
+  Input is not a valid path for <class 'pathlib._local.Path'> [type=path_type, input_value=None, input_type=NoneType]
+comfyui_path
+  Extra inputs are not permitted [type=extra_forbidden, input_value='D:/Comfy3D_WinPortable', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+comfyui_server_url
+  Extra inputs are not permitted [type=extra_forbidden, input_value='http://localhost:8188', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+comfyui_websocket_url
+  Extra inputs are not permitted [type=extra_forbidden, input_value='ws://localhost:8188/ws', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+cinema4d_path
+  Extra inputs are not permitted [type=extra_forbidden, input_value='C:/Program Files/Maxon Cinema 4D 2024', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+cinema4d_mcp_host
+  Extra inputs are not permitted [type=extra_forbidden, input_value='localhost', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+cinema4d_mcp_port
+  Extra inputs are not permitted [type=extra_forbidden, input_value='5000', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+log_level
+  Extra inputs are not permitted [type=extra_forbidden, input_value='INFO', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+file_monitor_delay
+  Extra inputs are not permitted [type=extra_forbidden, input_value='1.0', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+auto_save_interval
+  Extra inputs are not permitted [type=extra_forbidden, input_value='300', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+2025-06-04 22:16:35.920 | ERROR    | __main__:main:71 - Cannot import main app: attempted relative import beyond top-level package
+2025-06-04 22:24:48.541 | ERROR    | __main__:main:78 - Failed to import main application: attempted relative import beyond top-level package
+2025-06-04 22:26:25.741 | ERROR    | __main__:main:78 - Failed to import main application: attempted relative import beyond top-level package
+2025-06-04 22:38:30.049 | ERROR    | mcp.comfyui_client:connect:62 - Connection failed: unknown async library, or not in async context
+2025-06-04 22:38:34.152 | ERROR    | mcp.cinema4d_client:connect:85 - Failed to connect to Cinema4D: no running event loop
+2025-06-04 22:42:03.366 | ERROR    | mcp.comfyui_client:connect:62 - Connection failed: unknown async library, or not in async context
+2025-06-04 22:42:14.769 | ERROR    | mcp.cinema4d_client:connect:85 - Failed to connect to Cinema4D: no running event loop
+2025-06-05 00:12:35.181 | ERROR    | __main__:<module>:63 - Unhandled exception: 13 validation errors for AppConfig
+workflows_dir
+  Input is not a valid path for <class 'pathlib._local.Path'> [type=path_type, input_value=None, input_type=NoneType]
+images_dir
+  Input is not a valid path for <class 'pathlib._local.Path'> [type=path_type, input_value=None, input_type=NoneType]
+models_3d_dir
+  Input is not a valid path for <class 'pathlib._local.Path'> [type=path_type, input_value=None, input_type=NoneType]
+config_dir
+  Input is not a valid path for <class 'pathlib._local.Path'> [type=path_type, input_value=None, input_type=NoneType]
+comfyui_path
+  Extra inputs are not permitted [type=extra_forbidden, input_value='D:/Comfy3D_WinPortable', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+comfyui_server_url
+  Extra inputs are not permitted [type=extra_forbidden, input_value='http://127.0.0.1:8188', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+comfyui_websocket_url
+  Extra inputs are not permitted [type=extra_forbidden, input_value='ws://127.0.0.1:8188/ws', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+cinema4d_path
+  Extra inputs are not permitted [type=extra_forbidden, input_value='C:/Program Files/Maxon Cinema 4D 2024', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+cinema4d_mcp_host
+  Extra inputs are not permitted [type=extra_forbidden, input_value='localhost', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+cinema4d_mcp_port
+  Extra inputs are not permitted [type=extra_forbidden, input_value='5000', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+log_level
+  Extra inputs are not permitted [type=extra_forbidden, input_value='INFO', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+file_monitor_delay
+  Extra inputs are not permitted [type=extra_forbidden, input_value='1.0', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+auto_save_interval
+  Extra inputs are not permitted [type=extra_forbidden, input_value='300', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+Traceback (most recent call last):
+
+> File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 59, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x000001A2B92AD3A0>
+    │       └ <function run at 0x000001A2B64C4EA0>
+    └ <module 'asyncio' from 'C:\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x000001A2B90B05E0>
+           │      └ <function Runner.run at 0x000001A2B65BF240>
+           └ <asyncio.runners.Runner object at 0x000001A2B90C9010>
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │                        └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+           │    └ None
+           └ <asyncio.runners.Runner object at 0x000001A2B90C9010>
+  File "C:\Python313\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           │      └ <method 'result' of '_asyncio.Task' objects>
+           └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 30, in main
+    config = AppConfig.load()
+             │         └ <classmethod(<function AppConfig.load at 0x000001A2B9624AE0>)>
+             └ <class 'core.config.AppConfig'>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\config.py", line 156, in load
+    config = cls()
+             └ <class 'core.config.AppConfig'>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\config.py", line 97, in __init__
+    super().__init__(**data)
+                       └ {}
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\venv\Lib\site-packages\pydantic_settings\main.py", line 176, in __init__
+    super().__init__(
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\venv\Lib\site-packages\pydantic\main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     │    │                      │               │                   └ AppConfig()
+                     │    │                      │               └ {'max_recent_projects': '10', 'comfyui_path': 'D:/Comfy3D_WinPortable', 'comfyui_server_url': 'http://127.0.0.1:8188', 'comfy...
+                     │    │                      └ <method 'validate_python' of 'pydantic_core._pydantic_core.SchemaValidator' objects>
+                     │    └ SchemaValidator(title="AppConfig", validator=Model(
+                     │          ModelValidator {
+                     │              revalidate: Never,
+                     │              validator: ModelF...
+                     └ AppConfig()
+
+pydantic_core._pydantic_core.ValidationError: 13 validation errors for AppConfig
+workflows_dir
+  Input is not a valid path for <class 'pathlib._local.Path'> [type=path_type, input_value=None, input_type=NoneType]
+images_dir
+  Input is not a valid path for <class 'pathlib._local.Path'> [type=path_type, input_value=None, input_type=NoneType]
+models_3d_dir
+  Input is not a valid path for <class 'pathlib._local.Path'> [type=path_type, input_value=None, input_type=NoneType]
+config_dir
+  Input is not a valid path for <class 'pathlib._local.Path'> [type=path_type, input_value=None, input_type=NoneType]
+comfyui_path
+  Extra inputs are not permitted [type=extra_forbidden, input_value='D:/Comfy3D_WinPortable', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+comfyui_server_url
+  Extra inputs are not permitted [type=extra_forbidden, input_value='http://127.0.0.1:8188', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+comfyui_websocket_url
+  Extra inputs are not permitted [type=extra_forbidden, input_value='ws://127.0.0.1:8188/ws', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+cinema4d_path
+  Extra inputs are not permitted [type=extra_forbidden, input_value='C:/Program Files/Maxon Cinema 4D 2024', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+cinema4d_mcp_host
+  Extra inputs are not permitted [type=extra_forbidden, input_value='localhost', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+cinema4d_mcp_port
+  Extra inputs are not permitted [type=extra_forbidden, input_value='5000', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+log_level
+  Extra inputs are not permitted [type=extra_forbidden, input_value='INFO', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+file_monitor_delay
+  Extra inputs are not permitted [type=extra_forbidden, input_value='1.0', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+auto_save_interval
+  Extra inputs are not permitted [type=extra_forbidden, input_value='300', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+2025-06-05 00:59:57.969 | ERROR    | ui.fonts:load_font:26 - Failed to load font: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\fonts\Kalice-Regular.woff2
+2025-06-05 00:59:57.969 | ERROR    | ui.fonts:load_font:26 - Failed to load font: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\fonts\Kalice-Regular.woff
+2025-06-05 00:59:57.970 | ERROR    | ui.fonts:load_font:26 - Failed to load font: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\fonts\basis-grotesque-regular.woff2
+2025-06-05 00:59:57.970 | ERROR    | ui.fonts:load_font:26 - Failed to load font: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\fonts\basis-grotesque-regular-pro.woff
+2025-06-05 01:01:51.239 | ERROR    | ui.fonts:load_font:26 - Failed to load font: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\fonts\Kalice-Regular.woff2
+2025-06-05 01:01:51.241 | ERROR    | ui.fonts:load_font:26 - Failed to load font: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\fonts\Kalice-Regular.woff
+2025-06-05 01:01:51.242 | ERROR    | ui.fonts:load_font:26 - Failed to load font: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\fonts\basis-grotesque-regular.woff2
+2025-06-05 01:01:51.242 | ERROR    | ui.fonts:load_font:26 - Failed to load font: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\fonts\basis-grotesque-regular-pro.woff
+2025-06-05 01:06:27.547 | ERROR    | ui.fonts:load_font:26 - Failed to load font: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\fonts\Kalice-Regular.woff2
+2025-06-05 01:06:27.547 | ERROR    | ui.fonts:load_font:26 - Failed to load font: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\fonts\Kalice-Regular.woff
+2025-06-05 01:06:27.548 | ERROR    | ui.fonts:load_font:26 - Failed to load font: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\fonts\basis-grotesque-regular.woff2
+2025-06-05 01:06:27.549 | ERROR    | ui.fonts:load_font:26 - Failed to load font: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\fonts\basis-grotesque-regular-pro.woff
+2025-06-05 01:20:53.188 | ERROR    | __main__:<module>:63 - Unhandled exception: Internal C++ object (PySide6.QtWidgets.QLabel) already deleted.
+Traceback (most recent call last):
+
+> File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 59, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x000001E0B0A2FE20>
+    │       └ <function run at 0x000001E0AED04EA0>
+    └ <module 'asyncio' from 'C:\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x000001E0B093BF10>
+           │      └ <function Runner.run at 0x000001E0AEDEF240>
+           └ <asyncio.runners.Runner object at 0x000001E0B09996A0>
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │                        └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+           │    └ None
+           └ <asyncio.runners.Runner object at 0x000001E0B09996A0>
+  File "C:\Python313\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           │      └ <method 'result' of '_asyncio.Task' objects>
+           └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 50, in main
+    await main_window.initialize()
+          │           └ <function ComfyToC4DApp.initialize at 0x000001E0B0A2E340>
+          └ <core.app.ComfyToC4DApp(0x1e0af185f10) at 0x000001E0B0A56600>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app.py", line 1023, in initialize
+    await self._connect_services()
+          │    └ <function ComfyToC4DApp._connect_services at 0x000001E0B0A2E480>
+          └ <core.app.ComfyToC4DApp(0x1e0af185f10) at 0x000001E0B0A56600>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app.py", line 1055, in _connect_services
+    self.comfyui_status.setText("🟢 ComfyUI")
+    │    │              └ <method 'setText' of 'PySide6.QtWidgets.QLabel' objects>
+    │    └ <unprintable QLabel object>
+    └ <core.app.ComfyToC4DApp(0x1e0af185f10) at 0x000001E0B0A56600>
+
+RuntimeError: Internal C++ object (PySide6.QtWidgets.QLabel) already deleted.
+2025-06-05 01:21:11.916 | ERROR    | __main__:<module>:63 - Unhandled exception: Internal C++ object (PySide6.QtWidgets.QLabel) already deleted.
+Traceback (most recent call last):
+
+> File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 59, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x00000140355DFE20>
+    │       └ <function run at 0x0000014033814EA0>
+    └ <module 'asyncio' from 'C:\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x00000140354EBF10>
+           │      └ <function Runner.run at 0x000001403390F240>
+           └ <asyncio.runners.Runner object at 0x00000140355496A0>
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │                        └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+           │    └ None
+           └ <asyncio.runners.Runner object at 0x00000140355496A0>
+  File "C:\Python313\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           │      └ <method 'result' of '_asyncio.Task' objects>
+           └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 50, in main
+    await main_window.initialize()
+          │           └ <function ComfyToC4DApp.initialize at 0x00000140355DE340>
+          └ <core.app.ComfyToC4DApp(0x14033c60ba0) at 0x00000140346C7FC0>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app.py", line 1023, in initialize
+    await self._connect_services()
+          │    └ <function ComfyToC4DApp._connect_services at 0x00000140355DE480>
+          └ <core.app.ComfyToC4DApp(0x14033c60ba0) at 0x00000140346C7FC0>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app.py", line 1055, in _connect_services
+    self.comfyui_status.setText("🟢 ComfyUI")
+    │    │              └ <method 'setText' of 'PySide6.QtWidgets.QLabel' objects>
+    │    └ <unprintable QLabel object>
+    └ <core.app.ComfyToC4DApp(0x14033c60ba0) at 0x00000140346C7FC0>
+
+RuntimeError: Internal C++ object (PySide6.QtWidgets.QLabel) already deleted.
+2025-06-05 02:27:39.837 | ERROR    | mcp.comfyui_client:queue_prompt:203 - Failed to queue prompt: 
+2025-06-05 10:47:23.156 | ERROR    | mcp.comfyui_client:connect:62 - Connection failed: All connection attempts failed
+2025-06-05 10:50:37.298 | ERROR    | mcp.comfyui_client:connect:62 - Connection failed: All connection attempts failed
+2025-06-05 12:27:38.888 | ERROR    | mcp.comfyui_client:queue_prompt:199 - Failed to queue prompt: HTTP 400
+2025-06-05 12:34:57.126 | ERROR    | mcp.comfyui_client:queue_prompt:209 - Failed to queue prompt: 
+2025-06-05 13:28:38.819 | ERROR    | mcp.comfyui_client:queue_prompt:203 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'invalid_prompt', 'message': 'Cannot execute because a node is missing the class_type property.', 'details': "Node ID '#id'", 'extra_info': {}}, 'node_errors': {}}
+2025-06-05 13:31:37.459 | ERROR    | mcp.comfyui_client:queue_prompt:203 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'invalid_prompt', 'message': 'Cannot execute because node Note does not exist.', 'details': "Node ID '#1'", 'extra_info': {}}, 'node_errors': {}}
+2025-06-05 13:34:39.076 | ERROR    | mcp.comfyui_client:queue_prompt:203 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'prompt_outputs_failed_validation', 'message': 'Prompt outputs failed validation', 'details': 'Required input is missing: dpi\nRequired input is missing: optimize_image\nRequired input is missing: overwrite_mode\nRequired input is missing: show_history_by_prefix\nRequired input is missing: filename_number_padding\nRequired input is missing: lossless_webp\nRequired input is missing: show_history\nRequired input is missing: filename_delimiter\nRequired input is missing: embed_workflow\nRequired input is missing: extension\nRequired input is missing: output_path\nRequired input is missing: filename_prefix\nRequired input is missing: show_previews\nRequired input is missing: filename_number_start\nRequired input is missing: quality', 'extra_info': {}}, 'node_errors': {'17': {'errors': [{'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'dpi', 'extra_info': {'input_name': 'dpi'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'optimize_image', 'extra_info': {'input_name': 'optimize_image'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'overwrite_mode', 'extra_info': {'input_name': 'overwrite_mode'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'show_history_by_prefix', 'extra_info': {'input_name': 'show_history_by_prefix'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'filename_number_padding', 'extra_info': {'input_name': 'filename_number_padding'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'lossless_webp', 'extra_info': {'input_name': 'lossless_webp'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'show_history', 'extra_info': {'input_name': 'show_history'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'filename_delimiter', 'extra_info': {'input_name': 'filename_delimiter'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'embed_workflow', 'extra_info': {'input_name': 'embed_workflow'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'extension', 'extra_info': {'input_name': 'extension'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'output_path', 'extra_info': {'input_name': 'output_path'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'filename_prefix', 'extra_info': {'input_name': 'filename_prefix'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'show_previews', 'extra_info': {'input_name': 'show_previews'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'filename_number_start', 'extra_info': {'input_name': 'filename_number_start'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'quality', 'extra_info': {'input_name': 'quality'}}], 'dependent_outputs': ['17'], 'class_type': 'Image Save'}}}
+2025-06-05 13:36:11.640 | ERROR    | mcp.comfyui_client:queue_prompt:203 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'prompt_outputs_failed_validation', 'message': 'Prompt outputs failed validation', 'details': "Value not in list: optimize_image: 'False' not in ['true', 'false']\nValue not in list: overwrite_mode: 'False' not in ['false', 'prefix_as_filename']\nValue not in list: show_history_by_prefix: 'False' not in ['true', 'false']\nFailed to convert an input value to a INT value: filename_number_padding, false, invalid literal for int() with base 10: 'false'\nValue not in list: lossless_webp: 'False' not in ['false', 'true']\nValue not in list: show_history: 'False' not in ['false', 'true']\nValue not in list: embed_workflow: 'False' not in ['true', 'false']\nValue not in list: show_previews: 'False' not in ['true', 'false']\nValue not in list: filename_number_start: '4' not in ['false', 'true']\nValue 300 bigger than max of 100: quality", 'extra_info': {}}, 'node_errors': {'17': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "optimize_image: 'False' not in ['true', 'false']", 'extra_info': {'input_name': 'optimize_image', 'input_config': [['true', 'false'], {}], 'received_value': False}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "overwrite_mode: 'False' not in ['false', 'prefix_as_filename']", 'extra_info': {'input_name': 'overwrite_mode', 'input_config': [['false', 'prefix_as_filename'], {}], 'received_value': False}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "show_history_by_prefix: 'False' not in ['true', 'false']", 'extra_info': {'input_name': 'show_history_by_prefix', 'input_config': [['true', 'false'], {}], 'received_value': False}}, {'type': 'invalid_input_type', 'message': 'Failed to convert an input value to a INT value', 'details': "filename_number_padding, false, invalid literal for int() with base 10: 'false'", 'extra_info': {'input_name': 'filename_number_padding', 'input_config': ['INT', {'default': 4, 'min': 1, 'max': 9, 'step': 1}], 'received_value': 'false', 'exception_message': "invalid literal for int() with base 10: 'false'"}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "lossless_webp: 'False' not in ['false', 'true']", 'extra_info': {'input_name': 'lossless_webp', 'input_config': [['false', 'true'], {}], 'received_value': False}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "show_history: 'False' not in ['false', 'true']", 'extra_info': {'input_name': 'show_history', 'input_config': [['false', 'true'], {}], 'received_value': False}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "embed_workflow: 'False' not in ['true', 'false']", 'extra_info': {'input_name': 'embed_workflow', 'input_config': [['true', 'false'], {}], 'received_value': False}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "show_previews: 'False' not in ['true', 'false']", 'extra_info': {'input_name': 'show_previews', 'input_config': [['true', 'false'], {}], 'received_value': False}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "filename_number_start: '4' not in ['false', 'true']", 'extra_info': {'input_name': 'filename_number_start', 'input_config': [['false', 'true'], {}], 'received_value': 4}}, {'type': 'value_bigger_than_max', 'message': 'Value 300 bigger than max of 100', 'details': 'quality', 'extra_info': {'input_name': 'quality', 'input_config': ['INT', {'default': 100, 'min': 1, 'max': 100, 'step': 1}], 'received_value': 300}}], 'dependent_outputs': ['17'], 'class_type': 'Image Save'}}}
+2025-06-05 15:42:08.547 | ERROR    | __main__:<module>:63 - Unhandled exception: 'PySide6.QtWidgets.QTabWidget' object has no attribute 'addWidget'
+Traceback (most recent call last):
+
+> File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 59, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x000001D935A654E0>
+    │       └ <function run at 0x000001D933D54EA0>
+    └ <module 'asyncio' from 'C:\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x000001D93595BF10>
+           │      └ <function Runner.run at 0x000001D933E4F240>
+           └ <asyncio.runners.Runner object at 0x000001D9359D4980>
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │                        └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+           │    └ None
+           └ <asyncio.runners.Runner object at 0x000001D9359D4980>
+  File "C:\Python313\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           │      └ <method 'result' of '_asyncio.Task' objects>
+           └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 42, in main
+    main_window = ComfyToC4DApp(config)
+                  │             └ <core.config_adapter.AppConfigAdapter object at 0x000001D9359D57F0>
+                  └ <class 'core.app.ComfyToC4DApp'>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app.py", line 79, in __init__
+    self._setup_ui()
+    │    └ <function ComfyToC4DApp._setup_ui at 0x000001D935A41BC0>
+    └ <core.app.ComfyToC4DApp(0x1d9341b2ab0) at 0x000001D935A374C0>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app.py", line 180, in _setup_ui
+    right_panel = self._create_right_panel()
+                  │    └ <function ComfyToC4DApp._create_right_panel at 0x000001D935A42E80>
+                  └ <core.app.ComfyToC4DApp(0x1d9341b2ab0) at 0x000001D935A374C0>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app.py", line 809, in _create_right_panel
+    self.params_stack.addWidget(self.image_params_widget)
+    │    │                      │    └ <PySide6.QtWidgets.QWidget(0x1d936ec9670) at 0x000001D936B6D900>
+    │    │                      └ <core.app.ComfyToC4DApp(0x1d9341b2ab0) at 0x000001D935A374C0>
+    │    └ <PySide6.QtWidgets.QTabWidget(0x1d936ec69a0) at 0x000001D936B6D880>
+    └ <core.app.ComfyToC4DApp(0x1d9341b2ab0) at 0x000001D935A374C0>
+
+AttributeError: 'PySide6.QtWidgets.QTabWidget' object has no attribute 'addWidget'

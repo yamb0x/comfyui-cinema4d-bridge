@@ -1,0 +1,9 @@
+2025-06-04 22:26:25.603 | INFO     | utils.logger:setup_logging:60 - Logging initialized. Log directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs
+2025-06-04 22:26:25.604 | INFO     | utils.logger:setup_logging:61 - Main log file: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs\comfy_to_c4d_20250604_222625.log
+2025-06-04 22:26:25.605 | INFO     | __main__:main:27 - Starting ComfyUI to Cinema4D Bridge Application
+2025-06-04 22:26:25.606 | INFO     | __main__:main:32 - Configuration loaded successfully
+2025-06-04 22:26:25.607 | INFO     | __main__:main:33 - Base directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d
+2025-06-04 22:26:25.607 | INFO     | __main__:main:34 - ComfyUI path: D:\Comfy3D_WinPortable
+2025-06-04 22:26:25.607 | INFO     | __main__:main:35 - Cinema4D path: C:\Program Files\Maxon Cinema 4D 2024
+2025-06-04 22:26:25.741 | ERROR    | __main__:main:78 - Failed to import main application: attempted relative import beyond top-level package
+2025-06-04 22:26:25.742 | INFO     | __main__:main:79 - Run debug.bat to see detailed import errors

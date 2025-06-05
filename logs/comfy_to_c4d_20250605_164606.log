@@ -1,0 +1,36 @@
+2025-06-05 16:46:06.294 | INFO     | utils.logger:setup_logging:60 - Logging initialized. Log directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs
+2025-06-05 16:46:06.294 | INFO     | utils.logger:setup_logging:61 - Main log file: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs\comfy_to_c4d_20250605_164606.log
+2025-06-05 16:46:06.294 | INFO     | __main__:main:27 - Starting ComfyUI to Cinema4D Bridge Application
+2025-06-05 16:46:07.023 | INFO     | core.app:_apply_styles:1320 - Applied black theme successfully
+2025-06-05 16:46:07.140 | INFO     | core.app:initialize:1372 - Initializing application...
+2025-06-05 16:46:07.140 | INFO     | ui.fonts:load_project_fonts:76 - Available font files: ['basis-grotesque-regular-pro.woff', 'basis-grotesque-regular.woff2', 'Kalice-Italic.woff', 'Kalice-Italic.woff2', 'Kalice-Regular.woff', 'Kalice-Regular.woff2']
+2025-06-05 16:46:07.141 | INFO     | ui.fonts:load_project_fonts:80 - Using CSS fallback fonts for typography
+2025-06-05 16:46:07.142 | INFO     | core.app:_setup_file_monitoring:1401 - Setting up file monitoring...
+2025-06-05 16:46:07.144 | INFO     | core.app:_setup_file_monitoring:1412 - Monitoring images directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\images
+2025-06-05 16:46:07.145 | INFO     | core.file_monitor:add_directory:122 - Added monitor for images: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\images
+2025-06-05 16:46:07.145 | INFO     | core.app:_setup_file_monitoring:1421 - Monitoring 3D models directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\3D\Hy3D
+2025-06-05 16:46:07.146 | INFO     | core.file_monitor:add_directory:122 - Added monitor for models: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\3D\Hy3D
+2025-06-05 16:46:07.149 | INFO     | core.file_monitor:start:146 - Started monitoring images
+2025-06-05 16:46:07.152 | INFO     | core.file_monitor:start:146 - Started monitoring models
+2025-06-05 16:46:07.152 | INFO     | core.app:_setup_file_monitoring:1430 - File monitoring started successfully
+2025-06-05 16:46:07.156 | INFO     | core.app:_setup_file_monitoring:1433 - Monitoring directory exists: True
+2025-06-05 16:46:07.159 | INFO     | core.app:_setup_file_monitoring:1436 - Found 56 existing images at startup
+2025-06-05 16:46:07.455 | INFO     | mcp.comfyui_client:connect:50 - Connected to ComfyUI at http://localhost:8188
+2025-06-05 16:46:07.456 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for progress
+2025-06-05 16:46:07.457 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for execution_complete
+2025-06-05 16:46:07.457 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for execution_error
+2025-06-05 16:46:08.706 | WARNING  | mcp.cinema4d_client:connect:66 - Cinema4D socket server not available. Please:
+2025-06-05 16:46:08.707 | WARNING  | mcp.cinema4d_client:connect:67 - 1. Start Cinema4D
+2025-06-05 16:46:08.708 | WARNING  | mcp.cinema4d_client:connect:68 - 2. Load c4d_mcp_server.py in Script Manager
+2025-06-05 16:46:08.708 | WARNING  | mcp.cinema4d_client:connect:69 - 3. Run the script to start socket server
+2025-06-05 16:46:09.942 | INFO     | core.app:_apply_styles:1320 - Applied black theme successfully
+2025-06-05 16:46:09.961 | INFO     | core.app:_load_image_to_grid:1906 - Loaded image 0017_ComfyUI.png into slot 1
+2025-06-05 16:46:09.968 | INFO     | core.app:_load_image_to_grid:1906 - Loaded image 0016_ComfyUI.png into slot 2
+2025-06-05 16:46:09.974 | INFO     | core.app:_load_image_to_grid:1906 - Loaded image 0015_ComfyUI.png into slot 3
+2025-06-05 16:46:09.981 | INFO     | core.app:_load_image_to_grid:1906 - Loaded image 0014_ComfyUI.png into slot 4
+2025-06-05 16:46:09.982 | INFO     | core.app:_load_existing_images:1957 - Loaded 4 existing images
+2025-06-05 16:46:09.982 | INFO     | core.app:initialize:1397 - Application initialized
+2025-06-05 16:47:43.416 | INFO     | core.app:_pick_image:601 - Selected image 0017_ComfyUI.png for 3D generation
+2025-06-05 16:47:44.546 | INFO     | core.app:_pick_image:607 - Deselected image 0017_ComfyUI.png
+2025-06-05 16:47:44.982 | INFO     | core.app:_pick_image:601 - Selected image 0017_ComfyUI.png for 3D generation
+2025-06-05 16:47:45.890 | INFO     | core.app:_pick_image:607 - Deselected image 0017_ComfyUI.png

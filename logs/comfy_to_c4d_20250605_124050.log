@@ -1,0 +1,40 @@
+2025-06-05 12:40:50.567 | INFO     | utils.logger:setup_logging:60 - Logging initialized. Log directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs
+2025-06-05 12:40:50.567 | INFO     | utils.logger:setup_logging:61 - Main log file: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs\comfy_to_c4d_20250605_124050.log
+2025-06-05 12:40:50.567 | INFO     | __main__:main:27 - Starting ComfyUI to Cinema4D Bridge Application
+2025-06-05 12:40:51.253 | INFO     | core.app:_apply_styles:1058 - Applied monospace theme successfully
+2025-06-05 12:40:51.331 | INFO     | core.app:initialize:1109 - Initializing application...
+2025-06-05 12:40:51.331 | INFO     | ui.fonts:load_project_fonts:76 - Available font files: ['basis-grotesque-regular-pro.woff', 'basis-grotesque-regular.woff2', 'Kalice-Italic.woff', 'Kalice-Italic.woff2', 'Kalice-Regular.woff', 'Kalice-Regular.woff2']
+2025-06-05 12:40:51.332 | INFO     | ui.fonts:load_project_fonts:80 - Using CSS fallback fonts for typography
+2025-06-05 12:40:51.333 | INFO     | core.app:_setup_file_monitoring:1138 - Setting up file monitoring...
+2025-06-05 12:40:51.334 | INFO     | core.app:_setup_file_monitoring:1149 - Monitoring images directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\images
+2025-06-05 12:40:51.335 | INFO     | core.file_monitor:add_directory:122 - Added monitor for images: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\images
+2025-06-05 12:40:51.336 | INFO     | core.app:_setup_file_monitoring:1158 - Monitoring 3D models directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\3D\Hy3D
+2025-06-05 12:40:51.336 | INFO     | core.file_monitor:add_directory:122 - Added monitor for models: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\3D\Hy3D
+2025-06-05 12:40:51.346 | INFO     | core.file_monitor:start:146 - Started monitoring images
+2025-06-05 12:40:51.347 | INFO     | core.file_monitor:start:146 - Started monitoring models
+2025-06-05 12:40:51.348 | INFO     | core.app:_setup_file_monitoring:1167 - File monitoring started successfully
+2025-06-05 12:40:51.633 | INFO     | mcp.comfyui_client:connect:50 - Connected to ComfyUI at http://localhost:8188
+2025-06-05 12:40:51.634 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for progress
+2025-06-05 12:40:51.634 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for execution_complete
+2025-06-05 12:40:51.635 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for execution_error
+2025-06-05 12:40:52.899 | WARNING  | mcp.cinema4d_client:connect:66 - Cinema4D socket server not available. Please:
+2025-06-05 12:40:52.900 | WARNING  | mcp.cinema4d_client:connect:67 - 1. Start Cinema4D
+2025-06-05 12:40:52.902 | WARNING  | mcp.cinema4d_client:connect:68 - 2. Load c4d_mcp_server.py in Script Manager
+2025-06-05 12:40:52.902 | WARNING  | mcp.cinema4d_client:connect:69 - 3. Run the script to start socket server
+2025-06-05 12:40:57.096 | INFO     | core.app:_load_image_to_grid:1617 - Loaded image ComfyUI_0004.png into slot 1
+2025-06-05 12:40:57.104 | INFO     | core.app:_load_image_to_grid:1617 - Loaded image ComfyUI_0003.png into slot 2
+2025-06-05 12:40:57.110 | INFO     | core.app:_load_image_to_grid:1617 - Loaded image ComfyUI_0002.png into slot 3
+2025-06-05 12:40:57.116 | INFO     | core.app:_load_image_to_grid:1617 - Loaded image ComfyUI_0001.png into slot 4
+2025-06-05 12:40:57.117 | INFO     | core.app:_load_existing_images:1668 - Loaded 4 existing images
+2025-06-05 12:40:57.117 | INFO     | core.app:initialize:1134 - Application initialized
+2025-06-05 12:40:59.151 | INFO     | core.workflow_manager:load_workflow:41 - Loaded workflow: generate_images_api.json
+2025-06-05 12:40:59.152 | DEBUG    | core.workflow_manager:_inject_params_api_format:298 - Injected positive prompt
+2025-06-05 12:40:59.152 | DEBUG    | core.workflow_manager:_inject_params_api_format:303 - Injected negative prompt
+2025-06-05 12:40:59.153 | DEBUG    | core.workflow_manager:_inject_params_api_format:313 - Injected dimensions/batch
+2025-06-05 12:40:59.153 | DEBUG    | core.workflow_manager:_inject_params_api_format:327 - Injected sampler params
+2025-06-05 12:40:59.154 | DEBUG    | core.workflow_manager:_inject_params_api_format:335 - Injected checkpoint: flux1-dev-fp8.safetensors
+2025-06-05 12:40:59.160 | DEBUG    | mcp.comfyui_client:queue_prompt:185 - Queuing prompt with 7 nodes
+2025-06-05 12:40:59.430 | INFO     | mcp.comfyui_client:queue_prompt:194 - Queued prompt: 553250d9-b58f-4ab3-9b6e-91b4836cc7c3
+2025-06-05 12:40:59.431 | INFO     | core.app:_on_generate_images:1314 - Queued image generation with batch size 4
+2025-06-05 12:46:09.628 | INFO     | core.file_monitor:stop:157 - Stopped monitoring images
+2025-06-05 12:46:09.629 | INFO     | core.file_monitor:stop:157 - Stopped monitoring models

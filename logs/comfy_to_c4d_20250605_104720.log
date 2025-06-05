@@ -1,0 +1,22 @@
+2025-06-05 10:47:20.111 | INFO     | utils.logger:setup_logging:60 - Logging initialized. Log directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs
+2025-06-05 10:47:20.112 | INFO     | utils.logger:setup_logging:61 - Main log file: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs\comfy_to_c4d_20250605_104720.log
+2025-06-05 10:47:20.112 | INFO     | __main__:main:27 - Starting ComfyUI to Cinema4D Bridge Application
+2025-06-05 10:47:20.760 | INFO     | core.app:_apply_styles:1058 - Applied monospace theme successfully
+2025-06-05 10:47:20.852 | INFO     | core.app:initialize:1105 - Initializing application...
+2025-06-05 10:47:20.853 | INFO     | ui.fonts:load_project_fonts:76 - Available font files: ['basis-grotesque-regular-pro.woff', 'basis-grotesque-regular.woff2', 'Kalice-Italic.woff', 'Kalice-Italic.woff2', 'Kalice-Regular.woff', 'Kalice-Regular.woff2']
+2025-06-05 10:47:20.853 | INFO     | ui.fonts:load_project_fonts:80 - Using CSS fallback fonts for typography
+2025-06-05 10:47:20.855 | INFO     | core.file_monitor:add_directory:84 - Added monitor for images: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\images
+2025-06-05 10:47:20.856 | INFO     | core.file_monitor:add_directory:84 - Added monitor for models: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\3D\Hy3D
+2025-06-05 10:47:20.857 | INFO     | core.file_monitor:start:108 - Started monitoring images
+2025-06-05 10:47:20.858 | INFO     | core.file_monitor:start:108 - Started monitoring models
+2025-06-05 10:47:23.156 | ERROR    | mcp.comfyui_client:connect:62 - Connection failed: All connection attempts failed
+2025-06-05 10:47:25.751 | WARNING  | mcp.cinema4d_client:connect:66 - Cinema4D socket server not available. Please:
+2025-06-05 10:47:25.753 | WARNING  | mcp.cinema4d_client:connect:67 - 1. Start Cinema4D
+2025-06-05 10:47:25.754 | WARNING  | mcp.cinema4d_client:connect:68 - 2. Load c4d_mcp_server.py in Script Manager
+2025-06-05 10:47:25.755 | WARNING  | mcp.cinema4d_client:connect:69 - 3. Run the script to start socket server
+2025-06-05 10:47:27.170 | INFO     | core.app:_load_image_to_grid:1581 - Loaded image ComfyUI_0001.png into slot 1
+2025-06-05 10:47:27.171 | INFO     | core.app:_load_existing_images:1632 - Loaded 1 existing images
+2025-06-05 10:47:27.171 | INFO     | core.app:initialize:1130 - Application initialized
+2025-06-05 10:47:45.934 | INFO     | core.file_monitor:stop:119 - Stopped monitoring images
+2025-06-05 10:47:45.935 | INFO     | core.file_monitor:stop:119 - Stopped monitoring models
+2025-06-05 10:47:45.950 | INFO     | mcp.comfyui_client:disconnect:80 - Disconnected from ComfyUI

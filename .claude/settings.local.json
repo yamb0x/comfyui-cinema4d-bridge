@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(python:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(./venv/Scripts/python.exe main.py)",
+      "Bash(grep:*)",
+      "Bash(mv:*)",
+      "Bash(sed:*)",
+      "Bash(find:*)",
+      "Bash(\"./venv/bin/python\" --version)",
+      "Bash(rm:*)",
+      "Bash(./venv/Scripts/python:*)",
+      "Bash(venv/Scripts/python.exe verify_sampler_injection.py:*)",
+      "Bash(venv/Scripts/python.exe:*)",
+      "Bash(git add:*)",
+      "Bash(git init:*)"
+    ],
+    "deny": []
+  }
+}

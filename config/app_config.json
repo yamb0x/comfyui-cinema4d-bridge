@@ -1,0 +1,52 @@
+{
+  "paths": {
+    "comfyui_path": "D:\\Comfy3D_WinPortable",
+    "cinema4d_path": "C:\\Program Files\\Maxon Cinema 4D 2024"
+  },
+  "workflows": {
+    "image_workflow": "generate_images.json",
+    "model_3d_workflow": "generate_3D.json",
+    "default_image_params": {
+      "resolution": [
+        1024,
+        1024
+      ],
+      "sampling_steps": 20,
+      "cfg_scale": 7.0,
+      "sampler": "euler",
+      "scheduler": "normal"
+    },
+    "default_3d_params": {
+      "mesh_density": "high",
+      "texture_resolution": 2048,
+      "normal_map": true,
+      "optimization": "balanced"
+    }
+  },
+  "mcp": {
+    "comfyui_server_url": "http://127.0.0.1:8188",
+    "comfyui_websocket_url": "ws://127.0.0.1:8188/ws",
+    "cinema4d_port": 54321,
+    "connection_timeout": 30,
+    "retry_attempts": 3,
+    "retry_delay": 1.0
+  },
+  "ui": {
+    "theme": "dark",
+    "window_size": [
+      1400,
+      900
+    ],
+    "console_max_lines": 1000,
+    "preview_thumbnail_size": 256,
+    "grid_columns": 4,
+    "enable_3d_preview": true
+  },
+  "base_dir": "D:\\Yambo Studio Dropbox\\Admin\\_studio-dashboard-app-dev\\comfy-to-c4d",
+  "workflows_dir": "D:\\Yambo Studio Dropbox\\Admin\\_studio-dashboard-app-dev\\comfy-to-c4d\\workflows",
+  "images_dir": "D:\\Yambo Studio Dropbox\\Admin\\_studio-dashboard-app-dev\\comfy-to-c4d\\images",
+  "models_3d_dir": "D:\\Yambo Studio Dropbox\\Admin\\_studio-dashboard-app-dev\\comfy-to-c4d\\3D\\Hy3D",
+  "config_dir": "D:\\Yambo Studio Dropbox\\Admin\\_studio-dashboard-app-dev\\comfy-to-c4d\\config",
+  "recent_projects": [],
+  "max_recent_projects": 10
+}

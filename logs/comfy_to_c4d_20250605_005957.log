@@ -1,0 +1,18 @@
+2025-06-05 00:59:57.278 | INFO     | utils.logger:setup_logging:60 - Logging initialized. Log directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs
+2025-06-05 00:59:57.278 | INFO     | utils.logger:setup_logging:61 - Main log file: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs\comfy_to_c4d_20250605_005957.log
+2025-06-05 00:59:57.278 | INFO     | __main__:main:27 - Starting ComfyUI to Cinema4D Bridge Application
+2025-06-05 00:59:57.967 | INFO     | core.app:initialize:670 - Initializing application...
+2025-06-05 00:59:57.969 | ERROR    | ui.fonts:load_font:26 - Failed to load font: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\fonts\Kalice-Regular.woff2
+2025-06-05 00:59:57.969 | ERROR    | ui.fonts:load_font:26 - Failed to load font: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\fonts\Kalice-Regular.woff
+2025-06-05 00:59:57.970 | ERROR    | ui.fonts:load_font:26 - Failed to load font: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\fonts\basis-grotesque-regular.woff2
+2025-06-05 00:59:57.970 | ERROR    | ui.fonts:load_font:26 - Failed to load font: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\fonts\basis-grotesque-regular-pro.woff
+2025-06-05 00:59:57.972 | INFO     | core.file_monitor:add_directory:84 - Added monitor for images: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\images
+2025-06-05 00:59:57.974 | INFO     | core.file_monitor:add_directory:84 - Added monitor for models: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\3D\Hy3D
+2025-06-05 00:59:57.975 | INFO     | core.file_monitor:start:108 - Started monitoring images
+2025-06-05 00:59:57.976 | INFO     | core.file_monitor:start:108 - Started monitoring models
+2025-06-05 00:59:58.280 | INFO     | mcp.comfyui_client:connect:50 - Connected to ComfyUI at http://localhost:8188
+2025-06-05 00:59:58.280 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for progress
+2025-06-05 00:59:58.281 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for execution_complete
+2025-06-05 00:59:58.281 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for execution_error
+2025-06-05 00:59:58.515 | INFO     | mcp.cinema4d_client:connect:63 - Connected to Cinema4D socket server
+2025-06-05 00:59:58.515 | INFO     | core.app:initialize:691 - Application initialized

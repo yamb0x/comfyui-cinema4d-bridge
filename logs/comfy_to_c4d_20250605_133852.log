@@ -1,0 +1,152 @@
+2025-06-05 13:38:52.904 | INFO     | utils.logger:setup_logging:60 - Logging initialized. Log directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs
+2025-06-05 13:38:52.904 | INFO     | utils.logger:setup_logging:61 - Main log file: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs\comfy_to_c4d_20250605_133852.log
+2025-06-05 13:38:52.905 | INFO     | __main__:main:27 - Starting ComfyUI to Cinema4D Bridge Application
+2025-06-05 13:38:53.572 | INFO     | core.app:_apply_styles:1092 - Applied monospace theme successfully
+2025-06-05 13:38:53.648 | INFO     | core.app:initialize:1144 - Initializing application...
+2025-06-05 13:38:53.649 | INFO     | ui.fonts:load_project_fonts:76 - Available font files: ['basis-grotesque-regular-pro.woff', 'basis-grotesque-regular.woff2', 'Kalice-Italic.woff', 'Kalice-Italic.woff2', 'Kalice-Regular.woff', 'Kalice-Regular.woff2']
+2025-06-05 13:38:53.649 | INFO     | ui.fonts:load_project_fonts:80 - Using CSS fallback fonts for typography
+2025-06-05 13:38:53.651 | INFO     | core.app:_setup_file_monitoring:1173 - Setting up file monitoring...
+2025-06-05 13:38:53.652 | INFO     | core.app:_setup_file_monitoring:1184 - Monitoring images directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\images
+2025-06-05 13:38:53.652 | INFO     | core.file_monitor:add_directory:122 - Added monitor for images: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\images
+2025-06-05 13:38:53.653 | INFO     | core.app:_setup_file_monitoring:1193 - Monitoring 3D models directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\3D\Hy3D
+2025-06-05 13:38:53.653 | INFO     | core.file_monitor:add_directory:122 - Added monitor for models: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\3D\Hy3D
+2025-06-05 13:38:53.659 | INFO     | core.file_monitor:start:146 - Started monitoring images
+2025-06-05 13:38:53.661 | INFO     | core.file_monitor:start:146 - Started monitoring models
+2025-06-05 13:38:53.662 | INFO     | core.app:_setup_file_monitoring:1202 - File monitoring started successfully
+2025-06-05 13:38:53.662 | INFO     | core.app:_setup_file_monitoring:1205 - Monitoring directory exists: True
+2025-06-05 13:38:53.663 | INFO     | core.app:_setup_file_monitoring:1208 - Found 33 existing images at startup
+2025-06-05 13:38:53.949 | INFO     | mcp.comfyui_client:connect:50 - Connected to ComfyUI at http://localhost:8188
+2025-06-05 13:38:53.950 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for progress
+2025-06-05 13:38:53.951 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for execution_complete
+2025-06-05 13:38:53.951 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for execution_error
+2025-06-05 13:38:55.166 | WARNING  | mcp.cinema4d_client:connect:66 - Cinema4D socket server not available. Please:
+2025-06-05 13:38:55.167 | WARNING  | mcp.cinema4d_client:connect:67 - 1. Start Cinema4D
+2025-06-05 13:38:55.168 | WARNING  | mcp.cinema4d_client:connect:68 - 2. Load c4d_mcp_server.py in Script Manager
+2025-06-05 13:38:55.168 | WARNING  | mcp.cinema4d_client:connect:69 - 3. Run the script to start socket server
+2025-06-05 13:38:56.489 | INFO     | core.app:_load_image_to_grid:1671 - Loaded image ComfyUI_0033.png into slot 1
+2025-06-05 13:38:56.496 | INFO     | core.app:_load_image_to_grid:1671 - Loaded image ComfyUI_0032.png into slot 2
+2025-06-05 13:38:56.503 | INFO     | core.app:_load_image_to_grid:1671 - Loaded image ComfyUI_0031.png into slot 3
+2025-06-05 13:38:56.510 | INFO     | core.app:_load_image_to_grid:1671 - Loaded image ComfyUI_0030.png into slot 4
+2025-06-05 13:38:56.510 | INFO     | core.app:_load_existing_images:1722 - Loaded 4 existing images
+2025-06-05 13:38:56.511 | INFO     | core.app:initialize:1169 - Application initialized
+2025-06-05 13:38:59.621 | INFO     | core.app:_on_generate_images:1314 - UI Parameters - CFG: 1.0, Sampler: euler, Scheduler: simple, Steps: 20, Seed Control: increment
+2025-06-05 13:38:59.622 | INFO     | core.workflow_manager:load_workflow:41 - Loaded workflow: generate_images_api.json
+2025-06-05 13:38:59.623 | INFO     | core.workflow_manager:_inject_params_ui_format:439 - Injected dimensions/batch into node 8: [512, 512, 1]
+2025-06-05 13:38:59.623 | INFO     | core.workflow_manager:_inject_params_ui_format:418 - Injected positive prompt into node 12
+2025-06-05 13:38:59.623 | INFO     | core.workflow_manager:_inject_params_ui_format:426 - Injected negative prompt into node 13
+2025-06-05 13:38:59.624 | INFO     | core.workflow_manager:_inject_params_ui_format:472 - Injected checkpoint into node 5: flux1-dev-fp8.safetensors
+2025-06-05 13:38:59.624 | INFO     | core.workflow_manager:_inject_lora_ui_format:504 - Injected lora2: aidmaFLUXpro1.1-FLUX-V0.1.safetensors @ 0.6
+2025-06-05 13:38:59.624 | INFO     | core.workflow_manager:_inject_params_ui_format:461 - Injected KSampler params into node 10
+2025-06-05 13:38:59.625 | INFO     | core.workflow_manager:_inject_lora_ui_format:504 - Injected lora1: deep_sea_creatures_cts.safetensors @ 0.8
+2025-06-05 13:38:59.625 | DEBUG    | core.workflow_manager:_convert_ui_to_api_format:221 - Skipping Note node 1 in API conversion
+2025-06-05 13:38:59.626 | DEBUG    | core.workflow_manager:_convert_ui_to_api_format:310 - Converted UI workflow to API format with 9 nodes
+2025-06-05 13:38:59.626 | INFO     | core.workflow_manager:inject_parameters_comfyui:108 - Converted UI workflow to API format with 9 nodes
+2025-06-05 13:38:59.630 | DEBUG    | mcp.comfyui_client:queue_prompt:185 - Queuing prompt with 9 nodes
+2025-06-05 13:38:59.890 | INFO     | mcp.comfyui_client:queue_prompt:194 - Queued prompt: 4fc8e467-95f9-4607-bdc2-4f626945dccb
+2025-06-05 13:38:59.891 | INFO     | core.app:_on_generate_images:1364 - Queued image generation with batch size 1
+2025-06-05 13:39:04.892 | INFO     | core.app:_check_for_new_images:1765 - Manual check: Found 34 total images, 1 recent
+2025-06-05 13:39:04.893 | INFO     | core.app:_check_for_new_images:1768 - Recent images: ['0001_ComfyUI.png']
+2025-06-05 13:39:04.894 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0001_ComfyUI.png
+2025-06-05 13:39:04.901 | INFO     | core.app:_load_image_to_grid:1671 - Loaded image 0001_ComfyUI.png into slot 1
+2025-06-05 13:39:04.902 | INFO     | core.app:_check_for_new_images:1778 - Loaded 1 new images into grid
+2025-06-05 13:39:14.887 | INFO     | core.app:_check_for_new_images:1765 - Manual check: Found 34 total images, 1 recent
+2025-06-05 13:39:14.888 | INFO     | core.app:_check_for_new_images:1768 - Recent images: ['0001_ComfyUI.png']
+2025-06-05 13:39:14.889 | DEBUG    | core.app:_check_for_new_images:1777 - Image already loaded: 0001_ComfyUI.png
+2025-06-05 13:39:14.890 | INFO     | core.app:_check_for_new_images:1778 - Loaded 0 new images into grid
+2025-06-05 13:39:22.870 | INFO     | core.app:_on_generate_images:1314 - UI Parameters - CFG: 1.0, Sampler: euler, Scheduler: simple, Steps: 20, Seed Control: increment
+2025-06-05 13:39:22.871 | INFO     | core.workflow_manager:load_workflow:41 - Loaded workflow: generate_images_api.json
+2025-06-05 13:39:22.872 | INFO     | core.workflow_manager:_inject_params_ui_format:439 - Injected dimensions/batch into node 8: [512, 512, 1]
+2025-06-05 13:39:22.873 | INFO     | core.workflow_manager:_inject_params_ui_format:418 - Injected positive prompt into node 12
+2025-06-05 13:39:22.873 | INFO     | core.workflow_manager:_inject_params_ui_format:426 - Injected negative prompt into node 13
+2025-06-05 13:39:22.873 | INFO     | core.workflow_manager:_inject_params_ui_format:472 - Injected checkpoint into node 5: flux1-dev-fp8.safetensors
+2025-06-05 13:39:22.874 | INFO     | core.workflow_manager:_inject_lora_ui_format:504 - Injected lora2: aidmaFLUXpro1.1-FLUX-V0.1.safetensors @ 0.6
+2025-06-05 13:39:22.874 | INFO     | core.workflow_manager:_inject_params_ui_format:461 - Injected KSampler params into node 10
+2025-06-05 13:39:22.875 | INFO     | core.workflow_manager:_inject_lora_ui_format:504 - Injected lora1: deep_sea_creatures_cts.safetensors @ 0.8
+2025-06-05 13:39:22.875 | DEBUG    | core.workflow_manager:_convert_ui_to_api_format:221 - Skipping Note node 1 in API conversion
+2025-06-05 13:39:22.876 | DEBUG    | core.workflow_manager:_convert_ui_to_api_format:310 - Converted UI workflow to API format with 9 nodes
+2025-06-05 13:39:22.876 | INFO     | core.workflow_manager:inject_parameters_comfyui:108 - Converted UI workflow to API format with 9 nodes
+2025-06-05 13:39:22.878 | DEBUG    | mcp.comfyui_client:queue_prompt:185 - Queuing prompt with 9 nodes
+2025-06-05 13:39:23.134 | INFO     | mcp.comfyui_client:queue_prompt:194 - Queued prompt: 6b0c690b-2d55-421e-a60c-2a4438d5961e
+2025-06-05 13:39:23.135 | INFO     | core.app:_on_generate_images:1364 - Queued image generation with batch size 1
+2025-06-05 13:39:28.147 | INFO     | core.app:_check_for_new_images:1765 - Manual check: Found 35 total images, 2 recent
+2025-06-05 13:39:28.148 | INFO     | core.app:_check_for_new_images:1768 - Recent images: ['0001_ComfyUI.png', '0002_ComfyUI.png']
+2025-06-05 13:39:28.150 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0001_ComfyUI.png
+2025-06-05 13:39:28.159 | INFO     | core.app:_load_image_to_grid:1671 - Loaded image 0001_ComfyUI.png into slot 1
+2025-06-05 13:39:28.161 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0002_ComfyUI.png
+2025-06-05 13:39:28.162 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for 0002_ComfyUI.png - all 1 slots full
+2025-06-05 13:39:28.163 | INFO     | core.app:_check_for_new_images:1778 - Loaded 2 new images into grid
+2025-06-05 13:39:32.461 | INFO     | core.app:_on_generate_images:1314 - UI Parameters - CFG: 1.0, Sampler: euler, Scheduler: simple, Steps: 20, Seed Control: increment
+2025-06-05 13:39:32.462 | INFO     | core.workflow_manager:load_workflow:41 - Loaded workflow: generate_images_api.json
+2025-06-05 13:39:32.463 | INFO     | core.workflow_manager:_inject_params_ui_format:439 - Injected dimensions/batch into node 8: [512, 512, 1]
+2025-06-05 13:39:32.464 | INFO     | core.workflow_manager:_inject_params_ui_format:418 - Injected positive prompt into node 12
+2025-06-05 13:39:32.464 | INFO     | core.workflow_manager:_inject_params_ui_format:426 - Injected negative prompt into node 13
+2025-06-05 13:39:32.465 | INFO     | core.workflow_manager:_inject_params_ui_format:472 - Injected checkpoint into node 5: flux1-dev-fp8.safetensors
+2025-06-05 13:39:32.465 | INFO     | core.workflow_manager:_inject_lora_ui_format:504 - Injected lora2: aidmaFLUXpro1.1-FLUX-V0.1.safetensors @ 0.6
+2025-06-05 13:39:32.466 | INFO     | core.workflow_manager:_inject_params_ui_format:461 - Injected KSampler params into node 10
+2025-06-05 13:39:32.466 | INFO     | core.workflow_manager:_inject_lora_ui_format:504 - Injected lora1: deep_sea_creatures_cts.safetensors @ 0.8
+2025-06-05 13:39:32.467 | DEBUG    | core.workflow_manager:_convert_ui_to_api_format:221 - Skipping Note node 1 in API conversion
+2025-06-05 13:39:32.468 | DEBUG    | core.workflow_manager:_convert_ui_to_api_format:310 - Converted UI workflow to API format with 9 nodes
+2025-06-05 13:39:32.469 | INFO     | core.workflow_manager:inject_parameters_comfyui:108 - Converted UI workflow to API format with 9 nodes
+2025-06-05 13:39:32.470 | DEBUG    | mcp.comfyui_client:queue_prompt:185 - Queuing prompt with 9 nodes
+2025-06-05 13:39:32.729 | INFO     | mcp.comfyui_client:queue_prompt:194 - Queued prompt: 11d78f99-325c-45e3-a497-7351e25d968b
+2025-06-05 13:39:32.730 | INFO     | core.app:_on_generate_images:1364 - Queued image generation with batch size 1
+2025-06-05 13:39:34.898 | INFO     | core.app:_check_for_new_images:1765 - Manual check: Found 35 total images, 2 recent
+2025-06-05 13:39:34.899 | INFO     | core.app:_check_for_new_images:1768 - Recent images: ['0001_ComfyUI.png', '0002_ComfyUI.png']
+2025-06-05 13:39:34.899 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0001_ComfyUI.png
+2025-06-05 13:39:34.907 | INFO     | core.app:_load_image_to_grid:1671 - Loaded image 0001_ComfyUI.png into slot 1
+2025-06-05 13:39:34.908 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0002_ComfyUI.png
+2025-06-05 13:39:34.908 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for 0002_ComfyUI.png - all 1 slots full
+2025-06-05 13:39:34.909 | INFO     | core.app:_check_for_new_images:1778 - Loaded 2 new images into grid
+2025-06-05 13:39:37.729 | INFO     | core.app:_check_for_new_images:1765 - Manual check: Found 36 total images, 3 recent
+2025-06-05 13:39:37.730 | INFO     | core.app:_check_for_new_images:1768 - Recent images: ['0001_ComfyUI.png', '0002_ComfyUI.png', '0003_ComfyUI.png']
+2025-06-05 13:39:37.731 | DEBUG    | core.app:_check_for_new_images:1777 - Image already loaded: 0001_ComfyUI.png
+2025-06-05 13:39:37.732 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0002_ComfyUI.png
+2025-06-05 13:39:37.732 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for 0002_ComfyUI.png - all 1 slots full
+2025-06-05 13:39:37.733 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0003_ComfyUI.png
+2025-06-05 13:39:37.733 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for 0003_ComfyUI.png - all 1 slots full
+2025-06-05 13:39:37.733 | INFO     | core.app:_check_for_new_images:1778 - Loaded 2 new images into grid
+2025-06-05 13:39:38.138 | INFO     | core.app:_check_for_new_images:1765 - Manual check: Found 36 total images, 3 recent
+2025-06-05 13:39:38.139 | INFO     | core.app:_check_for_new_images:1768 - Recent images: ['0001_ComfyUI.png', '0002_ComfyUI.png', '0003_ComfyUI.png']
+2025-06-05 13:39:38.139 | DEBUG    | core.app:_check_for_new_images:1777 - Image already loaded: 0001_ComfyUI.png
+2025-06-05 13:39:38.140 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0002_ComfyUI.png
+2025-06-05 13:39:38.140 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for 0002_ComfyUI.png - all 1 slots full
+2025-06-05 13:39:38.141 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0003_ComfyUI.png
+2025-06-05 13:39:38.141 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for 0003_ComfyUI.png - all 1 slots full
+2025-06-05 13:39:38.141 | INFO     | core.app:_check_for_new_images:1778 - Loaded 2 new images into grid
+2025-06-05 13:39:47.741 | INFO     | core.app:_check_for_new_images:1765 - Manual check: Found 36 total images, 3 recent
+2025-06-05 13:39:47.742 | INFO     | core.app:_check_for_new_images:1768 - Recent images: ['0001_ComfyUI.png', '0002_ComfyUI.png', '0003_ComfyUI.png']
+2025-06-05 13:39:47.743 | DEBUG    | core.app:_check_for_new_images:1777 - Image already loaded: 0001_ComfyUI.png
+2025-06-05 13:39:47.744 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0002_ComfyUI.png
+2025-06-05 13:39:47.745 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for 0002_ComfyUI.png - all 1 slots full
+2025-06-05 13:39:47.745 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0003_ComfyUI.png
+2025-06-05 13:39:47.746 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for 0003_ComfyUI.png - all 1 slots full
+2025-06-05 13:39:47.746 | INFO     | core.app:_check_for_new_images:1778 - Loaded 2 new images into grid
+2025-06-05 13:39:58.140 | INFO     | core.app:_check_for_new_images:1765 - Manual check: Found 37 total images, 4 recent
+2025-06-05 13:39:58.141 | INFO     | core.app:_check_for_new_images:1768 - Recent images: ['0001_ComfyUI.png', '0002_ComfyUI.png', '0003_ComfyUI.png', 'ComfyUI_0034.png']
+2025-06-05 13:39:58.142 | DEBUG    | core.app:_check_for_new_images:1777 - Image already loaded: 0001_ComfyUI.png
+2025-06-05 13:39:58.142 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0002_ComfyUI.png
+2025-06-05 13:39:58.143 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for 0002_ComfyUI.png - all 1 slots full
+2025-06-05 13:39:58.143 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0003_ComfyUI.png
+2025-06-05 13:39:58.144 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for 0003_ComfyUI.png - all 1 slots full
+2025-06-05 13:39:58.144 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: ComfyUI_0034.png
+2025-06-05 13:39:58.145 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for ComfyUI_0034.png - all 1 slots full
+2025-06-05 13:39:58.145 | INFO     | core.app:_check_for_new_images:1778 - Loaded 3 new images into grid
+2025-06-05 13:39:59.199 | INFO     | core.app:_check_for_new_images:1765 - Manual check: Found 37 total images, 4 recent
+2025-06-05 13:39:59.200 | INFO     | core.app:_check_for_new_images:1768 - Recent images: ['0001_ComfyUI.png', '0002_ComfyUI.png', '0003_ComfyUI.png', 'ComfyUI_0034.png']
+2025-06-05 13:39:59.201 | DEBUG    | core.app:_check_for_new_images:1777 - Image already loaded: 0001_ComfyUI.png
+2025-06-05 13:39:59.201 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0002_ComfyUI.png
+2025-06-05 13:39:59.202 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for 0002_ComfyUI.png - all 1 slots full
+2025-06-05 13:39:59.202 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0003_ComfyUI.png
+2025-06-05 13:39:59.203 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for 0003_ComfyUI.png - all 1 slots full
+2025-06-05 13:39:59.203 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: ComfyUI_0034.png
+2025-06-05 13:39:59.204 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for ComfyUI_0034.png - all 1 slots full
+2025-06-05 13:39:59.204 | INFO     | core.app:_check_for_new_images:1778 - Loaded 3 new images into grid
+2025-06-05 13:40:07.735 | INFO     | core.app:_check_for_new_images:1765 - Manual check: Found 37 total images, 3 recent
+2025-06-05 13:40:07.736 | INFO     | core.app:_check_for_new_images:1768 - Recent images: ['0002_ComfyUI.png', '0003_ComfyUI.png', 'ComfyUI_0034.png']
+2025-06-05 13:40:07.737 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0002_ComfyUI.png
+2025-06-05 13:40:07.738 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for 0002_ComfyUI.png - all 1 slots full
+2025-06-05 13:40:07.738 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: 0003_ComfyUI.png
+2025-06-05 13:40:07.739 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for 0003_ComfyUI.png - all 1 slots full
+2025-06-05 13:40:07.740 | INFO     | core.app:_check_for_new_images:1773 - Loading new image: ComfyUI_0034.png
+2025-06-05 13:40:07.741 | WARNING  | core.app:_load_image_to_grid:1625 - No available image slots for ComfyUI_0034.png - all 1 slots full
+2025-06-05 13:40:07.742 | INFO     | core.app:_check_for_new_images:1778 - Loaded 3 new images into grid

@@ -1,0 +1,27 @@
+2025-06-05 00:42:34.690 | INFO     | utils.logger:setup_logging:60 - Logging initialized. Log directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs
+2025-06-05 00:42:34.691 | INFO     | utils.logger:setup_logging:61 - Main log file: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs\comfy_to_c4d_20250605_004234.log
+2025-06-05 00:42:34.691 | INFO     | __main__:main:27 - Starting ComfyUI to Cinema4D Bridge Application
+2025-06-05 00:42:34.693 | INFO     | core.config:load:141 - Configuration loaded from D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\config\app_config.json
+2025-06-05 00:42:34.693 | DEBUG    | core.config:ensure_directories:111 - Ensured directory exists: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d
+2025-06-05 00:42:34.698 | DEBUG    | core.config:ensure_directories:111 - Ensured directory exists: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\workflows
+2025-06-05 00:42:34.698 | DEBUG    | core.config:ensure_directories:111 - Ensured directory exists: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\images
+2025-06-05 00:42:34.698 | DEBUG    | core.config:ensure_directories:111 - Ensured directory exists: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\3D\Hy3D
+2025-06-05 00:42:34.698 | DEBUG    | core.config:ensure_directories:111 - Ensured directory exists: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\config
+2025-06-05 00:42:34.698 | DEBUG    | core.config:ensure_directories:111 - Ensured directory exists: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src
+2025-06-05 00:42:34.699 | DEBUG    | core.config:ensure_directories:111 - Ensured directory exists: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\ui
+2025-06-05 00:42:34.699 | INFO     | core.config:save:129 - Configuration saved to D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\config\app_config.json
+2025-06-05 00:42:35.384 | INFO     | core.app:initialize:651 - Initializing application...
+2025-06-05 00:42:35.386 | INFO     | core.file_monitor:add_directory:84 - Added monitor for images: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\images
+2025-06-05 00:42:35.388 | INFO     | core.file_monitor:add_directory:84 - Added monitor for models: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\3D\Hy3D
+2025-06-05 00:42:35.389 | INFO     | core.file_monitor:start:108 - Started monitoring images
+2025-06-05 00:42:35.390 | INFO     | core.file_monitor:start:108 - Started monitoring models
+2025-06-05 00:42:35.431 | INFO     | mcp.comfyui_client:connect:50 - Connected to ComfyUI at http://127.0.0.1:8188
+2025-06-05 00:42:35.432 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for progress
+2025-06-05 00:42:35.433 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for execution_complete
+2025-06-05 00:42:35.433 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for execution_error
+2025-06-05 00:42:35.758 | INFO     | mcp.comfyui_client:_websocket_handler:90 - WebSocket connected to ComfyUI
+2025-06-05 00:42:35.779 | INFO     | mcp.cinema4d_client:connect:63 - Connected to Cinema4D socket server
+2025-06-05 00:42:35.780 | INFO     | core.app:initialize:668 - Application initialized
+2025-06-05 00:42:43.325 | INFO     | core.file_monitor:stop:119 - Stopped monitoring images
+2025-06-05 00:42:43.326 | INFO     | core.file_monitor:stop:119 - Stopped monitoring models
+2025-06-05 00:42:43.327 | INFO     | core.config:save:129 - Configuration saved to D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\config\app_config.json

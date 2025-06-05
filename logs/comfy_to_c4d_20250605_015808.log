@@ -1,0 +1,17 @@
+2025-06-05 01:58:08.819 | INFO     | utils.logger:setup_logging:60 - Logging initialized. Log directory: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs
+2025-06-05 01:58:08.820 | INFO     | utils.logger:setup_logging:61 - Main log file: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\logs\comfy_to_c4d_20250605_015808.log
+2025-06-05 01:58:08.820 | INFO     | __main__:main:27 - Starting ComfyUI to Cinema4D Bridge Application
+2025-06-05 01:58:09.486 | INFO     | core.app:_apply_styles:942 - Applied monospace theme successfully
+2025-06-05 01:58:09.576 | INFO     | core.app:initialize:989 - Initializing application...
+2025-06-05 01:58:09.581 | INFO     | ui.fonts:load_project_fonts:76 - Available font files: ['basis-grotesque-regular-pro.woff', 'basis-grotesque-regular.woff2', 'Kalice-Italic.woff', 'Kalice-Italic.woff2', 'Kalice-Regular.woff', 'Kalice-Regular.woff2']
+2025-06-05 01:58:09.581 | INFO     | ui.fonts:load_project_fonts:80 - Using CSS fallback fonts for typography
+2025-06-05 01:58:09.583 | INFO     | core.file_monitor:add_directory:84 - Added monitor for images: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\images
+2025-06-05 01:58:09.585 | INFO     | core.file_monitor:add_directory:84 - Added monitor for models: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\3D\Hy3D
+2025-06-05 01:58:09.586 | INFO     | core.file_monitor:start:108 - Started monitoring images
+2025-06-05 01:58:09.587 | INFO     | core.file_monitor:start:108 - Started monitoring models
+2025-06-05 01:58:09.895 | INFO     | mcp.comfyui_client:connect:50 - Connected to ComfyUI at http://localhost:8188
+2025-06-05 01:58:09.895 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for progress
+2025-06-05 01:58:09.896 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for execution_complete
+2025-06-05 01:58:09.896 | DEBUG    | mcp.comfyui_client:on:158 - Registered callback for execution_error
+2025-06-05 01:58:10.089 | INFO     | mcp.cinema4d_client:connect:63 - Connected to Cinema4D socket server
+2025-06-05 01:58:10.090 | INFO     | core.app:initialize:1010 - Application initialized
