@@ -61,7 +61,18 @@
       "Bash(venv/Scripts/activate:*)",
       "Bash(awk:*)",
       "Bash(git --version)",
-      "Bash(ssh:*)"
+      "Bash(ssh:*)",
+      "Bash(gh:*)",
+      "Bash(curl:*)",
+      "Bash(tar:*)",
+      "Bash(./gh-cli-temp/gh_2.74.1_linux_amd64/bin/gh --version)",
+      "Bash(./gh-cli-temp/gh_2.74.1_linux_amd64/bin/gh auth login)",
+      "Bash(./gh-cli-temp/gh_2.74.1_linux_amd64/bin/gh auth status)",
+      "Bash(./gh-cli-temp/gh_2.74.1_linux_amd64/bin/gh auth login --web)",
+      "Bash(./gh-cli-temp/gh_2.74.1_linux_amd64/bin/gh repo create comfyui-cinema4d-bridge --public --description \"AI-powered creative pipeline bridging ComfyUI's generative capabilities with Cinema4D's professional 3D workflow\")",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   }

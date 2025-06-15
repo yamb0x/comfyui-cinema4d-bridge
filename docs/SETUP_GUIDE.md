@@ -39,7 +39,7 @@
 ### 1. Clone the Repository
 ```bash
 cd "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev"
-git clone [repository-url] comfy-to-c4d
+git clone https://github.com/yamb0x/comfyui-cinema4d-bridge.git comfy-to-c4d
 cd comfy-to-c4d
 ```
 

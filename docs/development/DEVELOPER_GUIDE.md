@@ -19,7 +19,7 @@
 ### **Quick Setup**
 ```bash
 # 1. Clone repository
-git clone [repository-url]
+git clone https://github.com/yamb0x/comfyui-cinema4d-bridge.git
 cd comfy-to-c4d
 
 # 2. Create virtual environment
