@@ -1,0 +1,580 @@
+{
+  "primitives": {
+    "cube": {
+      "name": "Cube",
+      "constant": "c4d.Ocube",
+      "keywords": [
+        "cube",
+        "box",
+        "square",
+        "block"
+      ],
+      "description": "Creates a cube primitive",
+      "parameters": {
+        "size_x": 200,
+        "size_y": 200,
+        "size_z": 200,
+        "segments": 1,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "sphere": {
+      "name": "Sphere",
+      "constant": "c4d.Osphere",
+      "keywords": [
+        "sphere",
+        "ball",
+        "orb",
+        "globe"
+      ],
+      "description": "Creates a sphere primitive",
+      "parameters": {
+        "radius": 100,
+        "segments": 24,
+        "type": 0,
+        "render_perfect": true,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "cylinder": {
+      "name": "Cylinder",
+      "constant": "c4d.Ocylinder",
+      "keywords": [
+        "cylinder",
+        "tube",
+        "pipe",
+        "rod"
+      ],
+      "description": "Creates a cylinder primitive",
+      "parameters": {
+        "radius": 50,
+        "height": 200,
+        "segments": 36,
+        "caps": true,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "cone": {
+      "name": "Cone",
+      "constant": "c4d.Ocone",
+      "keywords": [
+        "cone",
+        "pyramid",
+        "funnel"
+      ],
+      "description": "Creates a cone primitive",
+      "parameters": {
+        "bottom_radius": 100,
+        "top_radius": 0,
+        "height": 200,
+        "segments": 36,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "torus": {
+      "name": "Torus",
+      "constant": "c4d.Otorus",
+      "keywords": [
+        "torus",
+        "donut",
+        "ring"
+      ],
+      "description": "Creates a torus primitive",
+      "parameters": {
+        "ring_radius": 100,
+        "pipe_radius": 20,
+        "ring_segments": 36,
+        "pipe_segments": 18,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "plane": {
+      "name": "Plane",
+      "constant": "c4d.Oplane",
+      "keywords": [
+        "plane",
+        "ground",
+        "floor",
+        "surface"
+      ],
+      "description": "Creates a plane primitive",
+      "parameters": {
+        "width": 400,
+        "height": 400,
+        "width_segments": 1,
+        "height_segments": 1,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "disc": {
+      "name": "Disc",
+      "constant": "c4d.Odisc",
+      "keywords": [
+        "disc",
+        "disk",
+        "circle",
+        "round"
+      ],
+      "description": "Creates a disc primitive",
+      "parameters": {
+        "outer_radius": 100,
+        "inner_radius": 0,
+        "segments": 36,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "pyramid": {
+      "name": "Pyramid",
+      "constant": "c4d.Opyramid",
+      "keywords": [
+        "pyramid",
+        "tetrahedron"
+      ],
+      "description": "Creates a pyramid primitive",
+      "parameters": {
+        "size_x": 200,
+        "size_y": 200,
+        "size_z": 200,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "tube": {
+      "name": "Tube",
+      "constant": "c4d.Otube",
+      "keywords": [
+        "tube",
+        "hollow cylinder",
+        "pipe"
+      ],
+      "description": "Creates a tube primitive",
+      "parameters": {
+        "inner_radius": 50,
+        "outer_radius": 100,
+        "height": 200,
+        "segments": 36,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "figure": {
+      "name": "Figure",
+      "constant": "c4d.Ofigure",
+      "keywords": [
+        "figure",
+        "person",
+        "human"
+      ],
+      "description": "Creates a figure primitive",
+      "parameters": {
+        "size": 200,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "platonic": {
+      "name": "Platonic",
+      "constant": "c4d.Oplatonic",
+      "keywords": [
+        "platonic",
+        "polyhedron",
+        "geometric"
+      ],
+      "description": "Creates a platonic solid",
+      "parameters": {
+        "type": 0,
+        "size": 100,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "landscape": {
+      "name": "Landscape",
+      "constant": "c4d.Olandscape",
+      "keywords": [
+        "landscape",
+        "terrain",
+        "mountain"
+      ],
+      "description": "Creates a landscape primitive",
+      "parameters": {
+        "size": 1000,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "oil_tank": {
+      "name": "Oil Tank",
+      "constant": "c4d.Ooiltank",
+      "keywords": [
+        "oil tank",
+        "tank",
+        "container"
+      ],
+      "description": "Creates an oil tank primitive",
+      "parameters": {
+        "radius": 100,
+        "height": 200,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "capsule": {
+      "name": "Capsule",
+      "constant": "c4d.Ocapsule",
+      "keywords": [
+        "capsule",
+        "pill",
+        "rounded cylinder"
+      ],
+      "description": "Creates a capsule primitive",
+      "parameters": {
+        "radius": 50,
+        "height": 200,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "relief": {
+      "name": "Relief",
+      "constant": "c4d.Orelief",
+      "keywords": [
+        "relief",
+        "heightmap",
+        "displacement"
+      ],
+      "description": "Creates a relief primitive",
+      "parameters": {
+        "size": 400,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "single_polygon": {
+      "name": "Single Polygon",
+      "constant": "c4d.Opolygon",
+      "keywords": [
+        "polygon",
+        "single polygon",
+        "face"
+      ],
+      "description": "Creates a single polygon",
+      "parameters": {
+        "size": 200,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "fractal": {
+      "name": "Fractal",
+      "constant": "c4d.Ofractal",
+      "keywords": [
+        "fractal",
+        "recursive",
+        "mandelbrot"
+      ],
+      "description": "Creates a fractal primitive",
+      "parameters": {
+        "size": 200,
+        "iterations": 3,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "formula": {
+      "name": "Formula",
+      "constant": "c4d.Oformula",
+      "keywords": [
+        "formula",
+        "math",
+        "equation",
+        "expression"
+      ],
+      "description": "Creates a formula-based object",
+      "parameters": {
+        "size": 200,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    }
+  },
+  "generators": {
+    "array": {
+      "name": "Array",
+      "constant": "c4d.Oarray",
+      "keywords": [
+        "array",
+        "duplicate",
+        "clone",
+        "repeat"
+      ],
+      "description": "Creates an array generator",
+      "parameters": {
+        "copies": 7,
+        "radius": 250.0,
+        "amplitude": 0.0,
+        "frequency": 0.0
+      }
+    },
+    "boolean": {
+      "name": "Boolean",
+      "constant": "c4d.Oboole",
+      "keywords": [
+        "boolean",
+        "bool",
+        "combine",
+        "subtract",
+        "intersect"
+      ],
+      "description": "Creates a boolean generator",
+      "parameters": {
+        "mode": 0,
+        "create_single_object": true
+      }
+    },
+    "cloner": {
+      "name": "Cloner",
+      "constant": "c4d.Omgcloner",
+      "keywords": [
+        "cloner",
+        "mograph",
+        "duplicate",
+        "instance",
+        "clone"
+      ],
+      "description": "Creates a MoGraph cloner",
+      "parameters": {
+        "mode": 0,
+        "count": 5,
+        "radius": 200,
+        "spacing": 100
+      }
+    },
+    "extrude": {
+      "name": "Extrude",
+      "constant": "c4d.Oextrude",
+      "keywords": [
+        "extrude",
+        "depth",
+        "push",
+        "pull"
+      ],
+      "description": "Creates an extrude generator",
+      "parameters": {
+        "offset": 100,
+        "subdivision": 1,
+        "movement_x": 0,
+        "movement_y": 0,
+        "movement_z": 100
+      }
+    },
+    "lathe": {
+      "name": "Lathe",
+      "constant": "c4d.Olathe",
+      "keywords": [
+        "lathe",
+        "revolve",
+        "spin",
+        "rotate"
+      ],
+      "description": "Creates a lathe generator",
+      "parameters": {
+        "angle": 360,
+        "subdivision": 24,
+        "axis": 1
+      }
+    },
+    "loft": {
+      "name": "Loft",
+      "constant": "c4d.Oloft",
+      "keywords": [
+        "loft",
+        "skin",
+        "surface",
+        "connect"
+      ],
+      "description": "Creates a loft generator",
+      "parameters": {
+        "subdivision_u": 20,
+        "subdivision_v": 20,
+        "organic_form": false
+      }
+    },
+    "sweep": {
+      "name": "Sweep",
+      "constant": "c4d.Osweep",
+      "keywords": [
+        "sweep",
+        "profile",
+        "path",
+        "rail"
+      ],
+      "description": "Creates a sweep generator",
+      "parameters": {
+        "end_growth": 100,
+        "start_growth": 0,
+        "parallel_movement": true
+      }
+    },
+    "subdivision_surface": {
+      "name": "Subdivision Surface",
+      "constant": "c4d.Osds",
+      "keywords": [
+        "subdivision",
+        "smooth",
+        "sds",
+        "hypernurbs"
+      ],
+      "description": "Creates a subdivision surface generator",
+      "parameters": {
+        "subdivision_editor": 1,
+        "subdivision_render": 2,
+        "type": 0
+      }
+    },
+    "symmetry": {
+      "name": "Symmetry",
+      "constant": "c4d.Osymmetry",
+      "keywords": [
+        "symmetry",
+        "mirror",
+        "reflect",
+        "flip"
+      ],
+      "description": "Creates a symmetry generator",
+      "parameters": {
+        "mirror_plane": 0,
+        "weld_points": true,
+        "tolerance": 0.01
+      }
+    },
+    "instance": {
+      "name": "Instance",
+      "constant": "c4d.Oinstance",
+      "keywords": [
+        "instance",
+        "reference",
+        "link",
+        "copy"
+      ],
+      "description": "Creates an instance generator",
+      "parameters": {
+        "render_instances": true,
+        "multi_instances": false
+      }
+    },
+    "metaball": {
+      "name": "Metaball",
+      "constant": "c4d.Ometaball",
+      "keywords": [
+        "metaball",
+        "blob",
+        "organic",
+        "merge"
+      ],
+      "description": "Creates a metaball generator",
+      "parameters": {
+        "hull_value": 1,
+        "subdivision_editor": 3
+      }
+    },
+    "bezier": {
+      "name": "Bezier",
+      "constant": "c4d.Obezier",
+      "keywords": [
+        "bezier",
+        "nurbs",
+        "curve",
+        "smooth"
+      ],
+      "description": "Creates a bezier generator",
+      "parameters": {
+        "subdivision": 20
+      }
+    },
+    "connect": {
+      "name": "Connect",
+      "constant": "c4d.Oconnector",
+      "keywords": [
+        "connect",
+        "merge",
+        "combine",
+        "join"
+      ],
+      "description": "Creates a connect generator",
+      "parameters": {
+        "weld": true,
+        "tolerance": 0.01,
+        "phong_tag": true
+      }
+    },
+    "spline_wrap": {
+      "name": "Spline Wrap",
+      "constant": "c4d.Osplinewrap",
+      "keywords": [
+        "spline wrap",
+        "deform",
+        "bend",
+        "curve"
+      ],
+      "description": "Creates a spline wrap generator",
+      "parameters": {
+        "axis": 2,
+        "offset": 0,
+        "size": 100
+      }
+    },
+    "polygon_reduction": {
+      "name": "Polygon Reduction",
+      "constant": "c4d.Opolyreduxgen",
+      "keywords": [
+        "polygon reduction",
+        "reduce",
+        "optimize",
+        "decimate"
+      ],
+      "description": "Creates a polygon reduction generator",
+      "parameters": {
+        "reduction_strength": 50,
+        "boundary_curve_preservation": 100
+      }
+    }
+  },
+  "splines": {},
+  "deformers": {},
+  "cameras": {},
+  "tags": {},
+  "mograph": {},
+  "effectors": {},
+  "fields": {},
+  "dynamics": {},
+  "volumes": {},
+  "modeling": {},
+  "materials": {},
+  "render": {}
+}

@@ -1,0 +1,26 @@
+{
+  "image_generation": {
+    "last_workflow": "generate_thermal_shapes.json",
+    "recent_workflows": [
+      "generate_thermal_shapes.json"
+    ]
+  },
+  "model_3d_generation": {
+    "last_workflow": "generate_3D_withUVs_09-06-2025.json",
+    "recent_workflows": []
+  },
+  "texture_generation": {
+    "last_workflow": "Model_texturing_juggernautXL_v08.json",
+    "recent_workflows": [
+      "Model_texturing_juggernautXL_v08.json",
+      "Model_texturing_juggernautXL_v07.json",
+      "Model_texturing_juggernautXL_v06.json",
+      "Model_texturing_juggernautXL_v05.json",
+      "Model_texturing_juggernautXL_v04.json",
+      "Model_texturing_juggernautXL_v03.json",
+      "Model_texturing_juggernautXL_v02_nonotes.json",
+      "Model_texturing_juggernautXL_v02.json",
+      "3DModel_texturing_juggernautXL_v01.json"
+    ]
+  }
+}

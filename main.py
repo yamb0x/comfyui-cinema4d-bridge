@@ -20,7 +20,7 @@ from core.config_adapter import AppConfig
 from utils.logger import setup_logging
 
 
-async def main():
+def main():
     """Main application entry point"""
     # Setup logging
     setup_logging()
@@ -34,9 +34,8 @@ async def main():
     app.setApplicationName("ComfyUI to Cinema4D Bridge")
     app.setOrganizationName("Yambo Studio")
     
-    # Enable high DPI support
-    app.setAttribute(Qt.AA_EnableHighDpiScaling, True)
-    app.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+    # Enable high DPI support (Qt6 way - the old attributes are deprecated)
+    # Qt6 handles high DPI automatically, no need to set these deprecated attributes
     
     # Create main application window
     main_window = ComfyToC4DApp(config)
@@ -46,8 +45,12 @@ async def main():
     loop = QEventLoop(app)
     asyncio.set_event_loop(loop)
     
-    # Initialize application
-    await main_window.initialize()
+    # Initialize application using async task
+    async def init_app():
+        await main_window.initialize()
+    
+    # Schedule initialization
+    asyncio.ensure_future(init_app())
     
     # Run the application
     with loop:
@@ -55,8 +58,22 @@ async def main():
 
 
 if __name__ == "__main__":
+    # Enable fault handler for better crash debugging
+    import faulthandler
+    faulthandler.enable()
+    
+    # Set up exception handler
+    def handle_exception(exc_type, exc_value, exc_traceback):
+        if issubclass(exc_type, KeyboardInterrupt):
+            sys.__excepthook__(exc_type, exc_value, exc_traceback)
+            return
+        
+        logger.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+    
+    sys.excepthook = handle_exception
+    
     try:
-        asyncio.run(main())
+        main()
     except KeyboardInterrupt:
         logger.info("Application terminated by user")
     except Exception as e:

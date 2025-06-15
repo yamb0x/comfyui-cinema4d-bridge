@@ -1,0 +1,55 @@
+{
+  "selected_nodes": [
+    "Hy3DGenerateMesh_53",
+    "Hy3DExportMesh_88"
+  ],
+  "node_info": {
+    "Hy3DGenerateMesh_53": {
+      "type": "Hy3DGenerateMesh",
+      "id": "53",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        5.5,
+        50,
+        123,
+        "fixed",
+        "FlowMatchEulerDiscreteScheduler",
+        true
+      ]
+    },
+    "Hy3DExportMesh_88": {
+      "type": "Hy3DExportMesh",
+      "id": "88",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        "3D/Hy3D",
+        "glb",
+        true
+      ]
+    }
+  },
+  "workflow_file": "3D_gen_Hunyuan2_onlymesh.json",
+  "discovered_node_types": [
+    "PreviewImage",
+    "Hy3DGenerateMesh",
+    "Hy3DExportMesh",
+    "DownloadAndLoadHy3DDelightModel",
+    "LoadImage",
+    "Hy3DVAEDecode",
+    "ImageResize+",
+    "Hy3DDelightImage",
+    "ImageCompositeMasked",
+    "Hy3DMeshUVWrap",
+    "MaskToImage",
+    "MaskPreview+",
+    "Hy3DModelLoader",
+    "SolidMask",
+    "Preview3D",
+    "ImageRemoveBackground+",
+    "TransparentBGSession+",
+    "Hy3DPostprocessMesh",
+    "Note"
+  ]
+}

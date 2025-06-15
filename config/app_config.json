@@ -45,7 +45,8 @@
   "base_dir": "D:\\Yambo Studio Dropbox\\Admin\\_studio-dashboard-app-dev\\comfy-to-c4d",
   "workflows_dir": "D:\\Yambo Studio Dropbox\\Admin\\_studio-dashboard-app-dev\\comfy-to-c4d\\workflows",
   "images_dir": "D:\\Yambo Studio Dropbox\\Admin\\_studio-dashboard-app-dev\\comfy-to-c4d\\images",
-  "models_3d_dir": "D:\\Yambo Studio Dropbox\\Admin\\_studio-dashboard-app-dev\\comfy-to-c4d\\3D\\Hy3D",
+  "models_3d_dir": "D:\\Comfy3D_WinPortable\\ComfyUI\\output\\3D",
+  "local_models_3d_dir": "D:\\Yambo Studio Dropbox\\Admin\\_studio-dashboard-app-dev\\comfy-to-c4d\\3D\\Hy3D",
   "config_dir": "D:\\Yambo Studio Dropbox\\Admin\\_studio-dashboard-app-dev\\comfy-to-c4d\\config",
   "recent_projects": [],
   "max_recent_projects": 10

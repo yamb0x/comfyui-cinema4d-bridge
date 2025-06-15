@@ -82,7 +82,8 @@ class AppConfig(BaseSettings):
     base_dir: Path = Path("D:/Yambo Studio Dropbox/Admin/_studio-dashboard-app-dev/comfy-to-c4d")
     workflows_dir: Path = Field(default_factory=lambda: Path("D:/Yambo Studio Dropbox/Admin/_studio-dashboard-app-dev/comfy-to-c4d/workflows"))
     images_dir: Path = Field(default_factory=lambda: Path("D:/Yambo Studio Dropbox/Admin/_studio-dashboard-app-dev/comfy-to-c4d/images"))
-    models_3d_dir: Path = Field(default_factory=lambda: Path("D:/Yambo Studio Dropbox/Admin/_studio-dashboard-app-dev/comfy-to-c4d/3D/Hy3D"))
+    models_3d_dir: Path = Field(default_factory=lambda: Path("D:/Comfy3D_WinPortable/ComfyUI/output/3D"))
+    local_models_3d_dir: Path = Field(default_factory=lambda: Path("D:/Yambo Studio Dropbox/Admin/_studio-dashboard-app-dev/comfy-to-c4d/3D/Hy3D"))
     config_dir: Path = Field(default_factory=lambda: Path("D:/Yambo Studio Dropbox/Admin/_studio-dashboard-app-dev/comfy-to-c4d/config"))
     
     # Recent projects
@@ -101,11 +102,14 @@ class AppConfig(BaseSettings):
             self.base_dir,
             self.workflows_dir,
             self.images_dir,
-            self.models_3d_dir,
+            self.local_models_3d_dir,  # Ensure local models dir exists
             self.config_dir,
             self.base_dir / "src",
             self.base_dir / "ui",
         ]
+        
+        # Note: models_3d_dir points to ComfyUI output, which we don't create
+        # but should monitor if it exists
         for directory in dirs:
             directory.mkdir(parents=True, exist_ok=True)
             logger.debug(f"Ensured directory exists: {directory}")
@@ -139,6 +143,8 @@ class AppConfig(BaseSettings):
                     data = json.load(f)
                 config = cls(**data)
                 logger.info(f"Configuration loaded from {config_file}")
+                logger.info(f"Loaded models_3d_dir: {config.models_3d_dir}")
+                logger.info(f"Loaded local_models_3d_dir: {config.local_models_3d_dir}")
             except Exception as e:
                 logger.error(f"Failed to load config: {e}")
                 config = cls()

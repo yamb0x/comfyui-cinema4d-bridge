@@ -19,14 +19,55 @@ def setup_logging(log_dir: Path = None, debug: bool = True):
     # Remove default logger
     logger.remove()
     
-    # Console logging with color
+    # Console logging with color and UTF-8 encoding
     level = "DEBUG" if debug else "INFO"
-    logger.add(
-        sys.stdout,
-        format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
-        level=level,
-        colorize=True
-    )
+    
+    # For Windows, we need to handle encoding properly
+    import platform
+    if platform.system() == "Windows":
+        # Force UTF-8 encoding for Windows console
+        import os
+        os.environ["PYTHONIOENCODING"] = "utf-8"
+        
+    # Configure console output based on platform
+    if platform.system() == "Windows":
+        # For Windows, use a custom sink that handles encoding
+        import codecs
+        
+        class SafeConsoleSink:
+            def __init__(self):
+                self.stream = codecs.getwriter("utf-8")(sys.stdout.buffer, errors="replace")
+                
+            def write(self, message):
+                try:
+                    # Remove color codes if encoding fails
+                    clean_message = message
+                    if hasattr(self.stream, 'isatty') and not self.stream.isatty():
+                        import re
+                        clean_message = re.sub(r'\x1b\[[0-9;]*m', '', message)
+                    self.stream.write(clean_message)
+                    self.stream.flush()
+                except Exception:
+                    # Fallback: print without colors or special chars
+                    import re
+                    clean_message = re.sub(r'\x1b\[[0-9;]*m', '', message)
+                    clean_message = clean_message.encode('ascii', 'replace').decode('ascii')
+                    print(clean_message, end='', flush=True)
+        
+        logger.add(
+            SafeConsoleSink(),
+            format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+            level=level,
+            colorize=True
+        )
+    else:
+        # For non-Windows, use standard stdout
+        logger.add(
+            sys.stdout,
+            format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+            level=level,
+            colorize=True
+        )
     
     # File logging
     if log_dir is None:

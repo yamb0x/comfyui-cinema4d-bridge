@@ -1,0 +1,1527 @@
+{
+  "primitives": {
+    "cube": {
+      "name": "Cube",
+      "constant": "c4d.Ocube",
+      "keywords": [
+        "cube",
+        "box",
+        "square",
+        "block"
+      ],
+      "description": "Creates a cube primitive",
+      "parameters": {
+        "size_x": 200,
+        "size_y": 200,
+        "size_z": 200,
+        "segments": 1,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "sphere": {
+      "name": "Sphere",
+      "constant": "c4d.Osphere",
+      "keywords": [
+        "sphere",
+        "ball",
+        "orb",
+        "globe"
+      ],
+      "description": "Creates a sphere primitive",
+      "parameters": {
+        "radius": 100,
+        "segments": 24,
+        "type": 0,
+        "render_perfect": true,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "cylinder": {
+      "name": "Cylinder",
+      "constant": "c4d.Ocylinder",
+      "keywords": [
+        "cylinder",
+        "tube",
+        "pipe",
+        "rod"
+      ],
+      "description": "Creates a cylinder primitive",
+      "parameters": {
+        "radius": 50,
+        "height": 200,
+        "segments": 36,
+        "caps": true,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "cone": {
+      "name": "Cone",
+      "constant": "c4d.Ocone",
+      "keywords": [
+        "cone",
+        "pyramid",
+        "funnel"
+      ],
+      "description": "Creates a cone primitive",
+      "parameters": {
+        "bottom_radius": 100,
+        "top_radius": 0,
+        "height": 200,
+        "segments": 36,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "torus": {
+      "name": "Torus",
+      "constant": "c4d.Otorus",
+      "keywords": [
+        "torus",
+        "donut",
+        "ring"
+      ],
+      "description": "Creates a torus primitive",
+      "parameters": {
+        "ring_radius": 100,
+        "pipe_radius": 20,
+        "ring_segments": 36,
+        "pipe_segments": 18,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "plane": {
+      "name": "Plane",
+      "constant": "c4d.Oplane",
+      "keywords": [
+        "plane",
+        "ground",
+        "floor",
+        "surface"
+      ],
+      "description": "Creates a plane primitive",
+      "parameters": {
+        "width": 400,
+        "height": 400,
+        "width_segments": 1,
+        "height_segments": 1,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "disc": {
+      "name": "Disc",
+      "constant": "c4d.Odisc",
+      "keywords": [
+        "disc",
+        "disk",
+        "circle",
+        "round"
+      ],
+      "description": "Creates a disc primitive",
+      "parameters": {
+        "outer_radius": 100,
+        "inner_radius": 0,
+        "segments": 36,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "pyramid": {
+      "name": "Pyramid",
+      "constant": "c4d.Opyramid",
+      "keywords": [
+        "pyramid",
+        "tetrahedron"
+      ],
+      "description": "Creates a pyramid primitive",
+      "parameters": {
+        "size_x": 200,
+        "size_y": 200,
+        "size_z": 200,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "tube": {
+      "name": "Tube",
+      "constant": "c4d.Otube",
+      "keywords": [
+        "tube",
+        "hollow cylinder",
+        "pipe"
+      ],
+      "description": "Creates a tube primitive",
+      "parameters": {
+        "inner_radius": 50,
+        "outer_radius": 100,
+        "height": 200,
+        "segments": 36,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "figure": {
+      "name": "Figure",
+      "constant": "c4d.Ofigure",
+      "keywords": [
+        "figure",
+        "person",
+        "human"
+      ],
+      "description": "Creates a figure primitive",
+      "parameters": {
+        "size": 200,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "platonic": {
+      "name": "Platonic",
+      "constant": "c4d.Oplatonic",
+      "keywords": [
+        "platonic",
+        "polyhedron",
+        "geometric"
+      ],
+      "description": "Creates a platonic solid",
+      "parameters": {
+        "type": 0,
+        "size": 100,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "landscape": {
+      "name": "Landscape",
+      "constant": "c4d.Olandscape",
+      "keywords": [
+        "landscape",
+        "terrain",
+        "mountain"
+      ],
+      "description": "Creates a landscape primitive",
+      "parameters": {
+        "size": 1000,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "oil_tank": {
+      "name": "Oil Tank",
+      "constant": "c4d.Ooiltank",
+      "keywords": [
+        "oil tank",
+        "tank",
+        "container"
+      ],
+      "description": "Creates an oil tank primitive",
+      "parameters": {
+        "radius": 100,
+        "height": 200,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "capsule": {
+      "name": "Capsule",
+      "constant": "c4d.Ocapsule",
+      "keywords": [
+        "capsule",
+        "pill",
+        "rounded cylinder"
+      ],
+      "description": "Creates a capsule primitive",
+      "parameters": {
+        "radius": 50,
+        "height": 200,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "relief": {
+      "name": "Relief",
+      "constant": "c4d.Orelief",
+      "keywords": [
+        "relief",
+        "heightmap",
+        "displacement"
+      ],
+      "description": "Creates a relief primitive",
+      "parameters": {
+        "size": 400,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "single_polygon": {
+      "name": "Single Polygon",
+      "constant": "c4d.Opolygon",
+      "keywords": [
+        "polygon",
+        "single polygon",
+        "face"
+      ],
+      "description": "Creates a single polygon",
+      "parameters": {
+        "size": 200,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "fractal": {
+      "name": "Fractal",
+      "constant": "c4d.Ofractal",
+      "keywords": [
+        "fractal",
+        "recursive",
+        "mandelbrot"
+      ],
+      "description": "Creates a fractal primitive",
+      "parameters": {
+        "size": 200,
+        "iterations": 3,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "formula": {
+      "name": "Formula",
+      "constant": "c4d.Oformula",
+      "keywords": [
+        "formula",
+        "math",
+        "equation",
+        "expression"
+      ],
+      "description": "Creates a formula-based object",
+      "parameters": {
+        "size": 200,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    }
+  },
+  "generators": {
+    "array": {
+      "name": "Array",
+      "constant": "c4d.Oarray",
+      "keywords": [
+        "array",
+        "duplicate",
+        "clone",
+        "repeat"
+      ],
+      "description": "Creates an array generator",
+      "parameters": {
+        "copies": 7,
+        "radius": 250.0,
+        "amplitude": 0.0,
+        "frequency": 0.0
+      }
+    },
+    "boolean": {
+      "name": "Boolean",
+      "constant": "c4d.Oboole",
+      "keywords": [
+        "boolean",
+        "bool",
+        "combine",
+        "subtract",
+        "intersect"
+      ],
+      "description": "Creates a boolean generator",
+      "parameters": {
+        "mode": 0,
+        "create_single_object": true
+      }
+    },
+    "cloner": {
+      "name": "Cloner",
+      "constant": "c4d.Omgcloner",
+      "keywords": [
+        "cloner",
+        "mograph",
+        "duplicate",
+        "instance",
+        "clone"
+      ],
+      "description": "Creates a MoGraph cloner",
+      "parameters": {
+        "mode": 0,
+        "count": 5,
+        "radius": 200,
+        "spacing": 100
+      }
+    },
+    "extrude": {
+      "name": "Extrude",
+      "constant": "c4d.Oextrude",
+      "keywords": [
+        "extrude",
+        "depth",
+        "push",
+        "pull"
+      ],
+      "description": "Creates an extrude generator",
+      "parameters": {
+        "offset": 100,
+        "subdivision": 1,
+        "movement_x": 0,
+        "movement_y": 0,
+        "movement_z": 100
+      }
+    },
+    "lathe": {
+      "name": "Lathe",
+      "constant": "c4d.Olathe",
+      "keywords": [
+        "lathe",
+        "revolve",
+        "spin",
+        "rotate"
+      ],
+      "description": "Creates a lathe generator",
+      "parameters": {
+        "angle": 360,
+        "subdivision": 24,
+        "axis": 1
+      }
+    },
+    "loft": {
+      "name": "Loft",
+      "constant": "c4d.Oloft",
+      "keywords": [
+        "loft",
+        "skin",
+        "surface",
+        "connect"
+      ],
+      "description": "Creates a loft generator",
+      "parameters": {
+        "subdivision_u": 20,
+        "subdivision_v": 20,
+        "organic_form": false
+      }
+    },
+    "sweep": {
+      "name": "Sweep",
+      "constant": "c4d.Osweep",
+      "keywords": [
+        "sweep",
+        "profile",
+        "path",
+        "rail"
+      ],
+      "description": "Creates a sweep generator",
+      "parameters": {
+        "end_growth": 100,
+        "start_growth": 0,
+        "parallel_movement": true
+      }
+    },
+    "subdivision_surface": {
+      "name": "Subdivision Surface",
+      "constant": "c4d.Osds",
+      "keywords": [
+        "subdivision",
+        "smooth",
+        "sds",
+        "hypernurbs"
+      ],
+      "description": "Creates a subdivision surface generator",
+      "parameters": {
+        "subdivision_editor": 1,
+        "subdivision_render": 2,
+        "type": 0
+      }
+    },
+    "symmetry": {
+      "name": "Symmetry",
+      "constant": "c4d.Osymmetry",
+      "keywords": [
+        "symmetry",
+        "mirror",
+        "reflect",
+        "flip"
+      ],
+      "description": "Creates a symmetry generator",
+      "parameters": {
+        "mirror_plane": 0,
+        "weld_points": true,
+        "tolerance": 0.01
+      }
+    },
+    "instance": {
+      "name": "Instance",
+      "constant": "c4d.Oinstance",
+      "keywords": [
+        "instance",
+        "reference",
+        "link",
+        "copy"
+      ],
+      "description": "Creates an instance generator",
+      "parameters": {
+        "render_instances": true,
+        "multi_instances": false
+      }
+    },
+    "metaball": {
+      "name": "Metaball",
+      "constant": "c4d.Ometaball",
+      "keywords": [
+        "metaball",
+        "blob",
+        "organic",
+        "merge"
+      ],
+      "description": "Creates a metaball generator",
+      "parameters": {
+        "hull_value": 1,
+        "subdivision_editor": 3
+      }
+    },
+    "bezier": {
+      "name": "Bezier",
+      "constant": "c4d.Obezier",
+      "keywords": [
+        "bezier",
+        "nurbs",
+        "curve",
+        "smooth"
+      ],
+      "description": "Creates a bezier generator",
+      "parameters": {
+        "subdivision": 20
+      }
+    },
+    "connect": {
+      "name": "Connect",
+      "constant": "c4d.Oconnector",
+      "keywords": [
+        "connect",
+        "merge",
+        "combine",
+        "join"
+      ],
+      "description": "Creates a connect generator",
+      "parameters": {
+        "weld": true,
+        "tolerance": 0.01,
+        "phong_tag": true
+      }
+    },
+    "spline_wrap": {
+      "name": "Spline Wrap",
+      "constant": "c4d.Osplinewrap",
+      "keywords": [
+        "spline wrap",
+        "deform",
+        "bend",
+        "curve"
+      ],
+      "description": "Creates a spline wrap generator",
+      "parameters": {
+        "axis": 2,
+        "offset": 0,
+        "size": 100
+      }
+    },
+    "polygon_reduction": {
+      "name": "Polygon Reduction",
+      "constant": "c4d.Opolyreduxgen",
+      "keywords": [
+        "polygon reduction",
+        "reduce",
+        "optimize",
+        "decimate"
+      ],
+      "description": "Creates a polygon reduction generator",
+      "parameters": {
+        "reduction_strength": 50,
+        "boundary_curve_preservation": 100
+      }
+    }
+  },
+  "splines": {
+    "circle": {
+      "name": "Circle",
+      "constant": "c4d.Osplinecircle",
+      "keywords": [
+        "circle",
+        "round",
+        "ring",
+        "spline"
+      ],
+      "description": "Creates a circle spline",
+      "parameters": {
+        "circle_ellipse": 0,
+        "circle_radius": 200.0,
+        "circle_inner": 100.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "rectangle": {
+      "name": "Rectangle",
+      "constant": "c4d.Osplinerectangle",
+      "keywords": [
+        "rectangle",
+        "square",
+        "box",
+        "spline"
+      ],
+      "description": "Creates a rectangle spline",
+      "parameters": {
+        "rectangle_width": 400.0,
+        "rectangle_height": 400.0,
+        "rectangle_radius": 50.0,
+        "rectangle_rounding": 0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "text": {
+      "name": "Text",
+      "constant": "c4d.Osplinetext",
+      "keywords": [
+        "text",
+        "font",
+        "letters",
+        "spline"
+      ],
+      "description": "Creates a text spline",
+      "parameters": {
+        "text_text": "Text",
+        "text_height": 200.0,
+        "text_hspacing": 0.0,
+        "text_vspacing": 0.0,
+        "text_align": 0,
+        "text_separate": 0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "helix": {
+      "name": "Helix",
+      "constant": "c4d.Osplinehelix",
+      "keywords": [
+        "helix",
+        "spiral",
+        "coil",
+        "spline"
+      ],
+      "description": "Creates a helix spline",
+      "parameters": {
+        "helix_start": 0.0,
+        "helix_end": 12.566370614359172,
+        "helix_height": 200.0,
+        "helix_radius1": 200.0,
+        "helix_radius2": 200.0,
+        "helix_sub": 100,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "star": {
+      "name": "Star",
+      "constant": "c4d.Osplinestar",
+      "keywords": [
+        "star",
+        "points",
+        "shape",
+        "spline"
+      ],
+      "description": "Creates a star spline",
+      "parameters": {
+        "star_points": 8,
+        "star_orad": 200.0,
+        "star_irad": 100.0,
+        "star_twist": 0.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    }
+  },
+  "deformers": {
+    "bend_deformer": {
+      "name": "Bend Deformer",
+      "constant": "c4d.Obend",
+      "keywords": [
+        "bend",
+        "deformer",
+        "curve",
+        "arc"
+      ],
+      "description": "Creates a bend deformer",
+      "parameters": {
+        "strength": 0.0,
+        "angle": 0.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "bulge_deformer": {
+      "name": "Bulge Deformer",
+      "constant": "c4d.Obulge",
+      "keywords": [
+        "bulge",
+        "deformer",
+        "inflate",
+        "expand"
+      ],
+      "description": "Creates a bulge deformer",
+      "parameters": {
+        "strength": 0.0,
+        "curvature": 1.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "explosion_deformer": {
+      "name": "Explosion Deformer",
+      "constant": "c4d.Oexplosion",
+      "keywords": [
+        "explosion",
+        "deformer",
+        "blast",
+        "scatter"
+      ],
+      "description": "Creates an explosion deformer",
+      "parameters": {
+        "strength": 0.0,
+        "size": 100.0,
+        "angle": 1.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "explosionfx_deformer": {
+      "name": "ExplosionFX Deformer",
+      "constant": "c4d.Oexplosionfx",
+      "keywords": [
+        "explosionfx",
+        "deformer",
+        "blast",
+        "fx"
+      ],
+      "description": "Creates an explosion FX deformer",
+      "parameters": {
+        "strength": 1000.0,
+        "size": 10.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "formula_deformer": {
+      "name": "Formula Deformer",
+      "constant": "c4d.Oformula",
+      "keywords": [
+        "formula",
+        "deformer",
+        "math",
+        "expression"
+      ],
+      "description": "Creates a formula deformer",
+      "parameters": {
+        "size": 400.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "melt_deformer": {
+      "name": "Melt Deformer",
+      "constant": "c4d.Omelt",
+      "keywords": [
+        "melt",
+        "deformer",
+        "drip",
+        "liquid"
+      ],
+      "description": "Creates a melt deformer",
+      "parameters": {
+        "strength": 1.0,
+        "size": 100.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "shatter_deformer": {
+      "name": "Shatter Deformer",
+      "constant": "c4d.Oshatter",
+      "keywords": [
+        "shatter",
+        "deformer",
+        "break",
+        "fracture"
+      ],
+      "description": "Creates a shatter deformer",
+      "parameters": {
+        "strength": 1.0,
+        "size": 100.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "shear_deformer": {
+      "name": "Shear Deformer",
+      "constant": "c4d.Oshear",
+      "keywords": [
+        "shear",
+        "deformer",
+        "skew",
+        "slant"
+      ],
+      "description": "Creates a shear deformer",
+      "parameters": {
+        "strength": 0.0,
+        "angle": 0.0,
+        "curvature": 1.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "spherify_deformer": {
+      "name": "Spherify Deformer",
+      "constant": "c4d.Ospherify",
+      "keywords": [
+        "spherify",
+        "deformer",
+        "sphere",
+        "round"
+      ],
+      "description": "Creates a spherify deformer",
+      "parameters": {
+        "strength": 0.5,
+        "size": 200.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "taper_deformer": {
+      "name": "Taper Deformer",
+      "constant": "c4d.Otaper",
+      "keywords": [
+        "taper",
+        "deformer",
+        "scale",
+        "narrow"
+      ],
+      "description": "Creates a taper deformer",
+      "parameters": {
+        "strength": 0.0,
+        "curvature": 1.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    }
+  },
+  "cameras_lights": {
+    "camera": {
+      "name": "Camera",
+      "constant": "c4d.Ocamera",
+      "keywords": [
+        "camera",
+        "view",
+        "perspective",
+        "lens"
+      ],
+      "description": "Creates a camera object",
+      "parameters": {
+        "fov": 0.9500215125301936,
+        "targetdistance": 2000.0,
+        "film_offset_x": 0.0,
+        "film_offset_y": 0.0,
+        "projection": 0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "light": {
+      "name": "Light",
+      "constant": "c4d.Olight",
+      "keywords": [
+        "light",
+        "illumination",
+        "lighting",
+        "lamp"
+      ],
+      "description": "Creates a light object",
+      "parameters": {
+        "brightness": 1.0,
+        "type": 0,
+        "shadowtype": 0,
+        "outerangle": 0.5235987755982988,
+        "innerangle": 0.0,
+        "falloff": 0,
+        "pos_x": 0,
+        "pos_y": 200,
+        "pos_z": 0
+      }
+    }
+  },
+  "effectors": {
+    "plain_effector": {
+      "name": "Plain Effector",
+      "constant": "c4d.Omgplain",
+      "keywords": [
+        "plain",
+        "effector",
+        "mograph",
+        "basic"
+      ],
+      "description": "Creates a plain MoGraph effector",
+      "parameters": {
+        "strength": 1.0,
+        "uniformity": 0.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "random_effector": {
+      "name": "Random Effector",
+      "constant": "c4d.Omgrandom",
+      "keywords": [
+        "random",
+        "effector",
+        "mograph",
+        "chaos"
+      ],
+      "description": "Creates a random MoGraph effector",
+      "parameters": {
+        "strength": 1.0,
+        "uniformity": 0.0,
+        "seed": 12345,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "shader_effector": {
+      "name": "Shader Effector",
+      "constant": "c4d.Omgshader",
+      "keywords": [
+        "shader",
+        "effector",
+        "mograph",
+        "texture"
+      ],
+      "description": "Creates a shader MoGraph effector",
+      "parameters": {
+        "strength": 1.0,
+        "uniformity": 0.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "delay_effector": {
+      "name": "Delay Effector",
+      "constant": "c4d.Omgdelay",
+      "keywords": [
+        "delay",
+        "effector",
+        "mograph",
+        "timing"
+      ],
+      "description": "Creates a delay MoGraph effector",
+      "parameters": {
+        "strength": 1.0,
+        "uniformity": 0.0,
+        "delay": 0.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "formula_effector": {
+      "name": "Formula Effector",
+      "constant": "c4d.Omgformula",
+      "keywords": [
+        "formula",
+        "effector",
+        "mograph",
+        "math"
+      ],
+      "description": "Creates a formula MoGraph effector",
+      "parameters": {
+        "strength": 1.0,
+        "uniformity": 0.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "step_effector": {
+      "name": "Step Effector",
+      "constant": "c4d.Omgstep",
+      "keywords": [
+        "step",
+        "effector",
+        "mograph",
+        "sequence"
+      ],
+      "description": "Creates a step MoGraph effector",
+      "parameters": {
+        "strength": 1.0,
+        "uniformity": 0.0,
+        "steps": 5,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "target_effector": {
+      "name": "Target Effector",
+      "constant": "c4d.Omgeffectortarget",
+      "keywords": [
+        "target",
+        "effector",
+        "mograph",
+        "aim"
+      ],
+      "description": "Creates a target MoGraph effector",
+      "parameters": {
+        "strength": 1.0,
+        "uniformity": 0.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "time_effector": {
+      "name": "Time Effector",
+      "constant": "c4d.Omgtime",
+      "keywords": [
+        "time",
+        "effector",
+        "mograph",
+        "animation"
+      ],
+      "description": "Creates a time MoGraph effector",
+      "parameters": {
+        "strength": 1.0,
+        "uniformity": 0.0,
+        "frequency": 1.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    },
+    "sound_effector": {
+      "name": "Sound Effector",
+      "constant": "c4d.Omgsound",
+      "keywords": [
+        "sound",
+        "effector",
+        "mograph",
+        "audio"
+      ],
+      "description": "Creates a sound MoGraph effector",
+      "parameters": {
+        "strength": 1.0,
+        "uniformity": 0.0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0
+      }
+    }
+  },
+  "tags": {
+    "phong_tag": {
+      "name": "Phong Tag",
+      "constant": "c4d.Tphong",
+      "keywords": [
+        "phong",
+        "tag",
+        "shading",
+        "smooth"
+      ],
+      "description": "Creates a phong shading tag",
+      "parameters": {
+        "name": "Phong Tag",
+        "angle": 80.0
+      }
+    },
+    "material_tag": {
+      "name": "Material Tag",
+      "constant": "c4d.Tmaterial",
+      "keywords": [
+        "material",
+        "tag",
+        "texture",
+        "shader"
+      ],
+      "description": "Creates a material tag",
+      "parameters": {
+        "name": "Material Tag"
+      }
+    },
+    "texture_tag": {
+      "name": "Texture Tag",
+      "constant": "c4d.Ttexture",
+      "keywords": [
+        "texture",
+        "tag",
+        "uv",
+        "mapping"
+      ],
+      "description": "Creates a texture tag",
+      "parameters": {
+        "name": "Texture Tag",
+        "projection": "UVW Mapping"
+      }
+    },
+    "uvw_tag": {
+      "name": "UVW Tag",
+      "constant": "c4d.Tuvw",
+      "keywords": [
+        "uvw",
+        "tag",
+        "mapping",
+        "coordinates"
+      ],
+      "description": "Creates a UVW mapping tag",
+      "parameters": {
+        "name": "UVW Tag"
+      }
+    },
+    "selection_tag": {
+      "name": "Selection Tag",
+      "constant": "c4d.Tselection",
+      "keywords": [
+        "selection",
+        "tag",
+        "group",
+        "set"
+      ],
+      "description": "Creates a selection tag",
+      "parameters": {
+        "name": "Selection Tag"
+      }
+    },
+    "python_tag": {
+      "name": "Python Tag",
+      "constant": "c4d.Tpython",
+      "keywords": [
+        "python",
+        "tag",
+        "script",
+        "code"
+      ],
+      "description": "Creates a python tag",
+      "parameters": {
+        "name": "Python Tag"
+      }
+    },
+    "expression_tag": {
+      "name": "Expression Tag",
+      "constant": "c4d.Texpression",
+      "keywords": [
+        "expression",
+        "tag",
+        "formula",
+        "math"
+      ],
+      "description": "Creates an expression tag",
+      "parameters": {
+        "name": "Expression Tag"
+      }
+    },
+    "protection_tag": {
+      "name": "Protection Tag",
+      "constant": "c4d.Tprotection",
+      "keywords": [
+        "protection",
+        "tag",
+        "lock",
+        "prevent"
+      ],
+      "description": "Creates a protection tag",
+      "parameters": {
+        "name": "Protection Tag"
+      }
+    },
+    "display_tag": {
+      "name": "Display Tag",
+      "constant": "c4d.Tdisplay",
+      "keywords": [
+        "display",
+        "tag",
+        "visibility",
+        "show"
+      ],
+      "description": "Creates a display tag",
+      "parameters": {
+        "name": "Display Tag"
+      }
+    },
+    "compositing_tag": {
+      "name": "Compositing Tag",
+      "constant": "c4d.Tcompositing",
+      "keywords": [
+        "compositing",
+        "tag",
+        "render",
+        "pass"
+      ],
+      "description": "Creates a compositing tag",
+      "parameters": {
+        "name": "Compositing Tag"
+      }
+    }
+  },
+  "mograph": {},
+  "fields": {
+    "linear_field": {
+      "name": "Linear Field",
+      "constant": "c4d.Flinear",
+      "keywords": [
+        "linear",
+        "field",
+        "gradient",
+        "direction"
+      ],
+      "description": "Creates a linear field with directional gradient",
+      "parameters": {
+        "name": "Linear Field",
+        "length": 200.0,
+        "clip_to_shape": false,
+        "direction": 2
+      }
+    },
+    "spherical_field": {
+      "name": "Spherical Field",
+      "constant": "c4d.Fspherical",
+      "keywords": [
+        "spherical",
+        "field",
+        "radial",
+        "sphere"
+      ],
+      "description": "Creates a spherical field with radial falloff",
+      "parameters": {
+        "name": "Spherical Field",
+        "size": 200.0,
+        "clip_to_shape": false
+      }
+    },
+    "box_field": {
+      "name": "Box Field",
+      "constant": "c4d.Fbox",
+      "keywords": [
+        "box",
+        "field",
+        "rectangular",
+        "cube"
+      ],
+      "description": "Creates a box-shaped field",
+      "parameters": {
+        "name": "Box Field",
+        "size": 200.0,
+        "clip_to_shape": false
+      }
+    },
+    "cylinder_field": {
+      "name": "Cylinder Field",
+      "constant": "c4d.Fcylinder",
+      "keywords": [
+        "cylinder",
+        "field",
+        "cylindrical",
+        "tube"
+      ],
+      "description": "Creates a cylindrical field",
+      "parameters": {
+        "name": "Cylinder Field",
+        "radius": 100.0,
+        "height": 200.0,
+        "offset": 0.0,
+        "remap": "None"
+      }
+    },
+    "cone_field": {
+      "name": "Cone Field",
+      "constant": "c4d.Fcone",
+      "keywords": [
+        "cone",
+        "field",
+        "conical"
+      ],
+      "description": "Creates a cone-shaped field",
+      "parameters": {
+        "name": "Cone Field",
+        "radius": 100.0,
+        "height": 200.0,
+        "offset": 0.0,
+        "remap": "None"
+      }
+    },
+    "torus_field": {
+      "name": "Torus Field",
+      "constant": "c4d.Ftorus",
+      "keywords": [
+        "torus",
+        "field",
+        "donut",
+        "ring"
+      ],
+      "description": "Creates a torus-shaped field",
+      "parameters": {
+        "name": "Torus Field",
+        "radius": 100.0,
+        "inner_radius": 50.0,
+        "offset": 0.0,
+        "remap": "None"
+      }
+    },
+    "formula_field": {
+      "name": "Formula Field",
+      "constant": "c4d.Fformula",
+      "keywords": [
+        "formula",
+        "field",
+        "math",
+        "expression"
+      ],
+      "description": "Creates a field based on mathematical formulas",
+      "parameters": {
+        "name": "Formula Field",
+        "formula": "sin(x)",
+        "size": 200.0,
+        "offset": 0.0,
+        "remap": "None"
+      }
+    },
+    "random_field": {
+      "name": "Random Field",
+      "constant": "c4d.Frandom",
+      "keywords": [
+        "random",
+        "field",
+        "noise",
+        "variation"
+      ],
+      "description": "Creates a random noise-based field",
+      "parameters": {
+        "name": "Random Field",
+        "seed": 1234,
+        "noise": "Perlin",
+        "scale": 100.0,
+        "offset": 0.0
+      }
+    },
+    "radial_field": {
+      "name": "Radial Field",
+      "constant": "c4d.Fradial",
+      "keywords": [
+        "radial",
+        "field",
+        "circular",
+        "round"
+      ],
+      "description": "Creates a radial field pattern",
+      "parameters": {
+        "name": "Radial Field",
+        "radius": 200.0,
+        "falloff": "Linear",
+        "offset": 0.0,
+        "remap": "None"
+      }
+    },
+    "sound_field": {
+      "name": "Sound Field",
+      "constant": "c4d.Fsound",
+      "keywords": [
+        "sound",
+        "field",
+        "audio",
+        "frequency"
+      ],
+      "description": "Creates a sound-reactive field",
+      "parameters": {
+        "name": "Sound Field",
+        "frequency": 440.0,
+        "amplitude": 100.0,
+        "offset": 0.0,
+        "remap": "None"
+      }
+    },
+    "shader_field": {
+      "name": "Shader Field",
+      "constant": "c4d.Fshader",
+      "keywords": [
+        "shader",
+        "field",
+        "texture",
+        "material"
+      ],
+      "description": "Creates a field based on shader values",
+      "parameters": {
+        "name": "Shader Field",
+        "channel": "Alpha",
+        "offset": 0.0,
+        "remap": "None"
+      }
+    },
+    "python_field": {
+      "name": "Python Field",
+      "constant": "c4d.Fpython",
+      "keywords": [
+        "python",
+        "field",
+        "script",
+        "code"
+      ],
+      "description": "Creates a field using Python scripts",
+      "parameters": {
+        "name": "Python Field",
+        "script": "# Python field script",
+        "offset": 0.0,
+        "remap": "None"
+      }
+    }
+  },
+  "dynamics": {},
+  "volumes": {},
+  "models": {
+    "import_selected": {
+      "name": "Import Selected Models",
+      "constant": "import_selected",
+      "keywords": [
+        "import",
+        "selected",
+        "models",
+        "all",
+        "batch"
+      ],
+      "description": "Import all selected 3D models from Tab 2 with transform settings",
+      "parameters": {
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0,
+        "scale": 1.0,
+        "rotation_x": 0.0,
+        "rotation_y": 0.0,
+        "rotation_z": 0.0
+      }
+    },
+    "import_single": {
+      "name": "Import Single Model",
+      "constant": "import_single",
+      "keywords": [
+        "import",
+        "single",
+        "model",
+        "one",
+        "index"
+      ],
+      "description": "Import a specific 3D model by index from selected models",
+      "parameters": {
+        "model_index": 0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "pos_z": 0,
+        "scale": 1.0
+      }
+    },
+    "import_to_cloner": {
+      "name": "Import to Cloner",
+      "constant": "import_to_cloner",
+      "keywords": [
+        "import",
+        "cloner",
+        "clone",
+        "mograph",
+        "duplicate"
+      ],
+      "description": "Import selected 3D models into a cloner object for duplication",
+      "parameters": {
+        "cloner_mode": "grid",
+        "count": 10,
+        "spacing": 100.0
+      }
+    },
+    "import_with_softbody": {
+      "name": "Import with Soft Body",
+      "constant": "import_with_softbody",
+      "keywords": [
+        "import",
+        "softbody",
+        "physics",
+        "deform",
+        "dynamics"
+      ],
+      "description": "Import selected 3D models and apply soft body physics simulation",
+      "parameters": {
+        "pos_x": 0,
+        "pos_y": 500,
+        "pos_z": 0,
+        "scale": 1.0,
+        "mass": 1.0,
+        "bounce": 0.3
+      }
+    },
+    "import_with_rigidbody": {
+      "name": "Import with Rigid Body",
+      "constant": "import_with_rigidbody",
+      "keywords": [
+        "import",
+        "rigidbody",
+        "physics",
+        "collision",
+        "dynamics"
+      ],
+      "description": "Import selected 3D models and apply rigid body physics simulation",
+      "parameters": {
+        "pos_x": 0,
+        "pos_y": 500,
+        "pos_z": 0,
+        "scale": 1.0,
+        "mass": 1.0,
+        "friction": 0.3
+      }
+    }
+  },
+  "materials": {},
+  "render": {}
+}

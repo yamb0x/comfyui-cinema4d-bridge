@@ -33,9 +33,11 @@ class OutputFileHandler(FileSystemEventHandler, LoggerMixin):
             return
             
         file_path = Path(event.src_path)
+        self.logger.info(f"File monitor detected CREATED: {file_path.name}")
         
         # Skip if already processed
         if str(file_path) in self.processed_files:
+            self.logger.info(f"File already processed, skipping: {file_path.name}")
             return
             
         # Schedule delayed processing
@@ -47,32 +49,71 @@ class OutputFileHandler(FileSystemEventHandler, LoggerMixin):
             return
             
         file_path = Path(event.src_path)
+        # Only log image files to avoid spam
+        if file_path.suffix.lower() in ['.png', '.jpg', '.jpeg']:
+            self.logger.info(f"File monitor detected MODIFIED: {file_path.name}")
         
         # Schedule delayed processing
         self._schedule_delayed_processing(file_path, "modified")
     
     def _schedule_delayed_processing(self, file_path: Path, event_type: str):
-        """Schedule delayed processing using the main event loop"""
-        if self.loop and not self.loop.is_closed():
-            try:
-                asyncio.run_coroutine_threadsafe(
-                    self._process_file_delayed(file_path, event_type),
-                    self.loop
-                )
-            except Exception as e:
-                self.logger.error(f"Failed to schedule file processing: {e}")
-        else:
-            # Fallback to immediate processing without delay
-            self._process_file_immediate(file_path, event_type)
+        """Process file immediately since delayed processing has threading issues"""
+        # Reduce logging spam - only log for 3D models to debug the main issue
+        if file_path.suffix.lower() in ['.glb', '.obj', '.fbx', '.gltf']:
+            self.logger.info(f"🎯 IMMEDIATE PROCESSING for: {file_path.name}")
+        
+        # Use immediate processing to avoid threading issues
+        # Add a small delay using time.sleep to ensure file write is complete
+        import time
+        time.sleep(0.5)
+        
+        self._process_file_sync(file_path, event_type)
+    
+    def _process_file_sync(self, file_path: Path, event_type: str):
+        """Process file synchronously with proper duplicate prevention"""
+        try:
+            # Check if already processed to prevent duplicates
+            if str(file_path) in self.processed_files:
+                return
+                
+            if file_path.exists() and file_path.stat().st_size > 0:
+                self.processed_files.add(str(file_path))
+                
+                # Log for 3D models only to debug the main issue
+                if file_path.suffix.lower() in ['.glb', '.obj', '.fbx', '.gltf']:
+                    self.logger.info(f"Processing 3D model: {file_path.name} (size: {file_path.stat().st_size} bytes)")
+                    self.logger.info(f"🔥 CALLING CALLBACK for: {file_path.name}")
+                
+                self.callback(file_path, event_type)
+                
+                if file_path.suffix.lower() in ['.glb', '.obj', '.fbx', '.gltf']:
+                    self.logger.info(f"✅ CALLBACK COMPLETED for: {file_path.name}")
+            else:
+                if file_path.suffix.lower() in ['.glb', '.obj', '.fbx', '.gltf']:
+                    self.logger.warning(f"3D model file doesn't exist or is empty: {file_path.name}")
+        except Exception as e:
+            self.logger.error(f"Error processing file {file_path.name}: {e}")
+            import traceback
+            self.logger.error(f"Full traceback: {traceback.format_exc()}")
     
     async def _process_file_delayed(self, file_path: Path, event_type: str):
         """Process file after a delay to ensure write is complete"""
-        await asyncio.sleep(0.5)  # Wait for file write to complete
-        
-        if file_path.exists() and file_path.stat().st_size > 0:
-            self.processed_files.add(str(file_path))
-            self.logger.info(f"New file detected: {file_path.name}")
-            self.callback(file_path, event_type)
+        try:
+            await asyncio.sleep(0.5)  # Wait for file write to complete
+            
+            if file_path.exists() and file_path.stat().st_size > 0:
+                self.processed_files.add(str(file_path))
+                self.logger.info(f"Processing file: {file_path.name} (size: {file_path.stat().st_size} bytes)")
+                self.logger.info(f"🔥 CALLING CALLBACK for: {file_path.name}")
+                
+                self.callback(file_path, event_type)
+                self.logger.info(f"✅ CALLBACK COMPLETED for: {file_path.name}")
+            else:
+                self.logger.warning(f"File doesn't exist or is empty: {file_path.name}")
+        except Exception as e:
+            self.logger.error(f"Error processing file {file_path.name}: {e}")
+            import traceback
+            self.logger.error(f"Full traceback: {traceback.format_exc()}")
     
     def _process_file_immediate(self, file_path: Path, event_type: str):
         """Process file immediately (fallback)"""
@@ -82,7 +123,9 @@ class OutputFileHandler(FileSystemEventHandler, LoggerMixin):
         if file_path.exists() and file_path.stat().st_size > 0:
             self.processed_files.add(str(file_path))
             self.logger.info(f"New file detected: {file_path.name}")
+            self.logger.info(f"🔥 CALLING CALLBACK (immediate) for: {file_path.name}")
             self.callback(file_path, event_type)
+            self.logger.info(f"✅ CALLBACK COMPLETED (immediate) for: {file_path.name}")
 
 
 class FileMonitor(LoggerMixin):
@@ -250,6 +293,14 @@ class AssetTracker(LoggerMixin):
             if asset_data["type"] == asset_type:
                 assets.append(asset_data["path"])
         return assets
+    
+    def get_images(self) -> List[Path]:
+        """Get all tracked image assets"""
+        return self.get_assets_by_type("image")
+    
+    def get_models(self) -> List[Path]:
+        """Get all tracked 3D model assets"""
+        return self.get_assets_by_type("model")
     
     def clear(self):
         """Clear all tracking data"""

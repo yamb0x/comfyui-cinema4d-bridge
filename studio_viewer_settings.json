@@ -1,0 +1,41 @@
+{
+  "sliders": {
+    "ambientIntensity": 0.61,
+    "keyIntensity": 2.62,
+    "keyPosX": 9.3,
+    "keyPosY": 5.1,
+    "keyPosZ": 8.2,
+    "shadowSoftness": 10.0,
+    "fillIntensity": 1.21,
+    "fillPosX": 0.3,
+    "rimIntensity": 0.4,
+    "materialMetalness": 0.9,
+    "materialRoughness": 1.24,
+    "envMapIntensity": 2.84,
+    "materialEmissive": 0.0,
+    "cameraFov": 19.0,
+    "cameraDistance": 7.8,
+    "cameraHeight": 2.0,
+    "cameraNear": 0.1,
+    "cameraFar": 100.0,
+    "rotateSpeed": 0.15,
+    "dampingFactor": 0.05,
+    "bloomStrength": 1.03,
+    "bloomRadius": 0.4,
+    "bloomThreshold": 0.85,
+    "exposure": 1.41,
+    "floorMetalness": 0.1,
+    "floorRoughness": 0.8
+  },
+  "checkboxes": {
+    "shadows": false,
+    "autoRotate": true,
+    "bloom": true,
+    "floor": false,
+    "grid": true
+  },
+  "combos": {
+    "toneMapping": "None",
+    "background": "Black"
+  }
+}

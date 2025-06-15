@@ -1,0 +1,139 @@
+{
+  "sphere": {
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "radius": 100,
+    "render_perfect": true,
+    "segments": 24,
+    "type": 0
+  },
+  "cube": {
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "segments": 1,
+    "size_x": 200,
+    "size_y": 200,
+    "size_z": 200
+  },
+  "cylinder": {
+    "caps": true,
+    "height": 200,
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "radius": 50,
+    "segments": 36
+  },
+  "cone": {
+    "bottom_radius": 100,
+    "height": 200,
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "segments": 36,
+    "top_radius": 0
+  },
+  "torus": {
+    "pipe_radius": 20,
+    "pipe_segments": 18,
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "ring_radius": 100,
+    "ring_segments": 36
+  },
+  "plane": {
+    "height": 400,
+    "height_segments": 1,
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "width": 400,
+    "width_segments": 1
+  },
+  "disc": {
+    "inner_radius": 0,
+    "outer_radius": 100,
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "segments": 36
+  },
+  "tube": {
+    "height": 200,
+    "inner_radius": 50,
+    "outer_radius": 100,
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "segments": 36
+  },
+  "pyramid": {
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "size_x": 200,
+    "size_y": 200,
+    "size_z": 200
+  },
+  "figure": {
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "size": 200
+  },
+  "platonic": {
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "size": 100,
+    "type": 0
+  },
+  "landscape": {
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "size": 1000
+  },
+  "oiltank": {
+    "height": 200,
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "radius": 100
+  },
+  "capsule": {
+    "height": 200,
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "radius": 50
+  },
+  "relief": {
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "size": 400
+  },
+  "polygon": {
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "size": 200
+  },
+  "fractal": {
+    "iterations": 3,
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "size": 200
+  },
+  "formula": {
+    "pos_x": 0,
+    "pos_y": 0,
+    "pos_z": 0,
+    "size": 200
+  }
+}

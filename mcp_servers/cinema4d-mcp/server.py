@@ -428,7 +428,7 @@ def main():
         obj[c4d.PRIM_PLANE_WIDTH] = {size}
         obj[c4d.PRIM_PLANE_HEIGHT] = {size}
     elif "{primitive_type}" == "cone":
-        obj[c4d.PRIM_CONE_RADIUS] = {size/2}
+        obj[c4d.PRIM_CONE_BRAD] = {size/2}
         obj[c4d.PRIM_CONE_HEIGHT] = {size}
     elif "{primitive_type}" == "torus":
         obj[c4d.PRIM_TORUS_OUTERRAD] = {size/2}

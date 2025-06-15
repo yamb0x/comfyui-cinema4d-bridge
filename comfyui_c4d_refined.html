@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComfyUI → Cinema4D Pipeline Tool</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #000000;
+            --gray-950: #0a0a0a;
+            --gray-900: #171717;
+            --gray-800: #262626;
+            --gray-700: #404040;
+            --gray-600: #525252;
+            --gray-500: #737373;
+            --gray-400: #a3a3a3;
+            --gray-300: #d4d4d8;
+            --white: #fafafa;
+            --green: #22c55e;
+            --green-dim: #16a34a;
+            --red: #ef4444;
+            --yellow: #eab308;
+            --blue: #3b82f6;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--black);
+            color: var(--white);
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1.3;
+            overflow: hidden;
+        }
+
+        .app {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Title Bar */
+        .title-bar {
+            height: 32px;
+            background: var(--gray-950);
+            border-bottom: 1px solid var(--gray-800);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            font-size: 11px;
+        }
+
+        .app-title {
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        .system-stats {
+            color: var(--gray-500);
+            font-size: 10px;
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Tab Bar */
+        .tab-bar {
+            height: 36px;
+            background: var(--gray-950);
+            border-bottom: 1px solid var(--gray-800);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 24px;
+        }
+
+        .tab {
+            font-size: 11px;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            padding: 8px 0;
+            position: relative;
+        }
+
+        .tab.active {
+            color: var(--white);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--white);
+        }
+
+        /* Main Layout */
+        .main {
+            flex: 1;
+            display: flex;
+        }
+
+        /* Left Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--gray-950);
+            border-right: 1px solid var(--gray-800);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-section {
+            border-bottom: 1px solid var(--gray-800);
+            padding: 16px;
+        }
+
+        .section-title {
+            font-size: 10px;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .param-group {
+            margin-bottom: 16px;
+        }
+
+        .param-label {
+            font-size: 10px;
+            color: var(--gray-400);
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .param-input, .param-select {
+            width: 100%;
+            background: var(--gray-900);
+            border: 1px solid var(--gray-700);
+            color: var(--white);
+            padding: 6px 8px;
+            font-family: inherit;
+            font-size: 11px;
+            outline: none;
+        }
+
+        .param-input:focus, .param-select:focus {
+            border-color: var(--gray-600);
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            margin-bottom: 4px;
+        }
+
+        .status-key {
+            color: var(--gray-500);
+        }
+
+        .status-value {
+            color: var(--white);
+        }
+
+        .status-value.active {
+            color: var(--green);
+        }
+
+        /* Right Sidebar */
+        .right-sidebar {
+            width: 240px;
+            background: var(--gray-950);
+            border-left: 1px solid var(--gray-800);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .param-panel {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .param-section {
+            margin-bottom: 20px;
+        }
+
+        .param-section-title {
+            font-size: 9px;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .param-field {
+            margin-bottom: 12px;
+        }
+
+        .param-field-label {
+            font-size: 10px;
+            color: var(--gray-400);
+            margin-bottom: 3px;
+            display: block;
+        }
+
+        .param-field-input {
+            width: 100%;
+            background: var(--gray-900);
+            border: 1px solid var(--gray-700);
+            color: var(--white);
+            padding: 4px 6px;
+            font-family: inherit;
+            font-size: 10px;
+            outline: none;
+        }
+
+        .param-field-input:focus {
+            border-color: var(--gray-600);
+        }
+
+        /* Generate Button */
+        .generate-btn {
+            width: 100%;
+            background: var(--green);
+            border: none;
+            color: var(--black);
+            padding: 12px 16px;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background 0.15s ease;
+        }
+
+        .generate-btn:hover {
+            background: var(--green-dim);
+        }
+
+        /* Center Content */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--black);
+        }
+
+        .content-header {
+            height: 40px;
+            background: var(--gray-950);
+            border-bottom: 1px solid var(--gray-800);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+
+        .content-title {
+            font-size: 11px;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content-actions {
+            display: flex;
+            gap: 8px;
+            font-size: 10px;
+            color: var(--gray-500);
+        }
+
+        /* Canvas Grid */
+        .canvas-grid {
+            flex: 1;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        .canvas-item {
+            aspect-ratio: 1;
+            background: var(--gray-900);
+            border: 1px solid var(--gray-800);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .canvas-item:hover {
+            border-color: var(--gray-700);
+        }
+
+        .canvas-item.selected {
+            border-color: var(--blue);
+        }
+
+        .canvas-placeholder {
+            color: var(--gray-600);
+            font-size: 10px;
+            text-align: center;
+        }
+
+        .canvas-status {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            font-size: 9px;
+            color: var(--gray-500);
+        }
+
+        .canvas-controls {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            display: flex;
+            gap: 4px;
+        }
+
+        .canvas-btn {
+            width: 16px;
+            height: 16px;
+            background: var(--gray-800);
+            border: 1px solid var(--gray-700);
+            color: var(--gray-400);
+            font-size: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .canvas-btn:hover {
+            background: var(--gray-700);
+            color: var(--white);
+        }
+
+        /* Console */
+        .console {
+            height: 120px;
+            background: var(--gray-950);
+            border-top: 1px solid var(--gray-800);
+            padding: 8px 16px;
+            overflow-y: auto;
+            font-size: 10px;
+            line-height: 1.4;
+        }
+
+        .console-line {
+            margin-bottom: 2px;
+            color: var(--gray-500);
+        }
+
+        .console-time {
+            color: var(--gray-600);
+        }
+
+        .console-level {
+            margin: 0 6px;
+        }
+
+        .console-level.success {
+            color: var(--green);
+        }
+
+        .console-level.error {
+            color: var(--red);
+        }
+
+        .console-level.warning {
+            color: var(--yellow);
+        }
+
+        .console-level.info {
+            color: var(--blue);
+        }
+
+        .console-message {
+            color: var(--gray-400);
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 24px;
+            background: var(--gray-950);
+            border-top: 1px solid var(--gray-800);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            font-size: 10px;
+            color: var(--gray-600);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-950);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-700);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-600);
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Title Bar -->
+        <div class="title-bar">
+            <div class="app-title">ComfyUI → Cinema4D Pipeline Tool</div>
+            <div class="system-stats">
+                <span>FPS: N/A</span>
+                <span>GPU: 93%</span>
+                <span>CPU: 14%</span>
+                <span>LAT: N/A</span>
+            </div>
+        </div>
+
+        <!-- Tab Bar -->
+        <div class="tab-bar">
+            <div class="tab">image generation</div>
+            <div class="tab active">3d model generation</div>
+            <div class="tab">texture generation</div>
+            <div class="tab">cinema4d intelligence</div>
+        </div>
+
+        <!-- Main Layout -->
+        <div class="main">
+            <!-- Left Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <div class="section-title">positive prompt</div>
+                    <div class="param-group">
+                        <textarea class="param-input" rows="3" placeholder="Digital, Graphic, neon, alien style background"></textarea>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="section-title">negative prompt</div>
+                    <div class="param-group">
+                        <textarea class="param-input" rows="2" placeholder="low quality, blurry, artifacts, distorted"></textarea>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="section-title">image generation</div>
+                    <div class="param-group">
+                        <label class="param-label">sampler name</label>
+                        <select class="param-select">
+                            <option>Euler a</option>
+                            <option>DPM++ 2M Karras</option>
+                            <option>DDIM</option>
+                        </select>
+                    </div>
+                    <div class="param-group">
+                        <label class="param-label">scheduler</label>
+                        <select class="param-select">
+                            <option>normal</option>
+                            <option>karras</option>
+                            <option>exponential</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="section-title">batch size</div>
+                    <div class="param-group">
+                        <select class="param-select">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>4</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="section-title">image selection</div>
+                    <div class="status-item">
+                        <span class="status-key">selected images</span>
+                        <span class="status-value">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-key">batch size</span>
+                        <span class="status-value">1</span>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <button class="generate-btn">GENERATE IMAGE</button>
+                </div>
+            </div>
+
+            <!-- Center Content -->
+            <div class="content">
+                <div class="content-header">
+                    <div class="content-title">new canvas</div>
+                    <div class="content-actions">
+                        <span>Empty for image generation.</span>
+                    </div>
+                </div>
+
+                <div class="canvas-grid">
+                    <div class="canvas-item">
+                        <div class="canvas-placeholder">Image Generating...</div>
+                        <div class="canvas-status">◦</div>
+                        <div class="canvas-controls">
+                            <div class="canvas-btn">↗</div>
+                        </div>
+                    </div>
+                    
+                    <div class="canvas-item">
+                        <div class="canvas-placeholder">Image Generating...</div>
+                        <div class="canvas-status">◦</div>
+                        <div class="canvas-controls">
+                            <div class="canvas-btn">↗</div>
+                        </div>
+                    </div>
+                    
+                    <div class="canvas-item selected">
+                        <div class="canvas-placeholder">Image Generating...</div>
+                        <div class="canvas-status">◦</div>
+                        <div class="canvas-controls">
+                            <div class="canvas-btn">↗</div>
+                        </div>
+                    </div>
+                    
+                    <div class="canvas-item">
+                        <div class="canvas-placeholder">Image Generating...</div>
+                        <div class="canvas-status">◦</div>
+                        <div class="canvas-controls">
+                            <div class="canvas-btn">↗</div>
+                        </div>
+                    </div>
+                    
+                    <div class="canvas-item">
+                        <div class="canvas-status"></div>
+                    </div>
+                    
+                    <div class="canvas-item">
+                        <div class="canvas-status"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="right-sidebar">
+                <div class="param-panel">
+                    <div class="param-section">
+                        <div class="param-section-title">• Dynamic Image Parameters Loaded</div>
+                    </div>
+
+                    <div class="param-section">
+                        <div class="param-section-title">model selection</div>
+                        <div class="param-field">
+                            <label class="param-field-label">model checkpoints</label>
+                            <select class="param-field-input">
+                                <option>flux-dev-fp8-safetensors</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="param-section">
+                        <div class="param-section-title">lora models</div>
+                        <div class="param-field">
+                            <label class="param-field-label">lora 1 (bypassed)</label>
+                            <select class="param-field-input">
+                                <option>Frosted</option>
+                            </select>
+                        </div>
+                        <div class="param-field">
+                            <label class="param-field-label">model strength</label>
+                            <input type="number" class="param-field-input" value="0.65" step="0.01">
+                        </div>
+                        <div class="param-field">
+                            <label class="param-field-label">clip strength</label>
+                            <input type="number" class="param-field-input" value="0.65" step="0.01">
+                        </div>
+                    </div>
+
+                    <div class="param-section">
+                        <div class="param-section-title">lora 2 (bypassed)</div>
+                        <div class="param-field">
+                            <label class="param-field-label">plus LoRa thermal image submersion</label>
+                            <select class="param-field-input">
+                                <option>Frosted</option>
+                            </select>
+                        </div>
+                        <div class="param-field">
+                            <label class="param-field-label">model strength</label>
+                            <input type="number" class="param-field-input" value="1.00" step="0.01">
+                        </div>
+                        <div class="param-field">
+                            <label class="param-field-label">clip strength</label>
+                            <input type="number" class="param-field-input" value="1.00" step="0.01">
+                        </div>
+                    </div>
+
+                    <div class="param-section">
+                        <div class="param-section-title">sampling parameters</div>
+                        <div class="param-field">
+                            <label class="param-field-label">steps</label>
+                            <input type="number" class="param-field-input" value="20" step="1">
+                        </div>
+                        <div class="param-field">
+                            <label class="param-field-label">cfg scale</label>
+                            <input type="number" class="param-field-input" value="1.00" step="0.1">
+                        </div>
+                        <div class="param-field">
+                            <label class="param-field-label">sampler method</label>
+                            <select class="param-field-input">
+                                <option>euler</option>
+                            </select>
+                        </div>
+                        <div class="param-field">
+                            <label class="param-field-label">scheduler</label>
+                            <select class="param-field-input">
+                                <option>simple</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="param-section">
+                        <div class="param-section-title">flux guidance</div>
+                        <div class="param-field">
+                            <label class="param-field-label">guidance scale</label>
+                            <input type="number" class="param-field-input" value="3.50" step="0.1">
+                        </div>
+                    </div>
+
+                    <div class="param-section">
+                        <div class="param-section-title">image resolution</div>
+                        <div class="param-field">
+                            <label class="param-field-label">set resolution</label>
+                            <select class="param-field-input">
+                                <option>1024x1024</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Console -->
+        <div class="console">
+            <div class="console-line">
+                <span class="console-time">[23:49:57]</span>
+                <span class="console-level info">INFO</span>
+                <span class="console-message">Prompt executed. Prompt schedule: Prompt: 1 | Dynamic 2 | LoRA "Frosted": 1(1.0), "Plus LoRA Thermal Image submersion": 1(1.0), Steps: 20, </span>
+            </div>
+            <div class="console-line">
+                <span class="console-time">[23:49:57]</span>
+                <span class="console-level info">INFO</span>
+                <span class="console-message">Sampling: 1(2) | Flux Guidance | FluxOriginalSimplerScheduling | Base/Input Steps: 20, Adapted Time...</span>
+            </div>
+            <div class="console-line">
+                <span class="console-time">[23:49:57]</span>
+                <span class="console-level info">INFO</span>
+                <span class="console-message">KSampler.sample: 21.5456, Denoiser.forward: 21.05, VAE Encode: 0.32, VAE Decode: 0.52, LoRA_MULT: model_execute_patch_time: 0.0175...</span>
+            </div>
+            <div class="console-line">
+                <span class="console-time">[23:49:58]</span>
+                <span class="console-level success">SUCCESS</span>
+                <span class="console-message">Total execution time: 23.1462 seconds</span>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div>
+                <span>Auto scroll</span>
+            </div>
+            <div>
+                <span>Clear</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Console animation
+        function addConsoleMessage(level, message) {
+            const console = document.querySelector('.console');
+            const time = new Date().toLocaleTimeString();
+            const line = document.createElement('div');
+            line.className = 'console-line';
+            line.innerHTML = `
+                <span class="console-time">[${time}]</span>
+                <span class="console-level ${level}">${level.toUpperCase()}</span>
+                <span class="console-message">${message}</span>
+            `;
+            console.appendChild(line);
+            console.scrollTop = console.scrollHeight;
+            
+            if (console.children.length > 15) {
+                console.removeChild(console.children[0]);
+            }
+        }
+
+        // Simulate processing
+        const messages = [
+            { level: 'info', msg: 'Loading model checkpoints...' },
+            { level: 'info', msg: 'Initializing CUDA backend...' },
+            { level: 'success', msg: 'Model loaded successfully' },
+            { level: 'info', msg: 'Processing image generation queue...' },
+            { level: 'warning', msg: 'High GPU utilization detected' }
+        ];
+
+        setInterval(() => {
+            const msg = messages[Math.floor(Math.random() * messages.length)];
+            addConsoleMessage(msg.level, msg.msg);
+        }, 5000);
+
+        // Canvas selection
+        document.querySelectorAll('.canvas-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.canvas-item').forEach(i => i.classList.remove('selected'));
+                item.classList.add('selected');
+            });
+        });
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

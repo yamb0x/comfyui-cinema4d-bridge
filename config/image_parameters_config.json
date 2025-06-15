@@ -1,0 +1,63 @@
+{
+  "selected_nodes": [
+    "FluxGuidance_2",
+    "LoraLoader_3",
+    "Note_4",
+    "CheckpointLoaderSimple_5",
+    "EmptySD3LatentImage_8",
+    "LoraLoader_7",
+    "LoraLoader_6",
+    "KSampler_10"
+  ],
+  "node_info": {
+    "FluxGuidance_2": {
+      "type": "FluxGuidance",
+      "id": "2",
+      "title": "",
+      "supported": true
+    },
+    "LoraLoader_3": {
+      "type": "LoraLoader",
+      "id": "3",
+      "title": "",
+      "supported": true
+    },
+    "Note_4": {
+      "type": "Note",
+      "id": "4",
+      "title": "",
+      "supported": true
+    },
+    "CheckpointLoaderSimple_5": {
+      "type": "CheckpointLoaderSimple",
+      "id": "5",
+      "title": "",
+      "supported": true
+    },
+    "EmptySD3LatentImage_8": {
+      "type": "EmptySD3LatentImage",
+      "id": "8",
+      "title": "",
+      "supported": true
+    },
+    "LoraLoader_7": {
+      "type": "LoraLoader",
+      "id": "7",
+      "title": "",
+      "supported": true
+    },
+    "LoraLoader_6": {
+      "type": "LoraLoader",
+      "id": "6",
+      "title": "",
+      "supported": true
+    },
+    "KSampler_10": {
+      "type": "KSampler",
+      "id": "10",
+      "title": "",
+      "supported": true
+    }
+  },
+  "workflow_file": "generate_thermal_shapes.json"
+}

@@ -180,9 +180,35 @@ def get_monospace_stylesheet() -> str:
 
     /* Prompt input areas */
     QTextEdit[objectName="prompt_input"] {
-        min-height: 120px;
         font-size: 13px;
         line-height: 1.6;
+        padding: 4px 8px;
+        margin: 0px;
+    }
+    
+    /* All QTextEdit in parameter sections - tight spacing */
+    QWidget[objectName="parameter_section"] QTextEdit {
+        padding: 4px 8px;
+        margin: 0px;
+    }
+    
+    /* Prompt sections - ultra tight spacing */
+    QWidget[objectName="prompt_section"] {
+        background-color: #ffffff;
+        border: none;
+        padding: 0px;
+        margin: 0px;
+    }
+    
+    QWidget[objectName="prompt_section"] QTextEdit {
+        padding: 4px 8px;
+        margin: 0px;
+    }
+    
+    QWidget[objectName="prompt_section"] QLabel[objectName="section_title"] {
+        margin-bottom: 2px;
+        margin-top: 0px;
+        padding: 0px;
     }
 
     /* ComboBox - consistent fonts and clear styling */
@@ -448,17 +474,7 @@ def get_monospace_stylesheet() -> str:
         background-color: #333333;
     }
 
-    /* Section titles - matching reference design */
-    QLabel[objectName="section_title"] {
-        font-family: 'Basis Grotesque', 'Arial', sans-serif;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: #666666;
-        font-weight: bold;
-        margin-bottom: 12px;
-        padding: 0px;
-    }
+    /* Section titles - removed duplicate, using better alignment version below */
 
     /* Content areas with proper spacing */
     QWidget[objectName="content_area"] {
@@ -489,8 +505,8 @@ def get_monospace_stylesheet() -> str:
     QWidget[objectName="parameter_section"] {
         background-color: #ffffff;
         border: none;
-        padding: 20px;
-        margin-bottom: 15px;
+        padding: 0px;
+        margin: 0px;
     }
 
     /* Object count inputs - smaller and cleaner */
@@ -546,6 +562,13 @@ def get_monospace_stylesheet() -> str:
 
     /* Image placeholder styling */
     QWidget[objectName="image_slot"] {
+        background-color: #f0f0f0;
+        border: 1px solid #000000;
+        border-radius: 0px;
+    }
+    
+    /* 3D Model card styling - matches image cards */
+    QWidget[objectName="model_slot"] {
         background-color: #f0f0f0;
         border: 1px solid #000000;
         border-radius: 0px;
@@ -646,7 +669,7 @@ def get_monospace_stylesheet() -> str:
         letter-spacing: 0.05em;
         color: #666666;
         font-weight: bold;
-        margin-bottom: 8px;
+        margin-bottom: 4px;
         margin-left: 2px;
         padding: 0px;
     }
@@ -658,5 +681,339 @@ def get_monospace_stylesheet() -> str:
         color: #999999;
         padding: 0px;
         margin: 0px;
+    }
+
+    /* ===== CINEMA4D TRAINING INTERFACE STYLES ===== */
+    
+    QGroupBox[objectName="training_header"] {
+        font-weight: bold;
+        color: #000000;
+        border: 2px solid #000000;
+        border-radius: 4px;
+        margin-top: 10px;
+        padding-top: 10px;
+    }
+    
+    QGroupBox[objectName="training_header"]::title {
+        subcontrol-origin: margin;
+        left: 10px;
+        padding: 0 8px 0 8px;
+        color: #000000;
+        font-weight: bold;
+    }
+    
+    QLabel[objectName="stage_info"] {
+        color: #000000;
+        font-weight: bold;
+        font-size: 13px;
+    }
+    
+    QLabel[objectName="intelligence_info"] {
+        color: #666666;
+        font-size: 13px;
+    }
+    
+    QLabel[objectName="progress_info"] {
+        color: #666666;
+        font-size: 12px;
+        font-style: italic;
+    }
+    
+    QLabel[objectName="intelligence_target"] {
+        color: #333333;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    
+    QTabWidget[objectName="training_tabs"] {
+        border: 1px solid #e1e1e1;
+    }
+    
+    QTabWidget[objectName="training_tabs"]::pane {
+        border: 1px solid #e1e1e1;
+        background-color: #ffffff;
+    }
+    
+    QTabWidget[objectName="training_tabs"]::tab-bar {
+        alignment: left;
+    }
+    
+    QTabBar::tab {
+        background-color: #f5f5f5;
+        color: #666666;
+        border: 1px solid #e1e1e1;
+        border-bottom: none;
+        padding: 6px 12px;
+        margin-right: 2px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    QTabBar::tab:selected {
+        background-color: #ffffff;
+        color: #000000;
+        font-weight: bold;
+        border-bottom: 1px solid #ffffff;
+    }
+    
+    QTabBar::tab:hover {
+        background-color: #e8e8e8;
+        color: #333333;
+    }
+    
+    /* Training button styles */
+    QPushButton[objectName="tiny_btn"] {
+        background-color: #f5f5f5;
+        color: #666666;
+        border: 1px solid #e1e1e1;
+        border-radius: 3px;
+        padding: 3px 6px;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        min-height: 20px;
+        max-height: 24px;
+    }
+    
+    QPushButton[objectName="tiny_btn"]:hover {
+        background-color: #e8e8e8;
+        color: #333333;
+        border-color: #cccccc;
+    }
+    
+    QPushButton[objectName="tiny_btn"]:pressed {
+        background-color: #000000;
+        color: #ffffff;
+        border-color: #000000;
+    }
+    
+    QPushButton[objectName="hierarchy_btn"] {
+        background-color: #ffffff;
+        color: #000000;
+        border: 2px solid #000000;
+        border-radius: 4px;
+        padding: 8px 16px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+    
+    QPushButton[objectName="hierarchy_btn"]:hover {
+        background-color: #000000;
+        color: #ffffff;
+    }
+    
+    QPushButton[objectName="workflow_btn"] {
+        background-color: #f5f5f5;
+        color: #000000;
+        border: 1px solid #cccccc;
+        border-radius: 4px;
+        padding: 10px 16px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    
+    QPushButton[objectName="workflow_btn"]:hover {
+        background-color: #e8e8e8;
+        border-color: #999999;
+    }
+    
+    QPushButton[objectName="workflow_btn"]:pressed {
+        background-color: #cccccc;
+        border-color: #666666;
+    }
+    
+    QPushButton[objectName="nl_test_btn"] {
+        background-color: #000000;
+        color: #ffffff;
+        border: 2px solid #000000;
+        border-radius: 4px;
+        padding: 10px 16px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+    
+    QPushButton[objectName="nl_test_btn"]:hover {
+        background-color: #333333;
+        border-color: #333333;
+    }
+    
+    QPushButton[objectName="test_btn"] {
+        background-color: #666666;
+        color: #ffffff;
+        border: 1px solid #666666;
+        border-radius: 3px;
+        padding: 6px 12px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    QPushButton[objectName="test_btn"]:hover {
+        background-color: #333333;
+        border-color: #333333;
+    }
+    
+    QPushButton[objectName="connection_test_btn"] {
+        background-color: #f5f5f5;
+        color: #666666;
+        border: 1px solid #e1e1e1;
+        border-radius: 3px;
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+    
+    QPushButton[objectName="connection_test_btn"]:hover {
+        background-color: #e8e8e8;
+        color: #333333;
+    }
+    
+    QPushButton[objectName="import_btn"] {
+        background-color: #ffffff;
+        color: #000000;
+        border: 2px solid #000000;
+        border-radius: 4px;
+        padding: 8px 16px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    
+    QPushButton[objectName="import_btn"]:hover {
+        background-color: #000000;
+        color: #ffffff;
+    }
+    
+    /* ===== UNIFIED COMPACT INTERFACE STYLES ===== */
+    
+    QGroupBox[objectName="compact_section"] {
+        font-size: 10px;
+        font-weight: bold;
+        color: #000000;
+        border: 1px solid #cccccc;
+        border-radius: 3px;
+        margin-top: 5px;
+        padding-top: 8px;
+        width: 260px;
+        min-width: 260px;
+        max-width: 260px;
+    }
+    
+    QGroupBox[objectName="compact_section"]::title {
+        subcontrol-origin: margin;
+        left: 8px;
+        padding: 0 5px 0 5px;
+        font-size: 9px;
+    }
+    
+    QPushButton[objectName="compact_btn"] {
+        background-color: #f8f8f8;
+        color: #000000;
+        border: 1px solid #cccccc;
+        border-radius: 2px;
+        padding: 3px 6px;
+        font-size: 9px;
+        font-weight: normal;
+        min-height: 16px;
+        max-height: 18px;
+        max-width: 140px;
+        margin: 1px;
+    }
+    
+    QPushButton[objectName="compact_btn"]:hover {
+        background-color: #e8e8e8;
+        border-color: #999999;
+    }
+    
+    QPushButton[objectName="compact_btn"]:pressed {
+        background-color: #cccccc;
+        border-color: #666666;
+    }
+    
+    QPushButton[objectName="settings_wheel"] {
+        background-color: #ffffff;
+        color: #666666;
+        border: 1px solid #cccccc;
+        border-radius: 8px;
+        padding: 0px;
+        font-size: 7px;
+        min-width: 14px;
+        max-width: 16px;
+        min-height: 14px;
+        max-height: 16px;
+    }
+    
+    QPushButton[objectName="settings_wheel"]:hover {
+        background-color: #f0f0f0;
+        color: #333333;
+        border-color: #999999;
+    }
+    
+    QPushButton[objectName="settings_wheel"]:pressed {
+        background-color: #e0e0e0;
+        color: #000000;
+        border-color: #666666;
+    }
+    
+    QLabel[objectName="progress_compact"] {
+        font-size: 8px;
+        color: #666666;
+        padding: 1px;
+        margin: 0px;
+    }
+    
+    /* Compact dialog styles */
+    QDialog {
+        background-color: #ffffff;
+        color: #000000;
+        border: 2px solid #000000;
+    }
+    
+    QDialog QLabel {
+        font-size: 11px;
+        color: #333333;
+        padding: 2px;
+    }
+    
+    QDialog QDoubleSpinBox, QDialog QSpinBox, QDialog QLineEdit, QDialog QComboBox {
+        background-color: #ffffff;
+        color: #000000;
+        border: 1px solid #cccccc;
+        border-radius: 3px;
+        padding: 4px;
+        font-size: 11px;
+        min-height: 20px;
+    }
+    
+    QDialog QDoubleSpinBox:focus, QDialog QSpinBox:focus, QDialog QLineEdit:focus, QDialog QComboBox:focus {
+        border-color: #000000;
+    }
+    
+    QDialogButtonBox QPushButton {
+        background-color: #f8f8f8;
+        color: #000000;
+        border: 1px solid #cccccc;
+        border-radius: 3px;
+        padding: 6px 12px;
+        font-size: 11px;
+        min-width: 60px;
+    }
+    
+    QDialogButtonBox QPushButton:hover {
+        background-color: #e8e8e8;
+        border-color: #999999;
+    }
+    
+    QDialogButtonBox QPushButton:default {
+        background-color: #000000;
+        color: #ffffff;
+        border-color: #000000;
+    }
+    
+    QDialogButtonBox QPushButton:default:hover {
+        background-color: #333333;
     }
     """

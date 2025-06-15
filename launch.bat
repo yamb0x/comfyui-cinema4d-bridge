@@ -15,6 +15,11 @@ if exist "venv\Scripts\activate.bat" (
 
 echo.
 echo Current directory: %CD%
+
+REM Set UTF-8 encoding
+set PYTHONIOENCODING=utf-8
+chcp 65001 >nul 2>&1
+
 echo Launching application...
 python main.py
 pause

@@ -1,0 +1,145 @@
+{
+  "selected_nodes": [
+    "Hy3DDiffusersSchedulerConfig_149",
+    "SimpleMath+_317",
+    "KSampler_180",
+    "EmptyLatentImage_179",
+    "Hy3DExportMesh_166",
+    "Constant Number_511",
+    "PreviewImage_219",
+    "CheckpointLoaderSimple_183"
+  ],
+  "node_info": {
+    "Hy3DDiffusersSchedulerConfig_149": {
+      "type": "Hy3DDiffusersSchedulerConfig",
+      "id": "149",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        "Euler A",
+        "default"
+      ]
+    },
+    "SimpleMath+_317": {
+      "type": "SimpleMath+",
+      "id": "317",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        "a-1"
+      ]
+    },
+    "KSampler_180": {
+      "type": "KSampler",
+      "id": "180",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        697749537937258,
+        "fixed",
+        45,
+        5.5,
+        "dpmpp_2m",
+        "karras",
+        1
+      ]
+    },
+    "EmptyLatentImage_179": {
+      "type": "EmptyLatentImage",
+      "id": "179",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        1024,
+        1024,
+        1
+      ]
+    },
+    "Hy3DExportMesh_166": {
+      "type": "Hy3DExportMesh",
+      "id": "166",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        "3D/Hy3D",
+        "glb",
+        false
+      ]
+    },
+    "Constant Number_511": {
+      "type": "Constant Number",
+      "id": "511",
+      "title": "Upscale by",
+      "supported": false,
+      "widgets_values": [
+        "float",
+        2.0000000000000004
+      ]
+    },
+    "PreviewImage_219": {
+      "type": "PreviewImage",
+      "id": "219",
+      "title": "Bridge Preview UI",
+      "supported": true,
+      "widgets_values": []
+    },
+    "CheckpointLoaderSimple_183": {
+      "type": "CheckpointLoaderSimple",
+      "id": "183",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        "juggernautXL_juggXIByRundiffusion.safetensors"
+      ]
+    }
+  },
+  "workflow_file": "Model_texturing_juggernautXL_v08.json",
+  "discovered_node_types": [
+    "Hy3DSampleMultiView",
+    "ImageConcatFromBatch",
+    "CLIPTextEncode",
+    "SetUnionControlNetType",
+    "Hy3DBakeFromMultiview",
+    "SolidMask",
+    "PreviewImage",
+    "Hy3DApplyTexture",
+    "Preview3D",
+    "ImageCompositeMasked",
+    "Hy3DMeshUVWrap",
+    "TransparentBGSession+",
+    "MaskToImage",
+    "DownloadAndLoadHy3DDelightModel",
+    "Upscale Model Loader",
+    "ImageFromBatch",
+    "ImageRemoveBackground+",
+    "ResizeMask",
+    "Hy3DExportMesh",
+    "UltimateSDUpscale",
+    "Hy3DLoadMesh",
+    "ControlNetApplyAdvanced",
+    "ImageBlend",
+    "PrimitiveInt",
+    "KSampler",
+    "SimpleMath+",
+    "ConditioningConcat",
+    "Hy3DMeshVerticeInpaintTexture",
+    "CV2InpaintTexture",
+    "EmptyLatentImage",
+    "InsertImagesToBatchIndexed",
+    "Hy3DSetMeshPBRTextures",
+    "ImageResizeKJv2",
+    "CheckpointLoaderSimple",
+    "SaveImage",
+    "Constant Number",
+    "DownloadAndLoadHy3DPaintModel",
+    "ControlNetLoader",
+    "Hy3DDelightImage",
+    "ImageInvert",
+    "NormalMapSimple",
+    "Hy3DRenderMultiViewDepth",
+    "Hy3DRenderMultiView",
+    "Hy3DDiffusersSchedulerConfig",
+    "SomethingToString",
+    "Hy3DCameraConfig"
+  ]
+}
