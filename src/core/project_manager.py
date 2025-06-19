@@ -88,7 +88,7 @@ class ProjectManager:
         
         self.current_project_path = None
         self.is_modified = False
-        logger.info("Created new project")
+        logger.debug("Created new project")
         
         return project
         

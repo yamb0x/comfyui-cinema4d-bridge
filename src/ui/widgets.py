@@ -893,20 +893,54 @@ class ImageThumbnail(QFrame):
         self._selected = False
         
         self.setFixedSize(size + 20, size + 40)
-        self.setFrameStyle(QFrame.Box)
-        self.setLineWidth(2)
+        self.setFrameStyle(QFrame.NoFrame)  # Remove default frame, use CSS instead
+        self.setObjectName("image_thumbnail")  # Set object name for specific CSS targeting
         
-        # Layout
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(5, 5, 5, 5)
-        layout.setSpacing(5)
+        # Main layout without spacing for absolute positioning
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(2, 2, 2, 2)
+        main_layout.setSpacing(3)
         
-        # Image label
-        self.image_label = QLabel()
+        # Container for image with overlay checkbox
+        image_container = QWidget()
+        image_container.setFixedSize(size, size)
+        main_layout.addWidget(image_container)
+        
+        # Image label (fills container)
+        self.image_label = QLabel(image_container)
         self.image_label.setFixedSize(size, size)
         self.image_label.setAlignment(Qt.AlignCenter)
         self.image_label.setStyleSheet("background-color: #2a2a2a;")
-        layout.addWidget(self.image_label)
+        
+        # Selection checkbox (positioned in bottom-right corner)
+        self.select_check = QCheckBox(image_container)
+        self.select_check.setText("")  # No text, just checkbox
+        checkbox_size = 16
+        self.select_check.setFixedSize(checkbox_size, checkbox_size)
+        self.select_check.move(size - checkbox_size - 4, size - checkbox_size - 4)  # 4px margin from edges
+        self.select_check.setStyleSheet("""
+            QCheckBox::indicator {
+                width: 12px;
+                height: 12px;
+                background-color: rgba(23, 23, 23, 180);
+                border: 1px solid #404040;
+                border-radius: 2px;
+            }
+            QCheckBox::indicator:checked {
+                background-color: #22c55e;
+                border-color: #22c55e;
+            }
+            QCheckBox::indicator:hover {
+                border-color: #22c55e;
+                background-color: rgba(34, 197, 94, 50);
+            }
+        """)
+        self.select_check.stateChanged.connect(self._on_selection_changed)
+        self.select_check.show()
+        
+        # Debug: Log initial checkbox state
+        from loguru import logger
+        logger.info(f"ImageThumbnail created: {image_path.name}, checkbox checked: {self.select_check.isChecked()}, _selected: {self._selected}")
         
         # Filename label
         self.name_label = QLabel(image_path.name)
@@ -916,15 +950,13 @@ class ImageThumbnail(QFrame):
         font = self.name_label.font()
         font.setPointSize(9)
         self.name_label.setFont(font)
-        layout.addWidget(self.name_label)
-        
-        # Selection checkbox
-        self.select_check = QCheckBox()
-        self.select_check.stateChanged.connect(self._on_selection_changed)
-        layout.addWidget(self.select_check, alignment=Qt.AlignCenter)
+        main_layout.addWidget(self.name_label)
         
         # Load thumbnail
         self._load_thumbnail()
+        
+        # Apply initial style
+        self._update_style()
         
     def _load_thumbnail(self):
         """Load and display thumbnail"""
@@ -967,16 +999,32 @@ class ImageThumbnail(QFrame):
     
     def _on_selection_changed(self, state):
         """Handle selection change"""
-        self._selected = state == Qt.Checked
+        # Fix: State 2 = Checked, State 0 = Unchecked  
+        self._selected = state == 2
+        from loguru import logger
+        logger.info(f"ImageThumbnail selection changed: {self.image_path.name}, Qt state: {state}, _selected: {self._selected}")
         self.selected.emit(self.image_path, self._selected)
         self._update_style()
     
     def _update_style(self):
         """Update visual style based on selection"""
-        if self._selected:
-            self.setStyleSheet("QFrame { border: 3px solid #4CAF50; }")
-        else:
-            self.setStyleSheet("")
+        # Set property for CSS selector and force style update
+        self.setProperty("selected", self._selected)
+        
+        # Apply base style that includes both states
+        self.setStyleSheet("""
+            QFrame#image_thumbnail {
+                border: 1px solid transparent;
+                border-radius: 3px;
+                background-color: transparent;
+            }
+            QFrame#image_thumbnail[selected="true"] {
+                border: 1px solid #4CAF50;
+            }
+        """)
+        
+        # Force style refresh
+        self.style().polish(self)
     
     def set_selected(self, selected: bool):
         """Set selection state"""
@@ -1022,6 +1070,11 @@ class ImageGridWidget(QScrollArea):
         
         self.grid_layout.addWidget(thumbnail, row, col)
         self.thumbnails.append(thumbnail)
+        
+        # Ensure thumbnail and its checkbox are visible
+        thumbnail.show()
+        thumbnail.select_check.show()
+        thumbnail.select_check.setVisible(True)
     
     def clear(self):
         """Clear all images"""
@@ -1077,9 +1130,40 @@ class Model3DPreviewCard(QFrame):
         layout.setContentsMargins(8, 8, 8, 8)  # Same 8px padding as image cards
         layout.setSpacing(8)  # Same 8px spacing as image cards
         
+        # Container for 3D viewer with overlay checkbox
+        viewer_container = QWidget()
+        viewer_container.setFixedSize(496, 460)
+        layout.addWidget(viewer_container)
+        
         # 3D model viewer with session priority flag
         self.viewer_3d = Simple3DViewer(496, 460, is_session_viewer=is_session_viewer)
-        layout.addWidget(self.viewer_3d)
+        self.viewer_3d.setParent(viewer_container)
+        
+        # Selection checkbox overlay (positioned in bottom-right corner like images)
+        self.select_check = QCheckBox(viewer_container)
+        self.select_check.setText("")  # No text, just checkbox
+        checkbox_size = 18  # Slightly larger than image checkboxes since model cards are bigger
+        self.select_check.setFixedSize(checkbox_size, checkbox_size)
+        self.select_check.move(496 - checkbox_size - 6, 460 - checkbox_size - 6)  # 6px margin from edges
+        self.select_check.setStyleSheet("""
+            QCheckBox::indicator {
+                width: 14px;
+                height: 14px;
+                background-color: rgba(23, 23, 23, 180);
+                border: 1px solid #404040;
+                border-radius: 2px;
+            }
+            QCheckBox::indicator:checked {
+                background-color: #4CAF50;
+                border-color: #4CAF50;
+            }
+            QCheckBox::indicator:hover {
+                border-color: #4CAF50;
+                background-color: rgba(76, 175, 80, 50);
+            }
+        """)
+        self.select_check.stateChanged.connect(self._on_checkbox_changed)
+        self.select_check.show()
         
         # Lighting controls (collapsible)
         lighting_layout = self._create_lighting_controls()
@@ -1203,6 +1287,13 @@ class Model3DPreviewCard(QFrame):
         self._selected = not self._selected
         self.selected.emit(self.model_path, self._selected)
         self._update_style()
+        
+    def _on_checkbox_changed(self, state):
+        """Handle checkbox state change"""
+        # Fix: State 2 = Checked, State 0 = Unchecked
+        self._selected = state == 2
+        self.selected.emit(self.model_path, self._selected)
+        self._update_style()
     
     def _download_model(self):
         """Download 3D model file"""
@@ -1230,9 +1321,15 @@ class Model3DPreviewCard(QFrame):
             self.pick_btn.setStyleSheet(
                 "QPushButton { background-color: #4CAF50; color: white; }"
             )
+            # Sync checkbox state
+            if hasattr(self, 'select_check'):
+                self.select_check.setChecked(True)
         else:
             # Unselected state - reset to default styling
             self.pick_btn.setStyleSheet("")
+            # Sync checkbox state
+            if hasattr(self, 'select_check'):
+                self.select_check.setChecked(False)
     
     def _load_model_delayed(self):
         """Load 3D model with delay to avoid blocking UI startup"""
@@ -1266,7 +1363,7 @@ class Model3DPreviewCard(QFrame):
             logger.error(f"Full traceback: {traceback.format_exc()}")
     
     def set_selected(self, selected: bool):
-        """Set selection state - updated for new button system"""
+        """Set selection state - updated for checkbox and button system"""
         self._selected = selected
         self._update_style()
     
@@ -1430,12 +1527,40 @@ class ConsoleWidget(QTextEdit):
     def __init__(self):
         super().__init__()
         self.setReadOnly(True)
-        self.setFont(QFont("Consolas", 9))
+        
+        # Use JetBrains Mono font with fallbacks
+        font = QFont()
+        font.setFamilies(["JetBrains Mono", "Consolas", "Monaco", "Courier New", "monospace"])
+        font.setPointSize(10)
+        font.setStyleHint(QFont.StyleHint.Monospace)
+        self.setFont(font)
+        
         self.setStyleSheet("""
             QTextEdit {
+                background-color: #000000;
+                color: #fafafa;
+                border: 1px solid #3a3a3a;
+                border-radius: 3px;
+                padding: 8px;
+                line-height: 1.0;
+                selection-background-color: #4CAF50;
+                selection-color: #000000;
+            }
+            QTextEdit:focus {
+                border: 1px solid #4CAF50;
+            }
+            QScrollBar:vertical {
                 background-color: #1a1a1a;
-                color: #e0e0e0;
-                border: 1px solid #333;
+                width: 12px;
+                border: none;
+            }
+            QScrollBar::handle:vertical {
+                background-color: #3a3a3a;
+                border-radius: 6px;
+                min-height: 20px;
+            }
+            QScrollBar::handle:vertical:hover {
+                background-color: #4CAF50;
             }
         """)
         
@@ -1465,21 +1590,48 @@ class ConsoleWidget(QTextEdit):
     @Slot(str)
     def _append_log_message(self, message):
         """Actually append the log message (runs on main thread)"""
-        # Parse level from message
-        if "| ERROR" in message:
-            color = "#FF5252"
-        elif "| WARNING" in message:
-            color = "#FFC107"
-        elif "| INFO" in message:
-            color = "#4CAF50"
-        elif "| DEBUG" in message:
-            color = "#9E9E9E"
-        else:
-            color = "#e0e0e0"
+        message = message.strip()
         
-        # Format and append
-        html = f'<span style="color: {color};">{message.strip()}</span>'
-        self.append(html)
+        # Enhanced color coding with more detailed parsing
+        if "| ERROR" in message or "| CRITICAL" in message:
+            level_color = "#ef4444"  # Red
+            icon = "❌"
+        elif "| WARNING" in message:
+            level_color = "#f59e0b"  # Amber
+            icon = "⚠️"
+        elif "| INFO" in message:
+            level_color = "#10b981"  # Emerald
+            icon = "ℹ️"
+        elif "| DEBUG" in message:
+            level_color = "#6b7280"  # Gray
+            icon = "🔍"
+        elif "✅" in message:
+            level_color = "#22c55e"  # Green
+            icon = ""
+        elif "🎯" in message:
+            level_color = "#3b82f6"  # Blue
+            icon = ""
+        elif "🧹" in message:
+            level_color = "#8b5cf6"  # Purple
+            icon = ""
+        else:
+            level_color = "#e5e7eb"  # Light gray
+            icon = ""
+        
+        # Parse timestamp and level for better formatting
+        parts = message.split(" | ", 2)
+        if len(parts) >= 3:
+            timestamp = parts[0]
+            level = parts[1]
+            content = parts[2]
+            
+            # Format as single line to eliminate div spacing
+            html = f'<span style="color: #6b7280; font-size: 9px;">{timestamp}</span> <span style="color: {level_color}; font-weight: bold;">{level}</span> <span style="color: #fafafa;">{content}</span><br>'
+        else:
+            # Fallback for messages without standard format
+            html = f'<span style="color: {level_color}; font-family: \'JetBrains Mono\', monospace;">{message}</span><br>'
+        
+        self.insertHtml(html)
         
         # Limit lines
         if self.document().blockCount() > self.max_lines:

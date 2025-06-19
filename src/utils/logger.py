@@ -20,7 +20,8 @@ def setup_logging(log_dir: Path = None, debug: bool = True):
     logger.remove()
     
     # Console logging with color and UTF-8 encoding
-    level = "DEBUG" if debug else "INFO"
+    # Default to INFO level for console to reduce noise
+    level = "INFO" if not debug else "DEBUG"
     
     # For Windows, we need to handle encoding properly
     import platform

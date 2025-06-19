@@ -1,0 +1,6 @@
+{
+  "General Quality Issues": "blurry, low quality, pixelated, jpeg artifacts, oversaturated",
+  "Deformed Features": "deformed, disfigured, bad anatomy, extra limbs, missing limbs, mutated",
+  "Poor Composition": "cropped, out of frame, duplicate, poorly composed, bad framing",
+  "Technical Issues": "noise, grain, low resolution, watermark, signature, text"
+}

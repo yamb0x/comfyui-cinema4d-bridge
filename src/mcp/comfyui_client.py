@@ -400,15 +400,35 @@ class ComfyUIClient(LoggerMixin):
             if response.status_code == 200:
                 result = response.json()
                 prompt_id = result.get("prompt_id")
-                self.logger.info(f"✅ Workflow QUEUED successfully: {prompt_id}")
-                self.logger.info(f"🔄 Check ComfyUI web interface ({self.server_url}) - workflow should appear in queue now!")
+                self.logger.info(f"Workflow queued successfully: {prompt_id}")
                 
                 # Check queue status to confirm
                 try:
                     queue_status = await self.get_queue_status()
                     queue_pending = len(queue_status.get("queue_pending", []))
                     queue_running = len(queue_status.get("queue_running", []))
-                    self.logger.info(f"📋 Queue status: {queue_running} running, {queue_pending} pending")
+                    self.logger.debug(f"Queue status: {queue_running} running, {queue_pending} pending")
+                    
+                    # If no queue activity, check history for errors
+                    if queue_running == 0 and queue_pending == 0:
+                        self.logger.debug("No workflow in queue - checking history for errors...")
+                        try:
+                            history_response = await self.http_client.get(f"{self.server_url}/history")
+                            if history_response.status_code == 200:
+                                history = history_response.json()
+                                if prompt_id in history:
+                                    history_item = history[prompt_id]
+                                    status = history_item.get("status", {})
+                                    if "completed" in status:
+                                        self.logger.debug(f"Workflow {prompt_id} completed successfully")
+                                    elif "error" in status:
+                                        error_info = status["error"]
+                                        self.logger.error(f"Workflow {prompt_id} failed with error: {error_info}")
+                                    else:
+                                        self.logger.debug(f"Workflow {prompt_id} status: {status}")
+                        except Exception as hist_e:
+                            self.logger.debug(f"Could not check history: {hist_e}")
+                            
                 except Exception as e:
                     self.logger.debug(f"Could not get queue status: {e}")
                 
@@ -446,22 +466,22 @@ class ComfyUIClient(LoggerMixin):
             await self._ensure_http_client()
             response = await self.http_client.get(self.server_url, timeout=5.0)
             if response.status_code == 200:
-                self.logger.info(f"✅ ComfyUI web interface is accessible at {self.server_url}")
+                self.logger.debug(f"ComfyUI web interface is accessible at {self.server_url}")
                 
                 # Also check if it's the actual ComfyUI interface
                 content = response.text
                 if "ComfyUI" in content or "queue" in content.lower():
-                    self.logger.info("✅ Confirmed: This is a ComfyUI web interface")
+                    self.logger.debug("Confirmed: This is a ComfyUI web interface")
                 else:
-                    self.logger.warning("⚠️ URL responds but doesn't appear to be ComfyUI")
+                    self.logger.warning("URL responds but doesn't appear to be ComfyUI")
                 
                 return True
             else:
-                self.logger.warning(f"⚠️ ComfyUI web interface returned HTTP {response.status_code}")
+                self.logger.warning(f"ComfyUI web interface returned HTTP {response.status_code}")
                 return False
         except Exception as e:
-            self.logger.error(f"❌ ComfyUI web interface not accessible: {e}")
-            self.logger.error("💡 Make sure ComfyUI is running: cd ComfyUI && python main.py")
+            self.logger.error(f"ComfyUI web interface not accessible: {e}")
+            self.logger.error("Make sure ComfyUI is running: cd ComfyUI && python main.py")
             return False
 
     async def get_queue_status(self) -> Dict[str, Any]:

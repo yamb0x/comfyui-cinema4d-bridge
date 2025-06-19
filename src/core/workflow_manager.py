@@ -190,23 +190,43 @@ class WorkflowManager(LoggerMixin):
                     inputs["ckpt_name"] = params["checkpoint"]
                     self.logger.debug(f"Injected checkpoint into node {node_id}")
             
+            # Inject custom dynamic parameters if they exist
+            if hasattr(self, 'custom_parameters') and node_id in self.custom_parameters:
+                custom_params = self.custom_parameters[node_id]
+                for param_name, param_value in custom_params.items():
+                    if param_name in inputs:
+                        inputs[param_name] = param_value
+                        self.logger.debug(f"Injected custom parameter {param_name} into node {node_id}")
+            
             # Handle LoRA nodes - inject based on node position
             elif node_type == "LoraLoader":
-                # Node 3 gets lora1 parameters
-                if node_id == "3" and "lora1_model" in params:
-                    inputs["lora_name"] = params["lora1_model"]
-                    inputs["strength_model"] = params.get("lora1_strength", 1.0)
-                    inputs["strength_clip"] = params.get("lora1_strength", 1.0)
-                    self.logger.debug(f"Injected LoRA1 params into node {node_id}: {inputs['lora_name']}")
-                # Node 6 gets lora2 parameters
-                elif node_id == "6" and "lora2_model" in params:
-                    inputs["lora_name"] = params["lora2_model"]
-                    inputs["strength_model"] = params.get("lora2_strength", 1.0)
-                    inputs["strength_clip"] = params.get("lora2_strength", 1.0)
-                    self.logger.debug(f"Injected LoRA2 params into node {node_id}: {inputs['lora_name']}")
-                # Node 7 can keep its default values
+                # Find which LoRA parameters to use for this node (same logic as UI format)
+                original_node = None
+                for orig_node in workflow.get("nodes", []):
+                    if str(orig_node.get("id")) == node_id:
+                        original_node = orig_node
+                        break
+                
+                if original_node:
+                    current_widgets = original_node.get("widgets_values", [])
+                    current_model = current_widgets[0] if current_widgets else ""
+                    
+                    # Try to match by model name first
+                    lora_found = False
+                    for i in range(1, 10):  # Support up to 10 LoRAs
+                        lora_key = f"lora{i}"
+                        if f"{lora_key}_model" in params and params[f"{lora_key}_model"] == current_model:
+                            inputs["lora_name"] = params[f"{lora_key}_model"]
+                            inputs["strength_model"] = params.get(f"{lora_key}_strength", 1.0)
+                            inputs["strength_clip"] = params.get(f"{lora_key}_strength", 1.0)
+                            self.logger.debug(f"Injected {lora_key} params into node {node_id}: {inputs['lora_name']}")
+                            lora_found = True
+                            break
+                    
+                    if not lora_found:
+                        self.logger.debug(f"No matching LoRA parameters found for node {node_id} model: {current_model}")
                 else:
-                    self.logger.debug(f"Keeping default LoRA values for node {node_id}")
+                    self.logger.debug(f"Could not find original node for LoRA node {node_id}")
             
             # Handle FluxGuidance node
             elif node_type == "FluxGuidance":
@@ -321,12 +341,14 @@ class WorkflowManager(LoggerMixin):
                 api_node["inputs"]["height"] = widgets[1] 
                 api_node["inputs"]["batch_size"] = widgets[2]
             elif node_type == "KSampler" and len(widgets) >= 7:
+                # Correct order: seed, control_after_generation, steps, cfg, sampler_name, scheduler, denoise
                 api_node["inputs"]["seed"] = widgets[0]
+                api_node["inputs"]["control_after_generate"] = widgets[1] if len(widgets) > 1 else "fixed"
                 api_node["inputs"]["steps"] = widgets[2]
                 api_node["inputs"]["cfg"] = widgets[3]
                 api_node["inputs"]["sampler_name"] = widgets[4]
                 api_node["inputs"]["scheduler"] = widgets[5]
-                api_node["inputs"]["denoise"] = 1.0  # Add missing denoise parameter
+                api_node["inputs"]["denoise"] = widgets[6] if len(widgets) > 6 else 1.0
             elif node_type == "CheckpointLoaderSimple" and widgets:
                 api_node["inputs"]["ckpt_name"] = widgets[0] if widgets else "flux1-dev-fp8.safetensors"
             elif node_type == "LoraLoader" and len(widgets) >= 3:
@@ -394,7 +416,7 @@ class WorkflowManager(LoggerMixin):
                 if len(widgets) >= 1:
                     mesh_path = widgets[0]
                     api_node["inputs"]["glb_path"] = mesh_path  # Direct path to mesh file (parameter name is glb_path)
-                    self.logger.info(f"🔧 CONVERSION FIX: Hy3DLoadMesh node {node_id} glb_path={mesh_path}")
+                    self.logger.debug(f"CONVERSION FIX: Hy3DLoadMesh node {node_id} glb_path={mesh_path}")
                 else:
                     self.logger.warning(f"Hy3DLoadMesh node {node_id} has no widgets_values - mesh path will be missing")
             
@@ -403,7 +425,7 @@ class WorkflowManager(LoggerMixin):
                 if len(widgets) >= 1:
                     mesh_filename = widgets[0]
                     api_node["inputs"]["mesh"] = mesh_filename  # mesh filename/path
-                    self.logger.info(f"🔧 CONVERSION FIX: Hy3DUploadMesh node {node_id} mesh={mesh_filename}")
+                    self.logger.debug(f"CONVERSION FIX: Hy3DUploadMesh node {node_id} mesh={mesh_filename}")
                     
                     # upload_type (widgets[1]) is usually "mesh" - not needed for API
                 else:
@@ -418,7 +440,7 @@ class WorkflowManager(LoggerMixin):
                     height = max(self.safe_int(widgets[2], "SolidMask_height", 512) if isinstance(widgets[2], (int, float, str)) and str(widgets[2]).isdigit() else 512, 64)
                     api_node["inputs"]["width"] = width
                     api_node["inputs"]["height"] = height
-                    self.logger.info(f"🔧 CONVERSION FIX: SolidMask node {node_id} {width}x{height}")
+                    self.logger.debug(f"CONVERSION FIX: SolidMask node {node_id} {width}x{height}")
             
             elif node_type == "TransparentBGSession+" and widgets:
                 # widgets: [mode, use_jit]
@@ -466,7 +488,7 @@ class WorkflowManager(LoggerMixin):
                 # Math expression node - widgets: [expression]
                 if len(widgets) >= 1:
                     api_node["inputs"]["value"] = widgets[0]  # Math expression like "a-1"
-                    self.logger.info(f"🔧 CONVERSION FIX: SimpleMath+ node {node_id} value={widgets[0]}")
+                    self.logger.debug(f"CONVERSION FIX: SimpleMath+ node {node_id} value={widgets[0]}")
                 else:
                     self.logger.warning(f"SimpleMath+ node {node_id} has no widgets_values - value input will be missing")
             
@@ -1020,6 +1042,9 @@ class WorkflowManager(LoggerMixin):
         for node_id, node_data in api_workflow.items():
             self.logger.debug(f"  Node {node_id}: {node_data.get('class_type')} - inputs: {list(node_data.get('inputs', {}).keys())}")
         
+        # Ensure SaveImage node exists and is properly configured
+        self._ensure_save_image_node(api_workflow)
+        
         return api_workflow
     
     def _build_link_map(self, ui_workflow: Dict[str, Any]) -> Dict[int, tuple]:
@@ -1252,6 +1277,11 @@ class WorkflowManager(LoggerMixin):
         if mesh_nodes_before:
             self.logger.info(f"🔧 TEXTURE FIX: Mesh nodes before parameter injection: {mesh_nodes_before}")
         
+        # Reset LoRA usage tracking for dynamic assignment
+        for i in range(1, 10):
+            if hasattr(self, f"_lora{i}_used"):
+                delattr(self, f"_lora{i}_used")
+        
         for node in workflow_copy["nodes"]:
             node_id = node.get("id")
             node_type = node.get("type")
@@ -1323,22 +1353,32 @@ class WorkflowManager(LoggerMixin):
                         widgets[0] = checkpoint
                     self.logger.info(f"Injected checkpoint into node {node_id}: {checkpoint}")
             
-            # Handle LoRA Loaders - inject based on node ID
+            # Handle LoRA Loaders - inject dynamically based on available parameters
             elif node_type == "LoraLoader":
-                # Node 3: First LoRA (should use lora1 parameters)
-                if node_id == 3:
-                    self._inject_lora_ui_format(node, params, "lora1", 0.5)
-                # Node 6: Second LoRA (should use lora2 parameters)
-                elif node_id == 6:
-                    self._inject_lora_ui_format(node, params, "lora2", 1.0)
-                # Node 7: Third LoRA (keep default values from workflow)
-                elif node_id == 7:
-                    self.logger.info(f"Keeping default LoRA values for node {node_id}")
-                # Fallback for other LoRA nodes
-                elif node_id == 18:
-                    self._inject_lora_ui_format(node, params, "lora1", 0.8)
-                elif node_id == 19:
-                    self._inject_lora_ui_format(node, params, "lora2", 0.6)
+                # Try to find a LoRA parameter set that matches this node's current model
+                current_widgets = node.get("widgets_values", [])
+                current_model = current_widgets[0] if current_widgets else ""
+                
+                lora_assigned = False
+                # Try to match by model name first
+                for i in range(1, 10):  # Support up to 10 LoRAs
+                    lora_key = f"lora{i}"
+                    if f"{lora_key}_model" in params:
+                        if params[f"{lora_key}_model"] == current_model:
+                            default_strength = current_widgets[1] if len(current_widgets) > 1 else 1.0
+                            self._inject_lora_ui_format(node, params, lora_key, default_strength)
+                            lora_assigned = True
+                            break
+                
+                # If no match found, use the first available LoRA parameters
+                if not lora_assigned:
+                    for i in range(1, 10):  # Support up to 10 LoRAs
+                        lora_key = f"lora{i}"
+                        if f"{lora_key}_model" in params and not getattr(self, f"_{lora_key}_used", False):
+                            default_strength = current_widgets[1] if len(current_widgets) > 1 else 1.0
+                            self._inject_lora_ui_format(node, params, lora_key, default_strength)
+                            setattr(self, f"_{lora_key}_used", True)  # Mark as used
+                            break
             
             # Handle FluxGuidance node
             elif node_type == "FluxGuidance":
@@ -2195,6 +2235,81 @@ class WorkflowManager(LoggerMixin):
                         self.logger.info(f"Updated legacy Hy3DUploadMesh node {node_id} with filename: {model_filename}")
         
         return workflow_copy
+    
+    def _ensure_save_image_node(self, api_workflow: Dict[str, Any]):
+        """Ensure the workflow has a SaveImage node and redirect it to correct path"""
+        # Check if any SaveImage or "Image Save" nodes exist
+        save_nodes = []
+        vae_decode_nodes = []
+        
+        for node_id, node_data in api_workflow.items():
+            class_type = node_data.get("class_type", "")
+            if class_type in ["SaveImage", "Image Save"]:
+                save_nodes.append(node_id)
+            elif class_type == "VAEDecode":
+                vae_decode_nodes.append(node_id)
+        
+        if save_nodes:
+            # SaveImage nodes exist, ensure they have correct path
+            for node_id in save_nodes:
+                node_data = api_workflow[node_id]
+                inputs = node_data.get("inputs", {})
+                
+                # Get configured images directory
+                if hasattr(self, 'config') and hasattr(self.config, 'images_dir'):
+                    correct_images_path = str(self.config.images_dir)
+                else:
+                    from pathlib import Path
+                    correct_images_path = str(Path(__file__).parent.parent.parent / "images")
+                
+                # Update or add output_path
+                if node_data.get("class_type") == "Image Save":
+                    # Convert WAS "Image Save" to standard "SaveImage" for compatibility
+                    self.logger.warning(f"🔄 Converting WAS 'Image Save' node {node_id} to standard 'SaveImage' for compatibility")
+                    
+                    # Change class_type to standard SaveImage
+                    node_data["class_type"] = "SaveImage"
+                    
+                    # Convert to standard SaveImage inputs (preserve image connection)
+                    image_connection = inputs.get("images", ["11", 0])  # Default fallback
+                    inputs.clear()  # Clear all WAS-specific inputs
+                    inputs["images"] = image_connection
+                    inputs["filename_prefix"] = "ComfyUI"
+                    
+                    self.logger.info(f"✅ Converted to SaveImage node {node_id} with standard inputs")
+                else:  # SaveImage
+                    inputs["filename_prefix"] = inputs.get("filename_prefix", "ComfyUI")
+                    self.logger.info(f"✅ Updated SaveImage node {node_id} filename prefix")
+                
+                node_data["inputs"] = inputs
+        
+        else:
+            # No SaveImage nodes found, add one if we have VAEDecode output
+            if vae_decode_nodes:
+                # Find the last VAEDecode node to connect to
+                vae_decode_id = vae_decode_nodes[-1]
+                
+                # Create new SaveImage node
+                save_node_id = str(max([int(k) for k in api_workflow.keys() if k.isdigit()], default=0) + 1)
+                
+                # Get configured images directory
+                if hasattr(self, 'config') and hasattr(self.config, 'images_dir'):
+                    correct_images_path = str(self.config.images_dir)
+                else:
+                    from pathlib import Path
+                    correct_images_path = str(Path(__file__).parent.parent.parent / "images")
+                
+                save_node = {
+                    "class_type": "SaveImage", 
+                    "inputs": {
+                        "images": [vae_decode_id, 0],  # Connect to VAEDecode output
+                        "filename_prefix": "ComfyUI"
+                    }
+                }
+                
+                api_workflow[save_node_id] = save_node
+                self.logger.info(f"✅ Added SaveImage node {save_node_id} connected to VAEDecode {vae_decode_id}")
+                self.logger.info(f"✅ SaveImage will save to ComfyUI default output directory")
 
     def inject_parameters(self, workflow: Dict[str, Any], params: Dict[str, Any]) -> Dict[str, Any]:
         """Legacy method - redirects to ComfyUI format"""

@@ -7161,3 +7161,783 @@ AttributeError: 'NoneType' object has no attribute 'setText'
 2025-06-16 00:12:06.982 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
 2025-06-16 00:12:06.982 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
 2025-06-16 00:12:06.991 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 01:45:40.283 | ERROR    | core.app:_run_async_task:9735 - Error scheduling async task: no running event loop
+2025-06-16 01:45:40.291 | ERROR    | core.app:_run_async_task:9735 - Error scheduling async task: no running event loop
+2025-06-16 01:45:40.293 | ERROR    | core.app:_run_async_task:9735 - Error scheduling async task: no running event loop
+2025-06-16 01:45:40.447 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 01:45:40.448 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 01:45:40.469 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 02:18:19.186 | ERROR    | core.app:_run_async_task:9735 - Error scheduling async task: no running event loop
+2025-06-16 02:18:19.207 | ERROR    | core.app:_run_async_task:9735 - Error scheduling async task: no running event loop
+2025-06-16 02:18:19.215 | ERROR    | core.app:_run_async_task:9735 - Error scheduling async task: no running event loop
+2025-06-16 02:18:19.757 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 02:18:19.759 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 02:18:19.759 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 02:18:45.487 | ERROR    | core.app:_run_async_task:9735 - Error scheduling async task: no running event loop
+2025-06-16 02:18:45.496 | ERROR    | core.app:_run_async_task:9735 - Error scheduling async task: no running event loop
+2025-06-16 02:18:45.498 | ERROR    | core.app:_run_async_task:9735 - Error scheduling async task: no running event loop
+2025-06-16 02:18:45.809 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 02:18:45.810 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 02:18:45.810 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 02:33:29.103 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 08:40:27.808 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 08:44:04.359 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 08:56:06.442 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 08:58:19.234 | ERROR    | core.app:_run_async_task:9735 - Error scheduling async task: no running event loop
+2025-06-16 08:58:19.259 | ERROR    | core.app:_run_async_task:9735 - Error scheduling async task: no running event loop
+2025-06-16 08:58:19.261 | ERROR    | core.app:_run_async_task:9735 - Error scheduling async task: no running event loop
+2025-06-16 08:58:19.461 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 08:58:19.461 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 08:58:19.461 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 08:58:21.945 | ERROR    | mcp.comfyui_client:get_models:577 - Failed to get models: All connection attempts failed
+2025-06-16 08:58:21.946 | ERROR    | mcp.comfyui_client:connect:109 - Connection failed: All connection attempts failed
+2025-06-16 09:02:16.528 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:03:43.213 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:13:22.283 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:13:29.693 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:14:30.125 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:14:36.477 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:14:41.496 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:14:42.939 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:14:44.409 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:14:45.330 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:14:52.170 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:14:54.150 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:15:11.146 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:34.995 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:34.997 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.003 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.007 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.009 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.014 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.016 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.017 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.019 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.021 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.022 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.025 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.026 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.028 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.029 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.040 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.041 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.043 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.048 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.050 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.051 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.053 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.054 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.057 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.058 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.062 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.063 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.064 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.066 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.067 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.088 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.090 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.092 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.094 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.098 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.100 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.101 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.102 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.104 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.111 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.114 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.116 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.118 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.119 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.121 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.125 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.129 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.130 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.131 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.133 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.134 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.136 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.142 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.144 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.145 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.147 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.148 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.150 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.152 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.157 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.158 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.160 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.162 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.163 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.165 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.166 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.168 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.175 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.179 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.184 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.189 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.192 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.193 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.195 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.197 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.198 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.222 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.242 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.246 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.248 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.249 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.252 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.253 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.256 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.258 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.259 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.266 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.268 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.274 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.275 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.280 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.282 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.284 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:18:35.287 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:19:28.339 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:19:28.901 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:19:29.284 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:19:29.756 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:19:30.259 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:19:30.754 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:19:32.141 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:20:01.735 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:20:02.239 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:20:03.266 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:20:12.341 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:20:19.736 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:20:23.128 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:20:24.135 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:20:27.239 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:20:30.927 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:20:38.435 | ERROR    | core.app_redesigned:closeEvent:1046 - Error during application close: 'PositivePromptWidget' object has no attribute 'get_prompt'
+2025-06-16 09:25:56.220 | ERROR    | __main__:<module>:80 - Unhandled exception: name 'ImageGridWidget' is not defined
+Traceback (most recent call last):
+
+> File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 76, in <module>
+    main()
+    └ <function main at 0x000001F63C83E480>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 41, in main
+    main_window = ComfyToC4DApp(config)
+                  │             └ <core.config_adapter.AppConfigAdapter object at 0x000001F60BF41400>
+                  └ <class 'core.app_redesigned.ComfyToC4DAppRedesigned'>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 100, in __init__
+    self._setup_redesigned_ui()
+    │    └ <function ComfyToC4DAppRedesigned._setup_redesigned_ui at 0x000001F63C7F3EC0>
+    └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1f60b0d25b0) at 0x000001F63C82B280>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 178, in _setup_redesigned_ui
+    content_splitter = self._create_main_content_area()
+                       │    └ <function ComfyToC4DAppRedesigned._create_main_content_area at 0x000001F63C83C040>
+                       └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1f60b0d25b0) at 0x000001F63C82B280>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 286, in _create_main_content_area
+    center_panel = self._create_enhanced_center_panel()
+                   │    └ <function ComfyToC4DAppRedesigned._create_enhanced_center_panel at 0x000001F63C83C180>
+                   └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1f60b0d25b0) at 0x000001F63C82B280>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 345, in _create_enhanced_center_panel
+    image_tab = self._create_enhanced_image_generation_tab()
+                │    └ <function ComfyToC4DAppRedesigned._create_enhanced_image_generation_tab at 0x000001F63C83C540>
+                └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1f60b0d25b0) at 0x000001F63C82B280>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 582, in _create_enhanced_image_generation_tab
+    new_canvas = self._create_new_canvas_view()
+                 │    └ <function UICreationMethods._create_new_canvas_view at 0x000001F63C7F2CA0>
+                 └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1f60b0d25b0) at 0x000001F63C82B280>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 41, in _create_new_canvas_view
+    self.session_image_grid = ImageGridWidget(columns=3, max_images=12)
+    └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1f60b0d25b0) at 0x000001F63C82B280>
+
+NameError: name 'ImageGridWidget' is not defined
+2025-06-16 09:26:56.225 | ERROR    | __main__:<module>:80 - Unhandled exception: ImageGridWidget.__init__() got an unexpected keyword argument 'max_images'
+Traceback (most recent call last):
+
+> File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 76, in <module>
+    main()
+    └ <function main at 0x00000171C9CB6520>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 41, in main
+    main_window = ComfyToC4DApp(config)
+                  │             └ <core.config_adapter.AppConfigAdapter object at 0x0000017198BB1400>
+                  └ <class 'core.app_redesigned.ComfyToC4DAppRedesigned'>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 100, in __init__
+    self._setup_redesigned_ui()
+    │    └ <function ComfyToC4DAppRedesigned._setup_redesigned_ui at 0x00000171C9C73EC0>
+    └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x17198423ce0) at 0x00000171C8160D40>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 178, in _setup_redesigned_ui
+    content_splitter = self._create_main_content_area()
+                       │    └ <function ComfyToC4DAppRedesigned._create_main_content_area at 0x00000171C9CB4040>
+                       └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x17198423ce0) at 0x00000171C8160D40>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 286, in _create_main_content_area
+    center_panel = self._create_enhanced_center_panel()
+                   │    └ <function ComfyToC4DAppRedesigned._create_enhanced_center_panel at 0x00000171C9CB4180>
+                   └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x17198423ce0) at 0x00000171C8160D40>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 345, in _create_enhanced_center_panel
+    image_tab = self._create_enhanced_image_generation_tab()
+                │    └ <function ComfyToC4DAppRedesigned._create_enhanced_image_generation_tab at 0x00000171C9CB4540>
+                └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x17198423ce0) at 0x00000171C8160D40>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 582, in _create_enhanced_image_generation_tab
+    new_canvas = self._create_new_canvas_view()
+                 │    └ <function UICreationMethods._create_new_canvas_view at 0x00000171C9C72CA0>
+                 └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x17198423ce0) at 0x00000171C8160D40>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 44, in _create_new_canvas_view
+    self.session_image_grid = ImageGridWidget(columns=3, max_images=12)
+    │                         └ <class 'ui.widgets.ImageGridWidget'>
+    └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x17198423ce0) at 0x00000171C8160D40>
+
+TypeError: ImageGridWidget.__init__() got an unexpected keyword argument 'max_images'
+2025-06-16 09:29:03.313 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 09:30:02.518 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-16 10:10:21.222 | ERROR    | core.app_ui_methods:_open_nlp_dictionary:604 - Failed to open NLP Dictionary: 'NoneType' object has no attribute 'config_dir'
+2025-06-16 10:10:21.238 | ERROR    | core.app_ui_methods:_open_nlp_dictionary:606 - NLP Dictionary error details: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 599, in _open_nlp_dictionary
+    dialog = NLPDictionaryDialog(self)
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\nlp_dictionary_dialog.py", line 33, in __init__
+    self.dictionary_file = self.config.config_dir / "nlp_dictionary.json"
+                           ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'config_dir'
+
+2025-06-16 10:10:23.396 | ERROR    | core.app_ui_methods:_open_nlp_dictionary:604 - Failed to open NLP Dictionary: 'NoneType' object has no attribute 'config_dir'
+2025-06-16 10:10:23.401 | ERROR    | core.app_ui_methods:_open_nlp_dictionary:606 - NLP Dictionary error details: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 599, in _open_nlp_dictionary
+    dialog = NLPDictionaryDialog(self)
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\nlp_dictionary_dialog.py", line 33, in __init__
+    self.dictionary_file = self.config.config_dir / "nlp_dictionary.json"
+                           ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'config_dir'
+
+2025-06-16 10:10:57.065 | ERROR    | core.app_ui_methods:_open_nlp_dictionary:604 - Failed to open NLP Dictionary: 'NoneType' object has no attribute 'config_dir'
+2025-06-16 10:10:57.069 | ERROR    | core.app_ui_methods:_open_nlp_dictionary:606 - NLP Dictionary error details: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 599, in _open_nlp_dictionary
+    dialog = NLPDictionaryDialog(self)
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\nlp_dictionary_dialog.py", line 33, in __init__
+    self.dictionary_file = self.config.config_dir / "nlp_dictionary.json"
+                           ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'config_dir'
+
+2025-06-16 12:26:30.190 | ERROR    | core.app_redesigned:closeEvent:1064 - Error during application close: 'PositivePromptWidget' object has no attribute 'get_prompt'
+2025-06-16 14:10:27.617 | ERROR    | core.app_redesigned:closeEvent:1103 - Error during application close: 'PositivePromptWidget' object has no attribute 'get_prompt'
+2025-06-16 14:26:16.201 | ERROR    | core.app_redesigned:_open_environment_variables:1699 - Failed to open environment variables dialog: 'PySide6.QtWidgets.QTableWidgetItem' object has no attribute 'setStyleSheet'
+2025-06-16 14:26:45.414 | ERROR    | core.app_redesigned:closeEvent:1103 - Error during application close: 'PositivePromptWidget' object has no attribute 'get_prompt'
+2025-06-16 14:33:17.634 | ERROR    | core.app_redesigned:closeEvent:1103 - Error during application close: 'PositivePromptWidget' object has no attribute 'get_prompt'
+2025-06-16 15:10:05.171 | ERROR    | core.app_redesigned:closeEvent:1103 - Error during application close: 'PositivePromptWidget' object has no attribute 'get_prompt'
+2025-06-16 15:27:47.431 | ERROR    | ui.settings_dialog:_on_auto_save_changed:636 - Failed to change auto-save: 'ApplicationSettingsDialog' object has no attribute 'auto_save_timer'
+2025-06-16 15:28:16.316 | ERROR    | ui.settings_dialog:_on_auto_save_changed:636 - Failed to change auto-save: 'ApplicationSettingsDialog' object has no attribute 'auto_save_timer'
+2025-06-16 21:53:13.670 | ERROR    | core.app_redesigned:closeEvent:1103 - Error during application close: 'PositivePromptWidget' object has no attribute 'get_prompt'
+2025-06-16 21:54:57.125 | ERROR    | core.app_redesigned:closeEvent:1150 - Error during application close: 'PositivePromptWidget' object has no attribute 'get_prompt'
+2025-06-16 23:11:59.926 | ERROR    | core.app_redesigned:closeEvent:1201 - Error during application close: 'PositivePromptWidget' object has no attribute 'get_prompt'
+2025-06-16 23:16:56.206 | ERROR    | core.app_redesigned:_async_refresh_comfyui:959 - ComfyUI connection failed: 'ComfyUIClient' object has no attribute 'test_connection'
+2025-06-16 23:17:30.804 | ERROR    | core.app_redesigned:_async_refresh_comfyui:959 - ComfyUI connection failed: 'ComfyUIClient' object has no attribute 'test_connection'
+2025-06-16 23:17:36.056 | ERROR    | core.app_redesigned:_async_refresh_comfyui:959 - ComfyUI connection failed: 'ComfyUIClient' object has no attribute 'test_connection'
+2025-06-16 23:29:08.827 | ERROR    | core.app_redesigned:closeEvent:1236 - Error during application close: 'PositivePromptWidget' object has no attribute 'get_prompt'
+2025-06-16 23:52:59.710 | ERROR    | core.app_redesigned:closeEvent:1236 - Error during application close: 'PositivePromptWidget' object has no attribute 'get_prompt'
+2025-06-16 23:55:12.988 | ERROR    | core.app_redesigned:closeEvent:1247 - Error during application close: 'PositivePromptWidget' object has no attribute 'get_prompt'
+2025-06-17 00:13:12.483 | ERROR    | core.app_redesigned:closeEvent:1231 - Error during application close: 'PositivePromptWidget' object has no attribute 'get_prompt'
+2025-06-17 00:29:03.230 | ERROR    | core.app_redesigned:_load_all_images:1858 - all_images_grid not found - UI not properly initialized
+2025-06-17 00:29:03.230 | ERROR    | core.app_redesigned:_load_all_models:1897 - all_models_grid not found - UI not properly initialized
+2025-06-17 00:52:15.027 | ERROR    | core.app_redesigned:closeEvent:1284 - Error during application close: 'PositivePromptWidget' object has no attribute 'get_prompt'
+2025-06-17 01:09:44.432 | ERROR    | core.app_redesigned:closeEvent:1287 - Error during application close: 'PositivePromptWidget' object has no attribute 'get_prompt'
+2025-06-17 01:10:22.396 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:10:37.500 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:11:15.289 | ERROR    | core.app_redesigned:closeEvent:1287 - Error during application close: 'PositivePromptWidget' object has no attribute 'get_prompt'
+2025-06-17 01:17:00.739 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.751 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.763 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.775 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.788 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.800 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.813 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.826 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.839 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.852 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.865 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.878 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.892 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.905 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.919 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.932 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.945 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.959 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.972 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:00.986 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.000 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.014 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.028 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.042 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.058 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.073 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.089 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.105 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.121 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.137 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.153 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.170 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.185 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.202 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.217 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.234 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.250 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.266 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.282 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.299 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.316 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.332 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.348 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.364 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.380 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.397 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.414 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.431 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.450 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.468 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.487 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.508 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.528 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.547 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.565 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.582 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.600 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.618 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.636 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.654 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.672 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.690 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.707 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.726 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.744 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.762 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.780 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.799 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.817 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.836 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.854 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.873 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.892 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.911 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.930 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.949 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.968 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:01.988 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:02.007 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:02.028 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:02.047 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:02.067 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:02.089 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:02.110 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:02.131 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:02.151 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:02.172 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:02.193 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:02.214 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:02.236 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:02.258 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:02.279 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:02.300 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:02.322 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:03.435 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:03.460 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:03.485 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:03.508 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:03.533 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:03.568 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:17:15.533 | ERROR    | core.app_redesigned:_async_generate_3d_models:1204 - Error during 3D generation: 'ComfyUIClient' object has no attribute 'execute_workflow'
+2025-06-17 01:17:15.549 | ERROR    | core.app_redesigned:_async_generate_3d_models:1206 - 3D generation traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 1190, in _async_generate_3d_models
+    result = await self.comfyui_client.execute_workflow(workflow_with_params)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ComfyUIClient' object has no attribute 'execute_workflow'
+
+2025-06-17 01:30:59.673 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 01:30:59.747 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.024 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.037 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.049 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.061 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.073 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.085 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.097 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.109 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.121 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.134 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.147 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.161 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.175 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.189 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.202 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.215 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.228 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.241 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.254 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.267 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.280 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.294 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.307 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.321 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.335 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.349 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.363 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.377 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.391 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.405 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.420 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.437 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.451 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.465 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.480 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.495 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.510 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.525 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.540 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.556 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.573 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.588 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.603 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.619 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.636 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.653 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.669 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.686 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.703 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.721 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.738 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.755 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.773 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.791 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.808 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.826 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.844 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.863 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.881 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.900 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.920 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.939 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.957 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.978 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:39.997 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.017 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.037 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.056 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.076 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.094 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.114 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.134 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.154 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.174 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.195 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.215 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.236 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.256 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.276 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.296 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.316 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.336 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.356 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.376 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.395 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.414 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.434 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.453 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.473 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.493 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.513 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.533 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.553 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:40.573 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:42.419 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:42.448 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:42.473 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:42.498 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:42.524 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:42.550 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:14:42.576 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 09:19:42.050 | ERROR    | mcp.comfyui_client:get_queue_status:478 - Failed to get queue status: 
+2025-06-17 12:44:40.838 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 12:44:40.846 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 12:44:40.853 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 12:44:40.860 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 12:44:40.867 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 12:44:40.874 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 12:44:40.882 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 12:46:59.130 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 12:46:59.186 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 12:48:19.205 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:39.992 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:39.996 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:40.001 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:40.006 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:40.010 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:40.015 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:40.020 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:40.025 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:40.031 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:40.036 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:40.042 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:40.047 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:40.053 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:40.058 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:40.064 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:40.085 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:40.090 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:40.096 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:41.496 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:41.508 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:41.521 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:41.532 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:41.544 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:41.558 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:41.572 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 15:04:41.586 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.282 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.287 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.292 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.297 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.302 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.307 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.313 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.318 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.323 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.330 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.336 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.343 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.351 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.357 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.364 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.370 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.376 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:46.383 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:48.128 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:48.137 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:48.147 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:48.157 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:48.166 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:48.175 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:48.184 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:13:48.194 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:16:10.813 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:16:13.835 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:16:13.855 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:16:14.662 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:16:15.089 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 16:16:15.111 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:42.994 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:42.999 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.004 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.009 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.014 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.020 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.025 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.030 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.036 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.042 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.047 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.053 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.059 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.066 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.072 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.079 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.085 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.092 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:43.098 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:44.383 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:44.392 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:44.402 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:44.412 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:44.421 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:44.430 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:44.439 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 17:50:44.448 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.873 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.877 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.884 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.890 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.895 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.902 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.908 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.914 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.920 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.925 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.931 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.937 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.942 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.948 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.954 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.961 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.967 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.974 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:48.981 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:50.285 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:50.295 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:50.305 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:50.315 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:50.325 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:50.336 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:50.346 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:01:50.357 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 19:10:03.142 | ERROR    | core.app_ui_methods:_load_parameters_from_config:929 - Failed to load image parameters: name 'Path' is not defined
+2025-06-17 19:10:32.286 | ERROR    | core.app_ui_methods:_load_parameters_from_config:929 - Failed to load image parameters: name 'Path' is not defined
+2025-06-17 21:06:13.823 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.827 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.832 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.838 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.843 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.848 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.854 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.859 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.865 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.871 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.876 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.883 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.889 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.895 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.902 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.908 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.915 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.922 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:13.928 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:15.466 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:15.475 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:15.484 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:15.493 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:15.502 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:15.511 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:15.520 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:15.529 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 21:06:30.503 | ERROR    | core.app_ui_methods:_load_parameters_from_config:930 - Failed to load image parameters: 'list' object has no attribute 'items'
+2025-06-17 21:07:17.252 | ERROR    | core.app_ui_methods:_load_parameters_from_config:930 - Failed to load image parameters: 'list' object has no attribute 'items'
+2025-06-17 21:08:03.131 | ERROR    | core.app_ui_methods:_load_parameters_from_config:930 - Failed to load image parameters: 'list' object has no attribute 'items'
+2025-06-17 21:28:52.630 | ERROR    | core.app_ui_methods:_load_parameters_from_config:964 - Failed to load image parameters: 
+2025-06-17 21:36:04.264 | ERROR    | core.app_ui_methods:_load_parameters_from_config:953 - Failed to load image parameters: 
+2025-06-17 21:36:22.174 | ERROR    | core.app_ui_methods:_load_parameters_from_config:953 - Failed to load image parameters: 
+2025-06-17 21:36:58.449 | ERROR    | core.app_ui_methods:_load_parameters_from_config:953 - Failed to load image parameters: 
+2025-06-17 21:37:48.928 | ERROR    | core.app_ui_methods:_load_parameters_from_config:953 - Failed to load image parameters: 
+2025-06-17 22:05:58.309 | ERROR    | core.app_ui_methods:_load_parameters_from_config:857 - Failed to load image parameters: 
+2025-06-17 22:12:32.109 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.114 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.118 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.124 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.128 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.133 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.139 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.145 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.151 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.158 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.163 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.170 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.175 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.181 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.188 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.195 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.201 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.208 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:32.214 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:33.911 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:33.920 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:33.930 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:33.939 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:33.948 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:33.958 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:33.967 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:33.976 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 22:12:34.500 | ERROR    | core.app_ui_methods:_load_parameters_from_config:855 - Failed to load image parameters: 
+2025-06-17 22:17:17.756 | ERROR    | core.app_ui_methods:_load_parameters_from_config:855 - Failed to load image parameters: 
+2025-06-17 22:18:04.668 | ERROR    | core.app_ui_methods:_load_parameters_from_config:855 - Failed to load image parameters: 
+2025-06-17 22:26:14.849 | ERROR    | core.app_ui_methods:_load_parameters_from_config:885 - Failed to load image parameters: 
+2025-06-17 22:27:59.382 | ERROR    | core.app_ui_methods:_create_widget_from_definition:1017 - Failed to create widget Steps: invalid literal for int() with base 10: 'increment'
+2025-06-17 22:54:32.125 | ERROR    | core.app_ui_methods:_create_widget_from_definition:1024 - Failed to create widget Steps: invalid literal for int() with base 10: 'increment'
+2025-06-17 23:29:56.007 | ERROR    | core.app_ui_methods:_load_parameters_from_config:885 - Failed to load image parameters: 'PySide6.QtWidgets.QTextEdit' object has no attribute 'set_text'
+2025-06-17 23:29:59.115 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.124 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.130 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.136 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.143 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.149 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.156 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.162 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.169 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.227 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.236 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.243 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.250 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.257 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.265 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.272 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.279 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.286 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:29:59.294 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:30:00.707 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:30:00.717 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:30:00.728 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:30:00.740 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:30:00.751 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:30:00.762 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:30:00.774 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:30:00.785 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:30:26.356 | ERROR    | core.app_ui_methods:_load_parameters_from_config:885 - Failed to load image parameters: 'PySide6.QtWidgets.QTextEdit' object has no attribute 'set_text'
+2025-06-17 23:30:43.898 | ERROR    | core.app_ui_methods:_load_parameters_from_config:885 - Failed to load image parameters: 'PySide6.QtWidgets.QTextEdit' object has no attribute 'set_text'
+2025-06-17 23:31:03.800 | ERROR    | core.app_ui_methods:_load_parameters_from_config:885 - Failed to load image parameters: 'PySide6.QtWidgets.QTextEdit' object has no attribute 'set_text'
+2025-06-17 23:52:07.023 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-17 23:53:13.202 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-18 00:15:59.835 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-18 00:20:54.304 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-18 00:20:59.636 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-18 10:43:20.331 | ERROR    | core.app_ui_methods:_show_magic_prompts_dialog:1930 - Failed to show magic prompts dialog: unexpected character after line continuation character (magic_prompts_selector.py, line 85)
+2025-06-18 12:12:31.667 | ERROR    | core.app_ui_methods:_show_magic_prompts_database:1902 - Failed to open Magic Prompts Database: unexpected character after line continuation character (magic_prompts_dialog.py, line 63)
+2025-06-18 13:02:46.115 | ERROR    | core.app_ui_methods:_show_magic_prompts_dialog:1924 - Failed to show magic prompts dialog: unexpected character after line continuation character (magic_prompts_selector.py, line 85)
+2025-06-18 13:02:49.892 | ERROR    | core.app_ui_methods:_show_magic_prompts_dialog:1924 - Failed to show magic prompts dialog: unexpected character after line continuation character (magic_prompts_selector.py, line 85)
+2025-06-18 13:03:15.491 | ERROR    | core.app_ui_methods:_show_magic_prompts_dialog:1924 - Failed to show magic prompts dialog: unexpected character after line continuation character (magic_prompts_selector.py, line 85)
+2025-06-18 13:03:19.633 | ERROR    | core.app_ui_methods:_show_magic_prompts_dialog:1924 - Failed to show magic prompts dialog: unexpected character after line continuation character (magic_prompts_selector.py, line 85)
+2025-06-18 13:05:46.256 | ERROR    | core.app_ui_methods:_on_image_card_clicked:1565 - Error handling image card click: 'UnifiedObjectSelectionWidget' object has no attribute 'add_image'
+2025-06-18 13:05:49.685 | ERROR    | core.app_ui_methods:_on_image_card_clicked:1565 - Error handling image card click: 'UnifiedObjectSelectionWidget' object has no attribute 'add_image'
+2025-06-18 13:10:45.208 | ERROR    | core.app_ui_methods:_show_magic_prompts_dialog:1929 - Failed to show magic prompts dialog: name 'QWidget' is not defined
+2025-06-18 13:10:48.297 | ERROR    | core.app_ui_methods:_show_magic_prompts_dialog:1929 - Failed to show magic prompts dialog: name 'QWidget' is not defined
+2025-06-18 16:08:23.523 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-18 19:03:54.651 | ERROR    | mcp.comfyui_client:queue_prompt:444 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'prompt_outputs_failed_validation', 'message': 'Prompt outputs failed validation', 'details': '', 'extra_info': {}}, 'node_errors': {'3': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "lora_name: 'Flux\\Luminous_Shadowscape-000016.safetensors' not in ['8mm Film Lora_Flux_LatentShadows_v1.safetensors', 'FLUX_Editorial Zine.safetensors', 'Flux Any Thing plush.safetensors', 'Flux LoRA Thermal Image.safetensors', 'SDXLthermalimage.safetensors', 'SynthWave - Glitchy Analog Video Synthesis - Flux - v1.safetensors', 'aidmaFLUXpro1.1-FLUX-V0.1.safetensors', 'deep_sea_creatures_cts.safetensors', 'fruit_animals.safetensors', 'hyvideo_FastVideo_LoRA-fp8.safetensors', 'pokemon_flux_lora.safetensors']", 'extra_info': {'input_name': 'lora_name', 'input_config': [['8mm Film Lora_Flux_LatentShadows_v1.safetensors', 'FLUX_Editorial Zine.safetensors', 'Flux Any Thing plush.safetensors', 'Flux LoRA Thermal Image.safetensors', 'SDXLthermalimage.safetensors', 'SynthWave - Glitchy Analog Video Synthesis - Flux - v1.safetensors', 'aidmaFLUXpro1.1-FLUX-V0.1.safetensors', 'deep_sea_creatures_cts.safetensors', 'fruit_animals.safetensors', 'hyvideo_FastVideo_LoRA-fp8.safetensors', 'pokemon_flux_lora.safetensors'], {'tooltip': 'The name of the LoRA.'}], 'received_value': 'Flux\\Luminous_Shadowscape-000016.safetensors'}}], 'dependent_outputs': ['18', '17'], 'class_type': 'LoraLoader'}}}
+2025-06-18 19:03:54.668 | ERROR    | core.app_redesigned:_async_generate_images:1496 - Failed to queue image generation
+2025-06-18 19:32:03.631 | ERROR    | mcp.comfyui_client:queue_prompt:444 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'prompt_outputs_failed_validation', 'message': 'Prompt outputs failed validation', 'details': '', 'extra_info': {}}, 'node_errors': {'3': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "lora_name: 'Flux\\Luminous_Shadowscape-000016.safetensors' not in ['8mm Film Lora_Flux_LatentShadows_v1.safetensors', 'FLUX_Editorial Zine.safetensors', 'Flux Any Thing plush.safetensors', 'Flux LoRA Thermal Image.safetensors', 'SDXLthermalimage.safetensors', 'SynthWave - Glitchy Analog Video Synthesis - Flux - v1.safetensors', 'aidmaFLUXpro1.1-FLUX-V0.1.safetensors', 'deep_sea_creatures_cts.safetensors', 'fruit_animals.safetensors', 'hyvideo_FastVideo_LoRA-fp8.safetensors', 'pokemon_flux_lora.safetensors']", 'extra_info': {'input_name': 'lora_name', 'input_config': [['8mm Film Lora_Flux_LatentShadows_v1.safetensors', 'FLUX_Editorial Zine.safetensors', 'Flux Any Thing plush.safetensors', 'Flux LoRA Thermal Image.safetensors', 'SDXLthermalimage.safetensors', 'SynthWave - Glitchy Analog Video Synthesis - Flux - v1.safetensors', 'aidmaFLUXpro1.1-FLUX-V0.1.safetensors', 'deep_sea_creatures_cts.safetensors', 'fruit_animals.safetensors', 'hyvideo_FastVideo_LoRA-fp8.safetensors', 'pokemon_flux_lora.safetensors'], {'tooltip': 'The name of the LoRA.'}], 'received_value': 'Flux\\Luminous_Shadowscape-000016.safetensors'}}], 'dependent_outputs': ['17', '18'], 'class_type': 'LoraLoader'}}}
+2025-06-18 19:32:03.648 | ERROR    | core.app_redesigned:_async_generate_images:1512 - Failed to queue image generation
+2025-06-18 21:23:43.998 | ERROR    | core.app_ui_methods:_load_parameters_from_config:840 - ❌ CRITICAL: dynamic_params_layout not found when creating widgets for CheckpointLoaderSimple
+2025-06-18 21:23:44.000 | ERROR    | core.app_ui_methods:_load_parameters_from_config:840 - ❌ CRITICAL: dynamic_params_layout not found when creating widgets for LoraLoader
+2025-06-18 21:23:44.001 | ERROR    | core.app_ui_methods:_load_parameters_from_config:840 - ❌ CRITICAL: dynamic_params_layout not found when creating widgets for LoraLoader
+2025-06-18 21:23:44.002 | ERROR    | core.app_ui_methods:_load_parameters_from_config:840 - ❌ CRITICAL: dynamic_params_layout not found when creating widgets for LoraLoader
+2025-06-18 21:23:44.003 | ERROR    | core.app_ui_methods:_load_parameters_from_config:840 - ❌ CRITICAL: dynamic_params_layout not found when creating widgets for KSampler
+2025-06-18 21:23:44.004 | ERROR    | core.app_ui_methods:_load_parameters_from_config:840 - ❌ CRITICAL: dynamic_params_layout not found when creating widgets for FluxGuidance
+2025-06-18 21:23:44.005 | ERROR    | core.app_ui_methods:_load_parameters_from_config:840 - ❌ CRITICAL: dynamic_params_layout not found when creating widgets for EmptySD3LatentImage
+2025-06-18 21:23:44.006 | ERROR    | core.app_ui_methods:_load_parameters_from_config:840 - ❌ CRITICAL: dynamic_params_layout not found when creating widgets for Note
+2025-06-18 21:23:44.007 | ERROR    | core.app_ui_methods:_load_parameters_from_config:840 - ❌ CRITICAL: dynamic_params_layout not found when creating widgets for Image Save
+2025-06-18 21:23:44.009 | ERROR    | core.app_ui_methods:_load_parameters_from_config:926 - Failed to load image parameters: 'ComfyToC4DAppRedesigned' object has no attribute 'dynamic_params_layout'
+2025-06-18 21:23:44.017 | ERROR    | core.app_ui_methods:_load_parameters_from_config:928 - Parameter loading traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 898, in _load_parameters_from_config
+    final_widget_count = self.dynamic_params_layout.count()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ComfyToC4DAppRedesigned' object has no attribute 'dynamic_params_layout'
+
+2025-06-18 23:49:55.412 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-18 23:49:57.482 | CRITICAL | __main__:handle_exception:71 - Uncaught exception
+2025-06-19 01:31:43.601 | ERROR    | mcp.comfyui_client:get_history:533 - Failed to get history: 
+2025-06-19 01:31:43.613 | ERROR    | mcp.comfyui_client:get_history:533 - Failed to get history: 
+2025-06-19 01:31:43.626 | ERROR    | mcp.comfyui_client:get_history:533 - Failed to get history: 
+2025-06-19 01:31:43.639 | ERROR    | mcp.comfyui_client:get_history:533 - Failed to get history: 
+2025-06-19 01:31:43.651 | ERROR    | mcp.comfyui_client:get_history:533 - Failed to get history: 
+2025-06-19 01:31:47.546 | ERROR    | mcp.comfyui_client:get_history:533 - Failed to get history: All connection attempts failed
+2025-06-19 01:31:49.566 | ERROR    | mcp.comfyui_client:get_history:533 - Failed to get history: All connection attempts failed
+2025-06-19 01:31:51.537 | ERROR    | mcp.comfyui_client:get_history:533 - Failed to get history: All connection attempts failed
+2025-06-19 01:31:53.547 | ERROR    | mcp.comfyui_client:get_history:533 - Failed to get history: All connection attempts failed
+2025-06-19 01:31:55.552 | ERROR    | mcp.comfyui_client:get_history:533 - Failed to get history: All connection attempts failed
+2025-06-19 01:31:57.552 | ERROR    | mcp.comfyui_client:get_history:533 - Failed to get history: All connection attempts failed
+2025-06-19 01:31:59.534 | ERROR    | mcp.comfyui_client:get_history:533 - Failed to get history: All connection attempts failed
+2025-06-19 01:32:01.544 | ERROR    | mcp.comfyui_client:get_history:533 - Failed to get history: All connection attempts failed
+2025-06-19 13:17:38.332 | ERROR    | core.app_redesigned:_open_nlp_dictionary:1008 - Failed to open NLP Dictionary: NLPDictionaryDialog.__init__() got multiple values for argument 'parent'

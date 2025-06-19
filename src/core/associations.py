@@ -56,7 +56,7 @@ class ImageModelAssociationManager:
                     }
                 logger.info(f"Loaded {len(self.associations)} image-model associations")
             else:
-                logger.info("No existing associations file found, starting fresh")
+                logger.debug("No existing associations file found, starting fresh")
         except Exception as e:
             logger.error(f"Failed to load associations: {e}")
             self.associations = {}

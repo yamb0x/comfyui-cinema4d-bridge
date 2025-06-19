@@ -1,0 +1,150 @@
+# Claude settings (contains sensitive data)
+.claude/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual Environment
+venv/
+virtualenv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Application specific
+.env
+*.log
+logs/*.log
+config/last_workflow_state.json
+config/recent_projects.json
+config/workflow_settings.json
+
+# Generated content
+images/*.png
+images/*.jpg
+images/*.jpeg
+3D/*.glb
+3D/*.obj
+3D/*.fbx
+3D/*.gltf
+exports/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*_backup.*
+*_corrupted.*
+
+# Test files
+test_*.py
+*_test.py
+tests/
+
+# Documentation build
+docs/_build/
+docs/_static/
+docs/_templates/
+
+# Sensitive data
+secrets/
+credentials/
+*.key
+*.pem
+*.cert
+
+# Large files
+*.zip
+*.rar
+*.7z
+*.tar.gz
+
+# Cinema4D backup files
+c4d/backup/
+*.c4d@*
+
+# ComfyUI specific
+workflows/backups/
+bridge_outputs/
+temp/
+
+# Development artifacts
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+
+# Node modules (if any JS components)
+node_modules/
+
+# Mac specific
+.AppleDouble
+.LSOverride
+
+# Windows specific
+$RECYCLE.BIN/
+*.lnk
+
+# Linux specific
+.directory
+.Trash-*
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Session data
+session_data/
+*.session
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache
+.cache/
+cache/
+
+# Temporary fix scripts (cleaned up)
+fix_*.py
+smart_*.py
+*_fix.py
+*_FIX_REPORT.md

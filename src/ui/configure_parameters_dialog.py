@@ -487,7 +487,8 @@ class ConfigureParametersDialog(QDialog):
             config = {
                 "selected_nodes": selected_nodes,
                 "node_info": selected_info,
-                "workflow_file": self.workflow_filename if hasattr(self, 'workflow_filename') and self.workflow_data else None
+                "workflow_file": self.workflow_filename if hasattr(self, 'workflow_filename') and self.workflow_data else None,
+                "workflow_path": str(self.loaded_workflow_path) if hasattr(self, 'loaded_workflow_path') and self.workflow_data else None
             }
             
             # Ensure config directory exists

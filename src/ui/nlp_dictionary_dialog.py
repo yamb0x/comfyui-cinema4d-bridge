@@ -16,7 +16,7 @@ from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QFont, QIcon
 from loguru import logger
 
-from .styles import get_dark_stylesheet
+from .terminal_theme_complete import get_complete_terminal_theme
 
 
 class NLPDictionaryDialog(QDialog):
@@ -2474,26 +2474,29 @@ class NLPDictionaryDialog(QDialog):
             QMessageBox.critical(self, "Save Error", f"Failed to save dictionary: {str(e)}")
             
     def apply_styles(self):
-        """Apply dark theme styles"""
-        self.setStyleSheet(get_dark_stylesheet() + """
+        """Apply terminal theme styles"""
+        self.setStyleSheet(get_complete_terminal_theme() + """
             QDialog {
-                background-color: #1a1a1a;
+                background-color: #000000;
+                color: #fafafa;
+                font-family: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
             }
             
             #dialog_header {
                 font-size: 18px;
                 font-weight: bold;
                 padding: 10px;
+                color: #4CAF50;
             }
             
             #nlp_tabs {
-                background-color: #1a1a1a;
-                border: 1px solid #333;
+                background-color: #000000;
+                border: 1px solid #3a3a3a;
             }
             
             #nlp_tabs::pane {
-                background-color: #1a1a1a;
-                border: 1px solid #333;
+                background-color: #000000;
+                border: 1px solid #3a3a3a;
             }
             
             #nlp_tabs::tab-bar {
@@ -2501,27 +2504,31 @@ class NLPDictionaryDialog(QDialog):
             }
             
             #nlp_tabs QTabBar::tab {
-                background-color: #2a2a2a;
-                color: #cccccc;
+                background-color: #171717;
+                color: #fafafa;
                 padding: 8px 16px;
                 margin-right: 2px;
-                border-top-left-radius: 4px;
-                border-top-right-radius: 4px;
+                border-top-left-radius: 3px;
+                border-top-right-radius: 3px;
+                border: 1px solid #3a3a3a;
             }
             
             #nlp_tabs QTabBar::tab:selected {
-                background-color: #0d7377;
-                color: white;
+                background-color: #4CAF50;
+                color: #000000;
+                font-weight: bold;
             }
             
             #nlp_tabs QTabBar::tab:hover {
-                background-color: #333333;
+                background-color: #2a2a2a;
+                border-color: #4CAF50;
             }
             
             #command_list {
-                background-color: #2a2a2a;
-                border: 1px solid #333;
+                background-color: #171717;
+                border: 1px solid #3a3a3a;
                 padding: 5px;
+                color: #fafafa;
             }
             
             #command_list::item {

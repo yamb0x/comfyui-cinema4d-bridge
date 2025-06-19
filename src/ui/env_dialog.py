@@ -27,8 +27,16 @@ class EnvironmentVariablesDialog(QDialog):
         self.setModal(True)
         self.resize(800, 600)
         
+        # Apply terminal theme styling
+        self._apply_terminal_theme()
+        
         self._setup_ui()
         self._load_current_values()
+    
+    def _apply_terminal_theme(self):
+        """Apply terminal theme styling to the dialog"""
+        from ui.terminal_theme_complete import get_complete_terminal_theme
+        self.setStyleSheet(get_complete_terminal_theme())
         
     def _setup_ui(self):
         """Set up the dialog UI"""
