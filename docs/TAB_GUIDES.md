@@ -10,7 +10,7 @@ This document provides comprehensive information about each of the 4 main tabs i
 
 ---
 
-## Tab 1: Image Generation
+## Tab 1: Image Generation 🚧 **IN PROGRESS**
 
 ### Purpose and Functionality
 The Image Generation tab allows users to generate images using ComfyUI workflows with various prompts and parameters. It features a dual-mode interface for creating new images or viewing existing ones.
@@ -18,6 +18,12 @@ The Image Generation tab allows users to generate images using ComfyUI workflows
 ### Sub-tabs
 1. **New Canvas**: For generating new images with prompts
 2. **View All**: Gallery view of all generated images with selection capabilities
+
+### Status
+- **Basic Generation**: ✅ Working with FLUX/SD workflows
+- **Dynamic UI Widgets**: 🐛 Buggy - parameters from workflows don't always display correctly
+- **Image Detection**: ✅ Fixed - now uses ComfyUI history API
+- **Selection System**: ✅ Working - images can be selected for 3D generation
 
 ### Key Files and Configurations
 - **Main Implementation**: `src/core/app_redesigned.py` - `_create_enhanced_image_generation_tab()`
@@ -50,11 +56,11 @@ def _create_enhanced_image_generation_tab(self) -> QWidget:
   7. Loads images into preview cards with ASCII animation lifecycle
 
 ### Known Issues and Limitations
-- ✅ **COMPLETELY FIXED (June 18, 2025)**: All workflow execution issues resolved
+- 🐛 **Dynamic UI Widgets**: Parameter widgets from workflows are buggy
+- 🐛 **Workflow Completion**: Sometimes fails to detect when generation is complete
+- 🐛 **Parameter Persistence**: Not all parameters save/load correctly
 - ✅ **FIXED**: WAS Node Suite compatibility - auto-converts to standard ComfyUI nodes
 - ✅ **FIXED**: File monitoring and image loading into preview cards
-- ✅ **FIXED**: ASCII animation lifecycle and timing
-- ✅ **WORKING**: Image selection persists across sub-tabs
 
 ### Important Implementation Notes
 - **NEW MASTER PATTERN**: Workflow completion monitoring via ComfyUI history API
@@ -67,7 +73,7 @@ def _create_enhanced_image_generation_tab(self) -> QWidget:
 
 ---
 
-## Tab 2: 3D Model Generation
+## Tab 2: 3D Model Generation 🚧 **IN PROGRESS**
 
 ### Purpose and Functionality
 The 3D Model Generation tab enables users to create 3D models from images using the Hunyuan3D workflow. It provides both scene object management and a gallery view of all generated models.
@@ -75,6 +81,12 @@ The 3D Model Generation tab enables users to create 3D models from images using 
 ### Sub-tabs
 1. **Scene Objects**: For managing 3D models in the current scene
 2. **View All Models**: Gallery view of all generated 3D models
+
+### Status
+- **Basic Generation**: ✅ Working with Hunyuan3D 2.0
+- **Dynamic UI Widgets**: 🐛 Same bugs as image generation
+- **File Detection**: ⚠️ Needs same fix as Tab 1
+- **Viewer System**: ✅ Basic vispy viewers work
 
 ### Key Files and Configurations
 - **Main Implementation**: `src/core/app_redesigned.py` - `_create_enhanced_3d_model_tab()`
@@ -103,14 +115,12 @@ def _create_enhanced_3d_model_tab(self) -> QWidget:
   5. Updates model gallery with results
 
 ### Known Issues and Limitations
-- ⚠️ **NEEDS SAME FIX AS TAB 1**: Likely uses broken workflow patterns
-- ⚠️ **LIKELY BROKEN**: File monitoring for .glb files  
-- ⚠️ **LIKELY BROKEN**: Workflow completion not properly tracked
-- ⚠️ **MAY HAVE**: Custom node dependencies like Tab 1
-- Requires image selection before generation
-- Limited to .glb output format
-- Lazy loading for performance (models load on tab switch)
-- No direct 3D preview in application (uses placeholder)
+- 🐛 **Dynamic UI Widgets**: Same parameter widget bugs as image generation
+- 🐛 **Workflow Detection**: Sometimes fails to find generated models
+- 🐛 **Viewer Performance**: Can be slow with multiple models
+- ⚠️ **Needs Same Fix**: Should apply Tab 1's workflow completion monitoring pattern
+- ✅ **Working**: Basic image to 3D conversion
+- ✅ **Working**: Resource management prevents crashes (50 viewer limit)
 
 ### Important Implementation Notes
 - Asynchronous generation to prevent UI freezing
@@ -120,10 +130,16 @@ def _create_enhanced_3d_model_tab(self) -> QWidget:
 
 ---
 
-## Tab 3: Texture Generation
+## Tab 3: Texture Generation 🚧 **EXPERIMENTAL**
 
 ### Purpose and Functionality
 The Texture Generation tab allows users to apply textures to 3D models using AI-generated materials. Currently features basic UI with plans for enhanced viewer integration.
+
+### Status
+- **Basic Generation**: ✅ Works with experimental workflow
+- **Viewer Integration**: 🐛 Three.js viewer built but not integrated
+- **Workflow Stability**: ⚠️ Experimental workflow sometimes fails
+- **Preview System**: ❌ No real-time texture preview on models
 
 ### Key Files and Configurations
 - **Main Implementation**: `src/core/app_redesigned.py` - `_create_enhanced_texture_generation_tab()`
@@ -151,15 +167,13 @@ def _create_enhanced_texture_generation_tab(self) -> QWidget:
   4. (Future) Updates texture viewer with results
 
 ### Known Issues and Limitations
-- 🚨 **CRITICAL**: Model selection broken across tabs (from archive fixes)
-- 🚨 **CRITICAL**: Workflow conversion methods wrong (`convert_ui_to_api()` vs `_convert_ui_to_api_format()`)
-- 🚨 **CRITICAL**: Missing parameter gathering from UI controls
-- 🚨 **CRITICAL**: Missing connection checks before execution
-- ⚠️ **Texture viewer not integrated** - `TextureViewerIntegration` class exists but not connected
-- ⚠️ **LIKELY BROKEN**: Same workflow completion issues as Tab 1
-- Basic UI without preview capabilities
-- Limited parameter controls compared to other tabs
-- No real-time texture preview
+- 🐛 **Viewer Integration**: Three.js viewer built but not integrated (exists in /viewer)
+- 🐛 **Workflow Stability**: Experimental workflow sometimes fails
+- 🐛 **Preview System**: No real-time texture preview on models
+- ⚠️ **Model Selection**: May have issues selecting from multiple sources
+- ⚠️ **Needs Same Fix**: Should apply Tab 1's workflow completion monitoring pattern
+- ✅ **Working**: Basic texture generation with PBR output
+- ✅ **Working**: Model selection from 3D tab
 
 ### Important Implementation Notes
 - Texture viewer integration prepared but not implemented
@@ -169,10 +183,16 @@ def _create_enhanced_texture_generation_tab(self) -> QWidget:
 
 ---
 
-## Tab 4: Cinema4D Intelligence
+## Tab 4: Cinema4D Intelligence 🚧 **MAPPING IN PROGRESS**
 
 ### Purpose and Functionality
 The Cinema4D Intelligence tab provides an NLP-powered chat interface for creating and manipulating Cinema4D objects using natural language commands. It features the extensive NLP Dictionary system for object creation.
+
+### Status
+- **Object Creation**: ✅ Basic creation works for 83+ objects
+- **NLP Intelligence**: ❌ Not implemented - no smart scene composition
+- **Chat Interface**: ✅ UI present but needs verification
+- **MCP Integration**: ⚠️ May have issues after UI redesign
 
 ### Key Files and Configurations
 - **Main Implementation**: `src/core/app_redesigned.py` - `_create_enhanced_cinema4d_tab()`
@@ -213,14 +233,13 @@ def _create_enhanced_cinema4d_tab(self) -> QWidget:
   5. Maintains command history
 
 ### Known Issues and Limitations
-- ⚠️ **MAY BE BROKEN**: NLP parser integration after UI redesign
-- ⚠️ **MAY BE BROKEN**: Chat message routing and display
-- ⚠️ **MAY BE BROKEN**: MCP wrapper command execution
-- ⚠️ **NEEDS VERIFICATION**: All chat functionality post-redesign
-- Requires Cinema4D MCP server running
-- Limited to implemented object categories
-- No undo/redo for chat commands
-- Settings dialogs use inconsistent theming
+- 🐛 **Natural Language Processing**: Smart scene composition not implemented
+- 🐛 **Complex Commands**: Can't handle multi-step operations yet
+- 🐛 **Scene Intelligence**: No context awareness or smart object placement
+- ⚠️ **UI Integration**: May have issues after recent UI redesign
+- ✅ **Working**: Basic object creation through NLP Dictionary
+- ✅ **Working**: 83+ objects mapped and functional
+- 🔄 **Still To Do**: Tags, Fields, Dynamics, Volumes, Materials categories
 
 ### Important Implementation Notes
 - Universal object creation pattern via `create_generator()` method

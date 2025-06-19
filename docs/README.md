@@ -1,6 +1,6 @@
 # ComfyUI to Cinema4D Bridge - Documentation
 
-## 📚 Core Documentation (7 Files)
+## 📚 Core Documentation
 
 ### **Getting Started**
 - **[Main README](../README.md)** - Project overview and quick start
@@ -14,11 +14,11 @@
   - Tab 4: Cinema4D Intelligence (NLP chat)
 
 ### **Cinema4D Integration**
-- **[CINEMA4D_GUIDE.md](CINEMA4D_GUIDE.md)** - NLP dictionary implementation (80% complete)
-  - Universal object creation pattern
-  - 83+ implemented objects
+- **[CINEMA4D_GUIDE.md](CINEMA4D_GUIDE.md)** - Cinema4D object mapping guide
+  - Object discovery and documentation methods
+  - 83+ objects mapped (basic creation works)
   - Parameter naming conventions
-  - Testing and discovery methods
+  - NLP intelligence not yet implemented
 
 ### **Development**
 - **[DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md)** - Code structure and patterns
@@ -77,4 +77,4 @@
 
 ---
 
-Last Updated: 2025-01-17
+Last Updated: 2025-06-19

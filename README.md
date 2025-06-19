@@ -1,7 +1,7 @@
 # 🎨 ComfyUI to Cinema4D Bridge
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Status-80%25%20Complete-success?style=for-the-badge" alt="Status">
+  <img src="https://img.shields.io/badge/Status-In%20Development-yellow?style=for-the-badge" alt="Status">
   <img src="https://img.shields.io/badge/Python-3.12+-blue?style=for-the-badge&logo=python" alt="Python">
   <img src="https://img.shields.io/badge/Qt-6-green?style=for-the-badge&logo=qt" alt="Qt6">
   <img src="https://img.shields.io/badge/Cinema4D-2024+-red?style=for-the-badge" alt="Cinema4D">
@@ -15,36 +15,15 @@
 
 ## 🚀 Overview
 
-Transform your creative ideas into complete 3D scenes using the power of AI. This production-ready desktop application seamlessly bridges ComfyUI's generative capabilities with Cinema4D's professional 3D workflow.
+This production-ready desktop application seamlessly bridges ComfyUI's generative capabilities with Cinema4D's professional 3D workflow, providing a complete pipeline from image generation to 3D model creation, texturing, and full Cinema4D integration.
 
 ### ✨ Key Features
 
-- 🖼️ **AI Image Generation** - FLUX workflows with real-time parameter control
-- 🎭 **3D Model Creation** - Convert images to 3D models automatically  
-- 🎨 **Smart Texturing** - Generate PBR materials for your 3D models
-- 🎬 **Cinema4D Intelligence** - Create 83+ objects using natural language
-- 🌙 **Professional Dark UI** - Qt6 interface designed for creative professionals
-
----
-
-## 📸 Screenshots
-
-<details>
-<summary>Click to view interface screenshots</summary>
-
-### Main Interface
-![Main Interface](docs/images/interface_main.png)
-
-### Image Generation Tab
-![Image Generation](docs/images/tab_image_generation.png)
-
-### 3D Model Creation
-![3D Models](docs/images/tab_3d_models.png)
-
-### Cinema4D Intelligence
-![Cinema4D Chat](docs/images/tab_cinema4d.png)
-
-</details>
+- 🖼️ **AI Image Generation** - FLUX/SD1.5/SD3.5/SDXL workflows with real-time dynamic parameter control (exposing parameters from ComfyUI workflows)
+- 🎭 **3D Model Creation** - Convert images to 3D models (currently using Hunyuan3D 2.0, ready for newer model support)
+- 🎨 **Smart Texturing** - Generate PBR materials for your 3D models (using an experimental workflow method by Yambo)
+- 🎬 **Cinema4D Intelligence** - Create 83+ objects using natural language (currently mapping all C4D functions; next step is to create a smart NLP interface for scene creation via prompts)
+- 🌙 **Professional UI** - Qt6 interface designed for creative professionals (same development framework used by Max, Maya, Resolve, Ableton, and more)
 
 ---
 
@@ -55,13 +34,13 @@ Transform your creative ideas into complete 3D scenes using the power of AI. Thi
 - 🎨 ComfyUI installation with API enabled
 - 🎬 Cinema4D R2024 or newer
 - 💾 16GB RAM recommended
-- 🖥️ Windows 10/11 (Linux/Mac support coming)
+- 🖥️ Windows 10/11 (Linux/Mac support coming soon)
 
 ### Quick Start
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YourUsername/comfy-to-c4d.git
+git clone https://github.com/yamb0x/comfyui-cinema4d-bridge.git
 cd comfy-to-c4d
 
 # 2. Run automated setup (Windows)
@@ -83,41 +62,39 @@ launch.bat
 ## 🎯 Features & Capabilities
 
 ### 🖼️ Image Generation
-- **FLUX Model Support** with LoRA integration
-- **Dynamic UI** from any ComfyUI workflow
-- **Batch Generation** with real-time monitoring
-- **Session Management** for organized workflows
+- **FLUX Model Support** with multiple LoRA integration
+- **Dynamic UI** exposing parameters from any ComfyUI workflow
+- **Batch Generation** with real-time monitoring and image fetching to the UI
+- **Session Management** for organized workflows, prompts, and more
 
 ### 🎭 3D Model Generation  
-- **Image-to-3D** conversion using Hy3D
+- **Image-to-3D** conversion using Hunyuan3D 2.0
 - **Interactive Viewers** with rotation and zoom
 - **Multiple Formats**: GLB, OBJ, FBX, GLTF
 - **Smart Resource Management** (50 viewer limit)
 
 ### 🎨 Texture Generation
-- **PBR Materials** from AI-generated textures
+- **PBR Materials** - New workflow by Yambo for AI-generated textures applied to 3D models
 - **Workflow Integration** with automatic UI
 - **Material Preview** before application
 - **Batch Processing** for multiple models
 
 ### 🎬 Cinema4D Intelligence
 ```python
-# Natural language commands:
-"Create a red sphere"
-"Add 10 cubes in a circle"
-"Make a glass material"
-"Animate with random effector"
+# Natural language commands (coming soon):
+"Import my 3D objects to the scene and make them squishy soft bodies"
+"Add a landscape object and scatter the generated 3D objects on it with random and push apart effectors"
+"Scatter the generated 3D models on a plane and add randomness"
 ```
 
-**83+ Supported Objects** across 6 categories:
+**Work in Progress - Mapping All Functions** (C4D SDK integration is challenging):
 - ✅ Primitives (18 objects)
 - ✅ Generators (25+ objects)  
 - ✅ MoGraph Effectors (23 objects)
 - ✅ Deformers (10 objects)
 - ✅ Splines & Lights
-- 🔄 Coming: Tags, Fields, Dynamics
-
----
+- 🔄 Need to Verify: Tags, Fields, Dynamics
+- 🔄 Coming Soon: Volumes, Materials, etc.
 
 ## 📚 Documentation
 
@@ -129,7 +106,6 @@ launch.bat
 ### 👩‍💻 Development
 - [**Developer Guide**](docs/DEVELOPMENT_GUIDE.md) - Architecture and patterns
 - [**API Reference**](docs/development/TECHNICAL_REFERENCE.md) - Technical documentation
-- [**Contributing**](CONTRIBUTING.md) - How to contribute
 
 ### 📖 User Guides
 - [**Tab Guides**](docs/TAB_GUIDES.md) - Detailed guide for each feature
@@ -160,38 +136,29 @@ launch.bat
 
 ## 🎯 Roadmap
 
-### ✅ Completed (80%)
-- [x] Complete image generation pipeline
-- [x] 3D model creation from images
-- [x] Texture generation system
-- [x] Cinema4D object creation (83+ objects)
-- [x] Professional UI with dark theme
+### ✅ Completed
+- [x] High-level testing of all functions
+- [x] Basic testing for texture generation, image generation, 3D generation
+- [x] Cinema4D object creation (83+ objects) 
+- [x] File menus and configuration panels
 - [x] Session and file management
 
-### 🚧 In Progress (15%)
-- [ ] Remaining Cinema4D categories
-- [ ] Advanced 3D viewer with PBR
-- [ ] Natural language scene composition
-- [ ] Performance optimizations
+### 🚧 In Progress 
+- [ ] Complete image generation pipeline (dynamic UI widget still has bugs)
+- [ ] Complete 3D generation pipeline (dynamic UI widget still has bugs)
+- [ ] Advanced 3D viewer with PBR for texturing tab (Three.js-based WebGL viewer in QWebEngineView ready at \viewer)
+- [ ] Remaining Cinema4D category controls
+- [ ] Natural language scene composition (connecting mapped controls to a smart chat system)
+- [ ] Performance optimizations and bug fixes
+- [ ] Fix dynamic log options in settings
+- [ ] Fix broken functions in settings page
+- [ ] Build Python scripts database for C4D as extension management tool
 
-### 🔮 Future Plans (5%)
-- [ ] Cloud rendering support
+### 🔮 Future Plans
 - [ ] Multi-user collaboration
-- [ ] Plugin marketplace
-- [ ] Mobile companion app
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Ways to Contribute
-- 🐛 Report bugs and issues
-- 💡 Suggest new features
-- 🔧 Submit pull requests
-- 📚 Improve documentation
-- 🎨 Share your creations
+- [ ] Support for all common ComfyUI nodes
+- [ ] Improve Cinema4D Intelligence for smart scene creation
+- [ ] Integrate better image-to-3D models (e.g., Hunyuan 2.5 when released)
 
 ---
 
@@ -205,8 +172,8 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ### Statistics
 - **Lines of Code**: 15,000+
-- **Cinema4D Objects**: 83/120 implemented
-- **Test Coverage**: 70%
+- **Cinema4D Objects**: 83/~120 core functions implemented
+- **Test Coverage**: 40%
 - **Active Development**: Yes
 
 ---
@@ -215,25 +182,20 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 This project wouldn't be possible without:
 - [ComfyUI](https://github.com/comfyanonymous/ComfyUI) - The amazing node-based UI
-- [Cinema4D Python API](https://developers.maxon.net/) - Professional 3D integration
-- [MCP Protocol](https://github.com/mcp/spec) - Standardized communication
-- Our amazing community of testers and contributors
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+- [ComfyUI-3D-Pack](https://github.com/MrForExample/ComfyUI-3D-Pack) - Using this version for better 3D generation compatibility
+- [Cinema4D Python API](https://developers.maxon.net/docs/py/2024_5_0/manuals/manual_maxon_api.html) - Challenging but powerful SDK
+- [Cinema4D MCP](https://github.com/ttiimmaacc/cinema4d-mcp) - Cinema4D MCP integration
+- [ComfyUI MCP](https://github.com/joenorton/comfyui-mcp-server) - ComfyUI MCP integration
 
 ---
 
 <p align="center">
-  <b>🎨 Built with ❤️ for Creative Professionals</b><br>
-  <sub>Transform your imagination into reality</sub>
+  <b>Built with ❤️ for 3D Professionals by Yambo (and Claude 🎨)</b><br>
+  <sub>Aiming to provide greater control for 3D model generation in Cinema4D</sub>
 </p>
 
 <p align="center">
-  <a href="https://github.com/YourUsername/comfy-to-c4d/issues">Report Bug</a> •
-  <a href="https://github.com/YourUsername/comfy-to-c4d/issues">Request Feature</a> •
+  <a href="https://github.com/yamb0x/comfyui-cinema4d-bridge/issues">Report Bug</a> •
+  <a href="https://github.com/yamb0x/comfyui-cinema4d-bridge/issues">Request Feature</a> •
   <a href="docs/CHANGELOG.md">Changelog</a>
 </p>

@@ -1,5 +1,13 @@
 # ComfyUI to Cinema4D Bridge - Development Guide
 
+## 🚧 Project Status
+
+This project is **in active development** with many experimental features and known bugs. Please be aware:
+- Dynamic UI widgets from workflows are buggy across all tabs
+- Some features marked as "working" may have edge cases
+- The codebase is evolving and some patterns may change
+- Cinema4D SDK integration remains challenging
+
 ## 🚀 Quick Start
 
 ### Prerequisites
