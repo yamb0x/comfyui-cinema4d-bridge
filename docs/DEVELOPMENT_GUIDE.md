@@ -2,11 +2,13 @@
 
 ## 🚧 Project Status
 
-This project is **in active development** with many experimental features and known bugs. Please be aware:
-- Dynamic UI widgets from workflows are buggy across all tabs
-- Some features marked as "working" may have edge cases
-- The codebase is evolving and some patterns may change
-- Cinema4D SDK integration remains challenging
+This project is **in active development** with the following status:
+- ✅ Tab 1 (Image Generation): **FULLY FUNCTIONAL** with dynamic UI
+- 🚧 Tab 2 (3D Generation): Needs workflow monitoring implementation
+- 🚧 Tab 3 (Texture Generation): Basic UI, viewer integration pending
+- 🚧 Tab 4 (Cinema4D): 80% complete, NLP dictionary working
+- ✅ Dynamic UI system: Working for ANY ComfyUI workflow
+- ✅ Custom node conversion: Automatic compatibility handling
 
 ## 🚀 Quick Start
 
@@ -76,6 +78,59 @@ comfy-to-c4d/
 ```
 
 ## 🎯 Core Patterns
+
+### Workflow Node Conversion
+
+The application automatically converts custom nodes to standard ComfyUI nodes for compatibility:
+
+```python
+# In workflow_manager.py - _ensure_save_image_node()
+if node_data.get("class_type") == "Image Save":
+    # Convert WAS "Image Save" to standard "SaveImage" 
+    node_data["class_type"] = "SaveImage"
+    
+    # Convert to standard SaveImage inputs
+    image_connection = inputs.get("images", ["11", 0])
+    inputs.clear()  # Clear all WAS-specific inputs
+    inputs["images"] = image_connection
+    inputs["filename_prefix"] = "ComfyUI"
+```
+
+**Why We Do This:**
+- Many workflows use custom nodes like WAS Node Suite
+- Users may not have these custom nodes installed
+- Standard nodes are guaranteed to exist in ComfyUI
+- Preserves workflow functionality without dependencies
+
+**Supported Conversions:**
+- WAS "Image Save" → Standard "SaveImage"
+- More conversions can be added as needed
+
+### Dynamic UI Widget System
+
+The application creates UI widgets dynamically based on ANY workflow:
+
+```python
+# In app_ui_methods.py - _load_parameters_from_config()
+def _create_widget_from_definition(self, widget_def, value, node_type, node_id, param_key):
+    """Creates appropriate widget based on node parameter definition"""
+    widget_type = widget_def.get('widget', 'text')
+    
+    if widget_type == 'combo':
+        # Dynamic dropdown with model scanning
+        options = self._get_model_options_for_parameter(node_type, widget_def['name'])
+        return self._create_combo_widget(widget_def['name'], options, value)
+    elif widget_type == 'float':
+        return self._create_float_widget(...)
+    # ... more widget types
+```
+
+**Key Features:**
+- Detects node types from workflow JSON
+- Creates appropriate widgets (combo, float, int, text, etc.)
+- Stores widget references for dynamic updates
+- Supports bypass functionality per node
+- Handles multiple instances of same node type
 
 ### AsyncIO & Event Loop Management
 

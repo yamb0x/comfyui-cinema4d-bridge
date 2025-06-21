@@ -110,6 +110,33 @@ def get_complete_terminal_theme() -> str:
         padding: 0px;
     }
     
+    QLabel#performance_meter_label {
+        background-color: transparent;
+        color: #737373;
+        font-size: 9px;
+        font-weight: 400;
+        margin: 0px;
+        padding: 0px;
+    }
+    
+    QLabel#mcp_address_label {
+        background-color: transparent;
+        color: #737373;
+        font-size: 9px;
+        font-weight: 400;
+        margin: 0px;
+        padding: 0px;
+    }
+    
+    QLabel#object_count_label {
+        background-color: transparent;
+        color: #737373;
+        font-size: 9px;
+        font-weight: 400;
+        margin: 0px;
+        padding: 0px;
+    }
+    
     /* ==== TAB SYSTEM STYLES ==== */
     QTabWidget::pane {
         background-color: #000000;

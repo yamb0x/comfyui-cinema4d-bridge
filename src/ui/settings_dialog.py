@@ -607,13 +607,112 @@ class ApplicationSettingsDialog(QDialog):
                 border-color: {self.accent_color} !important;
             }}
             
+            /* Text Selection Colors */
+            QTextEdit::selection {{
+                background-color: {self.accent_color} !important;
+                color: #000000 !important;
+            }}
+            
+            QLineEdit::selection {{
+                background-color: {self.accent_color} !important;
+                color: #000000 !important;
+            }}
+            
+            /* Console Focus Border */
+            QTextEdit#console:focus {{
+                border: 1px solid {self.accent_color} !important;
+            }}
+            
             QCheckBox::indicator:checked {{
                 background-color: {self.accent_color} !important;
                 border-color: {self.accent_color} !important;
             }}
             
-            QProgressBar::chunk {{
+            
+            /* Magic Prompt Star Buttons - More specific targeting */
+            QPushButton[text="★"] {{
+                color: {self.accent_color} !important;
+            }}
+            QPushButton[text="★"]:hover {{
+                color: {self._get_lighter_color(self.accent_color)} !important;
+            }}
+            QPushButton[text="★"]:pressed {{
+                color: {self._get_darker_color(self.accent_color)} !important;
+            }}
+            
+            /* Image Thumbnail Selection Borders - Exact selector */
+            QFrame#image_thumbnail[selected="true"] {{
+                border: 2px solid {self.accent_color} !important;
+            }}
+            
+            /* All Checkbox States - Both #4CAF50 and #22c55e variants */
+            QCheckBox::indicator:checked {{
                 background-color: {self.accent_color} !important;
+                border-color: {self.accent_color} !important;
+            }}
+            QCheckBox::indicator:hover {{
+                border-color: {self.accent_color} !important;
+                background-color: rgba({int(self.accent_color[1:3], 16)}, {int(self.accent_color[3:5], 16)}, {int(self.accent_color[5:7], 16)}, 50) !important;
+            }}
+            
+            /* Connection/Status Info Labels */
+            QLabel#connection_info {{
+                color: {self.accent_color} !important;
+            }}
+            
+            /* 3D Model Selection States */
+            Model3DPreviewCard QPushButton[selected="true"] {{
+                background-color: {self.accent_color} !important;
+            }}
+            
+            /* Primary Action Buttons - Comprehensive list */
+            QPushButton#generate_btn, QPushButton#generate_3d_btn, QPushButton#generate_texture_btn,
+            QPushButton#import_selected_btn, QPushButton#export_btn {{
+                background-color: {self.accent_color} !important;
+                border-color: {self.accent_color} !important;
+            }}
+            
+            /* Dialog and Menu Styling */
+            QDialog QListWidget::item:selected {{
+                background-color: {self.accent_color} !important;
+                color: #000000 !important;
+            }}
+            QDialog QListWidget::item:hover {{
+                background-color: rgba({int(self.accent_color[1:3], 16)}, {int(self.accent_color[3:5], 16)}, {int(self.accent_color[5:7], 16)}, 0.3) !important;
+            }}
+            
+            /* Menu hover states */
+            QMenu::item:selected {{
+                background-color: {self.accent_color} !important;
+                color: #000000 !important;
+            }}
+            QMenu::item:hover {{
+                background-color: rgba({int(self.accent_color[1:3], 16)}, {int(self.accent_color[3:5], 16)}, {int(self.accent_color[5:7], 16)}, 0.8) !important;
+                color: #000000 !important;
+            }}
+            
+            /* Submenu indicators */
+            QMenu::right-arrow {{
+                border-left: 5px solid {self.accent_color};
+                border-top: 5px solid transparent;
+                border-bottom: 5px solid transparent;
+            }}
+            
+            /* Dialog button focus */
+            QDialogButtonBox QPushButton:default {{
+                background-color: {self.accent_color} !important;
+                border-color: {self.accent_color} !important;
+            }}
+            QDialogButtonBox QPushButton:focus {{
+                border: 2px solid {self.accent_color} !important;
+            }}
+            
+            /* Slider accent colors */
+            QSlider::handle:horizontal, QSlider::handle:vertical {{
+                background-color: {self.accent_color} !important;
+            }}
+            QSlider::groove:horizontal:active, QSlider::groove:vertical:active {{
+                background-color: rgba({int(self.accent_color[1:3], 16)}, {int(self.accent_color[3:5], 16)}, {int(self.accent_color[5:7], 16)}, 0.3) !important;
             }}
             """
             
@@ -754,6 +853,46 @@ class ApplicationSettingsDialog(QDialog):
             logger.info(f"Accent color changed to {self.accent_color}")
         except Exception as e:
             logger.error(f"Failed to apply accent color: {e}")
+    
+    def _get_lighter_color(self, hex_color: str) -> str:
+        """Get a lighter version of the hex color for hover effects"""
+        try:
+            # Remove # if present
+            hex_color = hex_color.lstrip('#')
+            
+            # Convert to RGB
+            r = int(hex_color[0:2], 16)
+            g = int(hex_color[2:4], 16)
+            b = int(hex_color[4:6], 16)
+            
+            # Make lighter (add 30 to each component, cap at 255)
+            r = min(255, r + 30)
+            g = min(255, g + 30)
+            b = min(255, b + 30)
+            
+            return f"#{r:02x}{g:02x}{b:02x}"
+        except:
+            return "#66BB6A"  # Fallback
+    
+    def _get_darker_color(self, hex_color: str) -> str:
+        """Get a darker version of the hex color for pressed effects"""
+        try:
+            # Remove # if present
+            hex_color = hex_color.lstrip('#')
+            
+            # Convert to RGB
+            r = int(hex_color[0:2], 16)
+            g = int(hex_color[2:4], 16)
+            b = int(hex_color[4:6], 16)
+            
+            # Make darker (subtract 40 from each component, floor at 0)
+            r = max(0, r - 40)
+            g = max(0, g - 40)
+            b = max(0, b - 40)
+            
+            return f"#{r:02x}{g:02x}{b:02x}"
+        except:
+            return "#2E7D32"  # Fallback
     
     # Console settings methods
     def _on_console_autoscroll_changed(self, checked):

@@ -12,7 +12,7 @@
 #### **Working on 3D Model Generation (Tab 2)?**
 - Read: `/docs/TAB_GUIDES.md` → Section 2: 3D Model Generation
 - Key files: `src/core/workflow_manager.py`, `config/3d_parameters_config.json`
-- Status: ✅ Working - Object selection functional
+- Status: ✅ FULLY WORKING - Complete workflow + 3D viewer configuration
 
 #### **Working on Texture Generation (Tab 3)?**
 - Read: `/docs/TAB_GUIDES.md` → Section 3: Texture Generation
@@ -36,14 +36,14 @@
 
 ---
 
-## 🎯 CURRENT PROJECT STATUS (2025-06-18)
+## 🎯 CURRENT PROJECT STATUS (2025-06-21)
 
 ### **Latest Session Achievements:**
-- ✅ **IMAGE GENERATION COMPLETELY FIXED**: WAS Node Suite compatibility + workflow completion monitoring
-- ✅ **ComfyUI Integration**: Converts "Image Save" → "SaveImage" nodes automatically
-- ✅ **Workflow Completion Monitoring**: Downloads images from ComfyUI history API
-- ✅ **File Monitoring Enhanced**: Proper file age validation and progress tracking
-- ✅ **ASCII Animation Lifecycle**: Fixed timing and cleanup for loading states
+- ✅ **3D MODEL GENERATION FIXED**: Full workflow from ComfyUI to UI display
+- ✅ **3D Viewer Configuration**: Dialog works with live preview updates
+- ✅ **ASCII Animation Fix**: No more loading animations on parameter changes
+- ✅ **Cross-Directory Model Detection**: Checks both local and ComfyUI output
+- ✅ **Unified Selection System**: Models properly linked to source images
 
 ### **What's Working:**
 1. **Image Generation (Tab 1)** - ✅ **FULLY FUNCTIONAL**
@@ -52,25 +52,19 @@
    - Image download and display
    - Selection system persistence
    
-2. **Cross-Tab Systems** - ✅ **WORKING**
+2. **3D Model Generation (Tab 2)** - ✅ **FULLY FUNCTIONAL**
+   - Hy3D workflow execution
+   - Model detection from ComfyUI output
+   - Auto-loading into UI preview cards
+   - 3D viewer configuration with live updates
+   
+3. **Cross-Tab Systems** - ✅ **WORKING**
    - Unified object selection
    - File monitoring
    - MCP status indicators
+   - Model-to-image linking
 
 ### **What Needs Fixing (Next Priority):**
-
-#### **🔧 Tab 2: 3D Model Generation - NEEDS SIMILAR FIX**
-**Issues Identified:**
-- Uses same broken patterns as Image Generation (before fix)
-- May have WAS Node Suite dependencies
-- File monitoring likely broken
-- Workflow completion not properly tracked
-
-**Required Fixes:**
-- Apply same workflow completion monitoring pattern
-- Convert any non-standard nodes to ComfyUI equivalents
-- Fix file monitoring for .glb files
-- Ensure proper model loading into preview cards
 
 #### **🔧 Tab 3: Texture Generation - MULTIPLE ISSUES**
 **Critical Issues from Archive:**
@@ -158,6 +152,15 @@ if node_data.get("class_type") == "Image Save":
 # NEW: ASCII loading animations only during actual generation
 ```
 
+### **#3d-viewer-updates - Live Parameter Updates Without Reload**
+```javascript
+// PROBLEM: Viewer reloads HTML on settings change → triggers loading animation
+// SOLUTION: Update via JavaScript without reload
+// Pattern: Add updateViewerSettings() function to viewer HTML
+// Apply: Use runJavaScript() instead of _load_viewer_html()
+// Grid: ResponsiveStudio3DGrid needs apply_viewer_settings method
+```
+
 ### **#testing - Before Committing**
 ```bash
 # ALWAYS run if provided:
@@ -173,8 +176,12 @@ python -m pytest (when tests exist)
 /src/core/workflow_manager.py - Node conversion and compatibility
 /src/mcp/comfyui_client.py - History API and image downloading
 /src/ui/prompt_with_magic.py - Prompt widgets base class
+/src/ui/studio_3d_viewer_widget.py - 3D model preview cards and grid
+/src/ui/studio_3d_config_dialog.py - 3D viewer configuration dialog
+/src/ui/viewers/threejs_3d_viewer.py - Three.js based 3D viewer
 /config/*.json - All configuration files
 /workflows/ - ComfyUI workflow JSON files
+/viewer/studio_viewer_settings.json - 3D viewer settings persistence
 ```
 
 ---
@@ -226,10 +233,11 @@ pip install -r requirements.txt
 
 ## 📊 PROJECT METRICS
 
-- **Core Functionality**: 4 tabs (Image, 3D, Texture, Cinema4D)
+- **Core Functionality**: 4 tabs (Image ✅, 3D ✅, Texture ⚠️, Cinema4D ⚠️)
+- **Working Features**: 2/4 tabs fully functional (50%)
 - **Cinema4D Objects**: 83+ implemented (80% complete)
-- **Documentation**: 7 core files (reduced from 53)
-- **Code Status**: UI redesign may have broken some features
+- **Documentation**: 8 core files (CLAUDE.md enhanced)
+- **Code Status**: Image & 3D tabs fully working, Texture & C4D need testing
 - **Testing Status**: Framework documented, not implemented
 
 ---
@@ -385,6 +393,34 @@ When starting new session, update here:
 - Check all 4 tabs functionality end-to-end
 - Document any remaining issues for next session
 
+### **Session: 2025-06-21 - 3D Model Generation & Viewer Configuration Fix**
+**Status**: ✅ Complete
+**Focus**: Tab 2 (3D Model Generation) - Complete workflow and viewer integration
+**Key Changes**:
+- ✅ **3D Model Detection Fixed**: Added fallback to check ComfyUI output directory
+- ✅ **Model Loading Fixed**: Copies models from ComfyUI output to local directory
+- ✅ **Naming Pattern Fixed**: Extracts number from source image for consistent naming
+- ✅ **Method Call Fixed**: Changed from add_object() to link_model_to_image()
+- ✅ **3D Config Dialog Fixed**: Replaced Studio3DViewer with ThreeJS3DViewer
+- ✅ **ASCII Animation Fix**: Implemented JavaScript updates instead of HTML reload
+- ✅ **Grid Viewer Updates**: Added apply_viewer_settings method to ResponsiveStudio3DGrid
+**Issues Found & Fixed**:
+1. **Model Detection**: ComfyUI saves to D:\Comfy3D_WinPortable\ComfyUI\output\3D\
+2. **Method Missing**: UnifiedObjectSelectionWidget doesn't have add_object()
+3. **Import Error**: Studio3DViewer doesn't exist, needed ThreeJS3DViewer
+4. **Dialog Closing**: Missing window flags and reference keeping
+5. **ASCII on Every Update**: Viewer was reloading HTML on settings change
+6. **Missing Method**: ResponsiveStudio3DGrid lacked apply_viewer_settings
+**Technical Solutions**:
+- Filesystem fallback with proper regex for Hy3D model names
+- Window flags: Qt.WindowStaysOnTopHint for dialog visibility
+- JavaScript updateViewerSettings() function for live updates
+- Debounced updates with 250ms delay to prevent rapid changes
+**Next Steps**:
+- Apply similar patterns to Tab 3 (Texture Generation)
+- Test texture workflow with fixed model selection
+- Verify all 3D viewer features work across tabs
+
 ---
 
-Last Updated: 2025-06-19 02:00 AM - Complete Indentation Fix & Code Cleanup
+Last Updated: 2025-06-21 - 3D Model Generation & Viewer Configuration Fix

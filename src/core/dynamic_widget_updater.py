@@ -43,8 +43,15 @@ class DynamicWidgetUpdater:
                     param_idx = int(parts[-1])
                     node_type = '_'.join(parts[:-2])
                     
-                    # Get current value from UI widget
-                    current_value = widget_info['get_value']()
+                    # Get current value from UI widget with safety check
+                    try:
+                        current_value = widget_info['get_value']()
+                    except RuntimeError as e:
+                        if "deleted" in str(e):
+                            self.logger.warning(f"Widget {widget_key} has been deleted, skipping")
+                            continue
+                        else:
+                            raise
                     
                     # Find and update the corresponding workflow node
                     workflow_nodes = workflow.get("nodes", [])

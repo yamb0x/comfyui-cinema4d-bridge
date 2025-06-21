@@ -14,7 +14,6 @@ mcp-python>=0.1.0  # MCP Python SDK (if available)
 
 # UI and visualization
 pyqtgraph>=0.13.3  # Scientific graphics and plotting
-vispy>=0.13.0  # Interactive 3D visualization
 qasync>=0.27.0  # Qt async integration
 
 # File and data handling

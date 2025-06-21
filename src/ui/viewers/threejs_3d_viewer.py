@@ -18,22 +18,35 @@ from loguru import logger
 class LocalFileServer(SimpleHTTPRequestHandler):
     """Simple HTTP server to serve local GLB files"""
     
-    def __init__(self, *args, model_path=None, **kwargs):
-        self.model_path = model_path
+    def __init__(self, *args, viewer_instance=None, **kwargs):
+        self.viewer_instance = viewer_instance
         super().__init__(*args, **kwargs)
         
     def do_GET(self):
-        if self.path == '/model.glb' and self.model_path:
-            try:
-                with open(self.model_path, 'rb') as f:
-                    content = f.read()
-                self.send_response(200)
-                self.send_header('Content-Type', 'model/gltf-binary')
-                self.send_header('Access-Control-Allow-Origin', '*')
-                self.end_headers()
-                self.wfile.write(content)
-            except Exception as e:
-                self.send_error(404, f"Model not found: {e}")
+        if self.path == '/model.glb':
+            if self.viewer_instance and self.viewer_instance.model_path:
+                model_path = self.viewer_instance.model_path
+                logger.debug(f"Server: Serving model from {model_path}")
+                if os.path.exists(model_path):
+                    try:
+                        with open(model_path, 'rb') as f:
+                            content = f.read()
+                        self.send_response(200)
+                        self.send_header('Content-Type', 'model/gltf-binary')
+                        self.send_header('Access-Control-Allow-Origin', '*')
+                        self.send_header('Content-Length', str(len(content)))
+                        self.end_headers()
+                        self.wfile.write(content)
+                        logger.debug(f"Server: Successfully served {len(content)} bytes")
+                    except Exception as e:
+                        logger.error(f"Server: Error reading model: {e}")
+                        self.send_error(500, f"Error reading model: {e}")
+                else:
+                    logger.error(f"Server: Model file not found: {model_path}")
+                    self.send_error(404, f"Model file not found: {model_path}")
+            else:
+                logger.warning("Server: No model loaded in viewer instance")
+                self.send_error(404, "No model loaded")
         else:
             super().do_GET()
             
@@ -51,7 +64,7 @@ class ThreeJS3DViewer(QWidget):
     _next_port = 8893
     _port_lock = threading.Lock()
     
-    def __init__(self, parent=None, width=496, height=460):
+    def __init__(self, parent=None, width=496, height=460, auto_start=True):
         super().__init__(parent)
         self.setFixedSize(width, height)
         self.settings_file = "studio_viewer_settings.json"
@@ -65,7 +78,8 @@ class ThreeJS3DViewer(QWidget):
             ThreeJS3DViewer._next_port += 1
         
         self.setup_ui()
-        self.start_server()
+        if auto_start:
+            self.start_server()
         
     def setup_ui(self):
         """Setup the viewer UI"""
@@ -79,7 +93,7 @@ class ThreeJS3DViewer(QWidget):
     def start_server(self):
         """Start local HTTP server for this viewer instance"""
         def run_server():
-            handler = lambda *args: LocalFileServer(*args, model_path=self.model_path)
+            handler = lambda *args: LocalFileServer(*args, viewer_instance=self)
             self.server = HTTPServer(('localhost', self.server_port), handler)
             self.server.serve_forever()
             
@@ -90,15 +104,21 @@ class ThreeJS3DViewer(QWidget):
     def load_model(self, model_path):
         """Load a new model into the viewer"""
         self.model_path = model_path
+        logger.info(f"Loading model: {model_path}")
         
-        # Update server with new model path
-        if self.server_thread:
-            # Restart server with new model
-            self.stop_server()
-            self.start_server()
+        # Ensure the path is absolute
+        if not os.path.isabs(model_path):
+            model_path = os.path.abspath(model_path)
+            self.model_path = model_path
         
-        # Load viewer HTML
-        QTimer.singleShot(100, lambda: self._load_viewer_html())
+        # Verify file exists
+        if not os.path.exists(model_path):
+            logger.error(f"Model file does not exist: {model_path}")
+            return
+        
+        # Just reload the viewer HTML with the new model
+        # The server handler will use the updated self.model_path
+        self._load_viewer_html()
         
     def _load_viewer_html(self):
         """Load the Three.js viewer HTML"""
@@ -109,7 +129,11 @@ class ThreeJS3DViewer(QWidget):
         self.web_view.setHtml(html_content, QUrl(f"http://localhost:{self.server_port}/"))
         
     def _load_settings(self):
-        """Load viewer settings from JSON file"""
+        """Load viewer settings from JSON file or use current settings"""
+        # If we have current settings in memory, use those
+        if hasattr(self, '_current_settings') and self._current_settings:
+            return self._current_settings
+            
         default_settings = {
             "sliders": {
                 "ambientIntensity": 0.4,
@@ -630,6 +654,123 @@ class ThreeJS3DViewer(QWidget):
             composer.render();
         }}
 
+        // Function to update viewer settings without reloading
+        window.updateViewerSettings = function(newSettings) {{
+            // Extract settings
+            const sliders = newSettings.sliders || {{}};
+            const checkboxes = newSettings.checkboxes || {{}};
+            const combos = newSettings.combos || {{}};
+            
+            // Update parameters
+            params.ambientIntensity = sliders.ambientIntensity ?? params.ambientIntensity;
+            params.keyIntensity = sliders.keyIntensity ?? params.keyIntensity;
+            params.keyPosX = sliders.keyPosX ?? params.keyPosX;
+            params.keyPosY = sliders.keyPosY ?? params.keyPosY;
+            params.keyPosZ = sliders.keyPosZ ?? params.keyPosZ;
+            params.shadowsEnabled = checkboxes.shadows ?? params.shadowsEnabled;
+            params.shadowSoftness = sliders.shadowSoftness ?? params.shadowSoftness;
+            params.fillIntensity = sliders.fillIntensity ?? params.fillIntensity;
+            params.fillPosX = sliders.fillPosX ?? params.fillPosX;
+            params.fillPosY = sliders.fillPosY ?? params.fillPosY;
+            params.fillPosZ = sliders.fillPosZ ?? params.fillPosZ;
+            params.rimIntensity = sliders.rimIntensity ?? params.rimIntensity;
+            params.materialMetalness = sliders.materialMetalness ?? params.materialMetalness;
+            params.materialRoughness = sliders.materialRoughness ?? params.materialRoughness;
+            params.envMapIntensity = sliders.envMapIntensity ?? params.envMapIntensity;
+            params.materialEmissive = sliders.materialEmissive ?? params.materialEmissive;
+            params.cameraFov = sliders.cameraFov ?? params.cameraFov;
+            params.cameraDistance = sliders.cameraDistance ?? params.cameraDistance;
+            params.cameraHeight = sliders.cameraHeight ?? params.cameraHeight;
+            params.cameraNear = sliders.cameraNear ?? params.cameraNear;
+            params.cameraFar = sliders.cameraFar ?? params.cameraFar;
+            params.autoRotate = checkboxes.autoRotate ?? params.autoRotate;
+            params.rotateSpeed = sliders.rotateSpeed ?? params.rotateSpeed;
+            params.dampingFactor = sliders.dampingFactor ?? params.dampingFactor;
+            params.bloomEnabled = checkboxes.bloom ?? params.bloomEnabled;
+            params.bloomStrength = sliders.bloomStrength ?? params.bloomStrength;
+            params.bloomRadius = sliders.bloomRadius ?? params.bloomRadius;
+            params.bloomThreshold = sliders.bloomThreshold ?? params.bloomThreshold;
+            params.toneMapping = combos.toneMapping ?? params.toneMapping;
+            params.exposure = sliders.exposure ?? params.exposure;
+            params.background = combos.background ?? params.background;
+            params.showFloor = checkboxes.floor ?? params.showFloor;
+            params.floorMetalness = sliders.floorMetalness ?? params.floorMetalness;
+            params.floorRoughness = sliders.floorRoughness ?? params.floorRoughness;
+            params.showGrid = checkboxes.grid ?? params.showGrid;
+            params.gridSize = sliders.gridSize ?? params.gridSize;
+            params.gridDivisions = sliders.gridDivisions ?? params.gridDivisions;
+            params.gridOpacity = sliders.gridOpacity ?? params.gridOpacity;
+            params.modelOffsetY = sliders.modelOffsetY ?? params.modelOffsetY;
+            params.axesSize = sliders.axesSize ?? params.axesSize;
+            
+            // Update lights
+            if (lights.ambient) lights.ambient.intensity = params.ambientIntensity;
+            if (lights.key) {{
+                lights.key.intensity = params.keyIntensity;
+                lights.key.position.set(params.keyPosX, params.keyPosY, params.keyPosZ);
+                lights.key.castShadow = params.shadowsEnabled;
+                lights.key.shadow.radius = params.shadowSoftness;
+            }}
+            if (lights.fill) {{
+                lights.fill.intensity = params.fillIntensity;
+                lights.fill.position.set(params.fillPosX, params.fillPosY, params.fillPosZ);
+            }}
+            if (lights.rim) lights.rim.intensity = params.rimIntensity;
+            
+            // Update renderer
+            renderer.shadowMap.enabled = params.shadowsEnabled;
+            renderer.toneMappingExposure = params.exposure;
+            
+            const toneMappings = {{
+                'None': THREE.NoToneMapping,
+                'Linear': THREE.LinearToneMapping,
+                'Reinhard': THREE.ReinhardToneMapping,
+                'Cineon': THREE.CineonToneMapping,
+                'ACESFilmic': THREE.ACESFilmicToneMapping
+            }};
+            renderer.toneMapping = toneMappings[params.toneMapping] || THREE.ACESFilmicToneMapping;
+            
+            // Update camera
+            camera.fov = params.cameraFov;
+            camera.near = params.cameraNear;
+            camera.far = params.cameraFar;
+            camera.updateProjectionMatrix();
+            updateCameraPosition();
+            
+            // Update controls
+            controls.autoRotate = params.autoRotate;
+            controls.autoRotateSpeed = params.rotateSpeed;
+            controls.dampingFactor = params.dampingFactor;
+            
+            // Update bloom
+            if (bloomPass) {{
+                bloomPass.enabled = params.bloomEnabled;
+                bloomPass.strength = params.bloomStrength;
+                bloomPass.radius = params.bloomRadius;
+                bloomPass.threshold = params.bloomThreshold;
+            }}
+            
+            // Update environment
+            updateBackground();
+            if (floor) {{
+                floor.visible = params.showFloor;
+                floor.material.metalness = params.floorMetalness;
+                floor.material.roughness = params.floorRoughness;
+            }}
+            if (grid) grid.visible = params.showGrid;
+            updateGrid();
+            
+            // Update materials
+            updateMaterials();
+            
+            // Update model position
+            if (model && params.modelOffsetY !== undefined) {{
+                model.position.y = params.modelOffsetY;
+            }}
+            
+            console.log('Viewer settings updated without reload');
+        }};
+
         // Initialize
         init();
     </script>
@@ -637,6 +778,52 @@ class ThreeJS3DViewer(QWidget):
 </html>'''
         
         return html
+    
+    def apply_settings(self, settings, save_to_file=False):
+        """Apply new settings to the viewer"""
+        try:
+            if save_to_file:
+                # Only save to file when explicitly requested (e.g., when saving dialog)
+                settings_path = Path("viewer/studio_viewer_settings.json")
+                settings_path.parent.mkdir(exist_ok=True)
+                
+                with open(settings_path, 'w') as f:
+                    json.dump(settings, f, indent=2)
+            
+            # Store settings in memory for this session
+            self._current_settings = settings
+            
+            # Try to update settings via JavaScript instead of reloading
+            # This prevents the loading animation from appearing
+            if hasattr(self, 'web_view') and self.web_view:
+                # Convert settings to JavaScript parameters
+                sliders = settings.get("sliders", {})
+                checkboxes = settings.get("checkboxes", {})
+                combos = settings.get("combos", {})
+                
+                # Build JavaScript to update parameters
+                js_code = """
+                if (typeof updateViewerSettings === 'function') {
+                    updateViewerSettings(%s);
+                } else {
+                    // Fallback: reload if update function doesn't exist
+                    window.location.reload();
+                }
+                """ % json.dumps({
+                    "sliders": sliders,
+                    "checkboxes": checkboxes,
+                    "combos": combos
+                })
+                
+                # Execute JavaScript to update settings
+                self.web_view.page().runJavaScript(js_code)
+                logger.debug("Updated viewer settings via JavaScript")
+            else:
+                # Fallback: reload the viewer if web_view not available
+                self._load_viewer_html()
+            
+        except Exception as e:
+            logger.error(f"Failed to apply settings: {e}")
         
     def stop_server(self):
         """Stop the HTTP server"""

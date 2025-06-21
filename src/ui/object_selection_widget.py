@@ -104,7 +104,7 @@ class UnifiedObjectSelectionWidget(QWidget):
         
         # Object count
         self.count_label = QLabel("0 objects")
-        self.count_label.setObjectName("connection_info")
+        self.count_label.setObjectName("object_count_label")
         header_layout.addWidget(self.count_label)
         
         layout.addLayout(header_layout)

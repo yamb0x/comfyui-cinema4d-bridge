@@ -3,7 +3,6 @@ Prompt Widget with Embedded Magic Button
 Restores the original behavior where magic button is inside prompt boxes
 """
 
-import random
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QTextEdit, QPushButton, 
     QLabel, QFrame
@@ -36,7 +35,7 @@ class PromptWithMagicButton(QWidget):
         self.text_area.setMaximumHeight(120)
         self.text_area.textChanged.connect(self.text_changed.emit)
         
-        # Style the text area with terminal theme
+        # Style the text area with terminal theme - focus colors handled by accent color CSS
         self.text_area.setStyleSheet("""
             QTextEdit {
                 background-color: #1a1a1a;
@@ -46,9 +45,6 @@ class PromptWithMagicButton(QWidget):
                 padding: 8px;
                 font-family: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
                 font-size: 12px;
-            }
-            QTextEdit:focus {
-                border: 1px solid #4CAF50;
             }
         """)
         
@@ -64,22 +60,15 @@ class PromptWithMagicButton(QWidget):
         self.magic_btn.setToolTip("Open Magic Prompts Database")
         self.magic_btn.clicked.connect(self._on_magic_clicked)
         
-        # Style magic button as simple text without background
+        # Style magic button as simple text without background - colors handled by accent color CSS
         self.magic_btn.setStyleSheet("""
             QPushButton {
                 background: transparent;
                 border: none;
-                color: #4CAF50;
                 font-size: 18px;
                 font-weight: bold;
                 text-align: center;
                 padding: 0px;
-            }
-            QPushButton:hover {
-                color: #66BB6A;
-            }
-            QPushButton:pressed {
-                color: #2E7D32;
             }
         """)
         
@@ -117,23 +106,6 @@ class PromptWithMagicButton(QWidget):
         """Handle magic button click"""
         self.magic_prompt_requested.emit()
         
-        # Generate random prompt
-        creative_prompts = [
-            "A mystical forest with glowing mushrooms and ethereal light",
-            "Futuristic cityscape with neon lights and flying vehicles",
-            "Ancient temple ruins covered in vines and morning mist",
-            "Steampunk laboratory with brass machinery and glowing tubes",
-            "Underwater scene with bioluminescent creatures and coral reefs",
-            "Desert oasis with palm trees and crystal clear water",
-            "Medieval castle on a cliff overlooking stormy seas",
-            "Space station orbiting a distant alien planet",
-            "Enchanted garden with floating islands and waterfalls",
-            "Cyberpunk street market with holographic signs and robots"
-        ]
-        
-        random_prompt = random.choice(creative_prompts)
-        self.text_area.setPlainText(random_prompt)
-        
     def get_text(self) -> str:
         """Get current text"""
         return self.text_area.toPlainText()
@@ -164,23 +136,6 @@ class NegativePromptWidget(PromptWithMagicButton):
     def __init__(self, parent=None):
         super().__init__("Enter negative prompt...", parent)
         
-        # Different prompts for negative
-        self.negative_prompts = [
-            "blurry, low quality, distorted, ugly, bad anatomy",
-            "worst quality, low resolution, jpeg artifacts, watermark",
-            "text, signature, username, error, cropped",
-            "duplicate, morbid, mutilated, out of frame",
-            "extra fingers, mutated hands, poorly drawn hands",
-            "extra limbs, disfigured, deformed, body out of frame",
-            "bad art, beginner, amateur, distorted face",
-            "b&w, black and white, monochrome",
-            "nsfw, nude, explicit content",
-            "violence, gore, disturbing content"
-        ]
-        
     def _on_magic_clicked(self):
         """Handle magic button click for negative prompts"""
         self.magic_prompt_requested.emit()
-        
-        random_prompt = random.choice(self.negative_prompts)
-        self.text_area.setPlainText(random_prompt)

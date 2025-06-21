@@ -700,3 +700,45 @@ class ComfyUIClient(LoggerMixin):
         except Exception as e:
             self.logger.error(f"Error fetching image {image_info}: {e}")
             return None
+    
+    async def fetch_3d_model(self, filename: str, subfolder: str = "", type_folder: str = "output") -> Optional[bytes]:
+        """
+        Fetch 3D model data (GLB/GLTF) from ComfyUI server
+        
+        Args:
+            filename: model filename
+            subfolder: subfolder path
+            type_folder: folder type (temp/output)
+        
+        Returns:
+            Model bytes data or None if failed
+        """
+        try:
+            await self._ensure_http_client()
+            
+            if not filename:
+                self.logger.error("No filename provided for 3D model")
+                return None
+            
+            # Build ComfyUI view URL - same endpoint as images
+            url = f"{self.server_url}/view"
+            params = {
+                "filename": filename,
+                "type": type_folder
+            }
+            if subfolder:
+                params["subfolder"] = subfolder
+            
+            self.logger.debug(f"Fetching 3D model: {filename} from {url}")
+            
+            response = await self.http_client.get(url, params=params)
+            if response.status_code == 200:
+                self.logger.debug(f"Successfully fetched 3D model: {filename}")
+                return response.content
+            else:
+                self.logger.error(f"Failed to fetch 3D model {filename}: HTTP {response.status_code}")
+                return None
+                
+        except Exception as e:
+            self.logger.error(f"Error fetching 3D model {filename}: {e}")
+            return None

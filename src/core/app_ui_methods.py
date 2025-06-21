@@ -7,15 +7,15 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QScrollArea, QGridLayout, 
     QLabel, QPushButton, QComboBox, QSpinBox, QDoubleSpinBox,
     QCheckBox, QSlider, QGroupBox, QListWidget, QTextEdit,
-    QFrame, QSplitter, QLineEdit, QDialog
+    QFrame, QSplitter, QLineEdit, QDialog, QSizePolicy
 )
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QAction
 from pathlib import Path
 from loguru import logger
 
 # Import the actual grid widgets
-from ui.widgets import ImageGridWidget, Model3DPreviewWidget
+from ui.widgets import ImageGridWidget
 
 
 class UICreationMethods:
@@ -36,21 +36,34 @@ class UICreationMethods:
         
         header_layout.addStretch()
         
-        self.session_info_label = QLabel("Ready for image generation")
-        self.session_info_label.setObjectName("connection_info")
-        header_layout.addWidget(self.session_info_label)
+        # Removed "Ready for image generation" label as requested
         
         layout.addLayout(header_layout)
         
-        # Preview grid for batch placeholders (before generation)
+        # Preview grid for batch placeholders (before generation) - with scroll area
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        
         preview_container = QWidget()
         self.new_canvas_grid = QGridLayout(preview_container)
         self.new_canvas_grid.setSpacing(15)
-        layout.addWidget(preview_container)
+        self.new_canvas_grid.setContentsMargins(10, 10, 10, 10)
+        
+        scroll_area.setWidget(preview_container)
+        # Make scroll area take all available space
+        scroll_area.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        layout.addWidget(scroll_area, 1)  # Stretch factor 1 to fill space
+        
+        # Store scroll area reference for dynamic sizing
+        self.preview_scroll_area = scroll_area
         
         # Use actual ImageGridWidget for session images (after generation)
+        # Hidden by default - we use the scroll area above instead
         self.session_image_grid = ImageGridWidget(columns=2, thumbnail_size=512)
         self.session_image_grid.image_selected.connect(self._on_image_selected)
+        self.session_image_grid.hide()  # Hide this - we use the scroll area above
         layout.addWidget(self.session_image_grid)
         
         return widget
@@ -89,67 +102,71 @@ class UICreationMethods:
         return widget
         
     def _create_scene_objects_view(self) -> QWidget:
-        """Create Scene Objects view for 3D models using Model3DPreviewWidget"""
+        """Create Scene Objects view for 3D models using ResponsiveStudio3DGrid"""
         widget = QWidget()
         layout = QVBoxLayout(widget)
-        layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(16)
+        # Match Tab 1 layout - minimal margins for full space usage
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
         
-        # Header
-        header_layout = QHBoxLayout()
-        title = QLabel("Scene Objects")
-        title.setObjectName("section_title")
-        header_layout.addWidget(title)
+        # Remove header section entirely - 3D viewers should take full space
+        # No title, no refresh/clear buttons - just the 3D grid
         
-        header_layout.addStretch()
+        # Use ResponsiveStudio3DGrid directly without scroll area wrapper
+        # The grid itself is already a QScrollArea
         
-        # 3D viewer controls
-        viewer_controls = QHBoxLayout()
-        
-        wireframe_btn = QPushButton("Wireframe")
-        wireframe_btn.setObjectName("secondary_btn")
-        wireframe_btn.setCheckable(True)
-        viewer_controls.addWidget(wireframe_btn)
-        
-        reset_view_btn = QPushButton("Reset View")
-        reset_view_btn.setObjectName("secondary_btn")
-        viewer_controls.addWidget(reset_view_btn)
-        
-        header_layout.addLayout(viewer_controls)
-        layout.addLayout(header_layout)
-        
-        # Use actual Model3DPreviewWidget for session models
-        self.session_models_grid = Model3DPreviewWidget(columns=3, is_session_widget=True)
+        # Use new ResponsiveStudio3DGrid for session models
+        from ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
+        # Get accent color from config
+        accent_color = getattr(self.config.ui, 'accent_color', '#4CAF50')
+        # Calculate optimal card size based on available space
+        # Center panel is ~1220px, minus margins and spacing for 2 columns = ~580px per card
+        self.session_models_grid = ResponsiveStudio3DGrid(columns=2, card_size=580, accent_color=accent_color)
         self.session_models_grid.model_selected.connect(self._on_model_selected)
+        self.session_models_grid.model_clicked.connect(self._on_model_clicked)
+        self.session_models_grid.models_changed.connect(self._on_scene_models_changed)
+        
+        # Add the grid directly to layout for full space usage
         layout.addWidget(self.session_models_grid)
         
         return widget
         
     def _create_view_all_models(self) -> QWidget:
-        """Create View All models view using Model3DPreviewWidget"""
+        """Create View All models view using ResponsiveStudio3DGrid - same as Scene Objects"""
         widget = QWidget()
         layout = QVBoxLayout(widget)
-        layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(16)
+        # Match Scene Objects layout - minimal margins for full space usage
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
         
-        # Header
+        # Simple header with refresh button (minimal UI)
         header_layout = QHBoxLayout()
+        header_layout.setContentsMargins(10, 10, 10, 10)
+        
         title = QLabel("All 3D Models")
         title.setObjectName("section_title")
         header_layout.addWidget(title)
         
         header_layout.addStretch()
         
-        refresh_btn = QPushButton("Refresh Models")
-        refresh_btn.setObjectName("refresh_btn")
+        refresh_btn = QPushButton("Refresh")
+        refresh_btn.setObjectName("secondary_btn")
         refresh_btn.clicked.connect(self._refresh_all_models)
         header_layout.addWidget(refresh_btn)
         
         layout.addLayout(header_layout)
         
-        # Use actual Model3DPreviewWidget for all models
-        self.all_models_grid = Model3DPreviewWidget(columns=4, is_session_widget=False)
+        # Use ResponsiveStudio3DGrid - same as Scene Objects
+        from ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
+        # Get accent color from config
+        accent_color = getattr(self.config.ui, 'accent_color', '#4CAF50')
+        # Use 3 columns for View All (more models)
+        self.all_models_grid = ResponsiveStudio3DGrid(columns=3, card_size=400, accent_color=accent_color)
         self.all_models_grid.model_selected.connect(self._on_model_selected)
+        self.all_models_grid.model_clicked.connect(self._on_model_clicked)
+        self.all_models_grid.models_changed.connect(self._on_all_models_changed)
+        
+        # Add the grid directly to layout for full space usage
         layout.addWidget(self.all_models_grid)
         
         return widget
@@ -171,7 +188,8 @@ class UICreationMethods:
         scroll_area.setWidgetResizable(True)
         scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        # Remove minimum height to allow full panel height usage
+        # CRITICAL: Set maximum height to prevent UI explosion when loading many parameters
+        scroll_area.setMaximumHeight(400)  # Reasonable height that leaves room for console
         
         # Container widget for scrollable content
         self.dynamic_params_container = QWidget()
@@ -196,12 +214,23 @@ class UICreationMethods:
         return widget
         
     def _create_3d_parameters(self) -> QWidget:
-        """Create 3D generation parameters"""
+        """Create 3D generation parameters - static by default, dynamic when configuration exists"""
         widget = QWidget()
         layout = QVBoxLayout(widget)
         layout.setContentsMargins(12, 12, 12, 12)
         layout.setSpacing(12)
         
+        # Store reference to allow lazy loading
+        self._3d_params_widget = widget
+        self._3d_params_layout = layout
+        
+        # Start with static parameters (no performance hit)
+        self._create_static_3d_parameters(layout)
+        
+        return widget
+    
+    def _create_static_3d_parameters(self, layout: QVBoxLayout):
+        """Create the static 3D parameters (always available)"""
         # 3D Model Settings section
         model_section = self._create_parameter_section("3D Model Settings")
         model_layout = model_section.layout()
@@ -260,9 +289,349 @@ class UICreationMethods:
         gen_layout.addWidget(self.seed_3d_spin)
         
         layout.addWidget(gen_section)
+        # REMOVED addStretch() - was causing UI height expansion
+    
+    def _load_dynamic_3d_parameters_on_demand(self):
+        """Load dynamic 3D parameters when Tab 2 is accessed - LAZY LOADING"""
+        if not hasattr(self, '_3d_params_widget') or not hasattr(self, '_3d_params_layout'):
+            self.logger.warning("3D parameters widget not initialized for dynamic loading")
+            return
+            
+        try:
+            # Check if configuration exists
+            from pathlib import Path
+            config_path = Path("config/3d_parameters_config.json")
+            if not config_path.exists():
+                self.logger.info("No 3D configuration found, keeping static parameters")
+                return
+                
+            # Load and apply dynamic configuration
+            dynamic_section = self._create_dynamic_3d_parameters_section()
+            if dynamic_section:
+                # Clear existing widgets except the stretch
+                layout = self._3d_params_layout
+                while layout.count() > 0:
+                    child = layout.takeAt(0)
+                    if child.widget():
+                        child.widget().deleteLater()
+                
+                # Add dynamic parameters
+                layout.addWidget(dynamic_section)
+                # REMOVED addStretch() - was causing UI height expansion
+                
+                self.logger.info("Loaded dynamic 3D parameters on demand")
+            else:
+                self.logger.info("Failed to create dynamic 3D parameters, keeping static")
+                
+        except Exception as e:
+            self.logger.error(f"Error loading dynamic 3D parameters: {e}")
+    
+    def _create_dynamic_3d_parameters_section(self) -> QWidget:
+        """Create the dynamic parameters section only (for on-demand loading)"""
+        from pathlib import Path
+        import json
+        
+        config_path = Path("config/3d_parameters_config.json")
+        if not config_path.exists():
+            return None
+            
+        # Load configuration
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+        
+        selected_nodes = config.get("selected_nodes", [])
+        node_info = config.get("node_info", {})
+        
+        if not selected_nodes:
+            return None
+            
+        # Create dynamic widget
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(12)
+        
+        # Store widget references for value collection
+        if not hasattr(self, 'dynamic_3d_widgets'):
+            self.dynamic_3d_widgets = {}
+        self.dynamic_3d_widgets.clear()
+        
+        # Add workflow selector at the top
+        workflow_section = self._create_parameter_section("3D Workflow")
+        workflow_layout = workflow_section.layout()
+        
+        workflow_label = QLabel("Workflow:")
+        workflow_label.setObjectName("section_title")
+        self.workflow_3d_combo = QComboBox()
+        self.workflow_3d_combo.addItems(["3D_gen_Hunyuan2_onlymesh.json"])
+        self.workflow_3d_combo.setCurrentText("3D_gen_Hunyuan2_onlymesh.json")
+        workflow_layout.addWidget(workflow_label)
+        workflow_layout.addWidget(self.workflow_3d_combo)
+        
+        layout.addWidget(workflow_section)
+        
+        # Create parameter sections grouped by node type
+        node_types = {}
+        for node_key in selected_nodes:
+            if node_key in node_info:
+                info = node_info[node_key]
+                node_type = info.get('type', 'Unknown')
+                if node_type not in node_types:
+                    node_types[node_type] = []
+                node_types[node_type].append((node_key, info))
+        
+        # Create sections for each node type
+        for node_type, nodes in node_types.items():
+            section = self._create_parameter_section(f"{node_type} Parameters")
+            section_layout = section.layout()
+            
+            for node_key, info in nodes:
+                node_id = info.get('id', '')
+                node_title = info.get('title', '')
+                widgets_values = info.get('widgets_values', [])
+                
+                self.logger.debug(f"Node {node_key}: widgets_values = {widgets_values}")
+                
+                # Create label for this specific node instance
+                display_name = f"Node {node_id}"
+                if node_title:
+                    display_name += f" ({node_title})"
+                    
+                node_label = QLabel(display_name + ":")
+                node_label.setObjectName("section_subtitle")
+                section_layout.addWidget(node_label)
+                
+                # Create widgets for each parameter (if any exist)
+                if widgets_values:
+                    for i, value in enumerate(widgets_values):
+                        widget_key = f"{node_key}_widget_{i}"
+                        param_widget = self._create_parameter_widget(f"Parameter {i}", value, f"{node_key}_param_{i}")
+                        
+                        if param_widget:
+                            section_layout.addWidget(param_widget)
+                            self.dynamic_3d_widgets[widget_key] = param_widget
+                else:
+                    # No widget values available - show info message
+                    info_label = QLabel(f"No configurable parameters for this node")
+                    info_label.setStyleSheet("color: #888888; font-style: italic;")
+                    section_layout.addWidget(info_label)
+            
+            layout.addWidget(section)
+        
+        self.logger.info(f"Created dynamic 3D parameters section for {len(selected_nodes)} configured nodes")
+        return widget
+    
+    
+    def _create_parameter_widget(self, label: str, value, param_name: str = None) -> QWidget:
+        """Create a parameter widget based on the value type"""
+        from PySide6.QtWidgets import QHBoxLayout, QSpinBox, QDoubleSpinBox, QLineEdit, QComboBox, QCheckBox
+        
+        widget = QWidget()
+        layout = QHBoxLayout(widget)
+        layout.setContentsMargins(5, 2, 5, 2)
+        
+        # Create label
+        param_label = QLabel(f"{label}:")
+        param_label.setMinimumWidth(120)
+        layout.addWidget(param_label)
+        
+        # Create appropriate input widget based on value type
+        if isinstance(value, bool):
+            input_widget = QCheckBox()
+            input_widget.setChecked(value)
+        elif isinstance(value, int):
+            input_widget = QSpinBox()
+            input_widget.setRange(-999999, 999999)
+            input_widget.setValue(value)
+        elif isinstance(value, float):
+            input_widget = QDoubleSpinBox()
+            input_widget.setRange(-999999.0, 999999.0)
+            input_widget.setDecimals(3)
+            input_widget.setValue(value)
+        elif isinstance(value, str):
+            # Check if it looks like a combo box value (common options)
+            common_options = {
+                "scheduler": ["FlowMatchEulerDiscreteScheduler", "DPMSolverMultistepScheduler", "EulerDiscreteScheduler"],
+                "sampler": ["euler", "dpm++", "ddim", "plms"],
+                "quality": ["low", "medium", "high", "ultra"],
+                "format": ["glb", "obj", "ply", "stl"]
+            }
+            
+            # Try to detect if this is a dropdown value
+            is_dropdown = False
+            for option_type, options in common_options.items():
+                if value.lower() in [opt.lower() for opt in options]:
+                    input_widget = QComboBox()
+                    input_widget.addItems(options)
+                    input_widget.setCurrentText(value)
+                    is_dropdown = True
+                    break
+            
+            if not is_dropdown:
+                input_widget = QLineEdit()
+                input_widget.setText(str(value))
+        else:
+            # Fallback to string input
+            input_widget = QLineEdit()
+            input_widget.setText(str(value))
+        
+        layout.addWidget(input_widget)
         layout.addStretch()
         
+        # Store reference to the input widget for value retrieval
+        widget.input_widget = input_widget
+        widget.get_value = lambda: self._get_widget_value(input_widget)
+        
         return widget
+    
+    def _get_widget_value(self, widget):
+        """Get value from a widget regardless of type"""
+        from PySide6.QtWidgets import QSpinBox, QDoubleSpinBox, QLineEdit, QComboBox, QCheckBox
+        
+        if isinstance(widget, QCheckBox):
+            return widget.isChecked()
+        elif isinstance(widget, (QSpinBox, QDoubleSpinBox)):
+            return widget.value()
+        elif isinstance(widget, QLineEdit):
+            text = widget.text()
+            # Try to convert to appropriate type
+            try:
+                if '.' in text:
+                    return float(text)
+                else:
+                    return int(text)
+            except ValueError:
+                return text
+        elif isinstance(widget, QComboBox):
+            return widget.currentText()
+        else:
+            return str(widget.text()) if hasattr(widget, 'text') else None
+    
+    def _collect_dynamic_3d_workflow_parameters(self) -> dict:
+        """Collect parameters from dynamic 3D widgets"""
+        params = {}
+        
+        # Collect from dynamic widgets if they exist
+        if hasattr(self, 'dynamic_3d_widgets'):
+            for widget_key, widget in self.dynamic_3d_widgets.items():
+                try:
+                    if hasattr(widget, 'get_value'):
+                        value = widget.get_value()
+                        params[widget_key] = value
+                        self.logger.debug(f"Collected {widget_key}: {value}")
+                except Exception as e:
+                    self.logger.warning(f"Failed to collect value from {widget_key}: {e}")
+        
+        # Also collect from static widgets if they exist (fallback)
+        static_mappings = {
+            'guidance_scale_3d': 'guidance_3d_spin',
+            'inference_steps_3d': 'steps_3d_spin',
+            'seed_3d': 'seed_3d_spin',
+            'mesh_density': 'density_spin',
+            'quality_3d': 'quality_3d_combo',
+            'workflow_3d': 'workflow_3d_combo'
+        }
+        
+        for param_name, widget_name in static_mappings.items():
+            if hasattr(self, widget_name):
+                widget = getattr(self, widget_name)
+                try:
+                    # Check if widget is still valid before accessing
+                    if hasattr(widget, 'isValid') and not widget.isValid():
+                        continue
+                    value = self._get_widget_value(widget)
+                    params[param_name] = value
+                    self.logger.debug(f"Collected static {param_name}: {value}")
+                except Exception as e:
+                    self.logger.debug(f"Skipping invalid widget {widget_name}: {e}")  # Changed to debug level
+        
+        self.logger.info(f"Collected {len(params)} parameters from 3D UI")
+        return params
+    
+    def _refresh_scene_objects(self):
+        """Refresh scene objects - only session models"""
+        try:
+            # Scene Objects should only show models generated in current session
+            # Just reload the session models
+            if hasattr(self, '_load_session_models'):
+                self.logger.info("Refreshing Scene Objects with session models...")
+                self._load_session_models()
+            else:
+                self.logger.warning("_load_session_models method not available")
+        except Exception as e:
+            self.logger.error(f"Failed to refresh scene objects: {e}")
+    
+    def _load_test_models_on_startup(self):
+        """Load existing models into View All tab on startup"""
+        try:
+            from pathlib import Path
+            import os
+            from datetime import datetime
+            
+            # This method should populate the View All tab, not Scene Objects
+            # Scene Objects is for models generated in current session only
+            
+            # Just trigger the existing _load_all_models method
+            if hasattr(self, '_load_all_models'):
+                self.logger.info("Loading existing 3D models into View All tab...")
+                self._load_all_models()
+                return True
+            else:
+                self.logger.warning("_load_all_models method not available")
+                return False
+                
+        except Exception as e:
+            self.logger.error(f"Failed to load models on startup: {e}")
+            return False
+    
+    def _refresh_3d_models(self):
+        """Refresh only the session 3D models (models generated in current session)"""
+        try:
+            # This should only refresh the Scene Objects view with session models
+            # Not scan the directory for all models
+            
+            if hasattr(self, '_load_session_models'):
+                self.logger.info("Refreshing session 3D models (Scene Objects)...")
+                self._load_session_models()
+            else:
+                self.logger.warning("_load_session_models method not available")
+                
+        except Exception as e:
+            self.logger.error(f"Failed to refresh session 3D models: {e}")
+                
+    def _load_test_models_on_startup_old(self):
+        """Old version kept for reference"""
+        try:
+            # This is the old method, keeping for reference
+            pass
+        except Exception as e:
+            self.logger.error(f"Failed to load test models: {e}")
+            return False
+    
+    def _clear_scene_objects(self):
+        """Clear all scene objects (session models)"""
+        try:
+            if hasattr(self, 'session_models_grid'):
+                self.session_models_grid.clear_models()
+                # Also clear the session models list
+                if hasattr(self, 'session_models'):
+                    self.session_models.clear()
+                self.logger.info("Cleared all scene objects (session models)")
+        except Exception as e:
+            self.logger.error(f"Failed to clear scene objects: {e}")
+    
+    def _on_model_clicked(self, model_path):
+        """Handle model click events"""
+        self.logger.info(f"Model clicked: {model_path.name}")
+        # Could implement model info dialog or other actions here
+    
+    def _on_scene_models_changed(self, count):
+        """Handle scene models count change"""
+        self.logger.debug(f"Scene objects count changed: {count}")
+    
+    def _on_all_models_changed(self, count):
+        """Handle all models count change"""
+        self.logger.debug(f"All models count changed: {count}")
         
     def _create_texture_parameters(self) -> QWidget:
         """Create texture generation parameters"""
@@ -705,6 +1074,8 @@ class UICreationMethods:
             
         except Exception as e:
             self.logger.error(f"Error refreshing UI after workflow import: {e}")
+            import traceback
+            self.logger.error(f"Traceback: {traceback.format_exc()}")
     
     def _load_parameters_from_config(self, param_type: str):
         """Load parameters from configuration and update UI widgets"""
@@ -759,6 +1130,11 @@ class UICreationMethods:
                         if hasattr(self, 'dynamic_params_container') and hasattr(self, 'dynamic_params_layout'):
                             old_count = self.dynamic_params_layout.count()
                             self.logger.info(f"🧹 Clearing {old_count} existing parameter widgets")
+                            
+                            # Clear parameter widget references FIRST
+                            if hasattr(self, 'parameter_widgets'):
+                                self.logger.info(f"🧹 Clearing {len(self.parameter_widgets)} parameter widget references")
+                                self.parameter_widgets.clear()
                             
                             # Clear old widgets
                             while self.dynamic_params_layout.count():
@@ -844,14 +1220,75 @@ class UICreationMethods:
                             if node_type == 'CLIPTextEncode':
                                 continue
                             
+                            # Handle Note/MarkdownNote nodes specially - display as text
+                            if node_type in ['Note', 'MarkdownNote']:
+                                if widgets_values and len(widgets_values) > 0:
+                                    note_text = widgets_values[0]
+                                    note_title = node.get('title', 'Note')
+                                    
+                                    # Create a styled note widget
+                                    note_widget = self._create_note_display_widget(note_text, note_title, node_type)
+                                    if note_widget and hasattr(self, 'dynamic_params_layout'):
+                                        self.dynamic_params_layout.addWidget(note_widget)
+                                        self.logger.debug(f"Added {node_type} display for node {node_id}")
+                                continue
+                            
                             # Skip nodes without configurable parameters
                             if not widgets_values:
                                 # Skipping node - no widget values
                                 continue
                             
-                            # Create group for this node
-                            group_box = QGroupBox(f"{node_type} (Node {node_id})")
+                            # Create group for this node with better organization
+                            group_title = self._get_friendly_node_title(node_type, node_id, node.get('title', ''))
+                            group_box = QGroupBox(group_title)
                             group_box.setObjectName("parameter_group")
+                            
+                            # Add header with X button to remove/bypass node
+                            header_layout = QHBoxLayout()
+                            header_layout.setContentsMargins(0, 0, 0, 0)
+                            
+                            # Node type label
+                            type_label = QLabel(f"{node_type}")
+                            type_label.setObjectName("node_type_label")
+                            type_label.setStyleSheet("color: #666; font-size: 10px;")
+                            header_layout.addWidget(type_label)
+                            
+                            header_layout.addStretch()
+                            
+                            # Bypass checkbox
+                            bypass_check = QCheckBox("Bypass")
+                            bypass_check.setObjectName(f"bypass_{node_type}_{node_id}")
+                            bypass_check.setToolTip("Temporarily disable this node")
+                            bypass_check.stateChanged.connect(lambda state: self._on_node_bypass_changed(node_id, node_type, state))
+                            header_layout.addWidget(bypass_check)
+                            
+                            # Remove button
+                            remove_btn = QPushButton("×")
+                            remove_btn.setObjectName("remove_node_btn")
+                            remove_btn.setFixedSize(20, 20)
+                            remove_btn.setToolTip("Remove this node from workflow")
+                            remove_btn.setStyleSheet("""
+                                QPushButton {
+                                    background-color: transparent;
+                                    color: #888;
+                                    border: none;
+                                    font-size: 16px;
+                                    font-weight: bold;
+                                }
+                                QPushButton:hover {
+                                    color: #ff4444;
+                                    background-color: rgba(255, 68, 68, 0.1);
+                                    border-radius: 3px;
+                                }
+                            """)
+                            remove_btn.clicked.connect(lambda: self._on_remove_node_clicked(node_id, node_type))
+                            header_layout.addWidget(remove_btn)
+                            
+                            # Main layout for the group
+                            main_layout = QVBoxLayout()
+                            main_layout.addLayout(header_layout)
+                            
+                            # Parameter widgets layout
                             group_layout = QVBoxLayout()
                             
                             # Create widgets using node parameter definitions
@@ -872,6 +1309,9 @@ class UICreationMethods:
                                 # Create widgets from definition
                                 for i, widget_def in enumerate(widgets_mapping):
                                     if i < len(widgets_values):
+                                        # Skip if marked as skip (handled elsewhere in UI)
+                                        if widget_def.get('skip', False):
+                                            continue
                                         value = widgets_values[i]
                                         self.logger.debug(f"Creating widget: {widget_def['name']}")
                                         # Create widget key as node_type_node_id_param_index
@@ -908,8 +1348,21 @@ class UICreationMethods:
                             self.logger.debug(f"Group layout widget count for {node_type}: {group_layout.count()}")
                             
                             if group_layout.count() > 0:
-                                group_box.setLayout(group_layout)
+                                # Add parameter widgets to main layout
+                                main_layout.addLayout(group_layout)
+                                # Don't add stretch here - it causes unnecessary expansion
+                                
+                                # Set the complete layout to group box
+                                group_box.setLayout(main_layout)
+                                
+                                # Make group box more compact
+                                group_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
+                                
                                 if hasattr(self, 'dynamic_params_layout'):
+                                    # Store node info for later reference
+                                    group_box.setProperty("node_id", node_id)
+                                    group_box.setProperty("node_type", node_type)
+                                    
                                     self.dynamic_params_layout.addWidget(group_box)
                                     self.logger.debug(f"Added parameter group for {node_type}")
                                     # Force layout update
@@ -933,6 +1386,11 @@ class UICreationMethods:
                             self.dynamic_params_container.update()
                             
                         # Parameter loading complete
+                        
+                        # CRITICAL: Recalculate splitter sizes after loading parameters
+                        # This prevents UI height explosion when many parameters are loaded
+                        if hasattr(self, '_recalculate_splitter_sizes'):
+                            self._recalculate_splitter_sizes()
                         
                         # Verify the UI is actually updated
                         if hasattr(self, 'dynamic_params_layout'):
@@ -973,9 +1431,6 @@ class UICreationMethods:
                     {'name': 'LoRA File', 'type': 'string', 'widget': 'combo', 'options': []},
                     {'name': 'Model Strength', 'type': 'float', 'widget': 'float', 'min': 0.0, 'max': 2.0, 'step': 0.01},
                     {'name': 'CLIP Strength', 'type': 'float', 'widget': 'float', 'min': 0.0, 'max': 2.0, 'step': 0.01}
-                ],
-                'extra_widgets': [
-                    {'name': 'Bypass LoRA', 'type': 'bool', 'widget': 'checkbox', 'default': False}
                 ]
             },
             'KSampler': {
@@ -997,9 +1452,9 @@ class UICreationMethods:
             },
             'EmptySD3LatentImage': {
                 'widgets_mapping': [
-                    {'name': 'Width', 'type': 'int', 'widget': 'int', 'min': 16, 'max': 2048, 'step': 64, 'default': 512},
-                    {'name': 'Height', 'type': 'int', 'widget': 'int', 'min': 16, 'max': 2048, 'step': 64, 'default': 512},
-                    {'name': 'Batch Size', 'type': 'int', 'widget': 'int', 'min': 1, 'max': 64, 'default': 1}
+                    {'name': 'Width', 'type': 'int', 'widget': 'int', 'min': 16, 'max': 2048, 'step': 64, 'default': 512, 'skip': True},  # Handled in left panel
+                    {'name': 'Height', 'type': 'int', 'widget': 'int', 'min': 16, 'max': 2048, 'step': 64, 'default': 512, 'skip': True},  # Handled in left panel
+                    {'name': 'Batch Size', 'type': 'int', 'widget': 'int', 'min': 1, 'max': 64, 'default': 1, 'skip': True}  # Handled in left panel
                 ]
             },
             'CLIPTextEncode': {
@@ -1011,6 +1466,31 @@ class UICreationMethods:
             'Note': {
                 'widgets_mapping': [
                     {'name': 'Note', 'type': 'string', 'widget': 'text_display'}
+                ]
+            },
+            # SD3 and Flux specific nodes
+            'VAELoader': {
+                'widgets_mapping': [
+                    {'name': 'VAE Name', 'type': 'string', 'widget': 'combo', 'options': []}
+                ]
+            },
+            'UNETLoader': {
+                'widgets_mapping': [
+                    {'name': 'UNET Name', 'type': 'string', 'widget': 'combo', 'options': []},
+                    {'name': 'Weight dtype', 'type': 'string', 'widget': 'combo', 'options': ['default', 'fp8_e4m3fn', 'fp8_e5m2']}
+                ]
+            },
+            'QuadrupleCLIPLoader': {
+                'widgets_mapping': [
+                    {'name': 'CLIP 1', 'type': 'string', 'widget': 'combo', 'options': []},
+                    {'name': 'CLIP 2', 'type': 'string', 'widget': 'combo', 'options': []},
+                    {'name': 'CLIP 3', 'type': 'string', 'widget': 'combo', 'options': []},
+                    {'name': 'CLIP 4', 'type': 'string', 'widget': 'combo', 'options': []}
+                ]
+            },
+            'ModelSamplingSD3': {
+                'widgets_mapping': [
+                    {'name': 'Shift', 'type': 'float', 'widget': 'float', 'min': 0.0, 'max': 10.0, 'step': 0.01, 'default': 3.0}
                 ]
             }
         }
@@ -1091,7 +1571,7 @@ class UICreationMethods:
                     
             elif data_type == 'bool':
                 value = bool(value) if value is not None else widget_def.get('default', False)
-                return self._create_checkbox_widget(name, value)
+                return self._create_checkbox_widget(name, value, node_id, param_key)
                 
             elif data_type == 'action' and widget_type == 'button':
                 return self._create_action_button(name)
@@ -1134,10 +1614,17 @@ class UICreationMethods:
         
         # Store reference to the actual input widget for value retrieval
         if node_id and param_key and hasattr(self, 'parameter_widgets'):
+            # Create a safer getter that checks widget validity
+            def get_int_value(widget=spinbox):
+                try:
+                    return widget.value()
+                except RuntimeError:
+                    return 0  # Default value if widget is deleted
+            
             self.parameter_widgets[param_key] = {
                 'widget': spinbox,
                 'type': 'int',
-                'get_value': lambda: spinbox.value()
+                'get_value': get_int_value
             }
             logger.debug(f"Stored int widget tracking: {param_key}")
         
@@ -1176,10 +1663,17 @@ class UICreationMethods:
         
         # Store reference to the actual input widget for value retrieval
         if node_id and param_key and hasattr(self, 'parameter_widgets'):
+            # Create a safer getter that checks widget validity
+            def get_float_value(widget=spinbox):
+                try:
+                    return widget.value()
+                except RuntimeError:
+                    return 0.0  # Default value if widget is deleted
+            
             self.parameter_widgets[param_key] = {
                 'widget': spinbox,
                 'type': 'float',
-                'get_value': lambda: spinbox.value()
+                'get_value': get_float_value
             }
             logger.debug(f"Stored float widget tracking: {param_key}")
         
@@ -1209,7 +1703,7 @@ class UICreationMethods:
         
         return container
     
-    def _create_checkbox_widget(self, name: str, checked: bool):
+    def _create_checkbox_widget(self, name: str, checked: bool, node_id: str = None, param_key: str = None):
         """Create a checkbox widget"""
         container = QWidget()
         layout = QHBoxLayout(container)
@@ -1220,50 +1714,59 @@ class UICreationMethods:
         layout.addWidget(checkbox)
         layout.addStretch()
         
+        # Store reference to the actual input widget for value retrieval
+        if node_id and param_key and hasattr(self, 'parameter_widgets'):
+            # Create a safer getter that checks widget validity
+            def get_checkbox_value(widget=checkbox):
+                try:
+                    return widget.isChecked()
+                except RuntimeError:
+                    return False  # Default value if widget is deleted
+            
+            self.parameter_widgets[param_key] = {
+                'widget': checkbox,
+                'type': 'bool',
+                'get_value': get_checkbox_value
+            }
+            logger.debug(f"Stored checkbox widget tracking: {param_key}")
+        
         return container
     
     def _get_model_options_for_parameter(self, param_name: str, node_type: str = None) -> list:
-        """Get model options dynamically based on parameter name and node type"""
+        """Get model options dynamically based on node type using the model scanner"""
+        # Use the dynamic model scanner
+        if not hasattr(self, '_model_scanner'):
+            from .model_scanner import ComfyUIModelScanner
+            # Try to get ComfyUI path from config
+            comfyui_models_dir = None
+            if hasattr(self.config, 'comfyui_path') and self.config.comfyui_path:
+                comfyui_models_dir = self.config.comfyui_path / "models"
+            self._model_scanner = ComfyUIModelScanner(comfyui_models_dir)
+        
+        # Get models for the specific node type
+        if node_type:
+            options = self._model_scanner.get_models_for_node(node_type)
+            if options:
+                self.logger.debug(f"Found {len(options)} models for {node_type}")
+                return options
+        
+        # Fallback: try to determine by parameter name if no node type
         options = []
         
-        # Determine model type based on parameter name
         if 'lora' in param_name.lower():
-            # Get LoRA models
-            options = self.config.get_lora_files() if hasattr(self.config, 'get_lora_files') else []
-            if not options and hasattr(self.config, 'loras_dir') and self.config.loras_dir.exists():
-                options = [f.name for f in self.config.loras_dir.glob("*.safetensors")]
-                
+            options = self._model_scanner.get_models_for_node("LoraLoader")
         elif 'checkpoint' in param_name.lower() or 'ckpt' in param_name.lower():
-            # Get checkpoint models
-            options = self.config.get_checkpoint_files() if hasattr(self.config, 'get_checkpoint_files') else []
-            if not options and hasattr(self.config, 'checkpoints_dir') and self.config.checkpoints_dir.exists():
-                options = [f.name for f in self.config.checkpoints_dir.glob("*.safetensors")]
-                # Also include .ckpt files for checkpoints
-                options.extend([f.name for f in self.config.checkpoints_dir.glob("*.ckpt")])
-                
+            options = self._model_scanner.get_models_for_node("CheckpointLoaderSimple")
         elif 'vae' in param_name.lower():
-            # Get VAE models (usually in VAE subfolder)
-            if hasattr(self.config, 'comfyui_path') and self.config.comfyui_path:
-                vae_dir = self.config.comfyui_path / "models" / "vae"
-                if vae_dir.exists():
-                    options = [f.name for f in vae_dir.glob("*.safetensors")]
-                    options.extend([f.name for f in vae_dir.glob("*.ckpt")])
-                    
-        elif 'controlnet' in param_name.lower() or 'control_net' in param_name.lower():
-            # Get ControlNet models
-            if hasattr(self.config, 'comfyui_path') and self.config.comfyui_path:
-                controlnet_dir = self.config.comfyui_path / "models" / "controlnet"
-                if controlnet_dir.exists():
-                    options = [f.name for f in controlnet_dir.glob("*.safetensors")]
-                    options.extend([f.name for f in controlnet_dir.glob("*.ckpt")])
-                    
-        elif 'upscale' in param_name.lower() or 'esrgan' in param_name.lower():
-            # Get upscaling models
-            if hasattr(self.config, 'comfyui_path') and self.config.comfyui_path:
-                upscale_dir = self.config.comfyui_path / "models" / "upscale_models"
-                if upscale_dir.exists():
-                    options = [f.name for f in upscale_dir.glob("*.pth")]
-                    options.extend([f.name for f in upscale_dir.glob("*.safetensors")])
+            options = self._model_scanner.get_models_for_node("VAELoader")
+        elif 'clip' in param_name.lower():
+            options = self._model_scanner.get_models_for_node("CLIPLoader")
+        elif 'unet' in param_name.lower():
+            options = self._model_scanner.get_models_for_node("UNETLoader")
+        elif 'controlnet' in param_name.lower():
+            options = self._model_scanner.get_models_for_node("ControlNetLoader")
+        elif 'upscale' in param_name.lower():
+            options = self._model_scanner.get_models_for_node("UpscaleModelLoader")
                     
         elif 'embedding' in param_name.lower() or 'textual_inversion' in param_name.lower():
             # Get embedding models
@@ -1326,10 +1829,17 @@ class UICreationMethods:
         
         # Store reference to the actual input widget for value retrieval
         if node_id and param_key and hasattr(self, 'parameter_widgets'):
+            # Create a safer getter that checks widget validity
+            def get_combo_value(widget=combo):
+                try:
+                    return widget.currentText()
+                except RuntimeError:
+                    return ""  # Default value if widget is deleted
+            
             self.parameter_widgets[param_key] = {
                 'widget': combo,
                 'type': 'combo',
-                'get_value': lambda: combo.currentText()
+                'get_value': get_combo_value
             }
             logger.debug(f"Stored combo widget tracking: {param_key}")
         
@@ -1394,7 +1904,7 @@ class UICreationMethods:
         # This would need to find the seed widget and update it
         self.logger.info("🎲 Seed randomized")
     
-    def _create_parameter_widget(self, node_id: str, node_type: str, param_name: str, param_value):
+    def _create_node_parameter_widget(self, node_id: str, node_type: str, param_name: str, param_value):
         """Create appropriate widget for parameter based on type"""
         widget_container = QWidget()
         layout = QHBoxLayout(widget_container)
@@ -1478,20 +1988,124 @@ class UICreationMethods:
             if child.widget():
                 child.widget().deleteLater()
         
-        # Create preview cards
+        # Store batch size for dynamic calculations
+        self.current_batch_size = batch_size
+        
+        # Get expected image dimensions from left panel controls
+        expected_width = 1024  # Default
+        expected_height = 1024
+        
+        # Get dimensions from the width/height spinboxes in left panel
+        if hasattr(self, 'width_spin') and hasattr(self, 'height_spin'):
+            expected_width = self.width_spin.value()
+            expected_height = self.height_spin.value()
+        
+        # Store dimensions for resize events
+        self.expected_image_width = expected_width
+        self.expected_image_height = expected_height
+        
+        # Get viewport width to calculate optimal columns
+        viewport_width = 1000  # Default fallback
+        if hasattr(self, 'preview_scroll_area'):
+            viewport = self.preview_scroll_area.viewport()
+            if viewport:
+                viewport_width = viewport.width()
+            if viewport_width < 100:  # Not yet sized
+                viewport_width = self.preview_scroll_area.width() - 40
+            if viewport_width < 100:  # Still too small
+                viewport_width = 1000
+        
+        # Calculate optimal columns based on image size and viewport
+        # For 1024x1024 images, we want to fit 2 side by side if possible
+        min_card_width = min(expected_width // 2, 400)  # Minimum reasonable display size
+        max_card_width = min(expected_width, 600)  # Maximum reasonable display size
+        
+        # Calculate how many columns can fit
+        spacing = 20  # Equal spacing between cards as requested
+        columns = 1
+        
+        # Special logic for 1024x1024 images
+        if expected_width == 1024 and expected_height == 1024:
+            # For 1024x1024 images, check if we can fit 2 side by side
+            # Calculate maximum card width for 2 columns with spacing
+            max_card_width_for_2_cols = (viewport_width - spacing) / 2
+            if max_card_width_for_2_cols >= 400:  # Minimum 400px per card for good visibility
+                columns = 2
+            else:
+                columns = 1
+        else:
+            # For other sizes, calculate dynamically
+            for test_cols in range(1, 5):  # Test 1-4 columns
+                required_width = (min_card_width * test_cols) + (spacing * (test_cols - 1))
+                if required_width <= viewport_width:
+                    columns = test_cols
+                else:
+                    break
+        
+        # Store columns for use in preview card creation
+        self.preview_columns = columns
+        self.preview_spacing = spacing
+        
+        # Create preview cards with smart sizing
         for i in range(batch_size):
-            preview_card = self._create_preview_card(i + 1)
-            row = i // 2  # 2 columns
-            col = i % 2
+            preview_card = self._create_smart_preview_card(i + 1, expected_width, expected_height, columns, spacing, viewport_width)
+            row = i // columns
+            col = i % columns
             self.new_canvas_grid.addWidget(preview_card, row, col)
         
-        # Created preview cards
+        # Update grid spacing
+        self.new_canvas_grid.setSpacing(spacing)
+        
+        # Install resize event filter on scroll area if not already installed
+        if hasattr(self, 'preview_scroll_area') and not hasattr(self, '_resize_filter_installed'):
+            self.preview_scroll_area.viewport().installEventFilter(self)
+            self._resize_filter_installed = True
+        
+        self.logger.debug(f"Created {batch_size} preview cards in {columns} columns with {spacing}px spacing")
     
-    def _create_preview_card(self, index: int) -> QWidget:
-        """Create a preview card for batch generation with ASCII loading animation"""
+    def _create_smart_preview_card(self, index: int, expected_width: int, expected_height: int, columns: int, spacing: int, viewport_width: int) -> QWidget:
+        """Create a smart responsive preview card based on expected image dimensions"""
         card = QWidget()
         card.setObjectName("preview_card")
-        card.setFixedSize(540, 590)  # Size for 512px image + labels
+        
+        # Calculate card dimensions based on columns and viewport
+        # Account for spacing between cards
+        available_width = viewport_width - (spacing * (columns - 1))
+        card_width = available_width // columns
+        
+        # Calculate aspect ratio
+        aspect_ratio = expected_width / expected_height if expected_height > 0 else 1.0
+        
+        # Smart sizing rules
+        if columns == 1:  # Full width for single column
+            # Maximum display size while maintaining aspect ratio
+            max_display_width = min(card_width - 20, expected_width, 1200)  # Leave some margin
+            display_width = max_display_width
+            display_height = int(display_width / aspect_ratio)
+            
+            # Cap height at reasonable size
+            max_height = 600
+            if display_height > max_height:
+                display_height = max_height
+                display_width = int(display_height * aspect_ratio)
+        elif columns == 2:
+            # For 2 columns, optimize for side-by-side display
+            # Use most of available width for better visibility
+            display_width = card_width - 20  # Small margin for padding
+            display_height = int(display_width / aspect_ratio)
+            
+            # Ensure minimum size for visibility
+            if display_width < 400:
+                display_width = min(400, card_width - 20)
+                display_height = int(display_width / aspect_ratio)
+        else:
+            # For 3+ columns, scale down more
+            display_width = min(card_width - 20, 400)
+            display_height = int(display_width / aspect_ratio)
+        
+        # Set card size with padding for UI elements
+        card_padding = 40  # Space for delete button and padding
+        card.setFixedSize(display_width + 20, display_height + card_padding)
         
         # Studio viewer black theme for the card
         card.setStyleSheet("""
@@ -1506,10 +2120,99 @@ class UICreationMethods:
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(8)
         
+        # Image placeholder with proper sizing
+        placeholder = QLabel()
+        placeholder.setObjectName("preview_placeholder")
+        placeholder.setFixedSize(display_width, display_height)
+        placeholder.setAlignment(Qt.AlignCenter)
+        placeholder.setScaledContents(True)
+        placeholder.setWordWrap(True)
+        
+        # Initial placeholder display
+        placeholder.setText(f"Ready for {expected_width}x{expected_height}")
+        placeholder.setStyleSheet("""
+            QLabel {
+                background-color: #000000;
+                border: 1px solid #333333;
+                border-radius: 8px;
+                color: #666666;
+                font-family: 'Courier New', monospace;
+                font-size: 12px;
+                padding: 20px;
+            }
+        """)
+        
+        # Make placeholder clickable for selection
+        placeholder.mousePressEvent = lambda event: self._on_image_card_clicked(index, placeholder)
+        
+        layout.addWidget(placeholder)
+        
+        # Add delete button (hidden initially, contextual)
+        delete_btn = QPushButton("×")  # Using × symbol for subtle delete
+        delete_btn.setObjectName("delete_btn")
+        delete_btn.setFixedSize(30, 30)
+        delete_btn.setStyleSheet("""
+            QPushButton {
+                background-color: rgba(255, 0, 0, 0.1);
+                border: 1px solid rgba(255, 0, 0, 0.3);
+                border-radius: 15px;
+                color: #ff6666;
+                font-size: 20px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: rgba(255, 0, 0, 0.2);
+                border-color: rgba(255, 0, 0, 0.5);
+            }
+        """)
+        delete_btn.hide()  # Hidden until image is selected
+        delete_btn.clicked.connect(lambda: self._delete_image(index))
+        
+        # Position delete button in top-right corner
+        delete_btn.setParent(placeholder)
+        delete_btn.move(display_width - 35, 5)
+        
+        # Store reference for later
+        if not hasattr(self, 'image_cards'):
+            self.image_cards = {}
+        self.image_cards[index] = {
+            'placeholder': placeholder,
+            'delete_btn': delete_btn,
+            'loading_timer': None,
+            'loading_frame': 0,
+            'expected_size': (expected_width, expected_height),
+            'display_size': (display_width, display_height),
+            'selected': False
+        }
+        
+        return card
+    
+    def _create_preview_card(self, index: int) -> QWidget:
+        """Create a preview card for batch generation with ASCII loading animation"""
+        card = QWidget()
+        card.setObjectName("preview_card")
+        # Responsive sizing - minimum size with maximum constraint
+        card.setMinimumSize(256, 280)
+        card.setMaximumSize(512, 540)
+        
+        # Studio viewer black theme for the card
+        card.setStyleSheet("""
+            QWidget#preview_card {
+                background-color: #000000;
+                border: 1px solid #333333;
+                border-radius: 8px;
+            }
+        """)
+        
+        layout = QVBoxLayout(card)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(6)
+        
         # Image placeholder with ASCII loading animation
         placeholder = QLabel()
         placeholder.setObjectName("preview_placeholder")
-        placeholder.setFixedSize(512, 512)
+        placeholder.setMinimumSize(240, 240)
+        placeholder.setMaximumSize(496, 496)
         placeholder.setAlignment(Qt.AlignCenter)
         placeholder.setScaledContents(True)
         placeholder.setWordWrap(True)
@@ -1532,28 +2235,25 @@ class UICreationMethods:
         # Make placeholder clickable for selection
         placeholder.mousePressEvent = lambda event: self._on_image_card_clicked(index, placeholder)
         
-        # Status label with terminal style
-        status = QLabel("Ready for generation")
-        status.setObjectName("preview_status")
-        status.setAlignment(Qt.AlignCenter)
-        status.setStyleSheet("""
-            color: #4CAF50; 
-            font-weight: bold;
-            font-family: 'Courier New', monospace;
-            background-color: #000000;
-            padding: 5px;
-            border-radius: 4px;
-        """)
+        # Removed "Ready for generation" status label as requested
         
         layout.addWidget(placeholder)
-        layout.addWidget(status)
+        
+        # Add delete button (hidden initially, shown after image loads)
+        delete_btn = QPushButton("Delete")
+        delete_btn.setObjectName("delete_btn")
+        delete_btn.setMaximumHeight(25)
+        delete_btn.hide()  # Hidden until image is loaded
+        delete_btn.clicked.connect(lambda: self._delete_image(index))
+        layout.addWidget(delete_btn)
         
         # Store reference for later image loading and animation
         if not hasattr(self, 'image_cards'):
             self.image_cards = {}
         self.image_cards[index] = {
             'placeholder': placeholder, 
-            'status': status,
+            'status': None,  # Status label removed as requested
+            'delete_btn': delete_btn,
             'loading_timer': None,
             'loading_frame': 0
         }
@@ -1589,7 +2289,7 @@ class UICreationMethods:
         ]
         
         import random
-        loading_chars = ['G', 'E', 'N', 'E', 'R', 'A', 'T', 'I', 'N', 'G', '.', '.', '.']
+        loading_chars = ['L', 'O', 'A', 'D', 'I', 'N', 'G', '.', '.', '.']
         
         def update_animation():
             if index in self.image_cards:
@@ -1644,8 +2344,9 @@ class UICreationMethods:
         # Store timer reference
         self.image_cards[index]['loading_timer'] = timer
         
-        # Update status to show loading
-        self.image_cards[index]['status'].setText("🎨 Generating...")
+        # Update status to show loading (if status widget exists)
+        if 'status' in self.image_cards[index] and self.image_cards[index]['status']:
+            self.image_cards[index]['status'].setText("🎨 Generating...")
     
     def _stop_ascii_loading_animation(self, index: int):
         """Stop ASCII loading animation for image card"""
@@ -1654,10 +2355,44 @@ class UICreationMethods:
             self.image_cards[index]['loading_timer'] = None
     
     def _on_image_card_clicked(self, index: int, placeholder: QLabel):
-        """Handle image card click for selection (same as View All)"""
+        """Handle image card click for selection and contextual delete button"""
         try:
             # Check if placeholder has an actual image
             if placeholder.pixmap() and not placeholder.pixmap().isNull():
+                # Toggle selection state
+                if index in self.image_cards:
+                    card_info = self.image_cards[index]
+                    selected = not card_info.get('selected', False)
+                    card_info['selected'] = selected
+                    
+                    # Show/hide delete button based on selection
+                    if card_info.get('delete_btn'):
+                        if selected:
+                            card_info['delete_btn'].show()
+                            card_info['delete_btn'].raise_()  # Ensure on top
+                        else:
+                            card_info['delete_btn'].hide()
+                    
+                    # Update visual selection state
+                    if selected:
+                        placeholder.setStyleSheet("""
+                            QLabel {
+                                background-color: #000000;
+                                border: 2px solid #4CAF50;
+                                border-radius: 8px;
+                                padding: 2px;
+                            }
+                        """)
+                    else:
+                        placeholder.setStyleSheet("""
+                            QLabel {
+                                background-color: #000000;
+                                border: 1px solid #333333;
+                                border-radius: 8px;
+                                padding: 3px;
+                            }
+                        """)
+                
                 # Get the actual image path
                 image_path = getattr(placeholder, 'image_path', None)
                 if image_path:
@@ -1671,6 +2406,7 @@ class UICreationMethods:
                         if is_selected:
                             # Deselect
                             self.unified_object_selector.remove_image_selection(image_path)
+                            self._update_all_unified_selectors()
                             self.logger.info(f"🚫 Removed image from selection: {image_path.name}")
                             
                             # Remove visual feedback
@@ -1683,44 +2419,51 @@ class UICreationMethods:
                                 }
                             """)
                             
-                            # Update status to show deselected
+                            # Update status to show deselected (if status widget exists)
                             if hasattr(self, 'image_cards') and index in self.image_cards:
-                                status = self.image_cards[index]['status']
-                                status.setText("🖼️ Generated Image")
-                                status.setStyleSheet("""
-                                    color: #e0e0e0; 
-                                    font-family: 'Courier New', monospace;
-                                    background-color: #000000;
-                                    padding: 5px;
-                                    border-radius: 4px;
-                                """)
+                                status = self.image_cards[index].get('status')
+                                if status:
+                                    status.setText("🖼️ Generated Image")
+                                    status.setStyleSheet("""
+                                        color: #e0e0e0; 
+                                        font-family: 'Courier New', monospace;
+                                        background-color: #000000;
+                                        padding: 5px;
+                                        border-radius: 4px;
+                                    """)
                         else:
                             # Select
                             self.unified_object_selector.add_image_selection(image_path)
+                            self._update_all_unified_selectors()
                             self.logger.info(f"✅ Added image to selection: {image_path.name}")
                             
-                            # Visual feedback for selection (green border)
-                            placeholder.setStyleSheet("""
-                                QLabel {
+                            # Visual feedback for selection (get current accent color)
+                            from PySide6.QtCore import QSettings
+                            settings = QSettings("ComfyUI-Cinema4D", "Bridge")
+                            accent_color = settings.value("interface/accent_color", "#4CAF50")
+                            
+                            placeholder.setStyleSheet(f"""
+                                QLabel {{
                                     background-color: #000000;
-                                    border: 3px solid #4CAF50;
+                                    border: 3px solid {accent_color};
                                     border-radius: 8px;
                                     padding: 4px;
-                                }
+                                }}
                             """)
                             
-                            # Update status to show selected
+                            # Update status to show selected (if status widget exists)
                             if hasattr(self, 'image_cards') and index in self.image_cards:
-                                status = self.image_cards[index]['status']
-                                status.setText("✅ Selected for 3D Generation")
-                                status.setStyleSheet("""
-                                    color: #4CAF50; 
-                                    font-weight: bold;
-                                    font-family: 'Courier New', monospace;
-                                    background-color: #000000;
-                                    padding: 5px;
-                                    border-radius: 4px;
-                                """)
+                                status = self.image_cards[index].get('status')
+                                if status:
+                                    status.setText("✅ Selected for 3D Generation")
+                                    status.setStyleSheet("""
+                                        color: #4CAF50; 
+                                        font-weight: bold;
+                                        font-family: 'Courier New', monospace;
+                                        background-color: #000000;
+                                        padding: 5px;
+                                        border-radius: 4px;
+                                    """)
                     else:
                         self.logger.warning("Unified object selector not available")
                 else:
@@ -1736,7 +2479,7 @@ class UICreationMethods:
         try:
             if hasattr(self, 'image_cards') and index in self.image_cards:
                 placeholder = self.image_cards[index]['placeholder']
-                status = self.image_cards[index]['status']
+                status = self.image_cards[index].get('status')
                 
                 # Stop ASCII loading animation first
                 self._stop_ascii_loading_animation(index)
@@ -1746,25 +2489,38 @@ class UICreationMethods:
                 if image_path.exists():
                     pixmap = QPixmap(str(image_path))
                     if not pixmap.isNull():
-                        # Scale image to fit placeholder
-                        scaled_pixmap = pixmap.scaled(512, 512, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                        # Use the display size we calculated during card creation
+                        if 'display_size' in self.image_cards[index]:
+                            display_width, display_height = self.image_cards[index]['display_size']
+                            display_size = QSize(display_width, display_height)
+                        else:
+                            display_size = placeholder.size()
+                        
+                        scaled_pixmap = pixmap.scaled(display_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                         placeholder.setPixmap(scaled_pixmap)
                         placeholder.setText("")  # Clear loading text
                         
                         # Store image path for selection
                         placeholder.image_path = image_path
                         
-                        # Update status
-                        status.setText("💫 Generated - Click to Select")
+                        # Update status (if status widget exists)
+                        if status:
+                            status.setText("💫 Generated - Click to Select")
                         
-                        # Update placeholder style for image display
-                        placeholder.setStyleSheet("""
-                            QLabel {
+                        # Don't auto-show delete button anymore - it's contextual on selection
+                        
+                        # Update placeholder style for image display (with accent color)
+                        from PySide6.QtCore import QSettings
+                        settings = QSettings("ComfyUI-Cinema4D", "Bridge")
+                        accent_color = settings.value("interface/accent_color", "#4CAF50")
+                        
+                        placeholder.setStyleSheet(f"""
+                            QLabel {{
                                 background-color: #000000;
-                                border: 1px solid #4CAF50;
+                                border: 1px solid {accent_color};
                                 border-radius: 8px;
                                 padding: 4px;
-                            }
+                            }}
                         """)
                         
                         self.logger.info(f"✅ Loaded generated image in card {index}: {image_path.name}")
@@ -2091,3 +2847,261 @@ class UICreationMethods:
             self.logger.error(f"Failed to show magic prompts dialog: {e}")
             from PySide6.QtWidgets import QMessageBox
             QMessageBox.critical(self, "Error", f"Failed to show magic prompts:\n{e}")
+    
+    def eventFilter(self, watched, event):
+        """Handle events for installed filters"""
+        from PySide6.QtCore import QEvent
+        
+        # Handle viewport resize events for responsive image layout
+        if (hasattr(self, 'preview_scroll_area') and 
+            watched == self.preview_scroll_area.viewport() and 
+            event.type() == QEvent.Resize):
+            # Debounce resize events with a timer
+            if not hasattr(self, '_resize_timer'):
+                from PySide6.QtCore import QTimer
+                self._resize_timer = QTimer()
+                self._resize_timer.setSingleShot(True)
+                self._resize_timer.timeout.connect(self._handle_viewport_resize)
+            
+            # Restart timer on each resize event (debounce)
+            self._resize_timer.stop()
+            self._resize_timer.start(100)  # 100ms debounce
+        
+        return super().eventFilter(watched, event) if hasattr(super(), 'eventFilter') else False
+    
+    def _handle_viewport_resize(self):
+        """Handle viewport resize to update image layout"""
+        if hasattr(self, 'current_batch_size') and self.current_batch_size > 0:
+            # Re-create preview with new viewport dimensions
+            self._update_batch_preview(self.current_batch_size)
+            
+            # If we have loaded images, reload them into the new cards
+            if hasattr(self, 'image_cards'):
+                # Store loaded images temporarily
+                loaded_images = {}
+                for idx, card_info in self.image_cards.items():
+                    placeholder = card_info.get('placeholder')
+                    if placeholder and hasattr(placeholder, 'image_path'):
+                        loaded_images[idx] = placeholder.image_path
+                
+                # Reload images into new cards
+                for idx, image_path in loaded_images.items():
+                    if image_path.exists():
+                        self._load_image_when_generated(idx, image_path)
+    
+    def _delete_image(self, index: int):
+        """Delete an image from the card and optionally from disk"""
+        try:
+            if hasattr(self, 'image_cards') and index in self.image_cards:
+                card_info = self.image_cards[index]
+                placeholder = card_info['placeholder']
+                delete_btn = card_info.get('delete_btn')
+                
+                # Get image path if exists
+                image_path = getattr(placeholder, 'image_path', None)
+                
+                if image_path and image_path.exists():
+                    # Ask user for confirmation
+                    from PySide6.QtWidgets import QMessageBox
+                    reply = QMessageBox.question(
+                        self,
+                        "Delete Image",
+                        f"Delete this image?\n{image_path.name}\n\nThis will remove the file from disk.",
+                        QMessageBox.Yes | QMessageBox.No,
+                        QMessageBox.No
+                    )
+                    
+                    if reply == QMessageBox.Yes:
+                        # Delete the file
+                        try:
+                            image_path.unlink()
+                            self.logger.info(f"Deleted image file: {image_path}")
+                        except Exception as e:
+                            self.logger.error(f"Failed to delete file: {e}")
+                            return
+                        
+                        # Reset the card to ready state
+                        placeholder.clear()
+                        if 'expected_size' in card_info:
+                            w, h = card_info['expected_size']
+                            placeholder.setText(f"Ready for {w}x{h}")
+                        else:
+                            placeholder.setText(f"Ready for Image {index}")
+                        placeholder.setStyleSheet("""
+                            QLabel {
+                                background-color: #000000;
+                                border: 1px solid #333333;
+                                border-radius: 8px;
+                                color: #666666;
+                                font-family: 'Courier New', monospace;
+                                font-size: 12px;
+                                padding: 20px;
+                            }
+                        """)
+                        
+                        # Hide delete button and reset selection
+                        if delete_btn:
+                            delete_btn.hide()
+                        card_info['selected'] = False
+                        
+                        # Clear image path
+                        if hasattr(placeholder, 'image_path'):
+                            delattr(placeholder, 'image_path')
+                        
+                        # Refresh the all images grid if visible
+                        if hasattr(self, 'all_images_grid'):
+                            self._refresh_all_images()
+                            
+                        self.logger.info(f"Reset card {index} after deletion")
+                        
+        except Exception as e:
+            self.logger.error(f"Error deleting image: {e}")
+    
+    def _get_friendly_node_title(self, node_type: str, node_id: str, custom_title: str = "") -> str:
+        """Get a title for a node - using technical names as requested"""
+        if custom_title:
+            return custom_title
+            
+        # Keep technical node type names
+        return f"{node_type} #{node_id}"
+    
+    def _on_node_bypass_changed(self, node_id: str, node_type: str, state: int):
+        """Handle bypass checkbox state change"""
+        is_bypassed = state == Qt.Checked
+        self.logger.info(f"Node {node_id} ({node_type}) bypass: {is_bypassed}")
+        
+        # Store bypass state for workflow execution
+        if not hasattr(self, 'node_bypass_states'):
+            self.node_bypass_states = {}
+        self.node_bypass_states[node_id] = is_bypassed
+        
+        # Update UI to show bypassed state
+        if is_bypassed:
+            # Find the group box and update its style
+            for i in range(self.dynamic_params_layout.count()):
+                widget = self.dynamic_params_layout.itemAt(i).widget()
+                if widget and widget.property("node_id") == node_id:
+                    widget.setStyleSheet("""
+                        QGroupBox {
+                            opacity: 0.5;
+                            background-color: rgba(0, 0, 0, 0.1);
+                        }
+                    """)
+                    break
+    
+    def _on_remove_node_clicked(self, node_id: str, node_type: str):
+        """Handle remove node button click"""
+        from PySide6.QtWidgets import QMessageBox
+        
+        reply = QMessageBox.question(
+            self,
+            "Remove Node",
+            f"Remove {node_type} node #{node_id} from workflow?\n\nThis will permanently modify the workflow.",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+        
+        if reply == QMessageBox.Yes:
+            self.logger.info(f"Removing node {node_id} ({node_type}) from workflow")
+            
+            # Remove from UI
+            for i in range(self.dynamic_params_layout.count()):
+                widget = self.dynamic_params_layout.itemAt(i).widget()
+                if widget and widget.property("node_id") == node_id:
+                    widget.setParent(None)
+                    widget.deleteLater()
+                    break
+            
+            # Store removal for workflow execution
+            if not hasattr(self, 'removed_nodes'):
+                self.removed_nodes = []
+            self.removed_nodes.append(node_id)
+            
+            # TODO: Update workflow file to actually remove the node
+            self.logger.warning("Node removal from workflow file not yet implemented")
+    
+    def _create_note_display_widget(self, note_text: str, title: str = "Note", node_type: str = "Note") -> QWidget:
+        """Create a styled display widget for Note/MarkdownNote nodes"""
+        container = QWidget()
+        container.setObjectName("note_display")
+        layout = QVBoxLayout(container)
+        layout.setContentsMargins(0, 0, 0, 10)
+        layout.setSpacing(5)
+        
+        # Create a frame for the note
+        frame = QFrame()
+        frame.setObjectName("note_frame")
+        frame_layout = QVBoxLayout(frame)
+        frame_layout.setContentsMargins(15, 10, 15, 10)
+        frame_layout.setSpacing(8)
+        
+        # Title label if provided
+        if title and title != "Note":
+            title_label = QLabel(f"[{title}]")
+            title_label.setObjectName("note_title")
+            title_label.setStyleSheet("""
+                QLabel {
+                    color: #4CAF50;
+                    font-weight: bold;
+                    font-size: 14px;
+                    font-family: 'Courier New', monospace;
+                }
+            """)
+            frame_layout.addWidget(title_label)
+        
+        # Note content
+        if node_type == "MarkdownNote":
+            # For markdown, we'll do basic formatting
+            content_widget = QTextEdit()
+            content_widget.setReadOnly(True)
+            content_widget.setPlainText(note_text)
+            
+            # Basic markdown styling
+            content_widget.setStyleSheet("""
+                QTextEdit {
+                    background-color: #0a0a0a;
+                    color: #a0a0a0;
+                    border: none;
+                    font-family: 'Courier New', monospace;
+                    font-size: 12px;
+                    padding: 10px;
+                }
+            """)
+            
+            # Calculate height based on content
+            doc = content_widget.document()
+            doc.setTextWidth(400)
+            height = doc.size().height() + 20
+            content_widget.setFixedHeight(min(int(height), 300))  # Max height 300px
+            
+        else:
+            # Regular note - simple text
+            content_widget = QLabel(note_text)
+            content_widget.setWordWrap(True)
+            content_widget.setTextInteractionFlags(Qt.TextSelectableByMouse)
+            content_widget.setStyleSheet("""
+                QLabel {
+                    color: #a0a0a0;
+                    font-family: 'Courier New', monospace;
+                    font-size: 12px;
+                    padding: 10px;
+                    background-color: #0a0a0a;
+                    border-radius: 4px;
+                }
+            """)
+        
+        frame_layout.addWidget(content_widget)
+        
+        # Style the frame
+        frame.setStyleSheet("""
+            QFrame#note_frame {
+                background-color: #1a1a1a;
+                border: 1px solid #333333;
+                border-left: 3px solid #4CAF50;
+                border-radius: 6px;
+            }
+        """)
+        
+        layout.addWidget(frame)
+        
+        return container

@@ -7941,3 +7941,313 @@ AttributeError: 'ComfyToC4DAppRedesigned' object has no attribute 'dynamic_param
 2025-06-19 01:31:59.534 | ERROR    | mcp.comfyui_client:get_history:533 - Failed to get history: All connection attempts failed
 2025-06-19 01:32:01.544 | ERROR    | mcp.comfyui_client:get_history:533 - Failed to get history: All connection attempts failed
 2025-06-19 13:17:38.332 | ERROR    | core.app_redesigned:_open_nlp_dictionary:1008 - Failed to open NLP Dictionary: NLPDictionaryDialog.__init__() got multiple values for argument 'parent'
+2025-06-19 16:26:24.655 | ERROR    | ui.settings_dialog:_apply_accent_color_to_theme:653 - Failed to apply accent color to theme: 'ApplicationSettingsDialog' object has no attribute '_get_lighter_color'
+2025-06-19 16:26:28.089 | ERROR    | ui.settings_dialog:_apply_accent_color_to_theme:653 - Failed to apply accent color to theme: 'ApplicationSettingsDialog' object has no attribute '_get_lighter_color'
+2025-06-19 19:57:14.526 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-19 19:57:15.239 | ERROR    | core.app_ui_methods:_load_parameters_from_config:953 - Failed to load image parameters: name 'status' is not defined
+2025-06-19 19:57:15.249 | ERROR    | core.app_ui_methods:_load_parameters_from_config:955 - Parameter loading traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 922, in _load_parameters_from_config
+    self._update_batch_preview(self.batch_size_spin.value())
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 1481, in _update_batch_preview
+    preview_card = self._create_preview_card(i + 1)
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 1542, in _create_preview_card
+    'status': status,
+              ^^^^^^
+NameError: name 'status' is not defined
+
+2025-06-19 21:25:05.221 | ERROR    | core.app_redesigned:_async_generate_images:1562 - Error during image generation: 'status'
+2025-06-19 21:25:05.232 | ERROR    | core.app_redesigned:_async_generate_images:1564 - Image generation traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 1522, in _async_generate_images
+    self._start_generation_loading_animations(batch_size)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 1580, in _start_generation_loading_animations
+    self._start_ascii_loading_animation(i)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 1814, in _start_ascii_loading_animation
+    if self.image_cards[index]['status']:
+       ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+KeyError: 'status'
+
+2025-06-19 22:13:06.364 | ERROR    | core.app_ui_methods:_load_parameters_from_config:971 - Failed to load image parameters: 
+2025-06-19 22:13:06.373 | ERROR    | core.app_ui_methods:_load_parameters_from_config:973 - Parameter loading traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 895, in _load_parameters_from_config
+    widget = self._create_widget_from_definition(widget_def, value, node_type, node_id, param_key)
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 1087, in _create_widget_from_definition
+    return self._create_int_widget(name, value, min_val, max_val, node_id, param_key)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 1147, in _create_int_widget
+    spinbox.setValue(value)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+OverflowError
+
+2025-06-19 22:13:09.134 | ERROR    | core.app_ui_methods:_refresh_ui_after_workflow_import:720 - Error refreshing UI after workflow import: cannot access local variable 'thumbnail' where it is not associated with a value
+2025-06-19 23:13:28.120 | ERROR    | core.app_ui_methods:_refresh_ui_after_workflow_import:720 - Error refreshing UI after workflow import: cannot access local variable 'thumbnail' where it is not associated with a value
+2025-06-19 23:14:07.146 | ERROR    | core.app_redesigned:_async_generate_images:1625 - Error during image generation: Internal C++ object (PySide6.QtWidgets.QCheckBox) already deleted.
+2025-06-19 23:14:07.178 | ERROR    | core.app_redesigned:_async_generate_images:1627 - Image generation traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 1556, in _async_generate_images
+    params = self._collect_dynamic_workflow_parameters(workflow, prompt, neg_prompt, batch_size)
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 3287, in _collect_dynamic_workflow_parameters
+    bypass_value = self.parameter_widgets[bypass_key]['get_value']()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 1327, in <lambda>
+    'get_value': lambda: checkbox.isChecked()
+                         ~~~~~~~~~~~~~~~~~~^^
+RuntimeError: Internal C++ object (PySide6.QtWidgets.QCheckBox) already deleted.
+
+2025-06-19 23:18:31.436 | ERROR    | core.app_ui_methods:_refresh_ui_after_workflow_import:720 - Error refreshing UI after workflow import: cannot access local variable 'thumbnail' where it is not associated with a value
+2025-06-19 23:27:46.137 | ERROR    | core.app_ui_methods:_refresh_ui_after_workflow_import:720 - Error refreshing UI after workflow import: cannot access local variable 'thumbnail' where it is not associated with a value
+2025-06-19 23:27:58.948 | ERROR    | mcp.comfyui_client:queue_prompt:443 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'invalid_prompt', 'message': 'Cannot execute because node MarkdownNote does not exist.', 'details': "Node ID '#72'", 'extra_info': {}}, 'node_errors': {}}
+2025-06-19 23:30:03.149 | ERROR    | mcp.comfyui_client:queue_prompt:443 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'prompt_outputs_failed_validation', 'message': 'Prompt outputs failed validation', 'details': '', 'extra_info': {}}, 'node_errors': {'54': {'errors': [{'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'clip_name1', 'extra_info': {'input_name': 'clip_name1'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'clip_name2', 'extra_info': {'input_name': 'clip_name2'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'clip_name3', 'extra_info': {'input_name': 'clip_name3'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'clip_name4', 'extra_info': {'input_name': 'clip_name4'}}], 'dependent_outputs': ['9'], 'class_type': 'QuadrupleCLIPLoader'}, '76': {'errors': [{'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'unet_name', 'extra_info': {'input_name': 'unet_name'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'weight_dtype', 'extra_info': {'input_name': 'weight_dtype'}}], 'dependent_outputs': ['9'], 'class_type': 'UNETLoader'}, '70': {'errors': [{'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'shift', 'extra_info': {'input_name': 'shift'}}], 'dependent_outputs': ['9'], 'class_type': 'ModelSamplingSD3'}, '55': {'errors': [{'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'vae_name', 'extra_info': {'input_name': 'vae_name'}}], 'dependent_outputs': ['9'], 'class_type': 'VAELoader'}}}
+2025-06-19 23:30:27.813 | ERROR    | core.app_ui_methods:_refresh_ui_after_workflow_import:720 - Error refreshing UI after workflow import: cannot access local variable 'thumbnail' where it is not associated with a value
+2025-06-19 23:30:31.135 | ERROR    | mcp.comfyui_client:queue_prompt:443 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'prompt_outputs_failed_validation', 'message': 'Prompt outputs failed validation', 'details': '', 'extra_info': {}}, 'node_errors': {'54': {'errors': [{'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'clip_name1', 'extra_info': {'input_name': 'clip_name1'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'clip_name2', 'extra_info': {'input_name': 'clip_name2'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'clip_name3', 'extra_info': {'input_name': 'clip_name3'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'clip_name4', 'extra_info': {'input_name': 'clip_name4'}}], 'dependent_outputs': ['9'], 'class_type': 'QuadrupleCLIPLoader'}, '76': {'errors': [{'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'unet_name', 'extra_info': {'input_name': 'unet_name'}}, {'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'weight_dtype', 'extra_info': {'input_name': 'weight_dtype'}}], 'dependent_outputs': ['9'], 'class_type': 'UNETLoader'}, '70': {'errors': [{'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'shift', 'extra_info': {'input_name': 'shift'}}], 'dependent_outputs': ['9'], 'class_type': 'ModelSamplingSD3'}, '55': {'errors': [{'type': 'required_input_missing', 'message': 'Required input is missing', 'details': 'vae_name', 'extra_info': {'input_name': 'vae_name'}}], 'dependent_outputs': ['9'], 'class_type': 'VAELoader'}}}
+2025-06-19 23:34:47.420 | ERROR    | core.app_ui_methods:_refresh_ui_after_workflow_import:720 - Error refreshing UI after workflow import: cannot access local variable 'thumbnail' where it is not associated with a value
+2025-06-20 00:23:12.175 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-20 10:53:00.863 | ERROR    | core.app_ui_methods:_load_dynamic_3d_parameters_on_demand:322 - Error loading dynamic 3D parameters: UICreationMethods._create_parameter_widget() missing 1 required positional argument: 'param_value'
+2025-06-20 10:53:13.396 | ERROR    | core.app_ui_methods:_refresh_ui_after_workflow_import:975 - Error refreshing UI after workflow import: cannot access local variable 'thumbnail' where it is not associated with a value
+2025-06-20 10:53:26.992 | ERROR    | core.app_redesigned:_async_generate_3d_models:1975 - Failed to queue 3D generation for ComfyUI_20250620_105145_0001.png
+2025-06-20 10:58:58.566 | ERROR    | core.app_ui_methods:_refresh_ui_after_workflow_import:978 - Error refreshing UI after workflow import: cannot access local variable 'thumbnail' where it is not associated with a value
+2025-06-20 10:59:13.473 | ERROR    | core.app_ui_methods:_load_dynamic_3d_parameters_on_demand:322 - Error loading dynamic 3D parameters: UICreationMethods._create_parameter_widget() missing 1 required positional argument: 'param_value'
+2025-06-20 10:59:21.803 | ERROR    | core.workflow_manager:load_workflow:56 - Workflow not found: 3D_gen_Hunyuan2_onlymesh.json
+2025-06-20 11:04:40.609 | ERROR    | core.app_ui_methods:_load_dynamic_3d_parameters_on_demand:322 - Error loading dynamic 3D parameters: UICreationMethods._create_parameter_widget() missing 1 required positional argument: 'param_value'
+2025-06-20 11:04:53.569 | ERROR    | core.app_ui_methods:_load_dynamic_3d_parameters_on_demand:322 - Error loading dynamic 3D parameters: UICreationMethods._create_parameter_widget() missing 1 required positional argument: 'param_value'
+2025-06-20 11:06:34.313 | ERROR    | mcp.comfyui_client:get_history:532 - Failed to get history: 
+2025-06-20 11:06:36.319 | ERROR    | mcp.comfyui_client:get_history:532 - Failed to get history: 
+2025-06-20 11:25:51.859 | ERROR    | core.app_ui_methods:_load_dynamic_3d_parameters_on_demand:326 - Error loading dynamic 3D parameters: UICreationMethods._create_parameter_widget() missing 1 required positional argument: 'param_value'
+2025-06-20 11:40:38.855 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 11:40:42.636 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 11:40:43.188 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 11:40:44.045 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 12:24:15.822 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 12:52:09.541 | ERROR    | mcp.comfyui_client:get_history:532 - Failed to get history: 
+2025-06-20 12:52:11.544 | ERROR    | mcp.comfyui_client:get_history:532 - Failed to get history: 
+2025-06-20 13:19:22.632 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 13:23:51.180 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 13:45:41.804 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 13:51:11.251 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 13:51:49.608 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 13:51:50.151 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 13:51:50.668 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 13:51:51.061 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 14:37:35.566 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 14:37:47.590 | ERROR    | core.app_redesigned:_show_3d_viewer_config_dialog:2805 - Failed to open 3D viewer configuration dialog: name 'QTimer' is not defined
+2025-06-20 14:46:47.104 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 14:48:16.454 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 14:52:10.926 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 14:57:09.072 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 15:10:38.351 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 15:16:04.998 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 15:22:18.281 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 15:25:03.062 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 15:36:18.882 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 16:20:10.446 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 16:35:19.276 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 16:38:34.939 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 21:22:47.144 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 21:35:36.694 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-20 21:35:45.473 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 21:42:27.118 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 21:54:54.643 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 21:55:24.261 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 21:59:08.874 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 21:59:39.836 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-20 22:01:45.733 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 22:02:39.115 | ERROR    | core.app_ui_methods:_load_dynamic_3d_parameters_on_demand:326 - Error loading dynamic 3D parameters: UICreationMethods._create_parameter_widget() missing 1 required positional argument: 'param_value'
+2025-06-20 22:03:38.261 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 22:03:48.909 | ERROR    | core.app_ui_methods:_load_dynamic_3d_parameters_on_demand:326 - Error loading dynamic 3D parameters: UICreationMethods._create_parameter_widget() missing 1 required positional argument: 'param_value'
+2025-06-20 22:06:43.796 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 22:12:47.070 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 22:12:58.283 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 22:12:59.108 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 22:13:00.314 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 22:13:00.803 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 22:13:06.233 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 22:13:07.139 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 22:13:07.657 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 22:13:08.955 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 22:22:00.194 | ERROR    | core.app_redesigned:_setup_redesigned_ui:400 - Failed to setup UI: invalid decimal literal (studio_3d_viewer_widget.py, line 1)
+2025-06-20 22:22:00.212 | ERROR    | core.app_redesigned:_setup_redesigned_ui:402 - UI setup traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 315, in _setup_redesigned_ui
+    content_splitter = self._create_main_content_area()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 462, in _create_main_content_area
+    center_panel = self._create_enhanced_center_panel()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 536, in _create_enhanced_center_panel
+    model_tab = self._create_enhanced_3d_model_tab()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 911, in _create_enhanced_3d_model_tab
+    scene_objects = self._create_scene_objects_view()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 136, in _create_scene_objects_view
+    from ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\studio_3d_viewer_widget.py", line 1
+    Studio 3D Viewer Widget - Integration of studio_viewer_final.py into the main application
+           ^
+SyntaxError: invalid decimal literal
+
+2025-06-20 22:22:00.213 | ERROR    | __main__:<module>:87 - Unhandled exception: invalid decimal literal (studio_3d_viewer_widget.py, line 1)
+Traceback (most recent call last):
+
+> File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 83, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x0000023E733994E0>
+    │       └ <function run at 0x0000023E4167C860>
+    └ <module 'asyncio' from 'C:\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x0000023E732AFB40>
+           │      └ <function Runner.run at 0x0000023E4172ED40>
+           └ <asyncio.runners.Runner object at 0x0000023E732D1E80>
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │                        └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+           │    └ None
+           └ <asyncio.runners.Runner object at 0x0000023E732D1E80>
+  File "C:\Python313\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           │      └ <method 'result' of '_asyncio.Task' objects>
+           └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 48, in main
+    main_window = ComfyToC4DApp(config)
+                  │             └ <core.config_adapter.AppConfigAdapter object at 0x0000023E42062120>
+                  └ <class 'core.app_redesigned.ComfyToC4DAppRedesigned'>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 188, in __init__
+    self._setup_redesigned_ui()
+    │    └ <function ComfyToC4DAppRedesigned._setup_redesigned_ui at 0x0000023E733651C0>
+    └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x23e43215140) at 0x0000023E72966E40>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 315, in _setup_redesigned_ui
+    content_splitter = self._create_main_content_area()
+                       │    └ <function ComfyToC4DAppRedesigned._create_main_content_area at 0x0000023E73365300>
+                       └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x23e43215140) at 0x0000023E72966E40>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 462, in _create_main_content_area
+    center_panel = self._create_enhanced_center_panel()
+                   │    └ <function ComfyToC4DAppRedesigned._create_enhanced_center_panel at 0x0000023E73365440>
+                   └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x23e43215140) at 0x0000023E72966E40>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 536, in _create_enhanced_center_panel
+    model_tab = self._create_enhanced_3d_model_tab()
+                │    └ <function ComfyToC4DAppRedesigned._create_enhanced_3d_model_tab at 0x0000023E73365940>
+                └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x23e43215140) at 0x0000023E72966E40>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 911, in _create_enhanced_3d_model_tab
+    scene_objects = self._create_scene_objects_view()
+                    │    └ <function UICreationMethods._create_scene_objects_view at 0x0000023E7332D260>
+                    └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x23e43215140) at 0x0000023E72966E40>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 136, in _create_scene_objects_view
+    from ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\studio_3d_viewer_widget.py", line 1
+    Studio 3D Viewer Widget - Integration of studio_viewer_final.py into the main application
+           ^
+
+SyntaxError: invalid decimal literal
+2025-06-20 22:22:36.703 | ERROR    | core.app_redesigned:_setup_redesigned_ui:400 - Failed to setup UI: invalid character '📦' (U+1F4E6) (studio_3d_viewer_widget.py, line 377)
+2025-06-20 22:22:36.705 | ERROR    | core.app_redesigned:_setup_redesigned_ui:402 - UI setup traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 315, in _setup_redesigned_ui
+    content_splitter = self._create_main_content_area()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 462, in _create_main_content_area
+    center_panel = self._create_enhanced_center_panel()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 536, in _create_enhanced_center_panel
+    model_tab = self._create_enhanced_3d_model_tab()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 911, in _create_enhanced_3d_model_tab
+    scene_objects = self._create_scene_objects_view()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 136, in _create_scene_objects_view
+    from ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\studio_3d_viewer_widget.py", line 377
+    info_text = f"""📦 {model_path_obj.name}
+                    ^
+SyntaxError: invalid character '📦' (U+1F4E6)
+
+2025-06-20 22:22:36.707 | ERROR    | __main__:<module>:87 - Unhandled exception: invalid character '📦' (U+1F4E6) (studio_3d_viewer_widget.py, line 377)
+Traceback (most recent call last):
+
+> File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 83, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x0000021EE10F93A0>
+    │       └ <function run at 0x0000021EAF35C860>
+    └ <module 'asyncio' from 'C:\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x0000021EE100B940>
+           │      └ <function Runner.run at 0x0000021EAF40ED40>
+           └ <asyncio.runners.Runner object at 0x0000021EE1029E80>
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │                        └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+           │    └ None
+           └ <asyncio.runners.Runner object at 0x0000021EE1029E80>
+  File "C:\Python313\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           │      └ <method 'result' of '_asyncio.Task' objects>
+           └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 48, in main
+    main_window = ComfyToC4DApp(config)
+                  │             └ <core.config_adapter.AppConfigAdapter object at 0x0000021EAFD92120>
+                  └ <class 'core.app_redesigned.ComfyToC4DAppRedesigned'>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 188, in __init__
+    self._setup_redesigned_ui()
+    │    └ <function ComfyToC4DAppRedesigned._setup_redesigned_ui at 0x0000021EE10B1080>
+    └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x21edfd038e0) at 0x0000021EE0A179C0>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 315, in _setup_redesigned_ui
+    content_splitter = self._create_main_content_area()
+                       │    └ <function ComfyToC4DAppRedesigned._create_main_content_area at 0x0000021EE10B11C0>
+                       └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x21edfd038e0) at 0x0000021EE0A179C0>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 462, in _create_main_content_area
+    center_panel = self._create_enhanced_center_panel()
+                   │    └ <function ComfyToC4DAppRedesigned._create_enhanced_center_panel at 0x0000021EE10B1300>
+                   └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x21edfd038e0) at 0x0000021EE0A179C0>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 536, in _create_enhanced_center_panel
+    model_tab = self._create_enhanced_3d_model_tab()
+                │    └ <function ComfyToC4DAppRedesigned._create_enhanced_3d_model_tab at 0x0000021EE10B1800>
+                └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x21edfd038e0) at 0x0000021EE0A179C0>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 911, in _create_enhanced_3d_model_tab
+    scene_objects = self._create_scene_objects_view()
+                    │    └ <function UICreationMethods._create_scene_objects_view at 0x0000021EE1089120>
+                    └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x21edfd038e0) at 0x0000021EE0A179C0>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 136, in _create_scene_objects_view
+    from ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\studio_3d_viewer_widget.py", line 377
+    info_text = f"""📦 {model_path_obj.name}
+                    ^
+
+SyntaxError: invalid character '📦' (U+1F4E6)
+2025-06-20 22:24:36.745 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 22:24:41.237 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 22:24:45.765 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 22:24:46.162 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 22:24:46.812 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 22:24:47.216 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 22:24:47.855 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 22:24:48.305 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 22:24:48.914 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 22:25:01.244 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 22:26:01.686 | ERROR    | core.app_ui_methods:_load_test_models_on_startup:659 - Failed to load test models on startup: cannot access local variable 'datetime' where it is not associated with a value
+2025-06-20 23:40:57.267 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 23:40:59.164 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-20 23:41:00.695 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-21 00:17:56.916 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-21 10:14:03.744 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-21 10:28:47.472 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-21 10:28:50.951 | ERROR    | ui.widgets:cleanup:743 - Error during 3D preview cleanup: 'Simple3DViewer' object has no attribute 'deactivate_3d_viewer'
+2025-06-21 10:28:50.961 | ERROR    | ui.widgets:cleanup:743 - Error during 3D preview cleanup: 'Simple3DViewer' object has no attribute 'deactivate_3d_viewer'
+2025-06-21 10:28:50.972 | ERROR    | ui.widgets:cleanup:743 - Error during 3D preview cleanup: 'Simple3DViewer' object has no attribute 'deactivate_3d_viewer'
+2025-06-21 10:28:50.982 | ERROR    | ui.widgets:cleanup:743 - Error during 3D preview cleanup: 'Simple3DViewer' object has no attribute 'deactivate_3d_viewer'
+2025-06-21 10:28:50.992 | ERROR    | ui.widgets:cleanup:743 - Error during 3D preview cleanup: 'Simple3DViewer' object has no attribute 'deactivate_3d_viewer'
+2025-06-21 12:00:01.930 | ERROR    | core.app_redesigned:_check_3d_workflow_completion:2407 - Error checking 3D workflow completion: 'UnifiedObjectSelectionWidget' object has no attribute 'add_object'
+2025-06-21 13:06:38.093 | ERROR    | core.app_redesigned:_show_3d_viewer_config_dialog:2995 - Failed to open 3D viewer configuration dialog: cannot import name 'Studio3DViewer' from 'ui.studio_3d_viewer_widget' (D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\studio_3d_viewer_widget.py)
+2025-06-21 13:06:46.641 | ERROR    | core.app_redesigned:_show_3d_viewer_config_dialog:2995 - Failed to open 3D viewer configuration dialog: cannot import name 'Studio3DViewer' from 'ui.studio_3d_viewer_widget' (D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\studio_3d_viewer_widget.py)
+2025-06-21 13:12:58.912 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-21 13:13:05.191 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-21 13:31:07.484 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-21 13:42:09.176 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop

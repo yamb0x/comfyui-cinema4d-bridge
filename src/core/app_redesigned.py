@@ -54,11 +54,12 @@ from core.file_monitor import FileMonitor, AssetTracker
 from core.project_manager import ProjectManager
 from mcp.comfyui_client import ComfyUIClient
 from mcp.cinema4d_client import Cinema4DClient, C4DDeformerType, C4DClonerMode
-from ui.widgets import ImageGridWidget, Model3DPreviewWidget, ConsoleWidget
+from ui.widgets import ImageGridWidget, ConsoleWidget
 from c4d.mcp_wrapper import CommandResult
 from ui.styles import get_available_themes
 from ui.fonts import get_font_manager, load_project_fonts
 from ui.nlp_dictionary_dialog import NLPDictionaryDialog
+from ui.studio_3d_config_dialog import Studio3DConfigDialog
 from pipeline.stages import PipelineStage, ImageGenerationStage, Model3DGenerationStage, SceneAssemblyStage, ExportStage
 from utils.logger import LoggerMixin
 
@@ -87,15 +88,16 @@ class PerformanceMeter(QWidget):
         
         # Text label
         self.text_label = QLabel(f"{self.label_text}: {self.value}%")
-        self.text_label.setObjectName("connection_info")
+        self.text_label.setObjectName("performance_meter_label")
         self.text_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.text_label)
         
         # Progress bar styled as performance meter
         self.progress_bar = QProgressBar()
+        self.progress_bar.setObjectName("performance_meter_bar")
         self.progress_bar.setRange(0, self.max_value)
         self.progress_bar.setValue(self.value)
-        self.progress_bar.setFixedHeight(6)   # Smaller height
+        self.progress_bar.setFixedHeight(8)   # Slightly taller than original for visibility
         self.progress_bar.setFixedWidth(80)   # Keep width
         self.progress_bar.setTextVisible(False)
         
@@ -106,16 +108,24 @@ class PerformanceMeter(QWidget):
     
     def update_style_color(self, color: str):
         """Update progress bar color with consistent styling"""
-        self.progress_bar.setStyleSheet(f"""
-            QProgressBar {{
-                border: 1px solid #666666;
-                background-color: #1a1a1a;
-            }}
-            QProgressBar::chunk {{
-                background-color: {color};
-            }}
-        """)
-        self.progress_bar.update()
+        # Try a much simpler approach - just force the CSS with high specificity
+        css = f"""
+        QProgressBar[objectName="performance_meter_bar"] {{
+            border: 1px solid #666666;
+            background-color: #1a1a1a;
+            border-radius: 3px;
+        }}
+        QProgressBar[objectName="performance_meter_bar"]::chunk {{
+            background-color: {color} !important;
+            border-radius: 2px;
+        }}
+        """
+        
+        # Apply to the specific widget
+        self.progress_bar.setStyleSheet(css)
+        
+        # Force immediate update
+        self.progress_bar.repaint()
         
     def update_value(self, value: int, text: str = None):
         """Update the performance meter value"""
@@ -193,6 +203,17 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             self.logger.debug(f"Created unified selector for {tab_name} tab")
             
         return self.unified_selectors[tab_name]
+    
+    def _update_all_unified_selectors(self):
+        """Update display for all unified selector instances"""
+        # Update main instance
+        self.unified_object_selector._update_display()
+        
+        # Update all tab instances
+        for tab_name, selector in self.unified_selectors.items():
+            selector._update_display()
+            
+        self.logger.debug("Updated all unified selector displays")
         
     def _initialize_core_components(self):
         """Initialize all core components - preserve existing functionality"""
@@ -328,8 +349,11 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             # Add console to splitter
             main_splitter.addWidget(console)
             
-            # Set splitter proportions (80% content, 20% console)
-            main_splitter.setSizes([800, 200])
+            # Store splitter reference for dynamic resizing
+            self.main_splitter = main_splitter
+            
+            # Set initial splitter proportions
+            self._recalculate_splitter_sizes()
             
             # Add splitter to main layout
             main_layout.addWidget(main_splitter)
@@ -342,8 +366,11 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             terminal_theme = get_complete_terminal_theme()
             self.setStyleSheet(terminal_theme)
             
+            # Apply saved accent color on startup
+            QTimer.singleShot(200, self._apply_saved_accent_color)
+            
             # Enhanced menu bar
-            self._create_enhanced_menu_bar()
+            self._create_complete_menu_bar()
             
             # Initialize batch preview after UI is fully set up
             QTimer.singleShot(100, lambda: self._update_batch_preview(1))
@@ -362,6 +389,9 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             
             # Initialize workflow parameters after UI is fully set up
             QTimer.singleShot(500, self._initialize_workflow_parameters)
+            
+            # Load test models after all initialization is complete
+            QTimer.singleShot(3000, self._load_test_models_on_startup)
             
             self.logger.debug("UI setup completed successfully")
             
@@ -399,7 +429,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         # GPU name label (separate from percentage)
         self.gpu_name_label = QLabel("GPU")
-        self.gpu_name_label.setObjectName("connection_info")
+        self.gpu_name_label.setObjectName("performance_meter_label")
         system_info_layout.addWidget(self.gpu_name_label)
         
         # GPU performance meter
@@ -545,6 +575,9 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         layout.addWidget(self.right_panel_stack)
         
+        # Set size constraint to prevent vertical expansion
+        panel.setMaximumHeight(1000)  # Reasonable max height for parameter panel
+        
         return panel
         
     def _create_image_generation_controls(self) -> QWidget:
@@ -613,6 +646,52 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         # Note: Change handler will be connected later after UI is fully initialized
         controls_layout.addWidget(self.workflow_combo)
         
+        # Image size controls
+        size_label = QLabel("Image Size:")
+        size_label.setObjectName("section_title")
+        controls_layout.addWidget(size_label)
+        
+        # Size preset dropdown
+        self.size_preset_combo = QComboBox()
+        self.size_preset_combo.addItems([
+            "1024×1024 (Square)",
+            "1920×1080 (16:9)",
+            "1344×768 (7:4)",
+            "832×1216 (Portrait)",
+            "1216×832 (Landscape)",
+            "512×512 (Small)",
+            "Custom"
+        ])
+        self.size_preset_combo.currentTextChanged.connect(self._on_size_preset_changed)
+        controls_layout.addWidget(self.size_preset_combo)
+        
+        # Custom size inputs (hidden by default)
+        size_layout = QHBoxLayout()
+        size_layout.setSpacing(8)
+        size_layout.setContentsMargins(0, 8, 0, 8)  # Add vertical padding
+        
+        self.width_spin = QSpinBox()
+        self.width_spin.setRange(64, 4096)
+        self.width_spin.setSingleStep(64)
+        self.width_spin.setValue(1024)
+        self.width_spin.setPrefix("W: ")
+        self.width_spin.valueChanged.connect(self._on_custom_size_changed)
+        
+        self.height_spin = QSpinBox()
+        self.height_spin.setRange(64, 4096)
+        self.height_spin.setSingleStep(64)
+        self.height_spin.setValue(1024)
+        self.height_spin.setPrefix("H: ")
+        self.height_spin.valueChanged.connect(self._on_custom_size_changed)
+        
+        size_layout.addWidget(self.width_spin)
+        size_layout.addWidget(self.height_spin)
+        
+        self.custom_size_widget = QWidget()
+        self.custom_size_widget.setLayout(size_layout)
+        self.custom_size_widget.hide()  # Hidden until "Custom" is selected
+        controls_layout.addWidget(self.custom_size_widget)
+        
         # Batch size
         batch_label = QLabel("Batch Size:")
         batch_label.setObjectName("section_title")
@@ -645,7 +724,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         # Unified Object Selection section (positioned below generation controls)
         image_selector = self._get_unified_selector("image_generation")
         layout.addWidget(image_selector)
-        layout.addStretch()
+        # REMOVED addStretch() - was causing UI height expansion
         
         return widget
     
@@ -693,7 +772,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         # Unified Object Selection section (positioned below generation controls)
         model_selector = self._get_unified_selector("3d_model_generation")
         layout.addWidget(model_selector)
-        layout.addStretch()
+        # REMOVED addStretch() - was causing UI height expansion
         
         return widget
         
@@ -749,7 +828,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         # Unified Object Selection section (shared across all tabs) - positioned below generation controls
         texture_selector = self._get_unified_selector("texture_generation")
         layout.addWidget(texture_selector)
-        layout.addStretch()
+        # REMOVED addStretch() - was causing UI height expansion
         
         return widget
         
@@ -794,7 +873,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         # Unified Object Selection section
         c4d_selector = self._get_unified_selector("cinema4d")
         layout.addWidget(c4d_selector)
-        layout.addStretch()
+        # REMOVED addStretch() - was causing UI height expansion
         
         return widget
         
@@ -1100,8 +1179,16 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         if index < len(stage_names):
             self.logger.info(f"Switched to: {stage_names[index]}")
             
+            # Lazy load dynamic 3D parameters when Tab 2 is accessed
+            if index == 1:  # Tab 2: 3D Model Generation
+                self._load_dynamic_3d_parameters_on_demand()
+            
             # Update workflow dropdown based on current tab
             self._update_workflow_dropdown_for_tab(index)
+            
+            # CRITICAL: Recalculate splitter sizes to prevent UI height explosion
+            # This ensures console remains visible when switching tabs
+            self._recalculate_splitter_sizes()
     
     def _sync_panel_tabs(self, index: int):
         """Synchronize side panel tabs with main tab"""
@@ -1127,6 +1214,25 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         # Trigger actual connection refresh
         asyncio.create_task(self._async_refresh_cinema4d())
+    
+    def _recalculate_splitter_sizes(self):
+        """Recalculate main splitter sizes to maintain proper console visibility"""
+        if hasattr(self, 'main_splitter'):
+            # Get current window height
+            window_height = self.height()
+            console_height = 200  # Fixed console height
+            
+            # Calculate content height accounting for header and margins
+            header_height = 60  # Header is fixed at 60px
+            margins = 40  # Various margins and spacing
+            content_height = window_height - console_height - header_height - margins
+            
+            # Ensure minimum heights
+            content_height = max(400, content_height)  # Minimum content height
+            
+            # Apply new sizes
+            self.main_splitter.setSizes([content_height, console_height])
+            self.logger.debug(f"Recalculated splitter sizes: content={content_height}, console={console_height}")
         
     async def _async_refresh_comfyui(self):
         """Async ComfyUI connection refresh with actual validation"""
@@ -1486,9 +1592,32 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             # Collect parameters dynamically based on workflow
             params = self._collect_dynamic_workflow_parameters(workflow, prompt, neg_prompt, batch_size)
             
+            # Validate parameters before injection
+            from core.parameter_validator import ParameterValidator
+            validator = ParameterValidator()
+            params = validator.validate_parameters(params)
+            self.logger.info(f"Validated parameters: {list(params.keys())}")
+            
             self.logger.info(f"Injecting parameters into workflow...")
-            # Inject parameters into workflow
-            workflow_with_params = self.workflow_manager.inject_parameters_comfyui(workflow, params)
+            
+            # Use our new dynamic workflow handler for better compatibility
+            from .dynamic_workflow_handler import DynamicWorkflowHandler
+            dynamic_handler = DynamicWorkflowHandler()
+            
+            # First inject prompts dynamically
+            workflow_with_prompts = dynamic_handler.inject_prompts_dynamic(workflow, prompt, neg_prompt)
+            
+            # Then update latent sizes from UI controls
+            if hasattr(self, 'width_spin') and hasattr(self, 'height_spin'):
+                workflow_with_prompts = dynamic_handler.update_latent_size_dynamic(
+                    workflow_with_prompts, 
+                    self.width_spin.value(),
+                    self.height_spin.value(),
+                    batch_size
+                )
+            
+            # Finally inject other parameters using existing method
+            workflow_with_params = self.workflow_manager.inject_parameters_comfyui(workflow_with_prompts, params)
             
             if not workflow_with_params:
                 self.logger.error("Failed to inject parameters into workflow")
@@ -1761,6 +1890,85 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             self.logger.error(f"Error checking for generated images: {e}")
             import traceback
             self.logger.error(f"Traceback: {traceback.format_exc()}")
+    
+    def _auto_load_new_3d_model(self, model_path: Path):
+        """Auto-load new 3D model into scene objects viewer with dynamic loading animation"""
+        try:
+            # Switch to Tab 2 (3D Model Generation) if not already there
+            if hasattr(self, 'main_tab_widget') and self.main_tab_widget.currentIndex() != 1:
+                self.main_tab_widget.setCurrentIndex(1)
+                self.logger.info("Switched to 3D Model Generation tab to show new model")
+            
+            # Add to session models list if not already there
+            if model_path not in self.session_models:
+                self.session_models.append(model_path)
+                self.logger.debug(f"Added {model_path.name} to session models list")
+            
+            # Add model to session grid with loading animation
+            if hasattr(self, 'session_models_grid'):
+                # Add the model to the grid
+                self.session_models_grid.add_model(model_path)
+                
+                # Start ASCII loading animation for the new model card
+                self._start_3d_model_loading_animation(model_path)
+                
+                self.logger.info(f"Auto-loaded new 3D model: {model_path.name}")
+            else:
+                self.logger.warning("Session models grid not available for auto-loading")
+                
+        except Exception as e:
+            self.logger.error(f"Failed to auto-load 3D model: {e}")
+    
+    def _start_3d_model_loading_animation(self, model_path: Path):
+        """Start ASCII loading animation for a specific 3D model"""
+        try:
+            # ASCII characters for 3D model loading
+            ascii_3d_frames = [
+                "⬆️🔺⬇️", "⬇️⬆️🔺", "🔺⬇️⬆️", "⬆️🔺⬇️",
+                "🔲🔳⚪", "⚪🔲🔳", "🔳⚪🔲", "🔲🔳⚪",
+                "🌐🎲🧊", "🧊🌐🎲", "🎲🧊🌐", "🌐🎲🧊"
+            ]
+            
+            frame_index = [0]
+            
+            def update_animation():
+                try:
+                    if hasattr(self, 'session_models_grid'):
+                        # Find the card for this model and update its title with animation
+                        for card in self.session_models_grid.cards:
+                            if card.model_path == model_path:
+                                frame = ascii_3d_frames[frame_index[0] % len(ascii_3d_frames)]
+                                card.title_label.setText(f"{frame} Loading...")
+                                frame_index[0] += 1
+                                break
+                    
+                    # Stop animation after model is fully loaded (10 seconds max)
+                    if frame_index[0] >= 40:  # 40 frames * 250ms = 10 seconds
+                        if hasattr(self, 'session_models_grid'):
+                            for card in self.session_models_grid.cards:
+                                if card.model_path == model_path:
+                                    card.title_label.setText(model_path.stem)
+                                    break
+                        return False  # Stop timer
+                    
+                    return True  # Continue timer
+                    
+                except Exception as e:
+                    self.logger.error(f"Error in 3D loading animation: {e}")
+                    return False
+            
+            # Create animation timer
+            animation_timer = QTimer()
+            animation_timer.timeout.connect(lambda: update_animation() or animation_timer.stop())
+            animation_timer.start(250)  # Update every 250ms
+            
+            # Store timer reference to prevent garbage collection
+            if not hasattr(self, '_3d_animation_timers'):
+                self._3d_animation_timers = []
+            self._3d_animation_timers.append(animation_timer)
+            
+        except Exception as e:
+            self.logger.error(f"Failed to start 3D model loading animation: {e}")
         
     def _on_generate_3d_models(self):
         """Handle 3D model generation"""
@@ -1805,6 +2013,11 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             self.generate_3d_btn.setEnabled(False)
             self.generate_3d_btn.setText("Generating...")
         
+        # Store batch information for progress tracking
+        self._3d_batch_total = len(image_paths)
+        self._3d_batch_completed = 0
+        self._3d_batch_prompt_ids = {}
+        
         try:
             # Check ComfyUI connection first
             if not hasattr(self, 'comfyui_client') or not self.comfyui_client:
@@ -1819,7 +2032,19 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 try:
                     with open(config_path, 'r') as f:
                         config = json.load(f)
-                    workflow_file = config.get("workflow_file", workflow_file)
+                    configured_workflow = config.get("workflow_file", workflow_file)
+                    
+                    # Handle different path formats from configuration
+                    if configured_workflow:
+                        # If it doesn't include the directory, add it
+                        if not configured_workflow.startswith("3d_generation/"):
+                            if configured_workflow == "3D_gen_Hunyuan2_onlymesh.json":
+                                workflow_file = "3d_generation/3D_gen_Hunyuan2_onlymesh.json"
+                            else:
+                                workflow_file = f"3d_generation/{configured_workflow}"
+                        else:
+                            workflow_file = configured_workflow
+                    
                     self.logger.info(f"Using configured 3D workflow: {workflow_file}")
                 except Exception as e:
                     self.logger.error(f"Error loading 3D config: {e}")
@@ -1844,9 +2069,15 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 node_types = [node.get('class_type', 'unknown') for node in workflow.values()]
                 self.logger.info(f"Node class types in workflow: {set(node_types)}")
             
-            # Collect parameters from 3D UI - TODO: implement parameter collection
-            params = {}  # Placeholder - would collect from 3D parameter widgets
+            # Collect parameters from 3D UI
+            params = self._collect_dynamic_3d_workflow_parameters()
             self.logger.info(f"Collected 3D parameters: {list(params.keys())}")
+            
+            # Validate parameters before injection
+            from core.parameter_validator import ParameterValidator
+            validator = ParameterValidator()
+            params = validator.validate_parameters(params)
+            self.logger.info(f"Validated 3D parameters: {list(params.keys())}")
             
             # Process each selected image
             total_images = len(image_paths)
@@ -1870,15 +2101,27 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                     self.logger.error(f"Failed to inject parameters for {image_path.name}")
                     continue
             
-                # Execute workflow in ComfyUI
+                # Execute workflow in ComfyUI (skip UI loading for automated execution)
                 self.logger.info(f"Executing ComfyUI workflow for {image_path.name}")
-                success = await self.comfyui_client.queue_prompt(workflow_with_params)
+                result = await self.comfyui_client.queue_prompt(workflow_with_params, load_in_ui_first=False)
             
-                if success:
+                # comfyui_client.queue_prompt() returns prompt_id string directly (not a dict)
+                if result and isinstance(result, str):
+                    prompt_id = result
                     successful_count += 1
-                    self.logger.info(f"Successfully queued 3D generation for {image_path.name}")
+                    self.logger.info(f"Successfully queued 3D generation for {image_path.name} with prompt_id: {prompt_id}")
+                    
+                    # Track batch prompt IDs
+                    self._3d_batch_prompt_ids[prompt_id] = image_path
+                    
+                    # Update button to show progress
+                    if hasattr(self, 'generate_3d_btn'):
+                        self.generate_3d_btn.setText(f"Generating... ({successful_count}/{self._3d_batch_total})")
+                    
+                    # Start workflow completion monitoring for 3D model
+                    self._start_3d_workflow_completion_monitoring(prompt_id, image_path)
                 else:
-                    self.logger.error(f"Failed to queue 3D generation for {image_path.name}")
+                    self.logger.error(f"Failed to queue 3D generation for {image_path.name} - result: {result}")
             
                 # Small delay between generations to avoid overwhelming ComfyUI
                 if i < total_images - 1:  # Don't delay after the last image
@@ -1905,6 +2148,246 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             if hasattr(self, 'generate_3d_btn'):
                 self.generate_3d_btn.setEnabled(True)
                 self.generate_3d_btn.setText("GENERATE 3D MODELS")
+    
+    def _start_3d_workflow_completion_monitoring(self, prompt_id: str, source_image: Path):
+        """Monitor ComfyUI workflow completion for 3D model generation"""
+        from PySide6.QtCore import QTimer
+        import asyncio
+        
+        self.logger.info(f"Starting 3D workflow completion monitoring for prompt {prompt_id}")
+        
+        check_count = [0]
+        max_checks = 60  # 60 checks * 2 seconds = 2 minutes max
+        
+        async def check_completion():
+            await self._check_3d_workflow_completion(prompt_id, source_image, check_count, max_checks)
+        
+        def timer_callback():
+            asyncio.ensure_future(check_completion())
+        
+        # Check every 2 seconds for 3D models (they take longer)
+        timer = QTimer()
+        timer.timeout.connect(timer_callback)
+        timer.start(2000)
+        
+        # Store timer to prevent garbage collection
+        if not hasattr(self, '3d_completion_timers'):
+            self.three_d_completion_timers = {}
+        self.three_d_completion_timers[prompt_id] = timer
+    
+    async def _check_3d_workflow_completion(self, prompt_id: str, source_image: Path, check_count: list, max_checks: int):
+        """Check if 3D workflow has completed and download the model"""
+        try:
+            check_count[0] += 1
+            
+            # Get workflow status
+            history = await self.comfyui_client.get_history(prompt_id)
+            
+            if history and prompt_id in history:
+                prompt_history = history[prompt_id]
+                status = prompt_history.get('status', {})
+                
+                if status.get('completed', False):
+                    self.logger.info(f"3D workflow {prompt_id} completed!")
+                    
+                    # Stop the timer
+                    if hasattr(self, 'three_d_completion_timers') and prompt_id in self.three_d_completion_timers:
+                        self.three_d_completion_timers[prompt_id].stop()
+                        del self.three_d_completion_timers[prompt_id]
+                    
+                    # Download the 3D model
+                    outputs = prompt_history.get('outputs', {})
+                    self.logger.debug(f"3D workflow outputs structure: {list(outputs.keys())}")
+                    
+                    # Log detailed output structure
+                    for node_id, node_output in outputs.items():
+                        self.logger.debug(f"Node {node_id} output keys: {list(node_output.keys())}")
+                        # Log the full output for debugging
+                        if any(key in node_output for key in ['gltf', 'glb', 'mesh', 'files']):
+                            self.logger.debug(f"Node {node_id} full output: {node_output}")
+                    
+                    for node_id, node_output in outputs.items():
+                        # Check for various possible 3D output formats
+                        model_key = None
+                        if 'gltf' in node_output:
+                            model_key = 'gltf'
+                        elif 'glb' in node_output:
+                            model_key = 'glb'
+                        elif 'mesh' in node_output:
+                            model_key = 'mesh'
+                        
+                        if model_key:
+                            # Handle 3D model output
+                            for model_info in node_output[model_key]:
+                                filename = model_info.get('filename', 'model.glb')
+                                subfolder = model_info.get('subfolder', '')
+                                type_folder = model_info.get('type', 'output')
+                                
+                                # Download the 3D model
+                                model_data = await self.comfyui_client.fetch_3d_model(filename, subfolder, type_folder)
+                                
+                                if model_data:
+                                    # Save to 3D models directory
+                                    models_dir = self.config.base_dir / "3d_models"
+                                    models_dir.mkdir(exist_ok=True)
+                                    
+                                    # Create traceable filename based on source image
+                                    # Extract the last number from source image name
+                                    import re
+                                    match = re.search(r'_(\d+)$', source_image.stem)
+                                    if match:
+                                        # Use existing number for traceability
+                                        base_number = match.group(1)
+                                        model_filename = f"3D_{base_number}.glb"
+                                    else:
+                                        # Use full stem if no number found
+                                        model_filename = f"{source_image.stem}_3d.glb"
+                                    model_path = models_dir / model_filename
+                                    
+                                    with open(model_path, 'wb') as f:
+                                        f.write(model_data)
+                                    
+                                    self.logger.info(f"Saved 3D model to: {model_path}")
+                                    
+                                    # Update the unified object selector with the new 3D model
+                                    if hasattr(self, 'unified_object_selector'):
+                                        self.unified_object_selector.link_model_to_image(model_path, source_image)
+                                    
+                                    # Auto-load the new model in scene objects viewer
+                                    self._auto_load_new_3d_model(model_path)
+                                    
+                                    # Update batch progress
+                                    if hasattr(self, '_3d_batch_completed'):
+                                        self._3d_batch_completed += 1
+                                        
+                                        # Update button text
+                                        if hasattr(self, 'generate_3d_btn'):
+                                            if self._3d_batch_completed < self._3d_batch_total:
+                                                self.generate_3d_btn.setText(f"Generated {self._3d_batch_completed}/{self._3d_batch_total}")
+                                            else:
+                                                # All models completed
+                                                self.generate_3d_btn.setText("GENERATE 3D MODELS")
+                                                self.generate_3d_btn.setEnabled(True)
+                                                self.logger.info(f"Batch 3D generation complete: {self._3d_batch_completed} models")
+                                    
+                                    return
+                    
+                    self.logger.warning(f"3D workflow completed but no 3D model output found in ComfyUI history")
+                    
+                    # Fallback: Since workflow save_file is True, check filesystem
+                    self.logger.info("Checking filesystem for generated 3D models...")
+                    
+                    # Check both local directory and ComfyUI output directory
+                    models_dir = self.config.base_dir / "3d_models"
+                    models_dir.mkdir(exist_ok=True)
+                    
+                    # Also check ComfyUI output directory from config
+                    comfyui_3d_dir = Path(self.config.models_3d_dir) if hasattr(self.config, 'models_3d_dir') else Path("D:/Comfy3D_WinPortable/ComfyUI/output/3D")
+                    
+                    # Get existing files in our directory before checking
+                    existing_files = set(models_dir.glob("*.glb"))
+                    
+                    # Wait a bit for file to be written
+                    await asyncio.sleep(2)
+                    
+                    # First check ComfyUI output directory for new files
+                    if comfyui_3d_dir.exists():
+                        comfyui_files = list(comfyui_3d_dir.glob("*.glb"))
+                        # Sort by modification time to get the newest
+                        comfyui_files.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+                        
+                        if comfyui_files:
+                            # Get the newest file
+                            newest_file = comfyui_files[0]
+                            # Check if it was created recently (within last 10 seconds)
+                            if time.time() - newest_file.stat().st_mtime < 10:
+                                self.logger.info(f"Found new 3D model in ComfyUI output: {newest_file}")
+                                
+                                # Copy to our 3D models directory with traceable name
+                                import re
+                                # Match patterns like ComfyUI_20250619_201722_0053 - get the last number
+                                match = re.search(r'_(\d+)$', source_image.stem)
+                                if match:
+                                    base_number = match.group(1)
+                                    target_filename = f"3D_{base_number}.glb"
+                                else:
+                                    target_filename = f"{source_image.stem}_3d.glb"
+                                target_path = models_dir / target_filename
+                                
+                                # Copy the file
+                                import shutil
+                                shutil.copy2(newest_file, target_path)
+                                self.logger.info(f"Copied 3D model to: {target_path}")
+                                
+                                # Use the target path for UI updates
+                                new_file = target_path
+                                
+                                # Update the unified object selector
+                                if hasattr(self, 'unified_object_selector'):
+                                    self.unified_object_selector.link_model_to_image(new_file, source_image)
+                                
+                                # Auto-load in scene objects viewer
+                                self._auto_load_new_3d_model(new_file)
+                                
+                                # Update batch progress
+                                if hasattr(self, '_3d_batch_completed'):
+                                    self._3d_batch_completed += 1
+                                    if hasattr(self, 'generate_3d_btn'):
+                                        if self._3d_batch_completed < self._3d_batch_total:
+                                            self.generate_3d_btn.setText(f"Generated {self._3d_batch_completed}/{self._3d_batch_total}")
+                                        else:
+                                            self.generate_3d_btn.setText("GENERATE 3D MODELS")
+                                            self.generate_3d_btn.setEnabled(True)
+                                            self.logger.info(f"Batch 3D generation complete: {self._3d_batch_completed} models")
+                                
+                                return  # Successfully found and processed the file
+                    
+                    # If not found in ComfyUI directory, check local directory
+                    current_files = set(models_dir.glob("*.glb"))
+                    new_files = current_files - existing_files
+                    
+                    if new_files:
+                        for new_file in new_files:
+                            self.logger.info(f"Found new 3D model in local directory: {new_file}")
+                            
+                            # Update the unified object selector
+                            if hasattr(self, 'unified_object_selector'):
+                                self.unified_object_selector.link_model_to_image(new_file, source_image)
+                            
+                            # Auto-load in scene objects viewer
+                            self._auto_load_new_3d_model(new_file)
+                            
+                            # Update batch progress
+                            if hasattr(self, '_3d_batch_completed'):
+                                self._3d_batch_completed += 1
+                                if hasattr(self, 'generate_3d_btn'):
+                                    if self._3d_batch_completed < self._3d_batch_total:
+                                        self.generate_3d_btn.setText(f"Generated {self._3d_batch_completed}/{self._3d_batch_total}")
+                                    else:
+                                        self.generate_3d_btn.setText("GENERATE 3D MODELS")
+                                        self.generate_3d_btn.setEnabled(True)
+                                        self.logger.info(f"Batch 3D generation complete: {self._3d_batch_completed} models")
+                    
+                elif status.get('status_str') == 'error':
+                    self.logger.error(f"3D workflow {prompt_id} failed with error")
+                    # Stop the timer
+                    if hasattr(self, 'three_d_completion_timers') and prompt_id in self.three_d_completion_timers:
+                        self.three_d_completion_timers[prompt_id].stop()
+                        del self.three_d_completion_timers[prompt_id]
+                    
+            elif check_count[0] >= max_checks:
+                self.logger.warning(f"3D workflow {prompt_id} timed out after {max_checks} checks")
+                # Stop the timer
+                if hasattr(self, 'three_d_completion_timers') and prompt_id in self.three_d_completion_timers:
+                    self.three_d_completion_timers[prompt_id].stop()
+                    del self.three_d_completion_timers[prompt_id]
+                
+                # Fallback: Try to refresh 3D models from file system
+                self.logger.info("Attempting fallback: scanning file system for new 3D models")
+                QTimer.singleShot(2000, self._refresh_3d_models)
+                    
+        except Exception as e:
+            self.logger.error(f"Error checking 3D workflow completion: {e}")
         
     def _on_generate_textures(self):
         """Handle texture generation"""
@@ -2012,9 +2495,9 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                     self.logger.error(f"Failed to inject parameters for {model_path.name}")
                     continue
                 
-                # Execute workflow in ComfyUI
+                # Execute workflow in ComfyUI (skip UI loading for automated execution)
                 self.logger.info(f"Executing ComfyUI workflow for {model_path.name}")
-                success = await self.comfyui_client.queue_prompt(workflow_with_params)
+                success = await self.comfyui_client.queue_prompt(workflow_with_params, load_in_ui_first=False)
                 
                 if success:
                     successful_count += 1
@@ -2131,13 +2614,13 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             # Load prompts
             if hasattr(self, 'positive_prompt'):
                 saved_positive = settings.value("prompts/positive", "")
-            if saved_positive:
-                self.positive_prompt.set_text(saved_positive)
+                if saved_positive:
+                    self.positive_prompt.set_text(saved_positive)
                 
             if hasattr(self, 'negative_prompt'):
                 saved_negative = settings.value("prompts/negative", "")
-            if saved_negative:
-                self.negative_prompt.set_text(saved_negative)
+                if saved_negative:
+                    self.negative_prompt.set_text(saved_negative)
                 
             # Load parameters
             if hasattr(self, 'steps_spin'):
@@ -2255,11 +2738,11 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             # Save prompts
             if hasattr(self, 'positive_prompt'):
                 prompt_text = self.positive_prompt.get_prompt()
-            settings.setValue("prompts/positive", prompt_text)
+                settings.setValue("prompts/positive", prompt_text)
             
             if hasattr(self, 'negative_prompt'):
                 prompt_text = self.negative_prompt.get_prompt()
-            settings.setValue("prompts/negative", prompt_text)
+                settings.setValue("prompts/negative", prompt_text)
             
             # Save parameters
             if hasattr(self, 'steps_spin'):
@@ -2456,6 +2939,15 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         console_action.triggered.connect(self._toggle_console)
         view_menu.addAction(console_action)
         
+        view_menu.addSeparator()
+        
+        # 3D Viewer Configuration
+        viewer_3d_config_action = QAction("3D Viewer Configuration", self)
+        viewer_3d_config_action.triggered.connect(self._show_3d_viewer_config_dialog)
+        view_menu.addAction(viewer_3d_config_action)
+        
+        view_menu.addSeparator()
+        
         fullscreen_action = QAction("Fullscreen", self)
         fullscreen_action.setShortcut("F11")
         fullscreen_action.triggered.connect(self._toggle_fullscreen)
@@ -2492,6 +2984,27 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             dialog.exec()
         except Exception as e:
             self.logger.error(f"Failed to open 3D parameters dialog: {e}")
+            
+    def _show_3d_viewer_config_dialog(self):
+        """Show 3D viewer configuration dialog"""
+        try:
+            self.logger.info("Opening 3D viewer configuration dialog...")
+            # Keep a reference to prevent garbage collection
+            self._3d_config_dialog = Studio3DConfigDialog(self)
+            self.logger.info("Dialog created successfully")
+            self._3d_config_dialog.settings_saved.connect(self._on_3d_viewer_settings_saved)
+            self.logger.info("Signal connected successfully")
+            # Try setting window modality explicitly
+            self._3d_config_dialog.setWindowModality(Qt.ApplicationModal)
+            self._3d_config_dialog.show()
+            self._3d_config_dialog.raise_()
+            self._3d_config_dialog.activateWindow()
+            result = self._3d_config_dialog.exec()
+            self.logger.info(f"Dialog closed with result: {result}")
+        except Exception as e:
+            import traceback
+            self.logger.error(f"Failed to open 3D viewer configuration dialog: {e}")
+            self.logger.error(f"Full traceback: {traceback.format_exc()}")
             
     def _show_configure_texture_parameters_dialog(self):
         """Show configure texture parameters dialog"""
@@ -2572,9 +3085,36 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         """Handle 3D parameters configuration saved"""
         self.logger.info("3D parameters configuration saved")
         
+        # Reload 3D parameters with new configuration using lazy loading
+        try:
+            self._load_dynamic_3d_parameters_on_demand()
+            self.logger.info("3D parameters UI reloaded with new configuration")
+        except Exception as e:
+            self.logger.error(f"Failed to reload 3D parameters UI: {e}")
+        
     def _on_texture_parameters_configuration_saved(self, config):
         """Handle texture parameters configuration saved"""
         self.logger.info("Texture parameters configuration saved")
+        
+    def _on_3d_viewer_settings_saved(self, settings):
+        """Handle 3D viewer configuration settings saved"""
+        self.logger.info("3D viewer settings saved")
+        
+        # Apply settings to all existing 3D viewers
+        try:
+            # Update Scene Objects grid viewers
+            if hasattr(self, 'session_models_grid'):
+                self.session_models_grid.apply_viewer_settings(settings)
+                self.logger.debug("Applied settings to session models grid")
+                
+            # Update View All Models grid viewers
+            if hasattr(self, 'all_models_grid'):
+                self.all_models_grid.apply_viewer_settings(settings)
+                self.logger.debug("Applied settings to all models grid")
+                
+            self.logger.info("3D viewer settings applied to all viewers")
+        except Exception as e:
+            self.logger.error(f"Failed to apply 3D viewer settings: {e}")
     
     # Image and Model Event Handlers
     def _on_image_selected(self, image_path, selected: bool):
@@ -2624,6 +3164,46 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self.logger.info("All objects cleared - updating image card selections")
         self._clear_all_image_selections()
     
+    def _on_size_preset_changed(self, preset_text: str):
+        """Handle image size preset selection"""
+        if "Custom" in preset_text:
+            self.custom_size_widget.show()
+        else:
+            self.custom_size_widget.hide()
+            # Parse preset and update spinboxes
+            if "1024×1024" in preset_text:
+                self.width_spin.setValue(1024)
+                self.height_spin.setValue(1024)
+            elif "1920×1080" in preset_text:
+                self.width_spin.setValue(1920)
+                self.height_spin.setValue(1080)
+            elif "1344×768" in preset_text:
+                self.width_spin.setValue(1344)
+                self.height_spin.setValue(768)
+            elif "832×1216" in preset_text:
+                self.width_spin.setValue(832)
+                self.height_spin.setValue(1216)
+            elif "1216×832" in preset_text:
+                self.width_spin.setValue(1216)
+                self.height_spin.setValue(832)
+            elif "512×512" in preset_text:
+                self.width_spin.setValue(512)
+                self.height_spin.setValue(512)
+        
+        # Update batch preview with new dimensions
+        if hasattr(self, 'batch_size_spin'):
+            self._update_batch_preview(self.batch_size_spin.value())
+    
+    def _on_custom_size_changed(self):
+        """Handle custom size input changes"""
+        # Switch to "Custom" in the preset combo if not already
+        if "Custom" not in self.size_preset_combo.currentText():
+            self.size_preset_combo.setCurrentText("Custom")
+        
+        # Update batch preview with new dimensions
+        if hasattr(self, 'batch_size_spin'):
+            self._update_batch_preview(self.batch_size_spin.value())
+    
     def _clear_all_image_selections(self):
         """Clear all image card visual selections"""
         # Clear session images
@@ -2661,6 +3241,15 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             if hasattr(self, 'selected_models_list'):
                 self.selected_models_list.addItem(model_path_obj.name)
             self.logger.info(f"Added {model_path_obj.name} to selected models")
+            
+            # Update unified object selector
+            if hasattr(self, 'unified_object_selector'):
+                from ui.object_selection_widget import ObjectState
+                self.unified_object_selector.add_object(
+                    name=model_path_obj.name,
+                    state=ObjectState.MODEL_3D,
+                    model_3d=model_path_obj
+                )
         else:
             # Remove from selection
             if hasattr(self, 'selected_models') and model_path_obj in self.selected_models:
@@ -2673,6 +3262,10 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                         self.selected_models_list.takeItem(i)
                         break
             self.logger.info(f"Removed {model_path_obj.name} from selected models")
+            
+            # Update unified object selector
+            if hasattr(self, 'unified_object_selector'):
+                self.unified_object_selector.remove_object(model_path_obj.name)
         
         # Update selection count display
         self._update_selection_displays()
@@ -2915,8 +3508,8 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             # Ensure all thumbnails and their checkboxes are visible
             for thumbnail in self.session_image_grid.thumbnails:
                 thumbnail.show()
-            thumbnail.select_check.show()
-            thumbnail.select_check.setVisible(True)
+                thumbnail.select_check.show()
+                thumbnail.select_check.setVisible(True)
             
             self.logger.info(f"Successfully loaded {len(self.session_images)} session images with visible selection checkboxes")
         else:
@@ -3006,26 +3599,35 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             # Extract parameters based on node type
             if node_type == "KSampler" and widgets_values:
                 # Extract sampler parameters from widgets_values
-                if len(widgets_values) >= 3:
+                # Order: seed, control_after_generation, steps, cfg, sampler_name, scheduler, denoise
+                if len(widgets_values) >= 7:
                     params["seed"] = widgets_values[0] if widgets_values[0] != -1 else -1
+                    params["seed_control"] = widgets_values[1] if len(widgets_values) > 1 else "fixed"
                     params["steps"] = widgets_values[2] if len(widgets_values) > 2 else 20
                     params["cfg"] = widgets_values[3] if len(widgets_values) > 3 else 7.0
+                    params["sampler_name"] = widgets_values[4] if len(widgets_values) > 4 else "euler"
+                    params["scheduler"] = widgets_values[5] if len(widgets_values) > 5 else "normal"
+                    params["denoise"] = widgets_values[6] if len(widgets_values) > 6 else 1.0
                     
             elif node_type == "FluxGuidance" and widgets_values:
                 params["cfg"] = widgets_values[0] if widgets_values else 7.0
                 
             elif node_type in ["EmptyLatentImage", "EmptySD3LatentImage"] and widgets_values:
                 if len(widgets_values) >= 3:
-                    # Use 1024x1024 for better quality instead of workflow defaults
-                    params["width"] = 1024
-                    params["height"] = 1024
+                    # Use dimensions from left panel controls
+                    if hasattr(self, 'width_spin') and hasattr(self, 'height_spin'):
+                        params["width"] = self.width_spin.value()
+                        params["height"] = self.height_spin.value()
+                    else:
+                        params["width"] = 1024
+                        params["height"] = 1024
                     # batch_size already set from UI
                     
             elif node_type == "LoraLoader" and widgets_values:
                 # Extract LoRA parameters dynamically
                 if len(widgets_values) >= 3:
                     lora_model = widgets_values[0] if widgets_values[0] else ""
-                    lora_strength = widgets_values[1] if widgets_values[1] else 1.0
+                    lora_strength = widgets_values[1] if len(widgets_values) > 1 else 1.0
                     
                     # Only add if LoRA model is not empty
                     if lora_model and lora_model != "None" and lora_model.strip():
@@ -3035,7 +3637,24 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                             params[f"lora{lora_counter}_model"] = validated_model
                             params[f"lora{lora_counter}_strength"] = lora_strength
                             params[f"lora{lora_counter}_active"] = True
-                            params[f"lora{lora_counter}_bypassed"] = False
+                            
+                            # Check if bypass checkbox exists and is checked
+                            # The bypass checkbox is the 4th widget (index 3) for LoraLoader
+                            bypass_key = f"LoraLoader_{node_id}_3"
+                            if hasattr(self, 'parameter_widgets') and bypass_key in self.parameter_widgets:
+                                try:
+                                    bypass_value = self.parameter_widgets[bypass_key]['get_value']()
+                                    params[f"lora{lora_counter}_bypassed"] = bypass_value
+                                    if bypass_value:
+                                        self.logger.info(f"LoRA {lora_counter} is set to bypass")
+                                except RuntimeError as e:
+                                    if "deleted" in str(e):
+                                        self.logger.warning(f"Bypass widget for LoRA {lora_counter} was deleted, defaulting to False")
+                                        params[f"lora{lora_counter}_bypassed"] = False
+                                    else:
+                                        raise
+                            else:
+                                params[f"lora{lora_counter}_bypassed"] = False
                             
                             if validated_model != lora_model:
                                 self.logger.warning(f"LoRA {lora_counter} fallback: {lora_model} → {validated_model}")
@@ -3047,13 +3666,25 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         # Set default values for missing essential parameters
         if "width" not in params:
-            params["width"] = 1024
+            if hasattr(self, 'width_spin'):
+                params["width"] = self.width_spin.value()
+            else:
+                params["width"] = 1024
         if "height" not in params:
-            params["height"] = 1024
+            if hasattr(self, 'height_spin'):
+                params["height"] = self.height_spin.value()
+            else:
+                params["height"] = 1024
         if "steps" not in params:
             params["steps"] = 20
         if "cfg" not in params:
             params["cfg"] = 7.0
+        if "sampler_name" not in params:
+            params["sampler_name"] = "euler"
+        if "scheduler" not in params:
+            params["scheduler"] = "normal"
+        if "denoise" not in params:
+            params["denoise"] = 1.0
             
         self.logger.info(f"Collected {len(params)} dynamic parameters: {list(params.keys())}")
         return params
@@ -3226,11 +3857,34 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             
                 # Set a default workflow if available
                 if self.workflow_combo.count() > 0:
-                    self.workflow_combo.setCurrentIndex(0)
+                    # Try to restore last selected workflow for this tab
+                    last_selected = None
+                    if workflow_type == "image_generation":
+                        # Check if we have a saved selection
+                        config_path = self.config.config_dir / "image_parameters_config.json"
+                        if config_path.exists():
+                            try:
+                                with open(config_path, 'r') as f:
+                                    config = json.load(f)
+                                    last_workflow = config.get('workflow_file', '')
+                                    # Find this workflow in the combo
+                                    for i in range(self.workflow_combo.count()):
+                                        if self.workflow_combo.itemText(i) == last_workflow:
+                                            self.workflow_combo.setCurrentIndex(i)
+                                            last_selected = self.workflow_combo.itemData(i)
+                                            self.logger.info(f"Restored last selected workflow: {last_workflow}")
+                                            break
+                            except:
+                                pass
+                    
+                    # If no saved selection or not found, use first
+                    if last_selected is None:
+                        self.workflow_combo.setCurrentIndex(0)
+                        last_selected = self.workflow_combo.itemData(0)
+                    
                     # Only trigger workflow change if UI is fully initialized
-                    first_workflow = self.workflow_combo.itemData(0)
-                    if first_workflow and hasattr(self, 'dynamic_params_layout'):
-                        self._on_workflow_changed(first_workflow)
+                    if last_selected and hasattr(self, 'dynamic_params_layout'):
+                        self._on_workflow_changed(last_selected)
             
                 # Reconnect the change handler
                 self.workflow_combo.currentIndexChanged.connect(self._on_workflow_index_changed)
@@ -3357,31 +4011,40 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         if hasattr(self, 'all_models_grid'):
             self.all_models_grid.clear_models()
             # Use configured models directory
-            models_dir = self.config.models_3d_dir if hasattr(self.config, 'models_3d_dir') else Path("D:/Comfy3D_WinPortable/ComfyUI/output/3D")
+            models_dir = getattr(self.config, 'models_3d_dir', None)
+            if not models_dir:
+                # Fallback to default ComfyUI output path
+                models_dir = Path("D:/Comfy3D_WinPortable/ComfyUI/output/3D")
+            else:
+                models_dir = Path(models_dir)
             
             self.logger.info(f"Loading 3D models from: {models_dir}")
             
             if models_dir.exists():
-                # Get all model files
-                model_patterns = ["*.obj", "*.fbx", "*.dae", "*.gltf", "*.glb", "*.ply", "*.stl"]
+                # Get all model files - focusing on GLB files which are most common from ComfyUI
+                model_patterns = ["*.glb", "*.gltf", "*.obj", "*.fbx", "*.ply", "*.stl"]
                 all_models = []
                 for pattern in model_patterns:
-                    all_models.extend(models_dir.glob(pattern))
+                    found_files = list(models_dir.glob(pattern))
+                    all_models.extend(found_files)
+                    if found_files:
+                        self.logger.debug(f"Found {len(found_files)} {pattern} files")
             
                 # Sort by modification time (newest first)
                 all_models.sort(key=lambda x: x.stat().st_mtime, reverse=True)
             
-                self.logger.info(f"Found {len(all_models)} 3D models to load")
+                self.logger.info(f"Found {len(all_models)} 3D models to load into View All grid")
             
                 # Add to grid
                 for model_path in all_models:
                     self.all_models_grid.add_model(model_path)
+                    self.logger.debug(f"Added model to View All: {model_path.name}")
                 
-                self.logger.info(f"Successfully loaded {len(all_models)} 3D models with selection controls")
+                self.logger.info(f"Successfully loaded {len(all_models)} 3D models into View All tab")
             else:
                 self.logger.warning(f"3D models directory does not exist: {models_dir}")
         else:
-                self.logger.error("all_models_grid not found - UI not properly initialized")
+            self.logger.error("all_models_grid not found - UI not properly initialized")
     
     # File monitoring callbacks
     def _on_new_image(self, image_path: str):
@@ -3510,12 +4173,17 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         # Load existing images
         self._load_all_images()
         
-        # Load existing models
+        # Load existing models - THIS POPULATES VIEW ALL TAB
         self._load_all_models()
         
         # Load session content (empty at startup)
         self._load_session_images()
         self._load_session_models()
+        
+        # Also trigger load on startup for View All if it exists
+        if hasattr(self, '_load_test_models_on_startup'):
+            # This ensures models are loaded into View All tab
+            QTimer.singleShot(1000, self._load_test_models_on_startup)
     
     # Menu action implementations
     def _open_recent_project(self, project_path: str):
@@ -3596,7 +4264,208 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
     def _on_settings_updated(self):
         """Handle application settings being updated"""
         self.logger.info("Application settings have been updated")
-        # TODO: Apply new settings to the application
+        # Apply new settings to the application
+        self._apply_saved_accent_color()
+    
+    def _apply_saved_accent_color(self):
+        """Apply saved accent color to the application on startup"""
+        try:
+            # Load saved accent color from QSettings
+            settings = QSettings("ComfyUI-Cinema4D", "Bridge")
+            accent_color = settings.value("interface/accent_color", "#4CAF50")
+            
+            # Apply the same comprehensive CSS as in settings dialog
+            accent_override_css = f"""
+            /* Accent Color Override */
+            QSlider::handle:horizontal, QSlider::handle:vertical {{
+                background-color: {accent_color} !important;
+            }}
+            
+            QSlider::sub-page:horizontal, QSlider::add-page:vertical {{
+                background-color: {accent_color} !important;
+            }}
+            
+            QTabBar::tab:selected {{
+                border-bottom: 2px solid {accent_color} !important;
+                background-color: rgba({int(accent_color[1:3], 16)}, {int(accent_color[3:5], 16)}, {int(accent_color[5:7], 16)}, 0.05) !important;
+            }}
+            
+            QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {{
+                border-color: {accent_color} !important;
+            }}
+            
+            /* Text Selection Colors - Multiple Approaches */
+            QTextEdit::selection {{
+                background-color: {accent_color} !important;
+                color: #000000 !important;
+            }}
+            
+            QLineEdit::selection {{
+                background-color: {accent_color} !important;
+                color: #000000 !important;
+            }}
+            
+            QWidget {{
+                selection-background-color: {accent_color} !important;
+                selection-color: #000000 !important;
+            }}
+            
+            /* Console Focus Border - Multiple Selectors for Investigation */
+            QTextEdit#console:focus {{
+                border: 2px solid {accent_color} !important;
+            }}
+            QTextEdit[objectName="console"]:focus {{
+                border: 2px solid {accent_color} !important;
+            }}
+            QTextEdit:focus {{
+                border: 2px solid {accent_color} !important;
+            }}
+            
+            QCheckBox::indicator:checked {{
+                background-color: {accent_color} !important;
+                border-color: {accent_color} !important;
+            }}
+            
+            
+            /* Magic Prompt Star Buttons - More specific targeting */
+            QPushButton[text="★"] {{
+                color: {accent_color} !important;
+            }}
+            QPushButton[text="★"]:hover {{
+                color: {self._get_lighter_color(accent_color)} !important;
+            }}
+            QPushButton[text="★"]:pressed {{
+                color: {self._get_darker_color(accent_color)} !important;
+            }}
+            
+            /* Image Thumbnail Selection Borders - Exact selector */
+            QFrame#image_thumbnail[selected="true"] {{
+                border: 2px solid {accent_color} !important;
+            }}
+            
+            /* All Checkbox States - Both #4CAF50 and #22c55e variants */
+            QCheckBox::indicator:checked {{
+                background-color: {accent_color} !important;
+                border-color: {accent_color} !important;
+            }}
+            QCheckBox::indicator:hover {{
+                border-color: {accent_color} !important;
+                background-color: rgba({int(accent_color[1:3], 16)}, {int(accent_color[3:5], 16)}, {int(accent_color[5:7], 16)}, 50) !important;
+            }}
+            
+            /* Connection/Status Info Labels */
+            QLabel#connection_info {{
+                color: {accent_color} !important;
+            }}
+            
+            /* 3D Model Selection States */
+            Model3DPreviewCard QPushButton[selected="true"] {{
+                background-color: {accent_color} !important;
+            }}
+            
+            /* Primary Action Buttons */
+            QPushButton#generate_btn, QPushButton#generate_3d_btn, QPushButton#generate_texture_btn,
+            QPushButton#import_selected_btn, QPushButton#export_btn {{
+                background-color: {accent_color} !important;
+                border-color: {accent_color} !important;
+            }}
+            
+            /* Dialog and Menu Styling */
+            QDialog QListWidget::item:selected {{
+                background-color: {accent_color} !important;
+                color: #000000 !important;
+            }}
+            QDialog QListWidget::item:hover {{
+                background-color: rgba({int(accent_color[1:3], 16)}, {int(accent_color[3:5], 16)}, {int(accent_color[5:7], 16)}, 0.3) !important;
+            }}
+            
+            /* Menu hover states */
+            QMenu::item:selected {{
+                background-color: {accent_color} !important;
+                color: #000000 !important;
+            }}
+            QMenu::item:hover {{
+                background-color: rgba({int(accent_color[1:3], 16)}, {int(accent_color[3:5], 16)}, {int(accent_color[5:7], 16)}, 0.8) !important;
+                color: #000000 !important;
+            }}
+            
+            /* Submenu indicators */
+            QMenu::right-arrow {{
+                border-left: 5px solid {accent_color};
+                border-top: 5px solid transparent;
+                border-bottom: 5px solid transparent;
+            }}
+            
+            /* Dialog button focus */
+            QDialogButtonBox QPushButton:default {{
+                background-color: {accent_color} !important;
+                border-color: {accent_color} !important;
+            }}
+            QDialogButtonBox QPushButton:focus {{
+                border: 2px solid {accent_color} !important;
+            }}
+            
+            /* Slider accent colors */
+            QSlider::handle:horizontal, QSlider::handle:vertical {{
+                background-color: {accent_color} !important;
+            }}
+            QSlider::groove:horizontal:active, QSlider::groove:vertical:active {{
+                background-color: rgba({int(accent_color[1:3], 16)}, {int(accent_color[3:5], 16)}, {int(accent_color[5:7], 16)}, 0.3) !important;
+            }}
+            """
+            
+            # Apply the accent color override CSS
+            current_stylesheet = self.styleSheet()
+            # Remove any existing accent override
+            if '/* Accent Color Override */' in current_stylesheet:
+                parts = current_stylesheet.split('/* Accent Color Override */')
+                current_stylesheet = parts[0]
+            
+            self.setStyleSheet(current_stylesheet + accent_override_css)
+            
+            self.logger.debug(f"Applied saved accent color {accent_color} on startup")
+        except Exception as e:
+            self.logger.error(f"Failed to apply saved accent color on startup: {e}")
+    
+    def _get_lighter_color(self, hex_color: str) -> str:
+        """Get a lighter version of the hex color for hover effects"""
+        try:
+            # Remove # if present
+            hex_color = hex_color.lstrip('#')
+            
+            # Convert to RGB
+            r = int(hex_color[0:2], 16)
+            g = int(hex_color[2:4], 16)
+            b = int(hex_color[4:6], 16)
+            
+            # Make lighter (add 30 to each component, cap at 255)
+            r = min(255, r + 30)
+            g = min(255, g + 30)
+            b = min(255, b + 30)
+            
+            return f"#{r:02x}{g:02x}{b:02x}"
+        except:
+            return "#66BB6A"  # Fallback
+    
+    def _get_darker_color(self, hex_color: str) -> str:
+        """Get a darker version of the hex color for pressed effects"""
+        try:
+            # Remove # if present
+            hex_color = hex_color.lstrip('#')
+            
+            # Convert to RGB
+            r = int(hex_color[0:2], 16)
+            g = int(hex_color[2:4], 16)
+            b = int(hex_color[4:6], 16)
+            
+            # Make darker (subtract 40 from each component, floor at 0)
+            r = max(0, r - 40)
+            g = max(0, g - 40)
+            b = max(0, b - 40)
+            
+            return f"#{r:02x}{g:02x}{b:02x}"
+        except:
+            return "#2E7D32"  # Fallback
     
     def _open_github_documentation(self):
         """Open GitHub documentation in browser"""
@@ -3607,5 +4476,9 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             self.logger.info(f"Opening GitHub documentation: {github_url}")
         except Exception as e:
             self.logger.error(f"Failed to open GitHub documentation: {e}")
-            from PySide6.QtWidgets import QMessageBox
-            QMessageBox.information(self, "Documentation", "GitHub Documentation\n\nPlease visit: https://github.com/anthropics/claude-code")
+    
+    def resizeEvent(self, event):
+        """Handle window resize events to maintain proper layout proportions"""
+        super().resizeEvent(event)
+        # Recalculate splitter sizes when window is resized
+        self._recalculate_splitter_sizes()

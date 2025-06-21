@@ -80,7 +80,7 @@ class MCPIndicator(QWidget):
         
         # Address info
         self.address_label = QLabel(self.address)
-        self.address_label.setObjectName("connection_info")
+        self.address_label.setObjectName("mcp_address_label")
         layout.addWidget(self.address_label)
         
         # Apply initial styling

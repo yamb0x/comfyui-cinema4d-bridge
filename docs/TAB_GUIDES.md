@@ -10,99 +10,149 @@ This document provides comprehensive information about each of the 4 main tabs i
 
 ---
 
-## Tab 1: Image Generation 🚧 **IN PROGRESS**
+## Tab 1: Image Generation ✅ **FULLY FUNCTIONAL**
 
 ### Purpose and Functionality
-The Image Generation tab allows users to generate images using ComfyUI workflows with various prompts and parameters. It features a dual-mode interface for creating new images or viewing existing ones.
+The Image Generation tab provides a complete solution for generating images using any ComfyUI workflow. It features dynamic UI generation, multiple workflow support, and responsive image display with cross-tab selection integration.
 
 ### Sub-tabs
-1. **New Canvas**: For generating new images with prompts
+1. **New Canvas**: Dynamic image generation with real-time preview
 2. **View All**: Gallery view of all generated images with selection capabilities
 
 ### Status
-- **Basic Generation**: ✅ Working with FLUX/SD workflows
-- **Dynamic UI Widgets**: 🐛 Buggy - parameters from workflows don't always display correctly
-- **Image Detection**: ✅ Fixed - now uses ComfyUI history API
-- **Selection System**: ✅ Working - images can be selected for 3D generation
+- **Multiple Workflow Support**: ✅ Complete with dropdown selection
+- **Dynamic UI Widgets**: ✅ Fixed - parameters load correctly from ANY workflow
+- **Image Detection**: ✅ Uses ComfyUI history API for reliable completion
+- **Selection System**: ✅ Working - seamless cross-tab persistence
+- **Custom Node Handling**: ✅ Auto-converts to standard nodes
+- **Responsive Layout**: ✅ 2x1024px images display side by side
 
 ### Key Files and Configurations
 - **Main Implementation**: `src/core/app_redesigned.py` - `_create_enhanced_image_generation_tab()`
+- **Dynamic UI**: `src/core/app_ui_methods.py` - `_load_parameters_from_config()`
+- **Workflow Manager**: `src/core/workflow_manager.py` - handles node conversion
 - **Configuration**: `config/image_parameters_config.json`
-- **Workflow Files**:
-  - `workflows/generate_sealife_images.json`
-  - `workflows/generate_thermal_shapes.json`
+- **Workflow Files**: `workflows/image_generation/` directory
 - **Widget Classes**: 
   - `src/ui/prompt_with_magic.py` - `PositivePromptWidget`, `NegativePromptWidget`
   - `src/ui/widgets.py` - `ImageGridWidget`
+  - `src/core/dynamic_widget_updater.py` - Dynamic parameter updates
 
 ### Implementation Details
 ```python
-# Tab creation in app_redesigned.py
-def _create_enhanced_image_generation_tab(self) -> QWidget:
-    # Creates sub-tabs for New Canvas and View All
-    # Integrates unified object selector
-    # Connects to _on_generate_images() for workflow execution
+# Dynamic UI creation in app_ui_methods.py
+def _load_parameters_from_config(self, param_type: str):
+    # Loads workflow and creates UI dynamically
+    # Supports ANY ComfyUI node type
+    # Creates widgets based on node definitions
+    # Handles LoRA, CheckpointLoader, KSampler, etc.
+
+# Workflow execution in app_redesigned.py
+def _async_generate_images(self):
+    # Converts custom nodes to standard nodes
+    # Injects parameters from UI
+    # Monitors completion via history API
+    # Downloads and displays images
 ```
 
-### Workflow Execution
-- **Method**: `_on_generate_images()` → `_async_generate_images()`
-- **Process**: 
-  1. Collects positive/negative prompts + parameters
-  2. Converts WAS nodes to standard ComfyUI nodes
-  3. Executes workflow via ComfyUI client
-  4. **NEW**: Monitors ComfyUI history API for completion
-  5. **NEW**: Downloads images via `/view` endpoint
-  6. **NEW**: Saves to configured images directory
-  7. Loads images into preview cards with ASCII animation lifecycle
+### Workflow Execution Process
+1. **UI Generation**: Dynamically creates widgets for selected workflow
+2. **Parameter Collection**: Gathers values from all UI widgets
+3. **Node Conversion**: Converts custom nodes (e.g., WAS "Image Save" → "SaveImage")
+4. **Parameter Injection**: Updates workflow with UI values
+5. **Execution**: Sends to ComfyUI via API
+6. **Monitoring**: Uses history API to track completion
+7. **Download**: Fetches images via `/view` endpoint
+8. **Display**: Shows in responsive grid with animations
 
-### Known Issues and Limitations
-- 🐛 **Dynamic UI Widgets**: Parameter widgets from workflows are buggy
-- 🐛 **Workflow Completion**: Sometimes fails to detect when generation is complete
-- 🐛 **Parameter Persistence**: Not all parameters save/load correctly
-- ✅ **FIXED**: WAS Node Suite compatibility - auto-converts to standard ComfyUI nodes
-- ✅ **FIXED**: File monitoring and image loading into preview cards
+### Key Features
+- **Dynamic Parameter System**:
+  - Automatically detects node types and creates appropriate widgets
+  - Supports all standard ComfyUI nodes
+  - Handles custom parameters via `dynamic_widget_updater.py`
+  
+- **Custom Node Conversion**:
+  - WAS "Image Save" → Standard "SaveImage"
+  - Ensures compatibility without custom node dependencies
+  - Preserves image connections while converting
+  
+- **Responsive Image Display**:
+  - Smart column calculation based on viewport
+  - 2x1024px images display side by side
+  - Equal 20px spacing between cards
+  - Viewport resize handling with debouncing
+
+- **Cross-Tab Integration**:
+  - Selected images persist to unified object selector
+  - Available in all other tabs for further processing
+  - Visual selection feedback with accent color
+
+### Supported Node Types
+- **Text Encoding**: CLIPTextEncode (positive/negative prompts)
+- **Model Loading**: CheckpointLoaderSimple, UNETLoader, VAELoader
+- **LoRA**: Multiple LoraLoader nodes with strength controls
+- **Sampling**: KSampler with all parameters
+- **Image Generation**: EmptySD3LatentImage (dimensions from left panel)
+- **Guidance**: FluxGuidance, ModelSamplingSD3
+- **Output**: SaveImage (auto-converted from custom nodes)
+
+### Recent Improvements
+- ✅ **Dynamic Widget System**: Complete node-agnostic implementation
+- ✅ **LoRA Support**: Multiple LoRA with bypass controls
+- ✅ **Workflow Monitoring**: History API replaces file monitoring
+- ✅ **Image Download**: Direct from ComfyUI with proper naming
+- ✅ **Responsive Layout**: Automatic column adjustment
+- ✅ **Note Display**: Terminal-style rendering for documentation nodes
 
 ### Important Implementation Notes
-- **NEW MASTER PATTERN**: Workflow completion monitoring via ComfyUI history API
-- **NEW**: Automatic node conversion (WAS → Standard ComfyUI) in `workflow_manager.py`
-- **NEW**: Image downloading and saving to configured directory
-- Uses unified object selector for cross-tab selection persistence
-- Magic button integration for AI-assisted prompt generation
-- Real-time parameter updates in right panel
-- ASCII loading animations with proper lifecycle management
+- Uses `DynamicWidgetUpdater` class for node-agnostic parameter updates
+- Widget references stored with `node_type_node_id_param_index` format
+- Bypass functionality per node with visual feedback
+- ASCII loading animations with proper lifecycle
+- Event filter for viewport resize handling
 
 ---
 
-## Tab 2: 3D Model Generation 🚧 **IN PROGRESS**
+## Tab 2: 3D Model Generation ✅ **FULLY FUNCTIONAL**
 
 ### Purpose and Functionality
-The 3D Model Generation tab enables users to create 3D models from images using the Hunyuan3D workflow. It provides both scene object management and a gallery view of all generated models.
+The 3D Model Generation tab enables users to create 3D models from images using the Hunyuan3D workflow. It provides both scene object management and a gallery view of all generated models with integrated Three.js viewers.
 
 ### Sub-tabs
-1. **Scene Objects**: For managing 3D models in the current scene
-2. **View All Models**: Gallery view of all generated 3D models
+1. **Scene Objects**: For managing 3D models in the current scene with live preview
+2. **View All Models**: Gallery view of all generated 3D models with embedded viewers
 
 ### Status
-- **Basic Generation**: ✅ Working with Hunyuan3D 2.0
-- **Dynamic UI Widgets**: 🐛 Same bugs as image generation
-- **File Detection**: ⚠️ Needs same fix as Tab 1
-- **Viewer System**: ✅ Basic vispy viewers work
+- **Full Generation**: ✅ Complete workflow with Hunyuan3D 2.0
+- **Dynamic UI Widgets**: ✅ Fixed - parameters load correctly
+- **Model Detection**: ✅ Checks both local and ComfyUI output directories
+- **Viewer System**: ✅ Three.js viewers with live configuration updates
+- **3D Config Dialog**: ✅ Working with no ASCII animations on updates
+- **Model Linking**: ✅ Properly links models to source images
 
 ### Key Files and Configurations
 - **Main Implementation**: `src/core/app_redesigned.py` - `_create_enhanced_3d_model_tab()`
 - **Configuration**: `config/3d_parameters_config.json`
-- **Workflow File**: `workflows/3D_gen_Hunyuan2_onlymesh.json`
+- **Workflow File**: `workflows/3d_generation/3D_gen_Hunyuan2_onlymesh.json`
 - **Widget Classes**: 
-  - `src/ui/widgets.py` - `Model3DPreviewWidget`
+  - `src/ui/studio_3d_viewer_widget.py` - `ResponsiveStudio3DGrid`, `Studio3DPreviewCard`
   - `src/ui/object_selection_widget.py` - `UnifiedObjectSelectionWidget`
+  - `src/ui/studio_3d_config_dialog.py` - 3D viewer configuration dialog
+  - `src/ui/viewers/threejs_3d_viewer.py` - Three.js based viewer
 
 ### Implementation Details
 ```python
 # Tab creation in app_redesigned.py
 def _create_enhanced_3d_model_tab(self) -> QWidget:
     # Creates sub-tabs for Scene Objects and View All
-    # Integrates 3D model preview capabilities
+    # Integrates Three.js 3D model preview with live updates
     # Connects to _on_generate_3d_models() for workflow execution
+
+# Model detection with fallback
+def _check_3d_workflow_completion(self):
+    # Primary: Check ComfyUI history API
+    # Fallback: Check filesystem at D:\Comfy3D_WinPortable\ComfyUI\output\3D\
+    # Copy models to local directory with proper naming
 ```
 
 ### Workflow Execution
@@ -111,21 +161,26 @@ def _create_enhanced_3d_model_tab(self) -> QWidget:
   1. Requires selected images as input
   2. Validates image selection
   3. Executes Hunyuan3D workflow for each image
-  4. Monitors for generated .glb files
-  5. Updates model gallery with results
+  4. Monitors ComfyUI history API for completion
+  5. Falls back to filesystem check if needed
+  6. Copies models from ComfyUI output to local directory
+  7. Updates model gallery with embedded Three.js viewers
 
-### Known Issues and Limitations
-- 🐛 **Dynamic UI Widgets**: Same parameter widget bugs as image generation
-- 🐛 **Workflow Detection**: Sometimes fails to find generated models
-- 🐛 **Viewer Performance**: Can be slow with multiple models
-- ⚠️ **Needs Same Fix**: Should apply Tab 1's workflow completion monitoring pattern
-- ✅ **Working**: Basic image to 3D conversion
-- ✅ **Working**: Resource management prevents crashes (50 viewer limit)
+### Fixed Issues (2025-06-21)
+- ✅ **Model Detection**: Now checks ComfyUI output directory
+- ✅ **Naming Pattern**: Extracts number from source image (e.g., Image_0053.png → 3D_0053.glb)
+- ✅ **Method Calls**: Fixed UnifiedObjectSelectionWidget using link_model_to_image()
+- ✅ **Import Error**: Replaced Studio3DViewer with ThreeJS3DViewer
+- ✅ **Dialog Visibility**: Added proper window flags
+- ✅ **ASCII Animations**: JavaScript updates without HTML reload
+- ✅ **Grid Updates**: Added apply_viewer_settings method
 
 ### Important Implementation Notes
 - Asynchronous generation to prevent UI freezing
 - Progress tracking with button state updates
-- File monitoring for real-time model detection
+- Three.js viewers with embedded HTTP server per instance
+- Live parameter updates via JavaScript injection
+- Debounced updates (250ms) to prevent rapid changes
 - Integration with Cinema4D for model import
 
 ---

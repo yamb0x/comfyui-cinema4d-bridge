@@ -61,7 +61,16 @@ class WorkflowManager(LoggerMixin):
                 workflow = json.load(f)
             
             self._workflow_cache[workflow_name] = workflow
-            self.logger.info(f"Loaded workflow: {workflow_name}")
+            self.logger.info(f"Loaded workflow: {workflow_name} from {workflow_path}")
+            
+            # Debug: Log key nodes in the workflow
+            node_types = []
+            for node in workflow.get("nodes", []):
+                if node.get("type") in ["CheckpointLoaderSimple", "UNETLoader", "FluxGuidance", "ModelSamplingSD3"]:
+                    node_types.append(f"{node.get('type')}#{node.get('id')}")
+            if node_types:
+                self.logger.info(f"Workflow contains: {', '.join(node_types)}")
+            
             return deepcopy(workflow)
             
         except json.JSONDecodeError as e:
@@ -286,9 +295,9 @@ class WorkflowManager(LoggerMixin):
             node_id = str(node.get("id", ""))
             node_type = node.get("type", "")
             
-            # Skip Note nodes - they're UI-only and not executable
-            if node_type == "Note":
-                self.logger.debug(f"Skipping Note node {node_id} in API conversion")
+            # Skip Note/MarkdownNote nodes - they're UI-only and not executable
+            if node_type in ["Note", "MarkdownNote"]:
+                self.logger.debug(f"Skipping {node_type} node {node_id} in API conversion")
                 continue
             
             # Skip Reroute nodes entirely - ComfyUI handles them differently in API format
@@ -363,6 +372,27 @@ class WorkflowManager(LoggerMixin):
             elif node_type == "FluxGuidance" and widgets:
                 # FluxGuidance expects a 'guidance' parameter from widgets_values[0]
                 api_node["inputs"]["guidance"] = widgets[0] if widgets else 3.5
+            
+            # SD3 specific nodes
+            elif node_type == "QuadrupleCLIPLoader" and len(widgets) >= 4:
+                api_node["inputs"]["clip_name1"] = widgets[0]
+                api_node["inputs"]["clip_name2"] = widgets[1]
+                api_node["inputs"]["clip_name3"] = widgets[2]
+                api_node["inputs"]["clip_name4"] = widgets[3]
+                self.logger.debug(f"QuadrupleCLIPLoader node {node_id} - loaded 4 CLIP models")
+            
+            elif node_type == "UNETLoader" and len(widgets) >= 2:
+                api_node["inputs"]["unet_name"] = widgets[0]
+                api_node["inputs"]["weight_dtype"] = widgets[1]
+                self.logger.debug(f"UNETLoader node {node_id} - model: {widgets[0]}, dtype: {widgets[1]}")
+            
+            elif node_type == "ModelSamplingSD3" and widgets:
+                api_node["inputs"]["shift"] = widgets[0] if widgets else 3.0
+                self.logger.debug(f"ModelSamplingSD3 node {node_id} - shift: {widgets[0] if widgets else 3.0}")
+                
+            elif node_type == "VAELoader" and widgets:
+                api_node["inputs"]["vae_name"] = widgets[0]
+                self.logger.debug(f"VAELoader node {node_id} - VAE: {widgets[0]}")
             elif node_type == "LoadImage" and widgets:
                 # widgets: [image_filename, upload_type]
                 if len(widgets) >= 2:

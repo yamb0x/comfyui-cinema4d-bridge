@@ -66,6 +66,9 @@ class ConfigureParametersDialog(QDialog):
         # Initialize UI
         self._init_ui()
         
+        # Apply accent colors
+        self._apply_accent_colors()
+        
         # Load existing configuration
         self._load_configuration()
     
@@ -291,7 +294,11 @@ class ConfigureParametersDialog(QDialog):
                 self.logger.warning(f"Workflow loaded from outside workflows directory: {self.loaded_workflow_path}")
             
             self.workflow_path_label.setText(f"Loaded: {display_name}")
-            self.workflow_path_label.setStyleSheet("color: #4CAF50;")
+            # Get accent color from settings
+            from PySide6.QtCore import QSettings
+            settings = QSettings("ComfyUI-Cinema4D", "Bridge")
+            accent_color = settings.value("interface/accent_color", "#4CAF50")
+            self.workflow_path_label.setStyleSheet(f"color: {accent_color};")
             
             # Populate the node tree
             self._populate_node_tree()
@@ -440,7 +447,11 @@ class ConfigureParametersDialog(QDialog):
         else:
             types_text = ", ".join(sorted(selected_types))
             self.summary_label.setText(f"Selected {selected_count} nodes: {types_text}")
-            self.summary_label.setStyleSheet("color: #4CAF50; padding: 5px;")
+            # Get accent color from settings
+            from PySide6.QtCore import QSettings
+            settings = QSettings("ComfyUI-Cinema4D", "Bridge")
+            accent_color = settings.value("interface/accent_color", "#4CAF50")
+            self.summary_label.setStyleSheet(f"color: {accent_color}; padding: 5px;")
     
     def _is_node_selected(self, node_type: str, node_id: str) -> bool:
         """Check if a node is in the saved configuration"""
@@ -516,3 +527,46 @@ class ConfigureParametersDialog(QDialog):
         except Exception as e:
             self.logger.error(f"Failed to save configuration: {e}")
             QMessageBox.critical(self, "Error", f"Failed to save configuration:\n{str(e)}")
+    
+    def _apply_accent_colors(self):
+        """Apply accent colors to override hardcoded green colors"""
+        try:
+            from PySide6.QtCore import QSettings
+            settings = QSettings("ComfyUI-Cinema4D", "Bridge")
+            accent_color = settings.value("interface/accent_color", "#4CAF50")
+            
+            # Create lighter hover color
+            hex_color = accent_color.lstrip('#')
+            r = int(hex_color[0:2], 16)
+            g = int(hex_color[2:4], 16) 
+            b = int(hex_color[4:6], 16)
+            
+            # Increase by 20 for hover effect
+            r_hover = min(255, r + 20)
+            g_hover = min(255, g + 20)
+            b_hover = min(255, b + 20)
+            hover_color = f"#{r_hover:02x}{g_hover:02x}{b_hover:02x}"
+            
+            accent_css = f"""
+            QPushButton#primary_button {{
+                background-color: {accent_color} !important;
+                border: none !important;
+            }}
+            
+            QPushButton#primary_button:hover {{
+                background-color: {hover_color} !important;
+            }}
+            
+            QCheckBox::indicator:checked {{
+                background-color: {accent_color} !important;
+                border: 1px solid {accent_color} !important;
+                border-radius: 2px;
+            }}
+            """
+            
+            # Apply the accent color CSS
+            current_style = self.styleSheet()
+            self.setStyleSheet(current_style + accent_css)
+            
+        except Exception as e:
+            self.logger.error(f"Failed to apply accent colors: {e}")

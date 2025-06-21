@@ -38,6 +38,7 @@ class NLPDictionaryDialog(QDialog):
         
         self.setup_ui()
         self.apply_styles()
+        self._apply_accent_colors()
         
         # Load initial category data after UI is fully set up
         self.load_category_data()
@@ -2486,7 +2487,6 @@ class NLPDictionaryDialog(QDialog):
                 font-size: 18px;
                 font-weight: bold;
                 padding: 10px;
-                color: #4CAF50;
             }
             
             #nlp_tabs {
@@ -2513,15 +2513,8 @@ class NLPDictionaryDialog(QDialog):
                 border: 1px solid #3a3a3a;
             }
             
-            #nlp_tabs QTabBar::tab:selected {
-                background-color: #4CAF50;
-                color: #000000;
-                font-weight: bold;
-            }
-            
             #nlp_tabs QTabBar::tab:hover {
                 background-color: #2a2a2a;
-                border-color: #4CAF50;
             }
             
             #command_list {
@@ -2573,3 +2566,33 @@ class NLPDictionaryDialog(QDialog):
                 background-color: #f44336;
             }
         """)
+    
+    def _apply_accent_colors(self):
+        """Apply accent colors to override hardcoded green colors"""
+        try:
+            from PySide6.QtCore import QSettings
+            settings = QSettings("ComfyUI-Cinema4D", "Bridge")
+            accent_color = settings.value("interface/accent_color", "#4CAF50")
+            
+            accent_css = f"""
+            #dialog_header {{
+                color: {accent_color} !important;
+            }}
+            
+            #nlp_tabs QTabBar::tab:selected {{
+                background-color: {accent_color} !important;
+                color: #000000 !important;
+                font-weight: bold;
+            }}
+            
+            #nlp_tabs QTabBar::tab:hover {{
+                border-color: {accent_color} !important;
+            }}
+            """
+            
+            # Apply the accent color CSS
+            current_style = self.styleSheet()
+            self.setStyleSheet(current_style + accent_css)
+            
+        except Exception as e:
+            logger.error(f"Failed to apply accent colors to NLP dictionary: {e}")
