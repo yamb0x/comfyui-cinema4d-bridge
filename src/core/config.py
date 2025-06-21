@@ -83,8 +83,17 @@ class AppConfig(BaseSettings):
     workflows_dir: Path = Field(default_factory=lambda: Path("D:/Yambo Studio Dropbox/Admin/_studio-dashboard-app-dev/comfy-to-c4d/workflows"))
     images_dir: Path = Field(default_factory=lambda: Path("D:/Yambo Studio Dropbox/Admin/_studio-dashboard-app-dev/comfy-to-c4d/images"))
     models_3d_dir: Path = Field(default_factory=lambda: Path("D:/Comfy3D_WinPortable/ComfyUI/output/3D"))
-    local_models_3d_dir: Path = Field(default_factory=lambda: Path("D:/Yambo Studio Dropbox/Admin/_studio-dashboard-app-dev/comfy-to-c4d/3D/Hy3D"))
+    local_models_3d_dir: Path = Field(default_factory=lambda: Path("D:/Yambo Studio Dropbox/Admin/_studio-dashboard-app-dev/comfy-to-c4d/3d_models"))
     config_dir: Path = Field(default_factory=lambda: Path("D:/Yambo Studio Dropbox/Admin/_studio-dashboard-app-dev/comfy-to-c4d/config"))
+    
+    # Viewer settings
+    texture_viewer_path: Path = Field(default_factory=lambda: Path("viewer/run_final_viewer.bat"))
+    
+    # Computed properties for commonly used paths
+    @property
+    def textured_models_dir(self) -> Path:
+        """Get textured models directory path"""
+        return Path(self.models_3d_dir) / "textured"
     
     # Recent projects
     recent_projects: list[str] = Field(default_factory=list)

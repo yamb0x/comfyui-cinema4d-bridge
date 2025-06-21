@@ -8251,3 +8251,37 @@ SyntaxError: invalid character '📦' (U+1F4E6)
 2025-06-21 13:13:05.191 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
 2025-06-21 13:31:07.484 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
 2025-06-21 13:42:09.176 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-21 17:05:22.253 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-21 17:45:56.290 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 17:45:56.308 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 17:45:58.377 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 17:45:58.403 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 17:57:51.838 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 17:57:51.863 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 17:57:52.865 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 17:57:52.892 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 17:57:54.406 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 17:57:54.437 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 18:47:23.663 | ERROR    | core.app_ui_methods:_load_parameters_from_config:1413 - Failed to load image parameters: 
+2025-06-21 18:47:23.673 | ERROR    | core.app_ui_methods:_load_parameters_from_config:1415 - Parameter loading traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 1319, in _load_parameters_from_config
+    widget = self._create_widget_from_definition(widget_def, value, node_type, node_id, param_key)
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 1551, in _create_widget_from_definition
+    return self._create_int_widget(name, value, min_val, max_val, node_id, param_key)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 1611, in _create_int_widget
+    spinbox.setValue(value)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+OverflowError
+
+2025-06-21 18:47:25.491 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 18:50:13.653 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 18:50:13.716 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 18:51:27.686 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 18:51:27.767 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 18:51:27.890 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 18:51:48.583 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 18:51:48.670 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 18:52:06.486 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 18:52:06.582 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-21 21:28:27.129 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop

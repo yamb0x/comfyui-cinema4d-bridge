@@ -50,18 +50,34 @@ class EnhancedFileMonitor(QObject):
     new_textured_model_detected = Signal(str)  # textured model path
     texture_viewer_available = Signal(bool)  # viewer availability
     
-    def __init__(self):
+    def __init__(self, config=None):
         super().__init__()
         self.observers: Dict[str, Observer] = {}
         self.monitored_paths: Dict[str, Path] = {}
         self.textured_models_cache: List[Path] = []
+        self.config = config
         
-        # Paths to monitor
+        # Paths to monitor - use config paths
+        if config:
+            images_dir = Path(config.images_dir) if hasattr(config, 'images_dir') else Path("images")
+            comfyui_3d_dir = Path(config.models_3d_dir) if hasattr(config, 'models_3d_dir') else Path("D:/Comfy3D_WinPortable/ComfyUI/output/3D")
+            local_3d_dir = Path(config.local_models_3d_dir) if hasattr(config, 'local_models_3d_dir') else Path("3d_models")
+            textured_dir = config.textured_models_dir if hasattr(config, 'textured_models_dir') else comfyui_3d_dir / "textured"
+            viewer_path = Path(config.texture_viewer_path) if hasattr(config, 'texture_viewer_path') else Path("viewer/run_final_viewer.bat")
+        else:
+            # Fallback to new directory structure (no hardcoded old paths)
+            images_dir = Path("images")
+            comfyui_3d_dir = Path("D:/Comfy3D_WinPortable/ComfyUI/output/3D")
+            local_3d_dir = Path("3d_models")
+            textured_dir = comfyui_3d_dir / "textured"
+            viewer_path = Path("viewer/run_final_viewer.bat")
+            
         self.base_paths = {
-            'images': Path("images"),
-            'models_3d': Path("D:/Comfy3D_WinPortable/ComfyUI/output/3D"),
-            'textured_models': Path("D:/Comfy3D_WinPortable/ComfyUI/output/3D/textured"),
-            'texture_viewer': Path("viewer/run_final_viewer.bat")
+            'images': images_dir,
+            'models_3d': comfyui_3d_dir,
+            'local_models_3d': local_3d_dir,
+            'textured_models': textured_dir,
+            'texture_viewer': viewer_path
         }
         
         # Setup refresh timer
@@ -77,9 +93,18 @@ class EnhancedFileMonitor(QObject):
         if self.base_paths['images'].exists():
             self._start_path_monitoring('images', self.base_paths['images'], self._on_image_change)
             
-        # Monitor 3D models directory
+        # Monitor 3D models directory (ComfyUI output)
         if self.base_paths['models_3d'].exists():
             self._start_path_monitoring('models_3d', self.base_paths['models_3d'], self._on_model_change)
+            
+        # Monitor local 3D models directory
+        if self.base_paths['local_models_3d'].exists():
+            self._start_path_monitoring('local_models_3d', self.base_paths['local_models_3d'], self._on_model_change)
+        else:
+            # Create local 3d models directory if it doesn't exist
+            self.base_paths['local_models_3d'].mkdir(parents=True, exist_ok=True)
+            logger.info(f"Created local 3D models directory: {self.base_paths['local_models_3d']}")
+            self._start_path_monitoring('local_models_3d', self.base_paths['local_models_3d'], self._on_model_change)
             
         # Monitor textured models directory
         if self.base_paths['textured_models'].exists():

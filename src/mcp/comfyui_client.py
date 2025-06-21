@@ -66,8 +66,8 @@ class ComfyUIClient(LoggerMixin):
                 if self.http_client:
                     try:
                         await self.http_client.aclose()
-                    except:
-                        pass
+                    except Exception as e:
+                        logger.debug(f"Failed to close HTTP client: {e}")
                 self.http_client = httpx.AsyncClient(timeout=60.0)
                 self._last_loop = current_loop
             elif self.http_client is None or self.http_client.is_closed:
@@ -438,7 +438,7 @@ class ComfyUIClient(LoggerMixin):
                 try:
                     error_data = response.json()
                     error_detail = f" - {error_data}"
-                except:
+                except (ValueError, json.JSONDecodeError):
                     error_detail = f" - {response.text}"
                 self.logger.error(f"Failed to queue prompt: HTTP {response.status_code}{error_detail}")
                 return None
@@ -456,7 +456,7 @@ class ComfyUIClient(LoggerMixin):
             self.logger.error(f"Unexpected error queuing prompt: {e}")
             try:
                 self.logger.error(f"Prompt data: {json.dumps(prompt, indent=2)[:500]}...")
-            except:
+            except (TypeError, ValueError, json.JSONEncodeError):
                 self.logger.error("Could not serialize prompt data for debugging")
             return None
     
@@ -539,7 +539,7 @@ class ComfyUIClient(LoggerMixin):
             try:
                 current_loop = asyncio.get_running_loop()
                 self.logger.debug(f"get_models called in event loop: {id(current_loop)}")
-            except:
+            except RuntimeError:
                 self.logger.debug("get_models called outside event loop")
             
             # Ensure HTTP client exists in current event loop

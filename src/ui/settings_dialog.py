@@ -13,9 +13,10 @@ from PySide6.QtWidgets import (
     QSpinBox, QDoubleSpinBox, QComboBox, QSlider,
     QMessageBox, QColorDialog
 )
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QSettings
 from PySide6.QtGui import QFont, QColor
 from loguru import logger
+
 
 
 class ApplicationSettingsDialog(QDialog):
@@ -29,6 +30,7 @@ class ApplicationSettingsDialog(QDialog):
         self.setWindowTitle("Application Settings")
         self.setModal(True)
         self.resize(800, 600)
+        
         
         # Apply terminal theme styling
         self._apply_terminal_theme()
@@ -413,11 +415,18 @@ class ApplicationSettingsDialog(QDialog):
         self.auto_clear_cache_check.setChecked(settings.value("performance/auto_clear_cache", False, type=bool))
         
         # Logging settings
-        self.log_level_combo.setCurrentText(settings.value("logging/log_level", "INFO"))
-        self.log_to_file_check.setChecked(settings.value("logging/log_to_file", True, type=bool))
-        self.log_rotation_check.setChecked(settings.value("logging/log_rotation", True, type=bool))
+        log_level = settings.value("logging/level", "INFO")
+        self.log_level_combo.setCurrentText(log_level)
+        self.log_to_file_check.setChecked(settings.value("logging/file_enabled", True, type=bool))
+        self.log_rotation_check.setChecked(settings.value("logging/rotation_enabled", True, type=bool))
         self.max_log_size_spin.setValue(settings.value("logging/max_log_size", 50, type=int))
         self.debug_mode_check.setChecked(settings.value("logging/debug_mode", False, type=bool))
+        
+        # Apply logging configuration on startup
+        try:
+            self._apply_log_level(log_level)
+        except Exception as e:
+            logger.error(f"Failed to apply logging configuration on startup: {e}")
         
         # Advanced settings
         self.timeout_spin.setValue(settings.value("advanced/timeout", 30, type=int))
@@ -733,33 +742,70 @@ class ApplicationSettingsDialog(QDialog):
     def _apply_log_level(self, level):
         """Apply log level change"""
         try:
-            # Store the current log level setting - DON'T remove existing loggers
-            # Just configure the level for future messages
+            # Store the current log level setting
             import os
             os.environ['LOG_LEVEL'] = level
             
-            # If the application has a specific logger configuration method, use it
-            parent_app = self.parent()
-            if parent_app and hasattr(parent_app, 'configure_logging'):
-                parent_app.configure_logging(level)
+            # Convert level to loguru format
+            loguru_level = level.upper()
             
-            # Add file logging if enabled and not already added
-            if self.log_to_file_check.isChecked():
+            # Remove existing handlers and reconfigure
+            logger.remove()
+            
+            # Add console handler with new level
+            logger.add(
+                lambda msg: print(msg, end=""),
+                level=loguru_level,
+                format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+                colorize=True
+            )
+            
+            # Add file logging if enabled
+            if hasattr(self, 'log_to_file_check') and self.log_to_file_check.isChecked():
                 log_file = self.config.base_dir / "logs" / "application.log"
                 log_file.parent.mkdir(exist_ok=True)
                 
-                # Check if file logging is already configured
-                if not hasattr(self, '_file_logger_id'):
-                    self._file_logger_id = logger.add(
-                        log_file, 
-                        level=level, 
-                        rotation=f"{self.max_log_size_spin.value()} MB" if self.log_rotation_check.isChecked() else None,
-                        format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}"
-                    )
+                rotation = None
+                if hasattr(self, 'log_rotation_check') and self.log_rotation_check.isChecked():
+                    max_size = getattr(self, 'max_log_size_spin', None)
+                    if max_size:
+                        rotation = f"{max_size.value()} MB"
+                
+                logger.add(
+                    log_file,
+                    level=loguru_level,
+                    rotation=rotation,
+                    format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
+                    serialize=False
+                )
             
-            logger.info(f"Log level configured to {level}")
+            # Save to settings for persistence
+            settings = QSettings("ComfyUI-Cinema4D", "Bridge")
+            settings.setValue("logging/level", level)
+            settings.setValue("logging/file_enabled", getattr(self, 'log_to_file_check', None) and self.log_to_file_check.isChecked())
+            settings.setValue("logging/rotation_enabled", getattr(self, 'log_rotation_check', None) and self.log_rotation_check.isChecked())
+            
+            # Test the new log level with sample messages
+            logger.debug("Debug logging is now active")
+            logger.info(f"Log level successfully configured to {level}")
+            logger.warning("Warning level logging is active")
+            logger.error("Error level logging is active")
+            logger.critical("Critical level logging is active")
+            
         except Exception as e:
-            logger.error(f"Failed to apply log level: {e}")
+            # Use print as fallback since logger might be in bad state
+            print(f"Failed to apply log level: {e}")
+            
+            # Try to restore basic logger
+            try:
+                logger.remove()
+                logger.add(
+                    lambda msg: print(msg, end=""),
+                    level="INFO",
+                    format="{time:HH:mm:ss} | {level} | {message}"
+                )
+            except:
+                pass
     
     # Auto-save functionality
     def _setup_auto_save(self):
@@ -850,6 +896,12 @@ class ApplicationSettingsDialog(QDialog):
         try:
             # Apply the accent color immediately
             self._apply_accent_color_to_theme()
+            
+            # Notify parent application about the accent color change
+            parent_app = self.parent()
+            if parent_app and hasattr(parent_app, '_apply_saved_accent_color'):
+                parent_app._apply_saved_accent_color()
+                
             logger.info(f"Accent color changed to {self.accent_color}")
         except Exception as e:
             logger.error(f"Failed to apply accent color: {e}")

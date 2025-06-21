@@ -4,11 +4,16 @@
 
 This project is **in active development** with the following status:
 - ✅ Tab 1 (Image Generation): **FULLY FUNCTIONAL** with dynamic UI
-- 🚧 Tab 2 (3D Generation): Needs workflow monitoring implementation
+- ✅ Tab 2 (3D Generation): **FULLY FUNCTIONAL** with workflow monitoring and 3D viewer
 - 🚧 Tab 3 (Texture Generation): Basic UI, viewer integration pending
 - 🚧 Tab 4 (Cinema4D): 80% complete, NLP dictionary working
 - ✅ Dynamic UI system: Working for ANY ComfyUI workflow
 - ✅ Custom node conversion: Automatic compatibility handling
+- ✅ **NEW**: Unified theme management with accent color inheritance
+- ✅ **NEW**: Complete project save/load with dynamic parameter persistence
+- ✅ **NEW**: Undo/redo functionality for all user actions
+- ✅ **NEW**: Enhanced logging configuration with all levels working
+- ✅ **NEW**: Issues workflow system for structured development
 
 ## 🚀 Quick Start
 
@@ -49,10 +54,12 @@ comfy-to-c4d/
 ├── src/
 │   ├── core/               # Application core
 │   │   ├── app.py         # Main application (DEPRECATED - use app_redesigned.py)
-│   │   ├── app_redesigned.py  # Current main application class
+│   │   ├── app_redesigned.py  # Current main application class with enhanced features
 │   │   ├── app_ui_methods.py  # UI method implementations
-│   │   ├── workflow_manager.py # ComfyUI workflow handling
-│   │   └── enhanced_file_monitor.py # File system monitoring
+│   │   ├── workflow_manager.py # ComfyUI workflow handling with node conversion
+│   │   ├── project_manager.py # Complete project save/load with dynamic parameters
+│   │   ├── enhanced_file_monitor.py # File system monitoring
+│   │   └── debug_wrapper.py # Scene assembly debugging utilities
 │   │
 │   ├── ui/                # User interface components
 │   │   ├── widgets.py     # Core widget definitions
@@ -60,7 +67,17 @@ comfy-to-c4d/
 │   │   ├── prompt_with_magic.py # Prompt widgets with magic button
 │   │   ├── object_selection_widget.py # Unified image/model selector
 │   │   ├── enhanced_console.py # Console output widget
-│   │   └── mcp_indicators.py # Connection status indicators
+│   │   ├── mcp_indicators.py # Connection status indicators
+│   │   ├── settings_dialog.py # Application settings with enhanced logging config
+│   │   ├── terminal_theme_complete.py # Complete terminal styling
+│   │   ├── studio_3d_config_dialog.py # 3D viewer configuration
+│   │   └── nlp_dictionary_dialog.py # NLP command dictionary editor
+│   │
+│   ├── utils/             # Utility modules
+│   │   ├── theme_manager.py # Unified theme and accent color management
+│   │   ├── advanced_logging.py # Enhanced logging with all levels
+│   │   ├── advanced_state_management.py # Complete undo/redo system
+│   │   └── logger.py      # Basic logging utilities
 │   │
 │   ├── c4d/               # Cinema4D integration
 │   │   ├── nlp_parser.py  # Natural language processing
@@ -70,10 +87,14 @@ comfy-to-c4d/
 │       ├── comfyui_client.py  # ComfyUI communication
 │       └── cinema4d_client.py # Cinema4D communication
 │
+├── issues/                # Issue tracking for development
+├── docs/                  # Documentation
+│   ├── plan_*.md         # Issue requirements
+│   └── [other guides]    # Development guides
 ├── config/                # Configuration files
 ├── workflows/             # ComfyUI workflow templates
 ├── images/               # Generated images
-├── 3D/                   # Generated 3D models
+├── 3d_models/            # Generated 3D models
 └── logs/                 # Application logs
 ```
 
@@ -321,7 +342,7 @@ c4d.EventAdd()
 
 ### Logging Best Practices
 
-**As of June 19, 2025**: Console output has been significantly cleaned up. Follow these guidelines:
+**As of 2025-06-21**: Enhanced logging system with full configuration support:
 
 ```python
 from src.utils.logger import LoggerMixin
@@ -337,14 +358,23 @@ class MyClass(LoggerMixin):
         # Always show warnings and errors
         self.logger.warning("Connection timeout, retrying...")
         self.logger.error("Failed to load workflow")
+        self.logger.critical("System failure - cannot continue")
 ```
 
+**Enhanced Logging Features:**
+- **Full Level Support**: Debug, Info, Warning, Error, Critical all configurable
+- **Settings Integration**: Change log levels from UI Settings → Logging tab
+- **Runtime Configuration**: Logging levels update immediately without restart
+- **Professional Output**: NO emojis, clean console formatting
+- **Correlation IDs**: For tracking related operations across components
+
 **Logging Rules:**
-- NO emojis in log messages (removed all 🔄, ✅, 📸, etc.)
 - Use `debug` for: parameter details, file monitoring, internal state
 - Use `info` for: user actions, completion status, important state changes
+- Use `warning` for: recoverable issues, fallback scenarios
+- Use `error` for: operation failures, invalid states
+- Use `critical` for: system failures that prevent operation
 - Keep messages concise and professional
-- Enable debug mode with `setup_logging(debug=True)` when needed
 
 ### Error Handling Pattern
 ```python
@@ -410,14 +440,61 @@ Before committing changes:
 - [ ] Resource cleanup implemented
 - [ ] Dark theme colors used consistently
 
+## 🚀 New Features (2025-06-21)
+
+### Theme Management System
+- **Unified Theming**: Complete theme consistency across all UI components
+- **Accent Color Inheritance**: All elements properly inherit accent color from settings
+- **Real-time Updates**: Theme changes apply immediately without restart
+- **Enhanced CSS**: Proper CSS variables and override support
+
+### Project Persistence System
+- **Complete Save/Load**: All dynamic parameters, content, and UI state preserved
+- **Asset Management**: Images, models, and textures tracked and saved with projects
+- **Version Control**: Project format versioning for future compatibility
+- **Recent Projects**: Quick access to recently opened projects
+
+### Advanced Undo/Redo System
+- **Full State Tracking**: All user actions (parameters, prompts, selections) are undoable
+- **State Machines**: Proper state management for complex UI interactions
+- **Memory Efficient**: Smart state compression to prevent memory bloat
+- **UI Integration**: Undo/Redo accessible via keyboard shortcuts and menus
+
+### Enhanced Logging Configuration
+- **All Levels Supported**: Debug, Info, Warning, Error, Critical all configurable
+- **Settings UI Integration**: Change log levels from Settings → Logging tab
+- **Runtime Updates**: Logging configuration changes apply immediately
+- **Professional Output**: Clean, emoji-free console output
+
+### Issues Workflow System
+- **Structured Development**: `/issues/<no>.md` for issue tracking
+- **Requirements Planning**: `/docs/plan_<no>.md` for detailed requirements
+- **Session Integration**: Tackle issues systematically in development sessions
+- **Progress Tracking**: Clear documentation of what's implemented vs pending
+
 ## 🚀 Next Steps
 
 1. **Start Simple**: Test existing functionality before adding features
 2. **Use Working Examples**: Copy patterns from existing code
 3. **Test Incrementally**: Verify each change works before moving on
 4. **Check Logs**: Always review console output and log files
-5. **Ask for Help**: Include error messages and steps to reproduce
+5. **Use Issues System**: Document new features/bugs in `/issues/` directory
+6. **Ask for Help**: Include error messages and steps to reproduce
 
 ---
 
-**Remember**: Most issues come from virtual environment problems, event loop conflicts, or using wrong Cinema4D constants. Always check these first! 🛠️✨
+**Remember**: Most issues come from virtual environment problems, event loop conflicts, or using wrong Cinema4D constants. Always check these first! The new theme management, project persistence, undo/redo, and logging systems provide a solid foundation for enterprise-grade development.
+
+## 📋 Current Issue Tracker
+
+The project now uses a structured issues workflow system with 7 planned issues:
+
+1. **[Issue #1: UI Layout & Responsiveness Fixes](../issues/1.md)** - Critical UI improvements
+2. **[Issue #2: Complete Texture Generation Tab](../issues/2.md)** - Feature completion  
+3. **[Issue #3: Cinema4D Commands & NLP Scene Generation](../issues/3.md)** - Advanced features
+4. **[Issue #4: Performance Optimization & Code Quality](../issues/4.md)** - Production readiness
+5. **[Issue #5: Enhanced User Experience & Polish](../issues/5.md)** - UX improvements
+6. **[Issue #6: Testing Framework & Documentation](../issues/6.md)** - Quality assurance
+7. **[Issue #7: Professional Splash Screen & Application Loader](../issues/7.md)** - Professional branding
+
+Each issue includes detailed requirements in `/docs/plan_<no>.md` for systematic development.

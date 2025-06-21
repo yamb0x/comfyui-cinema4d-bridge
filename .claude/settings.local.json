@@ -100,7 +100,8 @@
       "Bash(. venv/Scripts/activate)",
       "Bash(PYTHONPATH=\"./src:$PYTHONPATH\" python3 -c \"\nimport sys\nsys.path.insert(0, ''./src'')\ntry:\n    from ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid, Studio3DViewer, Studio3DPreviewCard\n    print(''✓ Studio3D viewer imports successful'')\n    \n    from core.app_ui_methods import UICreationMethods\n    print(''✓ UI creation methods import successful'')\n    \n    from pathlib import Path\n    print(''✓ All required imports available'')\n    print(''Studio 3D viewer integration is properly set up'')\nexcept Exception as e:\n    print(f''✗ Import error: {e}'')\n    import traceback\n    traceback.print_exc()\n\")",
       "Bash(../venv/Scripts/python.exe -m core.app_redesigned:*)",
-      "Bash(git clone:*)"
+      "Bash(git clone:*)",
+      "Bash(venv/Scripts/python -c \"from core.app_redesigned import ComfyToC4DAppRedesigned; print(''Import successful'')\")"
     ],
     "deny": []
   }

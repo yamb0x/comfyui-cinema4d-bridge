@@ -8594,8 +8594,8 @@ Our support team typically responds within 24 hours.
                 patterns=["*.obj", "*.fbx", "*.gltf", "*.glb"]
             )
         
-        # Add textured models directory monitoring
-        textured_dir = Path("D:/Comfy3D_WinPortable/ComfyUI/output/3D/textured")
+        # Add textured models directory monitoring - use config computed property
+        textured_dir = self.config.textured_models_dir if hasattr(self.config, 'textured_models_dir') else Path(self.config.models_3d_dir) / "textured"
         if textured_dir.exists():
             self.logger.info(f"Adding textured models directory: {textured_dir}")
             

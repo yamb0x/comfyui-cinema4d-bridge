@@ -71,7 +71,7 @@ def get_complete_terminal_theme() -> str:
     
     /* Status Circle Colors */
     QLabel#status_circle_connected {
-        color: #22c55e;
+        color: #4CAF50;
         font-size: 14px;
         font-weight: bold;
         margin: 0px 2px;
@@ -171,7 +171,7 @@ def get_complete_terminal_theme() -> str:
     
     QTabBar::tab:selected {
         color: #fafafa;
-        border-bottom: 2px solid #22c55e;
+        border-bottom: 2px solid #4CAF50;
         background-color: rgba(34, 197, 94, 0.05);
     }
     
@@ -235,7 +235,7 @@ def get_complete_terminal_theme() -> str:
     }
     
     QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {
-        border-color: #22c55e;
+        border-color: #4CAF50;
         outline: none;
         box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.3);
     }
@@ -247,9 +247,9 @@ def get_complete_terminal_theme() -> str:
     /* Magic Prompt Button */
     QPushButton#magic_btn {
         background-color: rgba(34, 197, 94, 0.1);
-        border: 1px solid #22c55e;
+        border: 1px solid #4CAF50;
         border-radius: 3px;
-        color: #22c55e;
+        color: #4CAF50;
         font-size: 10px;
         font-weight: 500;
         padding: 4px 8px;
@@ -282,7 +282,7 @@ def get_complete_terminal_theme() -> str:
     }
     
     QComboBox:focus {
-        border-color: #22c55e;
+        border-color: #4CAF50;
     }
     
     QComboBox:hover {
@@ -322,7 +322,7 @@ def get_complete_terminal_theme() -> str:
     }
     
     QComboBox QAbstractItemView::item:selected {
-        background-color: #22c55e;
+        background-color: #4CAF50;
         color: #000000;
     }
     
@@ -338,7 +338,7 @@ def get_complete_terminal_theme() -> str:
     }
     
     QSpinBox:focus, QDoubleSpinBox:focus {
-        border-color: #22c55e;
+        border-color: #4CAF50;
     }
     
     QSpinBox::up-button, QDoubleSpinBox::up-button {
@@ -411,9 +411,9 @@ def get_complete_terminal_theme() -> str:
     /* Primary Buttons */
     QPushButton#generate_btn, QPushButton#primary_btn, QPushButton#generate_image_btn, 
     QPushButton#generate_3d_btn, QPushButton#generate_texture_btn {
-        background-color: #22c55e;
+        background-color: #4CAF50;
         color: #000000;
-        border-color: #22c55e;
+        border-color: #4CAF50;
         font-weight: 600;
     }
     
@@ -459,8 +459,8 @@ def get_complete_terminal_theme() -> str:
     }
     
     QCheckBox::indicator:checked {
-        background-color: #22c55e;
-        border-color: #22c55e;
+        background-color: #4CAF50;
+        border-color: #4CAF50;
     }
     
     QCheckBox::indicator:checked::after {
@@ -486,7 +486,7 @@ def get_complete_terminal_theme() -> str:
     }
     
     QWidget#image_grid_item[selected="true"] {
-        border-color: #22c55e;
+        border-color: #4CAF50;
         border-width: 2px;
     }
     
@@ -552,7 +552,7 @@ def get_complete_terminal_theme() -> str:
     }
     
     .console-success {
-        color: #22c55e;
+        color: #4CAF50;
         font-weight: 500;
     }
     
@@ -693,7 +693,7 @@ def get_complete_terminal_theme() -> str:
     }
     
     QListWidget::item:selected {
-        background-color: #22c55e;
+        background-color: #4CAF50;
         color: #000000;
     }
     
@@ -813,7 +813,7 @@ def get_complete_terminal_theme() -> str:
     }
     
     QProgressBar::chunk {
-        background-color: #22c55e;
+        background-color: #4CAF50;
         border-radius: 2px;
     }
     
@@ -844,7 +844,7 @@ def get_complete_terminal_theme() -> str:
     }
     
     QLineEdit#chat_input:focus {
-        border-color: #22c55e;
+        border-color: #4CAF50;
     }
     
     /* ==== TEXTURE VIEWER INTEGRATION ==== */
@@ -901,7 +901,7 @@ def get_console_color_map() -> dict:
         'timestamp': '#525252',
         'debug': '#737373',
         'info': '#3b82f6',
-        'success': '#22c55e',
+        'success': '#4CAF50',
         'warning': '#eab308',
         'error': '#ef4444',
         'critical': '#dc2626',

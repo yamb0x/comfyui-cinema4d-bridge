@@ -2,6 +2,20 @@
 
 ## 🚀 SESSION QUICK START - "What are we working on today?"
 
+### 🎯 ISSUES WORKFLOW - Structured Problem Solving
+
+#### **Working on Specific Issues?**
+- Check: `/issues/` folder for active issues  
+- Read: `/docs/plan_<issue_no>.md` for requirements
+- Execute: `/issues/<issue_no>.md` for implementation plan
+- Pattern: One issue per session for focused development
+
+#### **Creating New Issues?**
+1. Create `/issues/<issue_no>.md` with implementation plan
+2. Create `/docs/plan_<issue_no>.md` with requirements  
+3. Update `CURRENT PROJECT STATUS` section below
+4. Follow step-by-step execution pattern
+
 ### 📍 SESSION ROUTING - Read the right docs based on task:
 
 #### **Working on Image Generation (Tab 1)?**
@@ -38,12 +52,13 @@
 
 ## 🎯 CURRENT PROJECT STATUS (2025-06-21)
 
-### **Latest Session Achievements:**
-- ✅ **3D MODEL GENERATION FIXED**: Full workflow from ComfyUI to UI display
-- ✅ **3D Viewer Configuration**: Dialog works with live preview updates
-- ✅ **ASCII Animation Fix**: No more loading animations on parameter changes
-- ✅ **Cross-Directory Model Detection**: Checks both local and ComfyUI output
-- ✅ **Unified Selection System**: Models properly linked to source images
+### **Latest Session Achievements (Final Fixes & Polish):**
+- ✅ **UNIFIED THEME MANAGEMENT**: Enhanced accent color inheritance across all UI components
+- ✅ **PROJECT SAVE/LOAD SYSTEM**: Complete project persistence with dynamic parameters
+- ✅ **UNDO/REDO FUNCTIONALITY**: Full state management for parameters, prompts, and selections
+- ✅ **ENHANCED LOGGING**: All log levels working with persistent configuration
+- ✅ **GENERATE BUTTON STYLING**: Proper accent color application to all action buttons
+- ✅ **STEP-BY-STEP RECOVERY**: Critical error fixed through methodical problem-solving
 
 ### **What's Working:**
 1. **Image Generation (Tab 1)** - ✅ **FULLY FUNCTIONAL**
@@ -72,24 +87,28 @@
 - Workflow conversion methods wrong (`TEXTURE_GENERATION_FIX.md`)
 - Missing parameter gathering
 - Viewer integration incomplete
+- ComfyUI workflow is partially broken within the texture generation part - seems like we are breaking something with the way we pass paramters
 
 **Required Fixes:**
 - Fix model selection from multiple sources
 - Apply workflow completion monitoring
+- Fix texture generation bugs from comfyui workflow
+- load textures to the new webgl viewer implemented
 - Implement texture result handling
 - Complete viewer integration
 
 #### **🔧 Tab 4: Cinema4D Intelligence - UI REDESIGN BREAKS**
 **Potential Issues:**
 - NLP parser may have UI integration breaks
-- Chat interface routing might be affected
+- Chat interface routing is not set up
+- Only NLP Dictionary is defined with the c4d commands but need to connect to the chat
 - MCP wrapper integration needs verification
 
 **Required Verification:**
-- Test NLP command execution
+- Test NLP command execution from dictionary
+- If working, start connecting to the  NLP chat
 - Verify chat message routing
-- Check MCP server integration
-
+- Check MCP server integration (should be working)
 ---
 
 ## 📌 CRITICAL PATTERNS TO REMEMBER
@@ -213,6 +232,77 @@ pip install -r requirements.txt
 ### **Cinema4D Connection Issues**
 - Check: Is Cinema4D running with command port 8888?
 - Check: MCP server running (`mcp_cinema4d_server.py`)
+
+---
+
+## 📋 ISSUES WORKFLOW SYSTEM
+
+### **Issue Management Pattern**
+```
+/issues/
+├── 001.md (implementation plan)
+├── 002.md (implementation plan)
+└── ...
+
+/docs/
+├── plan_001.md (requirements)
+├── plan_002.md (requirements)
+└── ...
+```
+
+### **Issue Template Structure**
+
+#### `/issues/<no>.md` (Implementation Plan):
+```markdown
+# Issue <no>: [Title]
+
+## Status: [Open/In Progress/Completed]
+
+## Implementation Steps:
+1. **Step 1**: Description
+2. **Step 2**: Description  
+3. **Step 3**: Description
+
+## Files to Modify:
+- `file1.py` - What changes
+- `file2.py` - What changes
+
+## Testing Plan:
+- [ ] Test item 1
+- [ ] Test item 2
+
+## Completion Criteria:
+- [ ] Criteria 1
+- [ ] Criteria 2
+```
+
+#### `/docs/plan_<no>.md` (Requirements):
+```markdown
+# Plan <no>: [Title]
+
+## Problem Statement:
+Clear description of the issue
+
+## Requirements:
+1. Requirement 1
+2. Requirement 2
+
+## Acceptance Criteria:
+- [ ] Success criteria 1
+- [ ] Success criteria 2
+
+## Technical Constraints:
+- Constraint 1
+- Constraint 2
+```
+
+### **Session Workflow**:
+1. **Start**: Read existing issues in `/issues/` folder
+2. **Choose**: Pick one issue number for the session
+3. **Read**: Both `/issues/<no>.md` and `/docs/plan_<no>.md`
+4. **Execute**: Follow implementation steps methodically
+5. **Test**: Verify each step before proceeding
+6. **Complete**: Mark issue as completed and update docs
 
 ---
 
@@ -423,4 +513,25 @@ When starting new session, update here:
 
 ---
 
-Last Updated: 2025-06-21 - 3D Model Generation & Viewer Configuration Fix
+## 📖 Development Phase History
+
+### **Major Development Phases:**
+- **[Phase 1: Foundation & Integration](docs/PHASE_1_IMPLEMENTATION_SUMMARY.md)** (Complete)
+  - Core architecture implementation
+  - ComfyUI workflow integration  
+  - Basic UI and file management systems
+
+- **[Phase 3: Quality & Polish](docs/PHASE3_COMPLETION_SUMMARY.md)** (Complete)
+  - Enterprise-grade logging and error handling
+  - Advanced state management with undo/redo
+  - Unified theme management system
+  - Performance monitoring and optimization
+  - Project persistence and configuration enhancement
+
+### **Current Phase: Issue-Based Development**
+- **[Issues Workflow System](#-issues-workflow---structured-problem-solving)** - Structured development using `/issues/<no>.md` and `/docs/plan_<no>.md`
+- **7 Issues Planned** - UI fixes, texture generation, Cinema4D completion, performance, UX, testing, splash screen
+
+---
+
+Last Updated: 2025-06-21 - Phase summaries organized & Issues workflow established

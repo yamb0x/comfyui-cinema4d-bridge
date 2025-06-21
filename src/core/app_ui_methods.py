@@ -966,8 +966,8 @@ class UICreationMethods:
         """Refresh textured models from 3D/textured folder"""
         self.logger.info("Refreshing textured models...")
         
-        # Monitor 3D/textured folder
-        textured_path = Path("D:/Comfy3D_WinPortable/ComfyUI/output/3D/textured")
+        # Monitor 3D/textured folder - use config computed property
+        textured_path = self.config.textured_models_dir if hasattr(self.config, 'textured_models_dir') else Path(self.config.models_3d_dir) / "textured"
         if textured_path.exists():
             textured_files = list(textured_path.glob("*.obj"))
             self.logger.info(f"Found {len(textured_files)} textured models")
@@ -1972,6 +1972,10 @@ class UICreationMethods:
             if node_id not in self.workflow_manager.custom_parameters:
                 self.workflow_manager.custom_parameters[node_id] = {}
             self.workflow_manager.custom_parameters[node_id][param_name] = value
+            
+        # Create undo snapshot for parameter changes
+        if hasattr(self, '_create_undo_snapshot'):
+            self._create_undo_snapshot(f"Parameter changed: {param_name} = {value}")
     
     def _update_batch_preview(self, batch_size: int):
         """Update ImageGridWidget to expect batch_size images"""

@@ -63,6 +63,14 @@ from ui.studio_3d_config_dialog import Studio3DConfigDialog
 from pipeline.stages import PipelineStage, ImageGenerationStage, Model3DGenerationStage, SceneAssemblyStage, ExportStage
 from utils.logger import LoggerMixin
 
+# Test import theme manager
+try:
+    from utils.theme_manager import get_theme_manager
+    THEME_MANAGER_AVAILABLE = True
+except ImportError as e:
+    print(f"Theme manager not available: {e}")
+    THEME_MANAGER_AVAILABLE = False
+
 # Import debug wrapper for Scene Assembly debugging
 from core.debug_wrapper import wrap_scene_assembly_methods, get_debug_report
 
@@ -167,6 +175,17 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         # Core components - preserve all existing functionality
         self._initialize_core_components()
+        
+        # Initialize theme manager if available
+        if THEME_MANAGER_AVAILABLE:
+            try:
+                self.theme_manager = get_theme_manager()
+                self.logger.info("Theme manager initialized successfully")
+            except Exception as e:
+                self.logger.error(f"Failed to initialize theme manager: {e}")
+                self.theme_manager = None
+        else:
+            self.theme_manager = None
         
         # Enhanced UI components
         self.mcp_status_bar = None
@@ -362,12 +381,12 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             self.status_bar = self.statusBar()
             self.status_bar.showMessage("Application initialized - Ready")
             
-            # Apply terminal theme
+            # Apply terminal theme (keep existing styling)
             terminal_theme = get_complete_terminal_theme()
             self.setStyleSheet(terminal_theme)
             
             # Apply saved accent color on startup
-            QTimer.singleShot(200, self._apply_saved_accent_color)
+            QTimer.singleShot(500, self._apply_saved_accent_color)
             
             # Enhanced menu bar
             self._create_complete_menu_bar()
@@ -392,6 +411,9 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             
             # Load test models after all initialization is complete
             QTimer.singleShot(3000, self._load_test_models_on_startup)
+            
+            # Setup undo/redo auto snapshots after UI is ready
+            QTimer.singleShot(1500, self._auto_create_undo_snapshots)
             
             self.logger.debug("UI setup completed successfully")
             
@@ -1385,8 +1407,8 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             size_label = QLabel(size_str)
             size_label.setObjectName("connection_info")
             layout.addWidget(size_label)
-        except:
-            pass
+        except (AttributeError, ValueError) as e:
+            logger.debug(f"Could not display model size: {e}")
         
         # View button
         view_btn = QPushButton("View in 3D")
@@ -2550,7 +2572,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         """Setup enhanced file monitoring"""
         from .enhanced_file_monitor import EnhancedFileMonitor
         
-        self.enhanced_monitor = EnhancedFileMonitor()
+        self.enhanced_monitor = EnhancedFileMonitor(self.config)
         
         # Connect signals
         self.enhanced_monitor.new_image_detected.connect(self._on_new_image_detected)
@@ -2829,7 +2851,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         open_project_action = QAction("Open Project", self)
         open_project_action.setShortcut("Ctrl+O")
-        open_project_action.triggered.connect(self._open_project)
+        open_project_action.triggered.connect(self._load_project)
         file_menu.addAction(open_project_action)
         
         # Open Recent submenu
@@ -2862,6 +2884,11 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         save_project_action.setShortcut("Ctrl+S")
         save_project_action.triggered.connect(self._save_project)
         file_menu.addAction(save_project_action)
+        
+        save_project_as_action = QAction("Save Project As...", self)
+        save_project_as_action.setShortcut("Ctrl+Shift+S")
+        save_project_as_action.triggered.connect(self._save_project_as)
+        file_menu.addAction(save_project_as_action)
         
         file_menu.addSeparator()
         
@@ -3849,8 +3876,8 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 # Temporarily disconnect the change handler to avoid triggering during population
                 try:
                     self.workflow_combo.currentIndexChanged.disconnect()
-                except:
-                    pass  # Handler might not be connected yet
+                except TypeError as e:
+                    logger.debug(f"Workflow combo handler not connected yet: {e}")
             
                 # Populate with workflows for this tab
                 self._populate_workflow_combo(workflow_type)
@@ -3874,8 +3901,8 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                                             last_selected = self.workflow_combo.itemData(i)
                                             self.logger.info(f"Restored last selected workflow: {last_workflow}")
                                             break
-                            except:
-                                pass
+                            except (KeyError, ValueError) as e:
+                                logger.debug(f"Could not restore workflow selection: {e}")
                     
                     # If no saved selection or not found, use first
                     if last_selected is None:
@@ -4186,20 +4213,472 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             QTimer.singleShot(1000, self._load_test_models_on_startup)
     
     # Menu action implementations
+    def _new_project(self):
+        """Create a new project"""
+        try:
+            self.logger.info("Creating new project...")
+            
+            # Check if current project has unsaved changes
+            if self.project_manager.is_modified:
+                from PySide6.QtWidgets import QMessageBox
+                reply = QMessageBox.question(
+                    self,
+                    "Unsaved Changes",
+                    "You have unsaved changes. Do you want to save the current project?",
+                    QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel
+                )
+                
+                if reply == QMessageBox.Yes:
+                    if not self._save_project():
+                        return  # Save failed or cancelled
+                elif reply == QMessageBox.Cancel:
+                    return  # User cancelled
+            
+            # Create new project
+            self.current_project = self.project_manager.create_new_project()
+            
+            # Reset UI to default state
+            self._reset_ui_to_project_state()
+            
+            self.logger.info("New project created")
+            self.setWindowTitle("ComfyUI → Cinema4D Bridge - New Project")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to create new project: {e}")
+            QMessageBox.critical(self, "Error", f"Failed to create new project:\n{e}")
+    
+    def _save_project(self) -> bool:
+        """Save current project"""
+        try:
+            self.logger.info("Saving project...")
+            
+            # Collect current project state
+            project_data = self._collect_project_data()
+            
+            # If no current path, show save dialog
+            if self.project_manager.current_project_path is None:
+                return self._save_project_as()
+            
+            # Save to current path
+            success = self.project_manager.save_project(project_data)
+            
+            if success:
+                self.logger.info(f"Project saved to: {self.project_manager.current_project_path}")
+                self.setWindowTitle(f"ComfyUI → Cinema4D Bridge - {self.project_manager.current_project_path.name}")
+                return True
+            else:
+                QMessageBox.critical(self, "Error", "Failed to save project")
+                return False
+                
+        except Exception as e:
+            self.logger.error(f"Failed to save project: {e}")
+            QMessageBox.critical(self, "Error", f"Failed to save project:\n{e}")
+            return False
+    
+    def _save_project_as(self) -> bool:
+        """Save project with new filename"""
+        try:
+            file_path, _ = QFileDialog.getSaveFileName(
+                self,
+                "Save Project As",
+                str(self.config.base_dir / "projects"),
+                "ComfyUI-Cinema4D Projects (*.c2c);;All Files (*)"
+            )
+            
+            if not file_path:
+                return False  # User cancelled
+            
+            file_path = Path(file_path)
+            if not file_path.suffix:
+                file_path = file_path.with_suffix('.c2c')
+            
+            # Collect current project state
+            project_data = self._collect_project_data()
+            
+            # Save to new path
+            success = self.project_manager.save_project(project_data, file_path)
+            
+            if success:
+                self.logger.info(f"Project saved as: {file_path}")
+                self.setWindowTitle(f"ComfyUI → Cinema4D Bridge - {file_path.name}")
+                return True
+            else:
+                QMessageBox.critical(self, "Error", "Failed to save project")
+                return False
+                
+        except Exception as e:
+            self.logger.error(f"Failed to save project as: {e}")
+            QMessageBox.critical(self, "Error", f"Failed to save project:\n{e}")
+            return False
+    
+    def _load_project(self):
+        """Load a project file"""
+        try:
+            file_path, _ = QFileDialog.getOpenFileName(
+                self,
+                "Open Project",
+                str(self.config.base_dir / "projects"),
+                "ComfyUI-Cinema4D Projects (*.c2c);;All Files (*)"
+            )
+            
+            if not file_path:
+                return  # User cancelled
+                
+            self._load_project_from_path(Path(file_path))
+            
+        except Exception as e:
+            self.logger.error(f"Failed to load project: {e}")
+            QMessageBox.critical(self, "Error", f"Failed to load project:\n{e}")
+    
+    def _load_project_from_path(self, file_path: Path):
+        """Load project from specific path"""
+        try:
+            self.logger.info(f"Loading project: {file_path}")
+            
+            # Check if current project has unsaved changes
+            if self.project_manager.is_modified:
+                reply = QMessageBox.question(
+                    self,
+                    "Unsaved Changes",
+                    "You have unsaved changes. Do you want to save the current project?",
+                    QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel
+                )
+                
+                if reply == QMessageBox.Yes:
+                    if not self._save_project():
+                        return  # Save failed or cancelled
+                elif reply == QMessageBox.Cancel:
+                    return  # User cancelled
+            
+            # Load project data
+            project_data = self.project_manager.load_project(file_path)
+            
+            if project_data:
+                self.current_project = project_data
+                
+                # Apply project state to UI
+                self._apply_project_state_to_ui(project_data)
+                
+                self.logger.info(f"Project loaded successfully: {file_path}")
+                self.setWindowTitle(f"ComfyUI → Cinema4D Bridge - {file_path.name}")
+            else:
+                QMessageBox.critical(self, "Error", "Failed to load project file")
+                
+        except Exception as e:
+            self.logger.error(f"Failed to load project from {file_path}: {e}")
+            QMessageBox.critical(self, "Error", f"Failed to load project:\n{e}")
+    
     def _open_recent_project(self, project_path: str):
         """Open a recent project file"""
         try:
             self.logger.info(f"Opening recent project: {project_path}")
-            # TODO: Implement actual project loading logic
-            # For now, just show a confirmation
-            from PySide6.QtWidgets import QMessageBox
-            QMessageBox.information(
-            self,
-            "Open Recent Project",
-            f"Opening project:\n{project_path}\n\n(Implementation pending)"
-            )
+            self._load_project_from_path(Path(project_path))
         except Exception as e:
             self.logger.error(f"Failed to open recent project {project_path}: {e}")
+    
+    def _collect_project_data(self) -> Dict[str, Any]:
+        """Collect current application state into project data"""
+        try:
+            # Get dynamic workflow parameters
+            dynamic_params = self._collect_dynamic_workflow_parameters()
+            
+            # Get current prompts
+            positive_prompt = ""
+            negative_prompt = ""
+            
+            if hasattr(self, 'positive_prompt_widget') and self.positive_prompt_widget:
+                positive_prompt = self.positive_prompt_widget.get_prompt()
+            if hasattr(self, 'negative_prompt_widget') and self.negative_prompt_widget:
+                negative_prompt = self.negative_prompt_widget.get_prompt()
+            
+            # Get selected workflow
+            current_workflow = ""
+            if hasattr(self, 'workflow_combo') and self.workflow_combo:
+                current_workflow = self.workflow_combo.currentText()
+            
+            # Get selected objects
+            selected_models = []
+            if hasattr(self, 'unified_object_selector') and self.unified_object_selector:
+                selected_models = list(self.unified_object_selector.objects.keys())
+            
+            # Get UI state
+            ui_state = {
+                "active_tab": self.main_tab_widget.currentIndex() if self.main_tab_widget else 0,
+                "window_geometry": self.saveGeometry().data().hex(),
+                "window_state": self.saveState().data().hex(),
+                "accent_color": self.theme_manager.get_accent_color(),
+            }
+            
+            project_data = {
+                "version": self.project_manager.PROJECT_VERSION,
+                "created": self.current_project.get("created", datetime.now().isoformat()),
+                "modified": datetime.now().isoformat(),
+                
+                "generation_settings": {
+                    "image": {
+                        "workflow": current_workflow,
+                        "prompt": positive_prompt,
+                        "negative_prompt": negative_prompt,
+                        "parameters": dynamic_params
+                    },
+                    "model_3d": {
+                        "workflow": current_workflow,
+                        "parameters": dynamic_params
+                    }
+                },
+                
+                "scene_assembly": {
+                    "selected_objects": selected_models,
+                    "nlp_prompt": getattr(self, 'current_nlp_prompt', "")
+                },
+                
+                "assets": {
+                    "images": getattr(self, 'session_images', []),
+                    "models": getattr(self, 'session_models', [])
+                },
+                
+                "ui_state": ui_state
+            }
+            
+            self.logger.debug(f"Collected project data with {len(dynamic_params)} parameters")
+            return project_data
+            
+        except Exception as e:
+            self.logger.error(f"Failed to collect project data: {e}")
+            return self.project_manager.create_new_project()
+    
+    def _apply_project_state_to_ui(self, project_data: Dict[str, Any]):
+        """Apply loaded project data to UI"""
+        try:
+            # Apply generation settings
+            generation_settings = project_data.get("generation_settings", {})
+            image_settings = generation_settings.get("image", {})
+            
+            # Set prompts
+            if hasattr(self, 'positive_prompt_widget') and self.positive_prompt_widget:
+                self.positive_prompt_widget.set_prompt(image_settings.get("prompt", ""))
+            if hasattr(self, 'negative_prompt_widget') and self.negative_prompt_widget:
+                self.negative_prompt_widget.set_prompt(image_settings.get("negative_prompt", ""))
+            
+            # Set workflow
+            workflow = image_settings.get("workflow", "")
+            if workflow and hasattr(self, 'workflow_combo') and self.workflow_combo:
+                index = self.workflow_combo.findText(workflow)
+                if index >= 0:
+                    self.workflow_combo.setCurrentIndex(index)
+            
+            # Apply dynamic parameters
+            parameters = image_settings.get("parameters", {})
+            self._apply_dynamic_parameters_to_ui(parameters)
+            
+            # Apply UI state
+            ui_state = project_data.get("ui_state", {})
+            
+            # Set active tab
+            if self.main_tab_widget and "active_tab" in ui_state:
+                self.main_tab_widget.setCurrentIndex(ui_state["active_tab"])
+            
+            # Apply accent color
+            if "accent_color" in ui_state:
+                self.theme_manager.set_accent_color(ui_state["accent_color"])
+            
+            # Restore window geometry (optional)
+            if "window_geometry" in ui_state:
+                try:
+                    geometry_data = bytes.fromhex(ui_state["window_geometry"])
+                    self.restoreGeometry(geometry_data)
+                except Exception:
+                    pass  # Ignore if restore fails
+                    
+            # Mark as not modified since we just loaded
+            self.project_manager.is_modified = False
+            
+            self.logger.info("Applied project state to UI")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to apply project state to UI: {e}")
+    
+    def _apply_dynamic_parameters_to_ui(self, parameters: Dict[str, Any]):
+        """Apply dynamic parameters to UI widgets"""
+        try:
+            for param_name, value in parameters.items():
+                if param_name in self.parameter_widgets:
+                    widget = self.parameter_widgets[param_name]
+                    
+                    # Apply value based on widget type
+                    if hasattr(widget, 'setValue'):
+                        widget.setValue(value)
+                    elif hasattr(widget, 'setCurrentText'):
+                        widget.setCurrentText(str(value))
+                    elif hasattr(widget, 'setText'):
+                        widget.setText(str(value))
+                    elif hasattr(widget, 'setChecked'):
+                        widget.setChecked(bool(value))
+                        
+            self.logger.debug(f"Applied {len(parameters)} dynamic parameters to UI")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to apply dynamic parameters to UI: {e}")
+    
+    def _reset_ui_to_project_state(self):
+        """Reset UI to clean state for new project"""
+        try:
+            # Clear prompts
+            if hasattr(self, 'positive_prompt_widget') and self.positive_prompt_widget:
+                self.positive_prompt_widget.set_prompt("")
+            if hasattr(self, 'negative_prompt_widget') and self.negative_prompt_widget:
+                self.negative_prompt_widget.set_prompt("")
+                
+            # Clear selected objects
+            if hasattr(self, 'unified_object_selector') and self.unified_object_selector:
+                self.unified_object_selector.clear_all_objects()
+                
+            # Reset to first tab
+            if self.main_tab_widget:
+                self.main_tab_widget.setCurrentIndex(0)
+                
+            # Clear session data
+            self.session_images = []
+            self.session_models = []
+            
+            self.logger.debug("Reset UI to clean state")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to reset UI: {e}")
+    
+    def _create_undo_snapshot(self, action_description: str = ""):
+        """Create undo snapshot of current state"""
+        try:
+            # Collect current state
+            state_snapshot = {
+                "timestamp": datetime.now().isoformat(),
+                "action": action_description,
+                "project_data": self._collect_project_data(),
+                "ui_state": {
+                    "active_tab": self.main_tab_widget.currentIndex() if self.main_tab_widget else 0,
+                    "selected_objects": list(self.unified_object_selector.objects.keys()) if self.unified_object_selector else [],
+                }
+            }
+            
+            # Add to undo stack
+            self.undo_stack.append(state_snapshot)
+            
+            # Limit undo stack size
+            if len(self.undo_stack) > self.max_undo_steps:
+                self.undo_stack.pop(0)
+                
+            # Clear redo stack when new action is performed
+            self.redo_stack.clear()
+            
+            self.logger.debug(f"Created undo snapshot: {action_description}")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to create undo snapshot: {e}")
+    
+    def _undo(self):
+        """Undo last action"""
+        try:
+            if not self.undo_stack:
+                self.logger.info("Nothing to undo")
+                return
+                
+            # Save current state to redo stack
+            current_state = {
+                "timestamp": datetime.now().isoformat(),
+                "action": "current_state",
+                "project_data": self._collect_project_data(),
+                "ui_state": {
+                    "active_tab": self.main_tab_widget.currentIndex() if self.main_tab_widget else 0,
+                    "selected_objects": list(self.unified_object_selector.objects.keys()) if self.unified_object_selector else [],
+                }
+            }
+            self.redo_stack.append(current_state)
+            
+            # Get last undo state
+            undo_state = self.undo_stack.pop()
+            
+            # Apply undo state
+            self._apply_project_state_to_ui(undo_state["project_data"])
+            
+            # Apply UI state
+            ui_state = undo_state.get("ui_state", {})
+            if "active_tab" in ui_state and self.main_tab_widget:
+                self.main_tab_widget.setCurrentIndex(ui_state["active_tab"])
+                
+            self.logger.info(f"Undid action: {undo_state.get('action', 'unknown')}")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to undo: {e}")
+            QMessageBox.critical(self, "Undo Error", f"Failed to undo:\n{e}")
+    
+    def _redo(self):
+        """Redo last undone action"""
+        try:
+            if not self.redo_stack:
+                self.logger.info("Nothing to redo")
+                return
+                
+            # Save current state to undo stack
+            current_state = {
+                "timestamp": datetime.now().isoformat(),
+                "action": "current_state",
+                "project_data": self._collect_project_data(),
+                "ui_state": {
+                    "active_tab": self.main_tab_widget.currentIndex() if self.main_tab_widget else 0,
+                    "selected_objects": list(self.unified_object_selector.objects.keys()) if self.unified_object_selector else [],
+                }
+            }
+            self.undo_stack.append(current_state)
+            
+            # Get last redo state
+            redo_state = self.redo_stack.pop()
+            
+            # Apply redo state
+            self._apply_project_state_to_ui(redo_state["project_data"])
+            
+            # Apply UI state
+            ui_state = redo_state.get("ui_state", {})
+            if "active_tab" in ui_state and self.main_tab_widget:
+                self.main_tab_widget.setCurrentIndex(ui_state["active_tab"])
+                
+            self.logger.info(f"Redid action: {redo_state.get('action', 'unknown')}")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to redo: {e}")
+            QMessageBox.critical(self, "Redo Error", f"Failed to redo:\n{e}")
+    
+    def _auto_create_undo_snapshots(self):
+        """Auto-create undo snapshots for key actions"""
+        try:
+            # Connect parameter change signals to create undo snapshots
+            if hasattr(self, 'positive_prompt_widget') and self.positive_prompt_widget:
+                # Create undo snapshot when prompt changes
+                self.positive_prompt_widget.textChanged.connect(
+                    lambda: self._create_undo_snapshot("Prompt changed")
+                )
+                
+            if hasattr(self, 'negative_prompt_widget') and self.negative_prompt_widget:
+                self.negative_prompt_widget.textChanged.connect(
+                    lambda: self._create_undo_snapshot("Negative prompt changed")
+                )
+                
+            # Connect workflow change signal
+            if hasattr(self, 'workflow_combo') and self.workflow_combo:
+                self.workflow_combo.currentTextChanged.connect(
+                    lambda: self._create_undo_snapshot("Workflow changed")
+                )
+                
+            # Connect object selection changes
+            if hasattr(self, 'unified_object_selector') and self.unified_object_selector:
+                self.unified_object_selector.object_selected.connect(
+                    lambda: self._create_undo_snapshot("Object selected")
+                )
+                self.unified_object_selector.all_objects_cleared.connect(
+                    lambda: self._create_undo_snapshot("Objects cleared")
+                )
+                
+        except Exception as e:
+            self.logger.error(f"Failed to setup auto undo snapshots: {e}")
     
     def _clear_recent_projects(self):
         """Clear the recent projects list"""
@@ -4274,158 +4753,240 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             settings = QSettings("ComfyUI-Cinema4D", "Bridge")
             accent_color = settings.value("interface/accent_color", "#4CAF50")
             
-            # Apply the same comprehensive CSS as in settings dialog
-            accent_override_css = f"""
-            /* Accent Color Override */
-            QSlider::handle:horizontal, QSlider::handle:vertical {{
-                background-color: {accent_color} !important;
-            }}
-            
-            QSlider::sub-page:horizontal, QSlider::add-page:vertical {{
-                background-color: {accent_color} !important;
-            }}
-            
-            QTabBar::tab:selected {{
-                border-bottom: 2px solid {accent_color} !important;
-                background-color: rgba({int(accent_color[1:3], 16)}, {int(accent_color[3:5], 16)}, {int(accent_color[5:7], 16)}, 0.05) !important;
-            }}
-            
-            QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {{
-                border-color: {accent_color} !important;
-            }}
-            
-            /* Text Selection Colors - Multiple Approaches */
-            QTextEdit::selection {{
-                background-color: {accent_color} !important;
-                color: #000000 !important;
-            }}
-            
-            QLineEdit::selection {{
-                background-color: {accent_color} !important;
-                color: #000000 !important;
-            }}
-            
-            QWidget {{
-                selection-background-color: {accent_color} !important;
-                selection-color: #000000 !important;
-            }}
-            
-            /* Console Focus Border - Multiple Selectors for Investigation */
-            QTextEdit#console:focus {{
-                border: 2px solid {accent_color} !important;
-            }}
-            QTextEdit[objectName="console"]:focus {{
-                border: 2px solid {accent_color} !important;
-            }}
-            QTextEdit:focus {{
-                border: 2px solid {accent_color} !important;
-            }}
-            
-            QCheckBox::indicator:checked {{
-                background-color: {accent_color} !important;
-                border-color: {accent_color} !important;
-            }}
-            
-            
-            /* Magic Prompt Star Buttons - More specific targeting */
-            QPushButton[text="★"] {{
-                color: {accent_color} !important;
-            }}
-            QPushButton[text="★"]:hover {{
-                color: {self._get_lighter_color(accent_color)} !important;
-            }}
-            QPushButton[text="★"]:pressed {{
-                color: {self._get_darker_color(accent_color)} !important;
-            }}
-            
-            /* Image Thumbnail Selection Borders - Exact selector */
-            QFrame#image_thumbnail[selected="true"] {{
-                border: 2px solid {accent_color} !important;
-            }}
-            
-            /* All Checkbox States - Both #4CAF50 and #22c55e variants */
-            QCheckBox::indicator:checked {{
-                background-color: {accent_color} !important;
-                border-color: {accent_color} !important;
-            }}
-            QCheckBox::indicator:hover {{
-                border-color: {accent_color} !important;
-                background-color: rgba({int(accent_color[1:3], 16)}, {int(accent_color[3:5], 16)}, {int(accent_color[5:7], 16)}, 50) !important;
-            }}
-            
-            /* Connection/Status Info Labels */
-            QLabel#connection_info {{
-                color: {accent_color} !important;
-            }}
-            
-            /* 3D Model Selection States */
-            Model3DPreviewCard QPushButton[selected="true"] {{
-                background-color: {accent_color} !important;
-            }}
-            
-            /* Primary Action Buttons */
-            QPushButton#generate_btn, QPushButton#generate_3d_btn, QPushButton#generate_texture_btn,
-            QPushButton#import_selected_btn, QPushButton#export_btn {{
-                background-color: {accent_color} !important;
-                border-color: {accent_color} !important;
-            }}
-            
-            /* Dialog and Menu Styling */
-            QDialog QListWidget::item:selected {{
-                background-color: {accent_color} !important;
-                color: #000000 !important;
-            }}
-            QDialog QListWidget::item:hover {{
-                background-color: rgba({int(accent_color[1:3], 16)}, {int(accent_color[3:5], 16)}, {int(accent_color[5:7], 16)}, 0.3) !important;
-            }}
-            
-            /* Menu hover states */
-            QMenu::item:selected {{
-                background-color: {accent_color} !important;
-                color: #000000 !important;
-            }}
-            QMenu::item:hover {{
-                background-color: rgba({int(accent_color[1:3], 16)}, {int(accent_color[3:5], 16)}, {int(accent_color[5:7], 16)}, 0.8) !important;
-                color: #000000 !important;
-            }}
-            
-            /* Submenu indicators */
-            QMenu::right-arrow {{
-                border-left: 5px solid {accent_color};
-                border-top: 5px solid transparent;
-                border-bottom: 5px solid transparent;
-            }}
-            
-            /* Dialog button focus */
-            QDialogButtonBox QPushButton:default {{
-                background-color: {accent_color} !important;
-                border-color: {accent_color} !important;
-            }}
-            QDialogButtonBox QPushButton:focus {{
-                border: 2px solid {accent_color} !important;
-            }}
-            
-            /* Slider accent colors */
-            QSlider::handle:horizontal, QSlider::handle:vertical {{
-                background-color: {accent_color} !important;
-            }}
-            QSlider::groove:horizontal:active, QSlider::groove:vertical:active {{
-                background-color: rgba({int(accent_color[1:3], 16)}, {int(accent_color[3:5], 16)}, {int(accent_color[5:7], 16)}, 0.3) !important;
-            }}
-            """
-            
-            # Apply the accent color override CSS
-            current_stylesheet = self.styleSheet()
-            # Remove any existing accent override
-            if '/* Accent Color Override */' in current_stylesheet:
-                parts = current_stylesheet.split('/* Accent Color Override */')
-                current_stylesheet = parts[0]
-            
-            self.setStyleSheet(current_stylesheet + accent_override_css)
-            
-            self.logger.debug(f"Applied saved accent color {accent_color} on startup")
+            # If theme manager is available, use it for better accent color support
+            if self.theme_manager:
+                self.theme_manager.set_accent_color(accent_color)
+                # Apply enhanced accent color CSS that works with terminal theme
+                enhanced_accent_css = self._get_enhanced_accent_css(accent_color)
+                current_stylesheet = self.styleSheet()
+                self.setStyleSheet(current_stylesheet + enhanced_accent_css)
+                self.logger.info(f"Applied enhanced accent color {accent_color}")
+            else:
+                # Fallback to basic accent color override
+                accent_override_css = f"""
+                /* Accent Color Override */
+                QSlider::handle:horizontal, QSlider::handle:vertical {{
+                    background-color: {accent_color} !important;
+                }}
+                QTabBar::tab:selected {{
+                    border-bottom: 2px solid {accent_color} !important;
+                }}
+                QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {{
+                    border-color: {accent_color} !important;
+                }}
+                QCheckBox::indicator:checked {{
+                    background-color: {accent_color} !important;
+                    border-color: {accent_color} !important;
+                }}
+                """
+                current_stylesheet = self.styleSheet()
+                self.setStyleSheet(current_stylesheet + accent_override_css)
+                self.logger.debug(f"Applied basic accent color {accent_color}")
+                
         except Exception as e:
             self.logger.error(f"Failed to apply saved accent color on startup: {e}")
+    
+    def _get_enhanced_accent_css(self, accent_color: str) -> str:
+        """Get enhanced accent color CSS that preserves terminal theme"""
+        # Convert hex to RGB for transparency effects
+        try:
+            r = int(accent_color[1:3], 16)
+            g = int(accent_color[3:5], 16) 
+            b = int(accent_color[5:7], 16)
+        except:
+            r, g, b = 76, 175, 80  # Fallback to green
+            
+        return f"""
+        
+        /* ====== ENHANCED ACCENT COLOR OVERRIDE ====== */
+        /* Higher specificity selectors to override terminal theme */
+        
+        /* Sliders and progress bars */
+        QMainWindow QSlider::handle:horizontal,
+        QMainWindow QSlider::handle:vertical,
+        QWidget QSlider::handle:horizontal,
+        QWidget QSlider::handle:vertical {{
+            background-color: {accent_color} !important;
+            border: 1px solid {accent_color} !important;
+        }}
+        
+        QMainWindow QProgressBar::chunk,
+        QWidget QProgressBar::chunk {{
+            background-color: {accent_color} !important;
+        }}
+        
+        /* Tab styling with terminal theme compatibility */
+        QMainWindow QTabBar::tab:selected,
+        QWidget QTabBar::tab:selected {{
+            background-color: rgba({r}, {g}, {b}, 0.2) !important;
+            border-bottom: 3px solid {accent_color} !important;
+            color: #e0e0e0 !important;
+        }}
+        
+        QMainWindow QTabBar::tab:hover:!selected,
+        QWidget QTabBar::tab:hover:!selected {{
+            background-color: rgba({r}, {g}, {b}, 0.1) !important;
+            border-bottom: 2px solid {accent_color} !important;
+        }}
+        
+        /* Input field focus states */
+        QMainWindow QLineEdit:focus,
+        QMainWindow QTextEdit:focus, 
+        QMainWindow QPlainTextEdit:focus,
+        QWidget QLineEdit:focus,
+        QWidget QTextEdit:focus,
+        QWidget QPlainTextEdit:focus {{
+            border: 2px solid {accent_color} !important;
+            background-color: rgba({r}, {g}, {b}, 0.05) !important;
+        }}
+        
+        /* Checkbox and radio button states */
+        QMainWindow QCheckBox::indicator:checked,
+        QWidget QCheckBox::indicator:checked {{
+            background-color: {accent_color} !important;
+            border: 2px solid {accent_color} !important;
+        }}
+        
+        QMainWindow QCheckBox::indicator:hover,
+        QWidget QCheckBox::indicator:hover {{
+            border: 2px solid {accent_color} !important;
+        }}
+        
+        /* List and tree widget selections */
+        QMainWindow QListWidget::item:selected,
+        QWidget QListWidget::item:selected {{
+            background-color: {accent_color} !important;
+            color: #000000 !important;
+        }}
+        
+        QMainWindow QListWidget::item:hover,
+        QWidget QListWidget::item:hover {{
+            background-color: rgba({r}, {g}, {b}, 0.3) !important;
+        }}
+        
+        QMainWindow QTreeWidget::item:selected,
+        QWidget QTreeWidget::item:selected {{
+            background-color: {accent_color} !important;
+            color: #000000 !important;
+        }}
+        
+        /* Generate Buttons - Specific Object Names */
+        QPushButton#generate_btn, QPushButton#primary_btn, QPushButton#generate_image_btn, 
+        QPushButton#generate_3d_btn, QPushButton#generate_texture_btn,
+        QPushButton#import_selected_btn, QPushButton#export_btn {{
+            background-color: {accent_color} !important;
+            border-color: {accent_color} !important;
+        }}
+        
+        QPushButton#generate_btn:hover, QPushButton#primary_btn:hover, QPushButton#generate_image_btn:hover,
+        QPushButton#generate_3d_btn:hover, QPushButton#generate_texture_btn:hover,
+        QPushButton#import_selected_btn:hover, QPushButton#export_btn:hover {{
+            background-color: rgba({r}, {g}, {b}, 0.8) !important;
+            border-color: {accent_color} !important;
+        }}
+        
+        /* Magic Prompt Star Buttons */
+        QPushButton[text="★"] {{
+            color: {accent_color} !important;
+        }}
+        QPushButton[text="★"]:hover {{
+            color: rgba({r}, {g}, {b}, 0.8) !important;
+        }}
+        
+        /* Button hover states */
+        QMainWindow QPushButton:hover,
+        QWidget QPushButton:hover {{
+            border: 2px solid {accent_color} !important;
+            background-color: rgba({r}, {g}, {b}, 0.1) !important;
+        }}
+        
+        QMainWindow QPushButton:pressed,
+        QWidget QPushButton:pressed {{
+            background-color: rgba({r}, {g}, {b}, 0.2) !important;
+        }}
+        
+        /* ComboBox styling */
+        QMainWindow QComboBox:hover,
+        QWidget QComboBox:hover {{
+            border: 2px solid {accent_color} !important;
+        }}
+        
+        QMainWindow QComboBox:focus,
+        QWidget QComboBox:focus {{
+            border: 2px solid {accent_color} !important;
+        }}
+        
+        QMainWindow QComboBox::drop-down:hover,
+        QWidget QComboBox::drop-down:hover {{
+            background-color: rgba({r}, {g}, {b}, 0.2) !important;
+        }}
+        
+        /* Splitter handles */
+        QMainWindow QSplitter::handle:hover,
+        QWidget QSplitter::handle:hover {{
+            background-color: {accent_color} !important;
+        }}
+        
+        /* Scrollbar theming */
+        QMainWindow QScrollBar::handle:hover,
+        QWidget QScrollBar::handle:hover {{
+            background-color: {accent_color} !important;
+        }}
+        
+        /* Menu styling */
+        QMainWindow QMenu::item:selected,
+        QWidget QMenu::item:selected {{
+            background-color: {accent_color} !important;
+            color: #000000 !important;
+        }}
+        
+        QMainWindow QMenuBar::item:selected,
+        QWidget QMenuBar::item:selected {{
+            background-color: {accent_color} !important;
+            color: #000000 !important;
+        }}
+        
+        /* Text selection colors globally */
+        QMainWindow QTextEdit {{
+            selection-background-color: {accent_color} !important;
+            selection-color: #000000 !important;
+        }}
+        
+        QMainWindow QLineEdit {{
+            selection-background-color: {accent_color} !important;
+            selection-color: #000000 !important;
+        }}
+        
+        QMainWindow QPlainTextEdit {{
+            selection-background-color: {accent_color} !important;
+            selection-color: #000000 !important;
+        }}
+        
+        /* ====== END ENHANCED ACCENT COLOR ====== */
+        
+        """
+    
+    def _apply_theme(self):
+        """Apply theme with unified manager if available, fallback to terminal theme"""
+        try:
+            if self.theme_manager:
+                # Use unified theme manager
+                unified_stylesheet = self.theme_manager.get_complete_stylesheet()
+                self.setStyleSheet(unified_stylesheet)
+                self.logger.info("Applied unified theme")
+            else:
+                # Fallback to terminal theme
+                terminal_theme = get_complete_terminal_theme()
+                self.setStyleSheet(terminal_theme)
+                self.logger.info("Applied terminal theme (fallback)")
+        except Exception as e:
+            self.logger.error(f"Failed to apply theme: {e}")
+            # Final fallback to terminal theme
+            try:
+                terminal_theme = get_complete_terminal_theme()
+                self.setStyleSheet(terminal_theme)
+            except:
+                pass
     
     def _get_lighter_color(self, hex_color: str) -> str:
         """Get a lighter version of the hex color for hover effects"""
@@ -4444,7 +5005,8 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             b = min(255, b + 30)
             
             return f"#{r:02x}{g:02x}{b:02x}"
-        except:
+        except (ValueError, AttributeError) as e:
+            logger.debug(f"Color parsing failed, using fallback: {e}")
             return "#66BB6A"  # Fallback
     
     def _get_darker_color(self, hex_color: str) -> str:
@@ -4464,7 +5026,8 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             b = max(0, b - 40)
             
             return f"#{r:02x}{g:02x}{b:02x}"
-        except:
+        except (ValueError, AttributeError) as e:
+            logger.debug(f"Color darkening failed, using fallback: {e}")
             return "#2E7D32"  # Fallback
     
     def _open_github_documentation(self):

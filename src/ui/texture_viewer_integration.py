@@ -173,9 +173,11 @@ class TextureViewerIntegration(QWidget):
     viewer_launched = Signal(bool)  # success
     model_selected = Signal(str)  # model path
     
-    def __init__(self, parent=None):
+    def __init__(self, config=None, parent=None):
         super().__init__(parent)
-        self.viewer_path = Path("viewer/run_final_viewer.bat")
+        self.config = config
+        # Use config path if available
+        self.viewer_path = Path(config.texture_viewer_path) if config and hasattr(config, 'texture_viewer_path') else Path("viewer/run_final_viewer.bat")
         self.textured_models: List[Path] = []
         self.launcher_thread = None
         
@@ -264,7 +266,13 @@ class TextureViewerIntegration(QWidget):
         
     def refresh_models(self):
         """Refresh textured models list"""
-        textured_path = Path("D:/Comfy3D_WinPortable/ComfyUI/output/3D/textured")
+        # Use config computed property if available
+        if self.config and hasattr(self.config, 'textured_models_dir'):
+            textured_path = self.config.textured_models_dir
+        elif self.config and hasattr(self.config, 'models_3d_dir'):
+            textured_path = Path(self.config.models_3d_dir) / "textured"
+        else:
+            textured_path = Path("D:/Comfy3D_WinPortable/ComfyUI/output/3D/textured")
         
         if not textured_path.exists():
             self.textured_models = []
