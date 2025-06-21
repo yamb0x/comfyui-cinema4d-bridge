@@ -20,13 +20,13 @@ The image generation tab is built on top of Flux, supporting SD 3.5 and any mode
 
 Texture generation here doesn’t follow a standard path. It regenerates visual surfaces through prompt-driven processes, relying on experimental workflows that bend traditional PBR pipelines. Parameters are surfaced selectively, allowing high-level control without micromanaging the graph. This design approach takes cues from procedural thinking—letting complexity exist under the hood, while the user shapes the outcome from above.
 
-It doesn’t pretend to be universal. But for those working with Cinems4D and interested to expend their workflow for 3D models generation, that could be a good starting point.
+It doesn’t pretend to be universal. But for those working with Cinema4D and interested to expand their workflow for 3D models generation, that could be a good starting point.
 
 ## What This Does
 
 - Connect ComfyUI workflows to Cinema4D scenes (Based on Yambo ComfyUI Workflows)
 - Generate images -> convert to 3D models
-- Applying PBR Texturees using latent space manipulations 
+- Applying PBR Textures using latent space manipulations 
 - Control 3D objects with natural language
 - Real-time workflow from idea to scene
 
@@ -34,13 +34,13 @@ It doesn’t pretend to be universal. But for those working with Cinems4D and in
 
 Built on MCP protocols for reliable communication.
 Python/Qt6 interface, async workflow management.
-Works with any ComfyUI workflow through dynamic UI generation (might have bugs but easily fixable - just data type erros sometimes that could break the comfyui json)
+Works with any ComfyUI workflow through dynamic UI generation (might have bugs but easily fixable - just data type errors sometimes that could break the comfyui json)
 
 ## Implications
 
 **Today:** Manual pipeline from AI to 3D  
 **Tomorrow:** AI-native 3D content creation  
-**Future:** Neural rendering quickly integrated into 3D Workflows (neural rendering, guessian splatts)
+**Future:** Neural rendering quickly integrated into 3D Workflows (neural rendering, gaussian splats)
 
 
 ## Setup
