@@ -1,5 +1,5 @@
 """
-Complete Terminal Theme for ComfyUI to Cinema4D Bridge
+Complete Terminal Theme for comfy2c4d
 Professional monospace aesthetic with comprehensive UI coverage
 """
 

@@ -1,7 +1,7 @@
 """
 Centralized State Store
 
-Implements centralized state management for the ComfyUI-Cinema4D Bridge.
+Implements centralized state management for comfy2c4d.
 Replaces the scattered 60+ instance variables from the monolithic application
 with a clean, event-driven state management system.
 

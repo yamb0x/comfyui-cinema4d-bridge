@@ -433,7 +433,7 @@ class UIController(QObject):
         """Create main application window"""
         with error_context("ui_controller", "create_main_window"):
             window = QMainWindow()
-            window.setWindowTitle("ComfyUI to Cinema4D Bridge")
+            window.setWindowTitle("comfy2c4d")
             
             # Set window properties from config
             window_size = self.config.get_setting("ui.window_size", [1400, 900])
