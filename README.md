@@ -43,35 +43,109 @@ Works with any ComfyUI workflow through dynamic UI generation (might have bugs b
 **Future:** Neural rendering quickly integrated into 3D Workflows (neural rendering, gaussian splats)
 
 
-## Setup
+```ascii
+    ╔═══════════════════════════════════════╗
+    ║               S E T U P               ║
+    ╚═══════════════════════════════════════╝
+```
 
-**Requirements:** Python 3.12+, ComfyUI, Cinema4D R2024+
+### Prerequisites
+- **Python 3.12+** (tested with 3.12.0)
+- **ComfyUI** running at `http://localhost:8188` 
+- **Cinema4D R2024+** with Python API enabled
+- **Git** for cloning and 16GB+ RAM recommended
 
+### Installation
+
+#### 1. Clone & Install Dependencies
 ```bash
 git clone https://github.com/yamb0x/comfyui-cinema4d-bridge.git
 cd comfy-to-c4d
-install_dependencies.bat
-# Configure paths in .env
-launch.bat
+install_dependencies.bat  # Comprehensive dependency installation
 ```
 
-## Status
+#### 2. Setup MCP Servers (CRITICAL - App won't work without these)
 
-| Feature | Status |
-|---------|--------|
-| **Image generation** | ✅ Working |
-| **3D model creation** | ✅ Working |
-| **Texture generation** | 🔄 In progress |
-| **Cinema4D integration** | 🔧 50% complete |
+**ComfyUI MCP Server:**
+```bash
+# No additional setup needed - ComfyUI works out of the box
+# Just ensure ComfyUI is running at localhost:8188
+```
 
-Define Environment variables → then ready for experimentation, not production.
+**Cinema4D MCP Server:**
+```bash
+# 1. Install Cinema4D MCP
+git clone https://github.com/ttiimmaacc/cinema4d-mcp.git
+cd cinema4d-mcp && pip install -r requirements.txt
 
-## Technical Details
+# 2. In Cinema4D: Script → Script Manager
+# 3. Load: mcp_servers/cinema4d-mcp/c4d_mcp_server.py
+# 4. Execute to start socket server (shows confirmation dialog)
+```
 
-- **Architecture:** Qt6 frontend, async Python backend
-- **Protocol:** MCP for Cinema4D and ComfyUI communication  
-- **Workflows:** Dynamic UI adapts to any ComfyUI node graph
-- **Integration:** File monitoring, real-time status updates and loading of generated assets from ComfyUI
+#### 3. Configure Application Paths
+```bash
+launch.bat  # Opens app
+# Go to: Settings → Paths → Configure ComfyUI and Cinema4D paths
+# Set your installation directories and save
+```
+
+#### 4. Verify Everything Works
+```bash
+# Check MCP connection status in app console:
+# ✅ ComfyUI MCP: Connected
+# ✅ Cinema4D MCP: Connected  
+# 🚀 Ready to generate!
+```
+
+> **Pro Tip:** If MCP servers fail to connect, check the console output for specific error messages and ensure both ComfyUI and Cinema4D are running with the MCP scripts loaded.
+
+**Links:**
+- [ComfyUI MCP Server](https://github.com/joenorton/comfyui-mcp-server)
+- [Cinema4D MCP](https://github.com/ttiimmaacc/cinema4d-mcp)
+
+```ascii
+    ╔═══════════════════════════════════════╗
+    ║              S T A T U S              ║
+    ╚═══════════════════════════════════════╝
+```
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| **Image generation** | `[████████████████████] 100%` | Flux + SD 3.5 working |
+| **3D model creation** | `[████████████████████] 100%` | Hunyuan 2.0 integration |
+| **Texture generation** | `[████████████▒▒▒▒▒▒▒▒] 70%` | PBR workflows experimental |
+| **Cinema4D integration** | `[██████████▒▒▒▒▒▒▒▒▒▒] 50%` | MCP + NLP command system |
+
+```bash
+$ export COMFYUI_PATH="/path/to/comfyui"
+$ export CINEMA4D_PATH="/path/to/c4d"  
+$ ./comfy2c4d --mode=experimental
+# Ready for AI-native 3D workflow experiments
+```
+
+```ascii
+    ╔═══════════════════════════════════════╗
+    ║         T E C H   S P E C S           ║
+    ╚═══════════════════════════════════════╝
+```
+
+```yaml
+architecture:
+  frontend: Qt6 + async Python backend
+  protocol: MCP (Model Context Protocol) 
+  comms: WebSocket + REST API integration
+  
+workflow_engine:
+  dynamic_ui: Adapts to any ComfyUI node graph
+  monitoring: Real-time asset loading & status
+  experimental: Yambo's custom PBR pipeline
+  
+integrations:
+  - comfyui: flux, sd3.5, hunyuan2.0  
+  - cinema4d: python API + MCP bridge
+  - latent_space: prompt-driven texture gen
+```
 
 See [docs/](docs/) for implementation details.
 
@@ -86,4 +160,9 @@ Issues and PRs welcome.
 
 ---
 
-**Built by [Yambo Studio](https://www.yambo-studio.com/) - Professional 3D Content Creation**
+```ascii
+    ╭──────────────────────────────────────╮
+    │  Built by Yambo (yambo-studio.com)   │
+    │     + Multi-Agent Cloud Workflow     │
+    ╰──────────────────────────────────────╯
+```

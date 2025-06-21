@@ -1,4 +1,4 @@
-# Quick Setup Reference - ComfyUI to Cinema4D Bridge
+# Quick Setup Reference - comfy2c4d
 
 ## 🚀 Windows Setup Commands
 
