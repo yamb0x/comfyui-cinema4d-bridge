@@ -1,4 +1,4 @@
-# ComfyUI to Cinema4D Bridge - Development Guide
+# comfy2c4d - Development Guide
 
 ## 🚧 Project Status
 

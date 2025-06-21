@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ComfyUI to Cinema4D Bridge Application
+comfy2c4d - AI to 3D Workflow Integration
 Main entry point for the desktop application
 """
 
@@ -25,7 +25,7 @@ async def main():
     """Main application entry point"""
     # Setup logging with reduced verbosity
     setup_logging(debug=False)
-    logger.info("Starting ComfyUI to Cinema4D Bridge Application")
+    logger.info("Starting comfy2c4d Application")
     
     # Suppress Qt warnings
     suppress_qt_warnings()

@@ -1,6 +1,6 @@
 @echo off
 echo ============================================================
-echo  ComfyUI to Cinema4D Bridge - Dependency Installation
+echo  comfy2c4d - Dependency Installation
 echo ============================================================
 echo.
 
@@ -261,7 +261,7 @@ if %CRITICAL_ERRORS% EQU 0 (
     echo 📚 Or run tests with: venv\Scripts\python.exe -m pytest
     echo ⚙️  Check settings for optional features in the application
     echo.
-    echo Ready to bridge ComfyUI with Cinema4D! 🎨➡️🎬
+    echo Ready to bridge AI workflows with Cinema4D! 🎨➡️🎬
 ) else (
     echo ❌ CRITICAL ERRORS: %CRITICAL_ERRORS% critical dependencies failed
     echo.

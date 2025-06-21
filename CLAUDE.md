@@ -1,4 +1,4 @@
-# ComfyUI to Cinema4D Bridge - Claude's Master Reference
+# comfy2c4d - Claude's Master Reference
 
 ## 🚀 SESSION QUICK START - "What are we working on today?"
 

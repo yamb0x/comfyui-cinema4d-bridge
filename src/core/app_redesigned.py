@@ -1,5 +1,5 @@
 """
-REDESIGNED ComfyUI to Cinema4D Bridge Application
+comfy2c4d - AI to 3D Workflow Integration
 Complete terminal aesthetic implementation with all functionality preserved
 Professional monospace design with enhanced user experience
 """

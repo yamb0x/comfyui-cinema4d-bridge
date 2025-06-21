@@ -386,7 +386,7 @@ class ApplicationSettingsDialog(QDialog):
     def _load_current_values(self):
         """Load current settings values"""
         from PySide6.QtCore import QSettings
-        settings = QSettings("ComfyUI-Cinema4D", "Bridge")
+        settings = QSettings("comfy2c4d", "Bridge")
         
         # General settings
         self.auto_save_check.setChecked(settings.value("general/auto_save", True, type=bool))
@@ -447,7 +447,7 @@ class ApplicationSettingsDialog(QDialog):
         try:
             # Save settings using QSettings
             from PySide6.QtCore import QSettings
-            settings = QSettings("ComfyUI-Cinema4D", "Bridge")
+            settings = QSettings("comfy2c4d", "Bridge")
             
             # General settings
             settings.setValue("general/auto_save", self.auto_save_check.isChecked())
@@ -504,7 +504,7 @@ class ApplicationSettingsDialog(QDialog):
             try:
                 # Clear all QSettings
                 from PySide6.QtCore import QSettings
-                settings = QSettings("ComfyUI-Cinema4D", "Bridge")
+                settings = QSettings("comfy2c4d", "Bridge")
                 settings.clear()
                 
                 # Reset all UI controls to default values
@@ -780,7 +780,7 @@ class ApplicationSettingsDialog(QDialog):
                 )
             
             # Save to settings for persistence
-            settings = QSettings("ComfyUI-Cinema4D", "Bridge")
+            settings = QSettings("comfy2c4d", "Bridge")
             settings.setValue("logging/level", level)
             settings.setValue("logging/file_enabled", getattr(self, 'log_to_file_check', None) and self.log_to_file_check.isChecked())
             settings.setValue("logging/rotation_enabled", getattr(self, 'log_rotation_check', None) and self.log_rotation_check.isChecked())
