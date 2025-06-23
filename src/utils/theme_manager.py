@@ -58,7 +58,7 @@ class UnifiedThemeManager(QObject):
         self.accent_color = color
         self.save_themes_config()
         self.accent_color_changed.emit(color)
-        logger.info(f"Accent color changed to: {color}")
+        logger.debug(f"Accent color changed to: {color}")
     
     def set_theme(self, theme_name: str):
         """Set theme and update all components"""

@@ -317,6 +317,20 @@ class ApplicationSettingsDialog(QDialog):
         
         layout.addWidget(network_group)
         
+        # ComfyUI settings
+        comfyui_group = QGroupBox("ComfyUI Settings")
+        comfyui_layout = QFormLayout(comfyui_group)
+        
+        # Texture wait time
+        self.texture_wait_spin = QSpinBox()
+        self.texture_wait_spin.setRange(5, 120)
+        self.texture_wait_spin.setValue(20)  # Default value
+        self.texture_wait_spin.setSuffix(" seconds")
+        self.texture_wait_spin.setToolTip("Time to wait for ComfyUI to release texture files before copying")
+        comfyui_layout.addRow("Texture file wait time:", self.texture_wait_spin)
+        
+        layout.addWidget(comfyui_group)
+        
         # Privacy settings
         privacy_group = QGroupBox("Privacy Settings")
         privacy_layout = QFormLayout(privacy_group)
@@ -433,6 +447,9 @@ class ApplicationSettingsDialog(QDialog):
         self.retry_spin.setValue(settings.value("advanced/retry_attempts", 3, type=int))
         self.telemetry_check.setChecked(settings.value("advanced/telemetry", False, type=bool))
         
+        # ComfyUI settings
+        self.texture_wait_spin.setValue(settings.value("comfyui/texture_wait_time", 20, type=int))
+        
         # Setup auto-save timer before applying settings
         try:
             self._setup_auto_save()
@@ -482,6 +499,9 @@ class ApplicationSettingsDialog(QDialog):
             settings.setValue("advanced/timeout", self.timeout_spin.value())
             settings.setValue("advanced/retry_attempts", self.retry_spin.value())
             settings.setValue("advanced/telemetry", self.telemetry_check.isChecked())
+            
+            # ComfyUI settings
+            settings.setValue("comfyui/texture_wait_time", self.texture_wait_spin.value())
             
             self.settings_updated.emit()
             QMessageBox.information(self, "Success", "Settings saved successfully!")
@@ -824,7 +844,7 @@ class ApplicationSettingsDialog(QDialog):
                 self.auto_save_timer.start(interval)
                 logger.info(f"Auto-save timer started with {self.auto_save_interval_spin.value()} minute interval")
             else:
-                logger.info("Auto-save timer setup complete (not started - disabled or controls not ready)")
+                logger.debug("Auto-save timer setup complete (not started - disabled or controls not ready)")
         except Exception as e:
             logger.error(f"Failed to setup auto-save timer: {e}")
     
@@ -887,7 +907,7 @@ class ApplicationSettingsDialog(QDialog):
             self.setFont(font)
             if self.parent():
                 self.parent().setFont(font)
-            logger.info(f"Font size changed to {value}px")
+            logger.debug(f"Font size changed to {value}px")
         except Exception as e:
             logger.error(f"Failed to change font size: {e}")
     
@@ -902,7 +922,7 @@ class ApplicationSettingsDialog(QDialog):
             if parent_app and hasattr(parent_app, '_apply_saved_accent_color'):
                 parent_app._apply_saved_accent_color()
                 
-            logger.info(f"Accent color changed to {self.accent_color}")
+            logger.debug(f"Accent color changed to {self.accent_color}")
         except Exception as e:
             logger.error(f"Failed to apply accent color: {e}")
     
@@ -970,7 +990,7 @@ class ApplicationSettingsDialog(QDialog):
                                 setattr(console, attr_name, checked)
                             break
                             
-            logger.info(f"Console auto-scroll {'enabled' if checked else 'disabled'}")
+            logger.debug(f"Console auto-scroll {'enabled' if checked else 'disabled'}")
         except Exception as e:
             logger.error(f"Failed to change console auto-scroll: {e}")
     
@@ -997,7 +1017,7 @@ class ApplicationSettingsDialog(QDialog):
                                 setattr(console, attr_name, value)
                             break
                             
-            logger.info(f"Console buffer size changed to {value} lines")
+            logger.debug(f"Console buffer size changed to {value} lines")
         except Exception as e:
             logger.error(f"Failed to change console buffer size: {e}")
     
@@ -1024,7 +1044,7 @@ class ApplicationSettingsDialog(QDialog):
                                 setattr(console, attr_name, format_str)
                             break
                             
-            logger.info(f"Timestamp format changed to {format_str}")
+            logger.debug(f"Timestamp format changed to {format_str}")
         except Exception as e:
             logger.error(f"Failed to change timestamp format: {e}")
     
@@ -1040,7 +1060,7 @@ class ApplicationSettingsDialog(QDialog):
                     workflow_manager.set_max_concurrent_operations(value)
                 elif hasattr(workflow_manager, 'max_concurrent_operations'):
                     workflow_manager.max_concurrent_operations = value
-            logger.info(f"Max concurrent operations changed to {value}")
+            logger.debug(f"Max concurrent operations changed to {value}")
         except Exception as e:
             logger.error(f"Failed to change max operations: {e}")
     
@@ -1059,7 +1079,7 @@ class ApplicationSettingsDialog(QDialog):
                     workflow_manager = parent_app.workflow_manager
                     if hasattr(workflow_manager, 'set_memory_limit'):
                         workflow_manager.set_memory_limit(value)
-            logger.info(f"Memory limit changed to {value}MB")
+            logger.debug(f"Memory limit changed to {value}MB")
         except Exception as e:
             logger.error(f"Failed to change memory limit: {e}")
     
@@ -1078,7 +1098,7 @@ class ApplicationSettingsDialog(QDialog):
                     comfyui_client = parent_app.comfyui_client
                     if hasattr(comfyui_client, 'set_gpu_acceleration'):
                         comfyui_client.set_gpu_acceleration(checked)
-            logger.info(f"GPU acceleration {'enabled' if checked else 'disabled'}")
+            logger.debug(f"GPU acceleration {'enabled' if checked else 'disabled'}")
         except Exception as e:
             logger.error(f"Failed to change GPU acceleration: {e}")
     
@@ -1097,14 +1117,14 @@ class ApplicationSettingsDialog(QDialog):
                     file_monitor = parent_app.file_monitor
                     if hasattr(file_monitor, 'set_cache_size'):
                         file_monitor.set_cache_size(value)
-            logger.info(f"Cache size changed to {value}MB")
+            logger.debug(f"Cache size changed to {value}MB")
         except Exception as e:
             logger.error(f"Failed to change cache size: {e}")
     
     def _on_auto_clear_cache_changed(self, checked):
         """Handle auto-clear cache change"""
         try:
-            logger.info(f"Auto-clear cache {'enabled' if checked else 'disabled'}")
+            logger.debug(f"Auto-clear cache {'enabled' if checked else 'disabled'}")
         except Exception as e:
             logger.error(f"Failed to change auto-clear cache: {e}")
     
@@ -1123,21 +1143,21 @@ class ApplicationSettingsDialog(QDialog):
             # Re-apply the current log level which will handle file logging
             current_level = self.log_level_combo.currentText()
             self._apply_log_level(current_level)
-            logger.info(f"File logging {'enabled' if checked else 'disabled'}")
+            logger.debug(f"File logging {'enabled' if checked else 'disabled'}")
         except Exception as e:
             logger.error(f"Failed to change file logging: {e}")
     
     def _on_log_rotation_changed(self, checked):
         """Handle log rotation change"""
         try:
-            logger.info(f"Log rotation {'enabled' if checked else 'disabled'}")
+            logger.debug(f"Log rotation {'enabled' if checked else 'disabled'}")
         except Exception as e:
             logger.error(f"Failed to change log rotation: {e}")
     
     def _on_max_log_size_changed(self, value):
         """Handle max log size change"""
         try:
-            logger.info(f"Max log file size changed to {value}MB")
+            logger.debug(f"Max log file size changed to {value}MB")
         except Exception as e:
             logger.error(f"Failed to change max log size: {e}")
     
@@ -1150,7 +1170,7 @@ class ApplicationSettingsDialog(QDialog):
             else:
                 self._apply_log_level("INFO")
                 self.log_level_combo.setCurrentText("INFO")
-            logger.info(f"Debug mode {'enabled' if checked else 'disabled'}")
+            logger.debug(f"Debug mode {'enabled' if checked else 'disabled'}")
         except Exception as e:
             logger.error(f"Failed to change debug mode: {e}")
     
@@ -1158,7 +1178,7 @@ class ApplicationSettingsDialog(QDialog):
     def _on_telemetry_changed(self, checked):
         """Handle telemetry change"""
         try:
-            logger.info(f"Telemetry {'enabled' if checked else 'disabled'}")
+            logger.debug(f"Telemetry {'enabled' if checked else 'disabled'}")
         except Exception as e:
             logger.error(f"Failed to change telemetry: {e}")
     
@@ -1200,8 +1220,8 @@ class ApplicationSettingsDialog(QDialog):
             if self.auto_save_check.isChecked():
                 interval = value * 60 * 1000
                 self.auto_save_timer.start(interval)
-                logger.info(f"Auto-save interval changed to {value} minutes")
+                logger.debug(f"Auto-save interval changed to {value} minutes")
             else:
-                logger.info(f"Auto-save interval set to {value} minutes (currently disabled)")
+                logger.debug(f"Auto-save interval set to {value} minutes (currently disabled)")
         except Exception as e:
             logger.error(f"Failed to change auto-save interval: {e}")

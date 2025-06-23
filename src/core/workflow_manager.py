@@ -52,8 +52,15 @@ class WorkflowManager(LoggerMixin):
         """Load workflow from file"""
         workflow_path = self.workflows_dir / workflow_name
         
+        # Debug logging
+        self.logger.debug(f"Loading workflow: {workflow_name}")
+        self.logger.debug(f"Workflows directory: {self.workflows_dir}")
+        self.logger.debug(f"Full workflow path: {workflow_path}")
+        self.logger.debug(f"Path exists: {workflow_path.exists()}")
+        
         if not workflow_path.exists():
             self.logger.error(f"Workflow not found: {workflow_name}")
+            self.logger.error(f"Expected at: {workflow_path}")
             return None
         
         try:
@@ -61,7 +68,7 @@ class WorkflowManager(LoggerMixin):
                 workflow = json.load(f)
             
             self._workflow_cache[workflow_name] = workflow
-            self.logger.info(f"Loaded workflow: {workflow_name} from {workflow_path}")
+            self.logger.debug(f"Loaded workflow: {workflow_name} from {workflow_path}")
             
             # Debug: Log key nodes in the workflow
             node_types = []
@@ -69,7 +76,7 @@ class WorkflowManager(LoggerMixin):
                 if node.get("type") in ["CheckpointLoaderSimple", "UNETLoader", "FluxGuidance", "ModelSamplingSD3"]:
                     node_types.append(f"{node.get('type')}#{node.get('id')}")
             if node_types:
-                self.logger.info(f"Workflow contains: {', '.join(node_types)}")
+                self.logger.debug(f"Workflow contains: {', '.join(node_types)}")
             
             return deepcopy(workflow)
             
@@ -137,7 +144,7 @@ class WorkflowManager(LoggerMixin):
             ui_workflow_with_params = self._inject_params_ui_format(workflow_copy, params)
             # Then convert to API format for ComfyUI execution
             api_workflow = self._convert_ui_to_api_format(ui_workflow_with_params)
-            self.logger.info(f"Converted UI workflow to API format with {len(api_workflow)} nodes")
+            self.logger.debug(f"Converted UI workflow to API format with {len(api_workflow)} nodes")
             return api_workflow
         
         # Fallback: Convert UI format to API format if needed
@@ -280,6 +287,322 @@ class WorkflowManager(LoggerMixin):
         node["widgets_values"] = widgets
         self.logger.debug(f"Injected LoRA params into node {node_id}: {widgets}, mode: {node.get('mode', 0)}")
 
+    def _minimal_ui_to_api_conversion(self, workflow: Dict[str, Any]) -> Dict[str, Any]:
+        """Minimal conversion that preserves the workflow structure as much as possible"""
+        self.logger.warning("🔧 USING MINIMAL CONVERSION MODE")
+        
+        api_workflow = {}
+        
+        # Get all nodes
+        nodes = workflow.get("nodes", [])
+        links = workflow.get("links", [])
+        
+        # First pass: Create all nodes in API format
+        for node in nodes:
+            node_id = str(node.get("id"))
+            node_type = node.get("type", "")
+            
+            # Skip Note nodes
+            if node_type == "Note":
+                continue
+                
+            # Skip Reroute nodes - they'll be resolved through links
+            if node_type == "Reroute":
+                continue
+            
+            # Convert PrimitiveNode to appropriate type
+            if node_type == "PrimitiveNode":
+                # Check output type to determine correct node type
+                outputs = node.get("outputs", [])
+                if outputs and outputs[0].get("type") == "INT":
+                    node_type = "PrimitiveInt"
+                elif outputs and outputs[0].get("type") == "FLOAT":
+                    node_type = "PrimitiveFloat"
+                elif outputs and outputs[0].get("type") == "STRING":
+                    node_type = "PrimitiveString"
+                else:
+                    node_type = "PrimitiveInt"  # Default
+                self.logger.debug(f"📐 MINIMAL: Converted PrimitiveNode #{node_id} to {node_type}")
+                
+            api_node = {
+                "class_type": node_type,
+                "inputs": {}
+            }
+            
+            # Get widgets values
+            widgets = node.get("widgets_values", [])
+            
+            # For texture workflows, preserve widgets exactly as they are
+            # Only do essential conversions
+            if node_type == "Hy3DCameraConfig" and len(widgets) >= 5:
+                # CRITICAL TEXTURE WORKFLOW FIX: Check if elevation/azimuth are swapped
+                elevations_str = str(widgets[0])
+                azimuths_str = str(widgets[1])
+                
+                # Detection: If elevations contains values like 90, 180, 270 and azimuths contains mostly 0s and 90/-90
+                # then they are likely swapped (common in texture workflows)
+                if ("180" in elevations_str or "270" in elevations_str) and azimuths_str.count("0") >= 3:
+                    self.logger.error(f"🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!")
+                    self.logger.error(f"🔄 Original: elevations='{elevations_str}', azimuths='{azimuths_str}'")
+                    # Swap them to match expected format
+                    api_node["inputs"]["camera_elevations"] = azimuths_str
+                    api_node["inputs"]["camera_azimuths"] = elevations_str
+                    self.logger.error(f"🔄 Fixed: elevations='{azimuths_str}', azimuths='{elevations_str}'")
+                else:
+                    # Normal case - use as-is
+                    api_node["inputs"]["camera_elevations"] = elevations_str
+                    api_node["inputs"]["camera_azimuths"] = azimuths_str
+                
+                api_node["inputs"]["view_weights"] = widgets[2]
+                api_node["inputs"]["camera_distance"] = widgets[3]
+                api_node["inputs"]["ortho_scale"] = widgets[4]
+                self.logger.debug(f"📐 MINIMAL: Camera config processed for node {node_id}")
+            
+            elif node_type == "Hy3DLoadMesh" and widgets:
+                api_node["inputs"]["glb_path"] = widgets[0]
+            
+            elif node_type in ["PrimitiveInt", "PrimitiveFloat", "PrimitiveString"] and widgets:
+                # Handle primitive nodes (like reference image size)
+                if len(widgets) >= 1:
+                    api_node["inputs"]["value"] = widgets[0]
+                if len(widgets) >= 2:
+                    api_node["inputs"]["control_after_generate"] = widgets[1]
+                self.logger.debug(f"🔧 {node_type}: value={widgets[0] if widgets else 'none'}")
+            
+            # Handle floating point precision issues
+            elif node_type == "Constant Number" and widgets and len(widgets) >= 2:
+                # Fix floating point precision errors like 2.0000000000000004 -> 2.0
+                value = widgets[1]
+                if isinstance(value, float):
+                    # Round to reasonable precision to avoid ComfyUI parsing issues
+                    rounded_value = round(value, 6)
+                    if abs(rounded_value - round(rounded_value)) < 0.0001:
+                        # If very close to integer, use integer
+                        api_node["inputs"]["value"] = float(round(rounded_value))
+                    else:
+                        api_node["inputs"]["value"] = rounded_value
+                    self.logger.debug(f"🔧 Fixed float precision: {value} -> {api_node['inputs']['value']}")
+                else:
+                    api_node["inputs"]["value"] = value
+            
+            elif node_type == "ImageBlend" and widgets:
+                # Fix opacity precision: 0.5000000000000001 -> 0.5
+                if len(widgets) >= 2:
+                    opacity = widgets[0]
+                    if isinstance(opacity, float):
+                        api_node["inputs"]["opacity"] = round(opacity, 6)
+                    else:
+                        api_node["inputs"]["opacity"] = opacity
+                    api_node["inputs"]["blend_mode"] = widgets[1]
+                    self.logger.debug(f"🔧 ImageBlend: opacity={api_node['inputs']['opacity']}, mode={widgets[1]}")
+            
+            elif node_type == "UltimateSDUpscale" and widgets:
+                # Preserve all 20+ parameters exactly
+                param_names = ["upscale_by", "seed_mode", "seed", "steps", "cfg", "sampler_name", 
+                              "scheduler", "denoise", "upscale_model", "mode_type", "tile_width", 
+                              "tile_height", "mask_blur", "tile_padding", "seam_fix_mode", 
+                              "seam_fix_denoise", "seam_fix_width", "seam_fix_mask_blur", 
+                              "seam_fix_padding", "force_uniform_tiles", "tiled_decode"]
+                for i, param in enumerate(param_names):
+                    if i < len(widgets):
+                        value = widgets[i]
+                        # Fix float precision where needed
+                        if isinstance(value, float) and param in ["denoise", "seam_fix_denoise", "cfg"]:
+                            value = round(value, 6)
+                        api_node["inputs"][param] = value
+            
+            elif node_type == "CLIPTextEncode" and widgets:
+                api_node["inputs"]["text"] = widgets[0]
+            
+            elif node_type == "KSampler" and widgets:
+                # Preserve all sampler parameters exactly
+                if len(widgets) >= 7:
+                    api_node["inputs"]["seed"] = widgets[0]
+                    api_node["inputs"]["control_after_generate"] = widgets[1]
+                    api_node["inputs"]["steps"] = widgets[2]
+                    api_node["inputs"]["cfg"] = round(widgets[3], 6) if isinstance(widgets[3], float) else widgets[3]
+                    api_node["inputs"]["sampler_name"] = widgets[4]
+                    api_node["inputs"]["scheduler"] = widgets[5]
+                    api_node["inputs"]["denoise"] = widgets[6]
+                    self.logger.debug(f"🔧 KSampler: seed={widgets[0]}, steps={widgets[2]}, cfg={api_node['inputs']['cfg']}")
+            
+            elif node_type == "ImageResizeKJv2" and widgets:
+                # Preserve all resize parameters
+                param_names = ["width", "height", "interpolation", "keep_proportions", 
+                              "condition", "multiple_of", "divisible_by", "device"]
+                for i, param in enumerate(param_names):
+                    if i < len(widgets):
+                        api_node["inputs"][param] = widgets[i]
+            
+            elif node_type == "ResizeMask" and widgets:
+                # Preserve mask resize parameters
+                if len(widgets) >= 5:
+                    api_node["inputs"]["width"] = widgets[0]
+                    api_node["inputs"]["height"] = widgets[1]
+                    api_node["inputs"]["keep_proportions"] = widgets[2]
+                    api_node["inputs"]["interpolation"] = widgets[3]
+                    api_node["inputs"]["mask_optional"] = widgets[4]
+            
+            elif node_type == "TransparentBGSession+" and widgets:
+                # Preserve transparency session parameters
+                if len(widgets) >= 2:
+                    api_node["inputs"]["model"] = widgets[0]
+                    api_node["inputs"]["use_cache"] = widgets[1]
+            
+            elif node_type == "Hy3DDiffusersSchedulerConfig" and widgets:
+                # Preserve scheduler config
+                if len(widgets) >= 2:
+                    api_node["inputs"]["scheduler"] = widgets[0]
+                    api_node["inputs"]["timestep_spacing"] = widgets[1]
+            
+            elif node_type == "SimpleMath+" and widgets:
+                # Preserve math operation
+                if len(widgets) >= 1:
+                    api_node["inputs"]["operation"] = widgets[0]
+            
+            elif node_type == "Hy3DSampleMultiView" and widgets:
+                # CRITICAL FIX: Widget order varies - detect by first value
+                if len(widgets) >= 3:
+                    first_val = widgets[0]
+                    if first_val == 512 or first_val == 256 or first_val == 1024:
+                        # Order is: [view_size, steps, seed, control_after_generate, denoise_strength]
+                        api_node["inputs"]["view_size"] = widgets[0]
+                        api_node["inputs"]["steps"] = widgets[1]
+                        api_node["inputs"]["seed"] = widgets[2]
+                        if len(widgets) > 3:
+                            api_node["inputs"]["control_after_generate"] = widgets[3]
+                        if len(widgets) > 4:
+                            api_node["inputs"]["denoise_strength"] = widgets[4]
+                        self.logger.debug(f"🔧 Hy3DSampleMultiView (size-first): size={widgets[0]}, steps={widgets[1]}, seed={widgets[2]}")
+                    else:
+                        # Order is: [seed, steps, view_size]
+                        api_node["inputs"]["seed"] = widgets[0]
+                        api_node["inputs"]["steps"] = widgets[1]
+                        api_node["inputs"]["view_size"] = widgets[2]
+                        self.logger.debug(f"🔧 Hy3DSampleMultiView (seed-first): seed={widgets[0]}, steps={widgets[1]}, size={widgets[2]}")
+            
+            elif node_type == "ControlNetApplyAdvanced" and widgets:
+                # Fix floating point precision for control net parameters
+                if len(widgets) >= 3:
+                    api_node["inputs"]["strength"] = round(widgets[0], 2) if isinstance(widgets[0], float) else widgets[0]
+                    api_node["inputs"]["start_percent"] = round(widgets[1], 3) if isinstance(widgets[1], float) else widgets[1]
+                    api_node["inputs"]["end_percent"] = round(widgets[2], 3) if isinstance(widgets[2], float) else widgets[2]
+                    self.logger.debug(f"🔧 ControlNetApplyAdvanced: strength={api_node['inputs']['strength']}, start={api_node['inputs']['start_percent']}, end={api_node['inputs']['end_percent']}")
+            
+            elif node_type == "Hy3DDelightImage" and widgets:
+                # Preserve all delight image parameters
+                param_names = ["steps", "width", "height", "cfg_image", "seed", "control_after_generate"]
+                for i, param in enumerate(param_names):
+                    if i < len(widgets):
+                        api_node["inputs"][param] = widgets[i]
+            
+            elif node_type == "ImageCompositeMasked" and widgets:
+                # Preserve composite parameters
+                if len(widgets) >= 3:
+                    api_node["inputs"]["x"] = widgets[0]
+                    api_node["inputs"]["y"] = widgets[1]
+                    api_node["inputs"]["resize_source"] = widgets[2]
+            
+            elif node_type == "SolidMask" and widgets:
+                # Preserve solid mask parameters [value, width, height]
+                if len(widgets) >= 3:
+                    api_node["inputs"]["value"] = widgets[0]
+                    api_node["inputs"]["width"] = widgets[1]
+                    api_node["inputs"]["height"] = widgets[2]
+                    self.logger.debug(f"🔧 SolidMask: value={widgets[0]}, size={widgets[1]}x{widgets[2]}")
+            
+            elif node_type == "SaveImage" and widgets:
+                api_node["inputs"]["filename_prefix"] = widgets[0]
+            
+            elif node_type == "EmptyLatentImage" and widgets:
+                # Preserve latent image parameters [width, height, batch_size]
+                if len(widgets) >= 3:
+                    api_node["inputs"]["width"] = widgets[0]
+                    api_node["inputs"]["height"] = widgets[1]
+                    api_node["inputs"]["batch_size"] = widgets[2]
+            
+            elif node_type == "SetUnionControlNetType" and widgets:
+                # Preserve control net type
+                if len(widgets) >= 1:
+                    api_node["inputs"]["type"] = widgets[0]
+            
+            elif node_type == "NormalMapSimple" and widgets:
+                # Preserve normal map strength
+                if len(widgets) >= 1:
+                    api_node["inputs"]["strength"] = widgets[0]
+            
+            elif node_type == "Upscale Model Loader" and widgets:
+                # Preserve upscale model selection
+                if len(widgets) >= 1:
+                    api_node["inputs"]["model_name"] = widgets[0]
+            
+            elif node_type == "KSampler" and len(widgets) >= 7:
+                api_node["inputs"]["seed"] = widgets[0]
+                api_node["inputs"]["seed_control"] = widgets[1] if len(widgets) > 1 else "fixed"
+                api_node["inputs"]["steps"] = widgets[2] if len(widgets) > 2 else 20
+                api_node["inputs"]["cfg"] = widgets[3] if len(widgets) > 3 else 7.0
+                api_node["inputs"]["sampler_name"] = widgets[4] if len(widgets) > 4 else "euler"
+                api_node["inputs"]["scheduler"] = widgets[5] if len(widgets) > 5 else "normal"
+                api_node["inputs"]["denoise"] = widgets[6] if len(widgets) > 6 else 1.0
+            
+            elif node_type in ["PrimitiveInt", "PrimitiveFloat", "PrimitiveString"] and widgets:
+                api_node["inputs"]["value"] = widgets[0]
+                if len(widgets) > 1:
+                    api_node["inputs"]["control"] = widgets[1]
+            
+            elif node_type == "CheckpointLoaderSimple" and widgets:
+                api_node["inputs"]["ckpt_name"] = widgets[0]
+            
+            elif node_type == "EmptyLatentImage" and len(widgets) >= 3:
+                api_node["inputs"]["width"] = widgets[0]
+                api_node["inputs"]["height"] = widgets[1]
+                api_node["inputs"]["batch_size"] = widgets[2]
+            
+            # Add more node types as needed, but keep it minimal
+            else:
+                # For any other node types, try to map widgets generically
+                # This is a fallback for nodes we haven't explicitly handled
+                if widgets:
+                    # Some nodes have specific widget mappings we need to handle
+                    if node_type == "ControlNetApplyAdvanced" and len(widgets) >= 3:
+                        api_node["inputs"]["strength"] = widgets[0]
+                        api_node["inputs"]["start_percent"] = widgets[1]
+                        api_node["inputs"]["end_percent"] = widgets[2]
+                    elif node_type == "ControlNetLoader" and widgets:
+                        api_node["inputs"]["control_net_name"] = widgets[0]
+                    else:
+                        # Generic fallback - try to preserve widget values
+                        self.logger.debug(f"📐 MINIMAL: Using generic widget mapping for {node_type} #{node_id}")
+            
+            api_workflow[node_id] = api_node
+        
+        # Second pass: Resolve links
+        # Build link lookup
+        link_map = {}
+        for link in links:
+            if len(link) >= 6:
+                link_id, source_node, source_slot, target_node, target_slot, link_type = link[:6]
+                target_key = f"{target_node}_{target_slot}"
+                link_map[target_key] = (source_node, source_slot)
+        
+        # Apply links to nodes
+        for node in nodes:
+            node_id = str(node.get("id"))
+            if node_id not in api_workflow:
+                continue
+                
+            # Process inputs
+            for i, input_info in enumerate(node.get("inputs", [])):
+                if input_info.get("link") is not None:
+                    link_key = f"{node['id']}_{i}"
+                    if link_key in link_map:
+                        source_node, source_slot = link_map[link_key]
+                        input_name = input_info.get("name", f"input_{i}")
+                        api_workflow[node_id]["inputs"][input_name] = [str(source_node), source_slot]
+        
+        self.logger.warning(f"🔧 MINIMAL CONVERSION: {len(nodes)} nodes → {len(api_workflow)} API nodes")
+        return api_workflow
+    
     def _convert_ui_to_api_format(self, ui_workflow: Dict[str, Any]) -> Dict[str, Any]:
         """Convert ComfyUI UI format to API format"""
         api_workflow = {}
@@ -288,7 +611,7 @@ class WorkflowManager(LoggerMixin):
         
         # Debug: List all nodes in the UI workflow
         all_node_ids = [str(node.get("id", "")) for node in ui_workflow.get("nodes", [])]
-        self.logger.info(f"All node IDs in UI workflow: {all_node_ids}")
+        self.logger.debug(f"All node IDs in UI workflow: {all_node_ids}")
         
         # First pass: Create basic nodes with widget values
         for node in ui_workflow.get("nodes", []):
@@ -302,18 +625,18 @@ class WorkflowManager(LoggerMixin):
             
             # Skip Reroute nodes entirely - ComfyUI handles them differently in API format
             if node_type == "Reroute":
-                self.logger.info(f"Skipping Reroute node {node_id} - handled through link resolution")
+                self.logger.debug(f"Skipping Reroute node {node_id} - handled through link resolution")
                 continue
             
             # Skip Anything Everywhere nodes - they distribute values globally
             if "Anything Everywhere" in node_type:
-                self.logger.info(f"Skipping {node_type} node {node_id} - will handle distributed connections")
+                self.logger.debug(f"Skipping {node_type} node {node_id} - will handle distributed connections")
                 continue
             
             # Check if node is bypassed and should be skipped
             node_mode = node.get("mode", 0)
             if node_mode == 4 and node_type in ["LoraLoader"]:
-                self.logger.info(f"Skipping bypassed {node_type} node {node_id} in API conversion")
+                self.logger.debug(f"Skipping bypassed {node_type} node {node_id} in API conversion")
                 continue
             
             # Use the node type as-is for API
@@ -574,47 +897,80 @@ class WorkflowManager(LoggerMixin):
                     # Any other angles (180, 270, etc.) cause KeyError in the Hunyuan3D node
                     # This applies to BOTH elevations and azimuths!
                     
+                    # CHECK: Is this a texture workflow? If so, DON'T modify angles
+                    # Look for texture-related nodes in the workflow
+                    is_texture_workflow = False
+                    if hasattr(self, '_current_workflow_type') and self._current_workflow_type == 'texture':
+                        is_texture_workflow = True
+                    else:
+                        # Fallback: Check if workflow has texture-related nodes
+                        for n in workflow.get("nodes", []):
+                            node_type = n.get("type", "")
+                            if any(txt in node_type.lower() for txt in ["texture", "pbr", "hy3dsetmesh"]):
+                                is_texture_workflow = True
+                                break
+                    
                     camera_elevations = str(widgets[0])
                     camera_azimuths = str(widgets[1])
                     
-                    # Fix elevations first (check for problematic 180°, 270° angles)
-                    if "180" in camera_elevations:
-                        camera_elevations = camera_elevations.replace("180", "90")
-                        self.logger.info(f"🔧 CAMERA FIX: Replaced 180° elevation with 90°")
-                    if "270" in camera_elevations:
-                        camera_elevations = camera_elevations.replace("270", "-90")
-                        self.logger.info(f"🔧 CAMERA FIX: Replaced 270° elevation with -90°")
-                    if "0, 90, 90, -90, 0, 90" in camera_elevations:
-                        camera_elevations = "0, 20, 45, -20, -45, 0"  # 6 safe elevation angles
-                        self.logger.info(f"🔧 CAMERA FIX: Replaced elevation string with safe angles")
+                    self.logger.debug(f"🎥 Camera Config Detection - is_texture_workflow: {is_texture_workflow}, node_id: {node_id}")
                     
-                    # Fix azimuths 
-                    if "180" in camera_azimuths:
-                        camera_azimuths = camera_azimuths.replace("180", "90")
-                        self.logger.info(f"🔧 CAMERA FIX: Replaced 180° azimuth with 90°")
-                    if "270" in camera_azimuths:
-                        camera_azimuths = camera_azimuths.replace("270", "-90")
-                        self.logger.info(f"🔧 CAMERA FIX: Replaced 270° azimuth with -90°")
-                    if "360" in camera_azimuths:
-                        camera_azimuths = camera_azimuths.replace("360", "0")
-                        self.logger.info(f"🔧 CAMERA FIX: Replaced 360° azimuth with 0°")
+                    # Check if this is a texture workflow - if so, check for swapped values
+                    if is_texture_workflow:
+                        self.logger.warning(f"📐 TEXTURE WORKFLOW: Checking camera angles")
+                        self.logger.warning(f"📐 Original elevations: {camera_elevations}")
+                        self.logger.warning(f"📐 Original azimuths: {camera_azimuths}")
+                        
+                        # CRITICAL FIX: The texture workflow has elevation/azimuth swapped!
+                        # If elevations contain angles like 180, 270 and azimuths has mostly 0s, they're probably swapped
+                        if ("180" in camera_elevations or "270" in camera_elevations) and camera_azimuths.count("0") >= 3:
+                            self.logger.error(f"🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!")
+                            self.logger.error(f"🔄 Swapping elevation and azimuth to match working configuration")
+                            # Swap the values
+                            camera_elevations, camera_azimuths = camera_azimuths, camera_elevations
+                            self.logger.warning(f"📐 Fixed elevations: {camera_elevations}")
+                            self.logger.warning(f"📐 Fixed azimuths: {camera_azimuths}")
+                    else:
+                        # Fix angles for non-texture workflows
+                        # Fix elevations first (check for problematic 180°, 270° angles)
+                        if "180" in camera_elevations:
+                            camera_elevations = camera_elevations.replace("180", "90")
+                            self.logger.debug(f"🔧 CAMERA FIX: Replaced 180° elevation with 90°")
+                        if "270" in camera_elevations:
+                            camera_elevations = camera_elevations.replace("270", "-90")
+                            self.logger.debug(f"🔧 CAMERA FIX: Replaced 270° elevation with -90°")
+                        if "0, 90, 90, -90, 0, 90" in camera_elevations:
+                            camera_elevations = "0, 20, 45, -20, -45, 0"  # 6 safe elevation angles
+                            self.logger.debug(f"🔧 CAMERA FIX: Replaced elevation string with safe angles")
                     
-                    # Additional angle fixes for other unsupported angles commonly used
-                    camera_azimuths = camera_azimuths.replace("135", "90")  # 135° -> 90°
-                    camera_azimuths = camera_azimuths.replace("225", "-45") # 225° -> -45°
-                    camera_azimuths = camera_azimuths.replace("315", "-45") # 315° -> -45°
-                    
-                    # If we still have the problematic string from workflow, replace with safe defaults
-                    if "0, 90, 180, 270, 0, 180" in camera_azimuths:
-                        camera_azimuths = "0, 45, 90, -45, -90, 0"  # 6 safe angles
-                        self.logger.info(f"🔧 CAMERA FIX: Replaced entire azimuth string with safe angles")
+                    if not is_texture_workflow:
+                        # Fix azimuths for non-texture workflows
+                        if "180" in camera_azimuths:
+                            camera_azimuths = camera_azimuths.replace("180", "90")
+                            self.logger.debug(f"🔧 CAMERA FIX: Replaced 180° azimuth with 90°")
+                        if "270" in camera_azimuths:
+                            camera_azimuths = camera_azimuths.replace("270", "-90")
+                            self.logger.debug(f"🔧 CAMERA FIX: Replaced 270° azimuth with -90°")
+                        if "360" in camera_azimuths:
+                            camera_azimuths = camera_azimuths.replace("360", "0")
+                            self.logger.debug(f"🔧 CAMERA FIX: Replaced 360° azimuth with 0°")
+                        
+                        # Additional angle fixes for other unsupported angles commonly used
+                        camera_azimuths = camera_azimuths.replace("135", "90")  # 135° -> 90°
+                        camera_azimuths = camera_azimuths.replace("225", "-45") # 225° -> -45°
+                        camera_azimuths = camera_azimuths.replace("315", "-45") # 315° -> -45°
+                        
+                        # If we still have the problematic string from workflow, replace with safe defaults
+                        if "0, 90, 180, 270, 0, 180" in camera_azimuths:
+                            camera_azimuths = "0, 45, 90, -45, -90, 0"  # 6 safe angles
+                            self.logger.debug(f"🔧 CAMERA FIX: Replaced entire azimuth string with safe angles")
                     
                     api_node["inputs"]["camera_elevations"] = camera_elevations
                     api_node["inputs"]["camera_azimuths"] = camera_azimuths
                     api_node["inputs"]["view_weights"] = widgets[2]
                     api_node["inputs"]["camera_distance"] = widgets[3]
                     api_node["inputs"]["ortho_scale"] = widgets[4]
-                    self.logger.info(f"🔧 CONVERSION FIX: Hy3DCameraConfig node {node_id} - angles validated and safe")
+                    self.logger.debug(f"🔧 CONVERSION FIX: Hy3DCameraConfig node {node_id} - angles validated and safe")
             
             elif node_type == "UpscaleModelLoader" and widgets:
                 # widgets: [model_name]
@@ -627,13 +983,23 @@ class WorkflowManager(LoggerMixin):
                     api_node["inputs"]["model"] = widgets[0]
             
             elif node_type == "Hy3DSampleMultiView" and widgets:
-                # widgets: [seed, steps, view_size]
+                # CRITICAL FIX: Widget order varies between workflows!
+                # Some have [seed, steps, view_size], others have [view_size, steps, seed]
+                # Detect order by checking if first value is likely a size (512) or seed (large number)
                 if len(widgets) >= 3:
-                    # Fix: Validate integer values to prevent "Python int too large to convert to C long"
-                    api_node["inputs"]["seed"] = self.safe_int(widgets[0], "Hy3DSampleMultiView_seed", 42)
-                    api_node["inputs"]["steps"] = self.safe_int(widgets[1], "Hy3DSampleMultiView_steps", 20)
-                    api_node["inputs"]["view_size"] = self.safe_int(widgets[2], "Hy3DSampleMultiView_view_size", 512)
-                    self.logger.info(f"🔧 Hy3DSampleMultiView node {node_id}: seed={api_node['inputs']['seed']}, steps={api_node['inputs']['steps']}, view_size={api_node['inputs']['view_size']}")
+                    first_val = widgets[0]
+                    if first_val == 512 or first_val == 256 or first_val == 1024:
+                        # First value is view_size, so order is: [view_size, steps, seed]
+                        api_node["inputs"]["view_size"] = self.safe_int(widgets[0], "Hy3DSampleMultiView_view_size", 512)
+                        api_node["inputs"]["steps"] = self.safe_int(widgets[1], "Hy3DSampleMultiView_steps", 20)
+                        api_node["inputs"]["seed"] = self.safe_int(widgets[2], "Hy3DSampleMultiView_seed", 42)
+                        self.logger.info(f"🔧 Hy3DSampleMultiView node {node_id} (size-first order): view_size={widgets[0]}, steps={widgets[1]}, seed={widgets[2]}")
+                    else:
+                        # First value is seed, so order is: [seed, steps, view_size]
+                        api_node["inputs"]["seed"] = self.safe_int(widgets[0], "Hy3DSampleMultiView_seed", 42)
+                        api_node["inputs"]["steps"] = self.safe_int(widgets[1], "Hy3DSampleMultiView_steps", 20)
+                        api_node["inputs"]["view_size"] = self.safe_int(widgets[2], "Hy3DSampleMultiView_view_size", 512)
+                        self.logger.info(f"🔧 Hy3DSampleMultiView node {node_id} (seed-first order): seed={widgets[0]}, steps={widgets[1]}, view_size={widgets[2]}")
             
             elif node_type == "CV2InpaintTexture" and widgets:
                 # widgets: [inpaint_radius, inpaint_method]
@@ -739,11 +1105,11 @@ class WorkflowManager(LoggerMixin):
                 api_node["inputs"]["crop_position"] = widgets[4] if widgets[4] in ["center", "top", "bottom", "left", "right"] else "center"
                 api_node["inputs"]["divisible_by"] = widgets[5] if isinstance(widgets[5], (int, float)) and widgets[5] != "center" else 2
                 api_node["inputs"]["pad_color"] = widgets[6]
-                self.logger.info(f"🔧 CONVERSION FIX: ImageResizeKJv2 node {node_id} with {len(widgets)} widgets")
+                self.logger.debug(f"🔧 CONVERSION FIX: ImageResizeKJv2 node {node_id} with {len(widgets)} widgets")
             
             elif node_type == "ImageRemoveBackground+" and widgets:
                 api_node["inputs"]["mode"] = widgets[0] if widgets else "auto"
-                self.logger.info(f"🔧 CONVERSION FIX: ImageRemoveBackground+ node {node_id}")
+                self.logger.debug(f"🔧 CONVERSION FIX: ImageRemoveBackground+ node {node_id}")
                 # Add note about potential mask shape issues
                 self.logger.warning(f"ImageRemoveBackground+ node {node_id} - ensure input image has proper dimensions")
             
@@ -756,7 +1122,7 @@ class WorkflowManager(LoggerMixin):
                     # Reversed order - factor first, then mode
                     api_node["inputs"]["blend_factor"] = float(widgets[0]) if isinstance(widgets[0], (int, float, str)) and str(widgets[0]).replace('.','',1).isdigit() else 0.5
                     api_node["inputs"]["blend_mode"] = widgets[1] if widgets[1] in ["normal", "multiply", "screen", "overlay", "soft_light", "difference"] else "normal"
-                self.logger.info(f"🔧 CONVERSION FIX: ImageBlend node {node_id}")
+                self.logger.debug(f"🔧 CONVERSION FIX: ImageBlend node {node_id}")
             
             elif node_type == "ResizeMask" and len(widgets) >= 5:
                 # Ensure minimum reasonable dimensions for masks
@@ -771,26 +1137,26 @@ class WorkflowManager(LoggerMixin):
                 api_node["inputs"]["upscale_method"] = "nearest-exact"
                 api_node["inputs"]["keep_proportions"] = bool(widgets[3]) if len(widgets) > 3 and widgets[3] in [True, False, "true", "false"] else False
                 api_node["inputs"]["crop"] = widgets[4] if len(widgets) > 4 and widgets[4] in ["disabled", "center"] else "disabled"
-                self.logger.info(f"🔧 CONVERSION FIX: ResizeMask node {node_id} {width}x{height} method=nearest-exact (forced)")
+                self.logger.debug(f"🔧 CONVERSION FIX: ResizeMask node {node_id} {width}x{height} method=nearest-exact (forced)")
             
             elif node_type == "ImageFromBatch" and len(widgets) >= 2:
                 api_node["inputs"]["batch_index"] = widgets[0]
                 api_node["inputs"]["length"] = widgets[1]
-                self.logger.info(f"🔧 CONVERSION FIX: ImageFromBatch node {node_id}")
+                self.logger.debug(f"🔧 CONVERSION FIX: ImageFromBatch node {node_id}")
             
             elif node_type == "SomethingToString" and widgets:
                 api_node["inputs"]["value"] = widgets[0] if widgets else ""
-                self.logger.info(f"🔧 CONVERSION FIX: SomethingToString node {node_id}")
+                self.logger.debug(f"🔧 CONVERSION FIX: SomethingToString node {node_id}")
             
             elif node_type == "Hy3DRenderMultiViewDepth" and len(widgets) >= 2:
                 api_node["inputs"]["render_size"] = widgets[0]
                 api_node["inputs"]["texture_size"] = widgets[1]
-                self.logger.info(f"🔧 CONVERSION FIX: Hy3DRenderMultiViewDepth node {node_id}")
+                self.logger.debug(f"🔧 CONVERSION FIX: Hy3DRenderMultiViewDepth node {node_id}")
             
             elif node_type == "Hy3DDiffusersSchedulerConfig" and len(widgets) >= 2:
                 api_node["inputs"]["scheduler"] = widgets[0] if widgets else "ddim"
                 api_node["inputs"]["sigmas"] = widgets[1] if len(widgets) > 1 else "karras"
-                self.logger.info(f"🔧 CONVERSION FIX: Hy3DDiffusersSchedulerConfig node {node_id}")
+                self.logger.debug(f"🔧 CONVERSION FIX: Hy3DDiffusersSchedulerConfig node {node_id}")
             
             elif node_type == "UltimateSDUpscale" and len(widgets) >= 18:
                 # CORRECT PARAMETER MAPPING based on actual workflow analysis
@@ -848,21 +1214,22 @@ class WorkflowManager(LoggerMixin):
                     api_node["inputs"]["wildcard"] = str(widgets[22])
                 if len(widgets) > 23:
                     api_node["inputs"]["cycle"] = self.safe_int(widgets[23], "FaceDetailer_cycle", 1) if isinstance(widgets[23], (int, float, str)) and str(widgets[23]).isdigit() and widgets[23] != "" else 1
-                self.logger.info(f"🔧 CONVERSION FIX: FaceDetailer node {node_id} with {len(widgets)} widgets")
+                self.logger.debug(f"🔧 CONVERSION FIX: FaceDetailer node {node_id} with {len(widgets)} widgets")
             
             elif node_type == "SaveImage" and widgets:
                 api_node["inputs"]["filename_prefix"] = widgets[0] if widgets else "ComfyUI"
-                self.logger.info(f"🔧 CONVERSION FIX: SaveImage node {node_id}")
+                self.logger.debug(f"🔧 CONVERSION FIX: SaveImage node {node_id}")
             
             elif node_type == "ControlNetLoader" and widgets:
                 api_node["inputs"]["control_net_name"] = widgets[0] if widgets else ""
-                self.logger.info(f"🔧 CONVERSION FIX: ControlNetLoader node {node_id}")
+                self.logger.debug(f"🔧 CONVERSION FIX: ControlNetLoader node {node_id}")
             
             elif node_type == "ControlNetApplyAdvanced" and len(widgets) >= 3:
-                api_node["inputs"]["strength"] = widgets[0] if len(widgets) > 0 else 1.0
-                api_node["inputs"]["start_percent"] = widgets[1] if len(widgets) > 1 else 0.0
-                api_node["inputs"]["end_percent"] = widgets[2] if len(widgets) > 2 else 1.0
-                self.logger.info(f"🔧 CONVERSION FIX: ControlNetApplyAdvanced node {node_id}")
+                # Fix floating point precision issues
+                api_node["inputs"]["strength"] = round(widgets[0], 2) if isinstance(widgets[0], float) else widgets[0] if len(widgets) > 0 else 1.0
+                api_node["inputs"]["start_percent"] = round(widgets[1], 3) if isinstance(widgets[1], float) else widgets[1] if len(widgets) > 1 else 0.0
+                api_node["inputs"]["end_percent"] = round(widgets[2], 3) if isinstance(widgets[2], float) else widgets[2] if len(widgets) > 2 else 1.0
+                self.logger.debug(f"🔧 CONVERSION FIX: ControlNetApplyAdvanced node {node_id} - strength={api_node['inputs']['strength']}, start={api_node['inputs']['start_percent']}, end={api_node['inputs']['end_percent']}")
             
             elif node_type == "EmptyLatentImage" and len(widgets) >= 3:
                 # Ensure minimum reasonable latent dimensions
@@ -873,33 +1240,33 @@ class WorkflowManager(LoggerMixin):
                 api_node["inputs"]["width"] = width
                 api_node["inputs"]["height"] = height
                 api_node["inputs"]["batch_size"] = batch_size
-                self.logger.info(f"🔧 CONVERSION FIX: EmptyLatentImage node {node_id} {width}x{height}x{batch_size}")
+                self.logger.debug(f"🔧 CONVERSION FIX: EmptyLatentImage node {node_id} {width}x{height}x{batch_size}")
             
             elif node_type == "UltralyticsDetectorProvider" and widgets:
                 api_node["inputs"]["model_name"] = widgets[0] if widgets else "bbox/face_yolov8m.pt"
-                self.logger.info(f"🔧 CONVERSION FIX: UltralyticsDetectorProvider node {node_id}")
+                self.logger.debug(f"🔧 CONVERSION FIX: UltralyticsDetectorProvider node {node_id}")
             
             elif node_type == "Upscale Model Loader" and widgets:
                 api_node["inputs"]["model_name"] = widgets[0] if widgets else ""
-                self.logger.info(f"🔧 CONVERSION FIX: Upscale Model Loader node {node_id}")
+                self.logger.debug(f"🔧 CONVERSION FIX: Upscale Model Loader node {node_id}")
             
             # Generic fallback for nodes with widgets but no specific mapping
             elif node_type == "NormalMapSimple" and widgets:
                 # Handle NormalMapSimple with scale_XY parameter
                 if len(widgets) >= 1:
                     api_node["inputs"]["scale_XY"] = float(widgets[0]) if isinstance(widgets[0], (int, float, str)) and str(widgets[0]).replace('.','',1).isdigit() else 1.0
-                    self.logger.info(f"🔧 CONVERSION FIX: NormalMapSimple node {node_id} scale_XY={api_node['inputs']['scale_XY']}")
+                    self.logger.debug(f"🔧 CONVERSION FIX: NormalMapSimple node {node_id} scale_XY={api_node['inputs']['scale_XY']}")
             
             elif node_type == "SetUnionControlNetType" and widgets:
                 # Handle SetUnionControlNetType - needs "type" parameter, not "value"
                 if len(widgets) >= 1:
                     api_node["inputs"]["type"] = widgets[0] if widgets[0] in ["depth", "normal", "canny", "openpose", "mlsd", "lineart", "scribble", "fake_scribble", "seg"] else "depth"
-                    self.logger.info(f"🔧 CONVERSION FIX: SetUnionControlNetType node {node_id} type={api_node['inputs']['type']}")
+                    self.logger.debug(f"🔧 CONVERSION FIX: SetUnionControlNetType node {node_id} type={api_node['inputs']['type']}")
             
             elif node_type == "Image Comparer (rgthree)" and widgets:
                 # Handle Image Comparer - skip complex dict widgets that cause ComfyUI errors
                 # The rgthree Image Comparer node has complex dict structures that can't be serialized
-                self.logger.info(f"🔧 CONVERSION FIX: Skipping Image Comparer (rgthree) node {node_id} - uses complex dict widgets")
+                self.logger.debug(f"🔧 CONVERSION FIX: Skipping Image Comparer (rgthree) node {node_id} - uses complex dict widgets")
                 # Only include basic inputs, skip the problematic "value" widget
                 # The node will use default comparison behavior
             
@@ -910,7 +1277,7 @@ class WorkflowManager(LoggerMixin):
                     number_value = widgets[1] if len(widgets) > 1 else 1.0
                     api_node["inputs"]["number_type"] = number_type
                     api_node["inputs"]["number"] = float(number_value) if number_type == "float" else self.safe_int(number_value, "ConstantNumber_number", 1)
-                    self.logger.info(f"🔧 CONVERSION FIX: Constant Number node {node_id} type={number_type} value={api_node['inputs']['number']}")
+                    self.logger.debug(f"🔧 CONVERSION FIX: Constant Number node {node_id} type={number_type} value={api_node['inputs']['number']}")
             
             elif node_type == "Bridge Preview UI" and widgets:
                 # Handle Bridge Preview UI node - convert to PreviewImage for ComfyUI compatibility
@@ -1065,7 +1432,7 @@ class WorkflowManager(LoggerMixin):
         # Debug: List final API nodes
         final_node_ids = list(api_workflow.keys())
         self.logger.info(f"Final API workflow node IDs: {final_node_ids}")
-        self.logger.info(f"Converted UI workflow to API format with {len(api_workflow)} nodes")
+        self.logger.debug(f"Converted UI workflow to API format with {len(api_workflow)} nodes")
         
         # Debug: Log the complete API workflow
         self.logger.debug("API Workflow structure:")
@@ -1541,7 +1908,7 @@ class WorkflowManager(LoggerMixin):
             ui_workflow_with_params = self._inject_params_3d_ui_format(workflow_copy, params, image_path)
             # Then convert to API format for ComfyUI execution
             api_workflow = self._convert_ui_to_api_format(ui_workflow_with_params)
-            self.logger.info(f"Converted 3D UI workflow to API format with {len(api_workflow)} nodes")
+            self.logger.debug(f"Converted 3D UI workflow to API format with {len(api_workflow)} nodes")
             return api_workflow
         
         # Handle API format directly
@@ -2263,6 +2630,167 @@ class WorkflowManager(LoggerMixin):
                         inputs["mesh"] = model_filename
                         node_data["inputs"] = inputs
                         self.logger.info(f"Updated legacy Hy3DUploadMesh node {node_id} with filename: {model_filename}")
+        
+        return workflow_copy
+    
+    def inject_parameters_texture(self, workflow: Dict[str, Any], params: Dict[str, Any], model_path: str = None, skip_prompt_injection: bool = False, minimal_conversion: bool = False) -> Dict[str, Any]:
+        """Inject parameters into texture generation workflow
+        
+        Similar to inject_parameters_3d but handles texture-specific requirements:
+        - Model path injection via inject_3d_model_path
+        - Prompt injection to CLIPTextEncode nodes (can be skipped for testing)
+        - Single conversion from UI to API format
+        
+        Args:
+            workflow: The workflow to inject parameters into
+            params: Parameters to inject (prompts, etc.)
+            model_path: Path to 3D model to texture
+            skip_prompt_injection: If True, skip prompt injection for testing
+            minimal_conversion: If True, use minimal conversion that preserves workflow structure
+        """
+        workflow_copy = deepcopy(workflow)
+        
+        self.logger.info(f"Injecting texture parameters. Workflow format check: has 'nodes'={('nodes' in workflow_copy)}")
+        self.logger.info(f"Model path provided: {model_path}")
+        self.logger.info(f"Skip prompt injection: {skip_prompt_injection}")
+        
+        # First inject the 3D model path if provided
+        if model_path:
+            workflow_copy = self.inject_3d_model_path(workflow_copy, model_path)
+            if not workflow_copy:
+                self.logger.error("Failed to inject 3D model path")
+                return None
+        
+        # Check if this is UI format and convert if needed
+        if "nodes" in workflow_copy and isinstance(workflow_copy["nodes"], list):
+            self.logger.info("Processing UI format workflow for texture generation")
+            # Inject parameters into UI format first (unless skipping)
+            if skip_prompt_injection:
+                self.logger.warning("⚠️ TESTING MODE: Skipping prompt injection to match ComfyUI web behavior")
+                ui_workflow_with_params = workflow_copy
+            else:
+                ui_workflow_with_params = self._inject_params_texture_ui_format(workflow_copy, params)
+            
+            # DEBUGGING: Save the UI workflow before conversion
+            import json
+            import tempfile
+            from datetime import datetime
+            temp_dir = Path(tempfile.gettempdir())
+            debug_path = temp_dir / f"texture_workflow_ui_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            with open(debug_path, 'w') as f:
+                json.dump(ui_workflow_with_params, f, indent=2)
+            self.logger.warning(f"🔍 SAVED UI WORKFLOW (before conversion): {debug_path}")
+            
+            # Then convert to API format for ComfyUI execution
+            # Use minimal conversion for texture workflows
+            if minimal_conversion:
+                self.logger.warning("🔧 TEXTURE WORKFLOW: Using minimal conversion mode")
+                api_workflow = self._minimal_ui_to_api_conversion(ui_workflow_with_params)
+            else:
+                # Set workflow type flag so conversion knows this is a texture workflow
+                self._current_workflow_type = 'texture'
+                api_workflow = self._convert_ui_to_api_format(ui_workflow_with_params)
+                self._current_workflow_type = None  # Reset flag
+            self.logger.debug(f"Converted texture UI workflow to API format with {len(api_workflow)} nodes")
+            
+            # DEBUGGING: Save the API workflow after conversion
+            debug_path_api = temp_dir / f"texture_workflow_api_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            with open(debug_path_api, 'w') as f:
+                json.dump(api_workflow, f, indent=2)
+            self.logger.warning(f"🔍 SAVED API WORKFLOW (after conversion): {debug_path_api}")
+            
+            # DEBUGGING: Log key changes made during conversion
+            self.logger.warning("🔍 KEY CONVERSION CHANGES:")
+            self.logger.warning(f"  - Original nodes: {len(ui_workflow_with_params.get('nodes', []))}")
+            self.logger.warning(f"  - API nodes: {len(api_workflow)}")
+            self.logger.warning(f"  - Camera angles were modified: YES (for compatibility)")
+            
+            # Check for specific texture workflow nodes and their parameters
+            texture_nodes = []
+            camera_info = None
+            for node_id, node_data in api_workflow.items():
+                if isinstance(node_data, dict):
+                    class_type = node_data.get("class_type", "")
+                    if any(txt in class_type.lower() for txt in ["texture", "pbr", "hy3dsetmesh"]):
+                        texture_nodes.append(f"{class_type}#{node_id}")
+                    
+                    # Log camera config details
+                    if class_type == "Hy3DCameraConfig":
+                        inputs = node_data.get("inputs", {})
+                        camera_info = {
+                            "elevations": inputs.get("camera_elevations", "unknown"),
+                            "azimuths": inputs.get("camera_azimuths", "unknown")
+                        }
+            
+            self.logger.warning(f"  - Texture-related nodes: {', '.join(texture_nodes)}")
+            if camera_info:
+                self.logger.warning(f"  - Camera elevations: {camera_info['elevations']}")
+                self.logger.warning(f"  - Camera azimuths: {camera_info['azimuths']}")
+            
+            # Log prompt injection status
+            if skip_prompt_injection:
+                self.logger.warning("  - Prompts injected: NO (test mode)")
+            else:
+                self.logger.warning("  - Prompts injected: YES")
+            
+            return api_workflow
+        
+        # Handle API format directly (shouldn't happen with texture workflows)
+        self.logger.warning("Texture workflow is already in API format, this is unexpected")
+        return workflow_copy
+    
+    def _inject_params_texture_ui_format(self, workflow: Dict[str, Any], params: Dict[str, Any]) -> Dict[str, Any]:
+        """Inject texture parameters into UI format workflow"""
+        workflow_copy = deepcopy(workflow)
+        
+        # Log all CLIPTextEncode nodes found
+        clip_nodes = []
+        
+        for node in workflow_copy["nodes"]:
+            node_id = node.get("id")
+            node_type = node.get("type")
+            widgets = node.get("widgets_values", [])
+            
+            # CLIPTextEncode nodes - inject prompts
+            if node_type == "CLIPTextEncode":
+                clip_nodes.append(f"Node {node_id}")
+                
+                # Check for specific node IDs from texture workflow
+                if str(node_id) == "510" and "prompt" in params:  # Positive prompt
+                    if widgets:
+                        widgets[0] = params["prompt"]
+                        node["widgets_values"] = widgets
+                        self.logger.info(f"Injected positive prompt into CLIPTextEncode node {node_id}")
+                
+                elif str(node_id) == "177" and "negative_prompt" in params:  # Negative prompt
+                    if widgets:
+                        widgets[0] = params.get("negative_prompt", "")
+                        node["widgets_values"] = widgets
+                        self.logger.info(f"Injected negative prompt into CLIPTextEncode node {node_id}")
+                
+                # Also try generic positive/negative detection by title
+                elif node.get("title", "").lower().find("positive") >= 0 and "prompt" in params:
+                    if widgets:
+                        widgets[0] = params["prompt"]
+                        node["widgets_values"] = widgets
+                        self.logger.info(f"Injected positive prompt into CLIPTextEncode node {node_id} (by title)")
+                        
+                elif node.get("title", "").lower().find("negative") >= 0 and "negative_prompt" in params:
+                    if widgets:
+                        widgets[0] = params.get("negative_prompt", "")
+                        node["widgets_values"] = widgets
+                        self.logger.info(f"Injected negative prompt into CLIPTextEncode node {node_id} (by title)")
+        
+        self.logger.info(f"Found CLIPTextEncode nodes: {clip_nodes}")
+        
+        # Log mesh nodes to verify model path injection worked
+        mesh_nodes = []
+        for node in workflow_copy["nodes"]:
+            if node.get("type") == "Hy3DLoadMesh":
+                mesh_nodes.append(f"Node {node.get('id')}: {node.get('widgets_values', [''])[0]}")
+        
+        if mesh_nodes:
+            self.logger.info(f"Hy3DLoadMesh nodes after injection: {mesh_nodes}")
         
         return workflow_copy
     

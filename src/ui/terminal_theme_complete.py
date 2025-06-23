@@ -69,6 +69,36 @@ def get_complete_terminal_theme() -> str:
         border-color: #404040;
     }
     
+    /* ==== MESSAGE BOX STYLING ==== */
+    QMessageBox {
+        background-color: #2b2b2b;
+        color: #fafafa;
+    }
+    
+    QMessageBox QLabel {
+        background-color: transparent !important;
+        color: #fafafa;
+        padding: 0px;
+    }
+    
+    QMessageBox QPushButton {
+        background-color: #404040;
+        border: 1px solid #525252;
+        color: #fafafa;
+        padding: 6px 16px;
+        border-radius: 3px;
+        min-width: 60px;
+    }
+    
+    QMessageBox QPushButton:hover {
+        background-color: #525252;
+        border: 1px solid #626262;
+    }
+    
+    QMessageBox QPushButton:pressed {
+        background-color: #333333;
+    }
+    
     /* Status Circle Colors */
     QLabel#status_circle_connected {
         color: #4CAF50;

@@ -6,6 +6,7 @@ Embedded version of studio_viewer_final.py without parameter controls
 import json
 import os
 import threading
+import time
 from pathlib import Path
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
@@ -94,12 +95,20 @@ class ThreeJS3DViewer(QWidget):
         """Start local HTTP server for this viewer instance"""
         def run_server():
             handler = lambda *args: LocalFileServer(*args, viewer_instance=self)
-            self.server = HTTPServer(('localhost', self.server_port), handler)
-            self.server.serve_forever()
+            try:
+                self.server = HTTPServer(('localhost', self.server_port), handler)
+                logger.info(f"Started server for ThreeJS viewer on port {self.server_port}")
+                self.server_started = True
+                self.server.serve_forever()
+            except Exception as e:
+                logger.error(f"Failed to start server on port {self.server_port}: {e}")
+                self.server_started = False
             
+        self.server_started = False
         self.server_thread = threading.Thread(target=run_server, daemon=True)
         self.server_thread.start()
-        logger.info(f"Started server for ThreeJS viewer on port {self.server_port}")
+        # Give server time to start
+        time.sleep(0.1)
         
     def load_model(self, model_path):
         """Load a new model into the viewer"""
@@ -255,7 +264,7 @@ class ThreeJS3DViewer(QWidget):
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background: #0a0a0a;
+            background: #000000;
         }}
         #container {{ width: 100vw; height: 100vh; }}
         #loader {{
@@ -450,71 +459,77 @@ class ThreeJS3DViewer(QWidget):
             loader.load(
                 'http://localhost:{self.server_port}/model.glb',
                 function(gltf) {{
-                    console.log('Model loaded successfully');
-                    model = gltf.scene;
-                    
-                    // Center and scale
-                    const box = new THREE.Box3().setFromObject(model);
-                    const center = box.getCenter(new THREE.Vector3());
-                    const size = box.getSize(new THREE.Vector3());
-                    
-                    const maxDim = Math.max(size.x, size.y, size.z);
-                    const scale = 2 / maxDim;
-                    
-                    model.scale.multiplyScalar(scale);
-                    model.position.sub(center.multiplyScalar(scale));
-                    
-                    // Auto drop to floor
-                    const floorBox = new THREE.Box3().setFromObject(model);
-                    const minY = floorBox.min.y;
-                    if (minY < 0) {{
-                        model.position.y -= minY;
-                    }}
-                    
-                    // Update materials
-                    updateMaterials();
-                    
-                    scene.add(model);
-                    
-                    // Update camera target
-                    const modelBox = new THREE.Box3().setFromObject(model);
-                    const modelCenter = modelBox.getCenter(new THREE.Vector3());
-                    controls.target.copy(modelCenter);
-                    controls.update();
-                    
-                    // Clear loading animation
-                    if (loadingInterval) {{
-                        clearInterval(loadingInterval);
-                    }}
-                    
-                    // Wait for everything to settle, then hide loader
-                    setTimeout(() => {{
-                        controls.update();
-                        composer.render();
-                        
-                        setTimeout(() => {{
-                            const loader = document.getElementById('loader');
-                            loader.style.transition = 'opacity 0.5s ease-out';
-                            loader.style.opacity = '0';
+                            console.log('Model loaded successfully');
+                            model = gltf.scene;
                             
+                            // Center and scale
+                            const box = new THREE.Box3().setFromObject(model);
+                            const center = box.getCenter(new THREE.Vector3());
+                            const size = box.getSize(new THREE.Vector3());
+                            
+                            const maxDim = Math.max(size.x, size.y, size.z);
+                            const scale = 2 / maxDim;
+                            
+                            model.scale.multiplyScalar(scale);
+                            model.position.sub(center.multiplyScalar(scale));
+                            
+                            // Auto drop to floor
+                            const floorBox = new THREE.Box3().setFromObject(model);
+                            const minY = floorBox.min.y;
+                            if (minY < 0) {{
+                                model.position.y -= minY;
+                            }}
+                            
+                            // Update materials
+                            updateMaterials();
+                            
+                            scene.add(model);
+                            
+                            // Update camera target
+                            const modelBox = new THREE.Box3().setFromObject(model);
+                            const modelCenter = modelBox.getCenter(new THREE.Vector3());
+                            controls.target.copy(modelCenter);
+                            controls.update();
+                            
+                            // Clear loading animation
+                            if (loadingInterval) {{
+                                clearInterval(loadingInterval);
+                            }}
+                            
+                            // Wait for everything to settle, then hide loader
                             setTimeout(() => {{
-                                loader.style.display = 'none';
-                            }}, 500);
-                        }}, 500);
-                    }}, 800);
-                }},
-                function(xhr) {{
-                    console.log('Loading progress:', (xhr.loaded / xhr.total * 100) + '%');
-                }},
-                function(error) {{
-                    console.error('Error loading model:', error);
-                    if (loadingInterval) {{
-                        clearInterval(loadingInterval);
-                    }}
-                    
-                    const loaderContent = document.getElementById('loaderContent');
-                    loaderContent.innerHTML = '<div style="font-size: 30px;">(╥﹏╥)</div>' +
-                                            '<div style="font-size: 18px; color: #ff6b6b;">Error loading model</div>';
+                                controls.update();
+                                composer.render();
+                                
+                                setTimeout(() => {{
+                                    const loader = document.getElementById('loader');
+                                    loader.style.transition = 'opacity 0.5s ease-out';
+                                    loader.style.opacity = '0';
+                                    
+                                    setTimeout(() => {{
+                                        loader.style.display = 'none';
+                                    }}, 500);
+                                }}, 500);
+                            }}, 800);
+                        }},
+                        function(xhr) {{
+                            console.log('Loading progress:', (xhr.loaded / xhr.total * 100) + '%');
+                        }},
+                        function(error) {{
+                            console.error('Error loading model:', error);
+                            if (loadingInterval) {{
+                                clearInterval(loadingInterval);
+                            }}
+                            
+                            const loaderContent = document.getElementById('loaderContent');
+                            loaderContent.innerHTML = '<div style="font-size: 30px;">(╥﹏╥)</div>' +
+                                                    '<div style="font-size: 18px; color: #ff6b6b;">Error loading model</div>';
+                            
+                            // Hide loader after showing error
+                            setTimeout(() => {{
+                                const loaderDiv = document.getElementById('loader');
+                                loaderDiv.style.display = 'none';
+                            }}, 2000);
                 }}
             );
         }}

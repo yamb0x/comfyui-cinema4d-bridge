@@ -1772,7 +1772,7 @@ class ComfyToC4DApp(QMainWindow, LoggerMixin):
             # Check if model already exists in grid
             existing_paths = [slot['model_path'] for slot in self.scene_objects_slots]
             if model_path in existing_paths:
-                self.logger.info(f"🔄 Model already exists in Scene Objects grid: {model_path.name}")
+                self.logger.debug(f"🔄 Model already exists in Scene Objects grid: {model_path.name}")
                 return True
             
             # Use the proven Model3DPreviewCard with session priority
@@ -4808,7 +4808,7 @@ print("Refresh result:", result)
                         with open(workflow_path, 'r', encoding='utf-8') as f:
                             workflow = json.load(f)
                         self.image_params_widget = self._create_dynamic_image_parameters(workflow)
-                        self.logger.info(f"Loaded dynamic parameters from {workflow_file}")
+                        self.logger.debug(f"Loaded dynamic parameters from {workflow_file}")
                     else:
                         self.logger.warning(f"Workflow file {workflow_file} not found")
                         self.image_params_widget = self._create_image_parameters()
@@ -4837,7 +4837,7 @@ print("Refresh result:", result)
                         with open(workflow_3d_path, 'r', encoding='utf-8') as f:
                             workflow_3d = json.load(f)
                         self.model_3d_params_widget = self._create_dynamic_3d_parameters(workflow_3d)
-                        self.logger.info(f"Loaded dynamic 3D parameters from {workflow_3d_file}")
+                        self.logger.debug(f"Loaded dynamic 3D parameters from {workflow_3d_file}")
                     else:
                         self.logger.warning(f"3D workflow file {workflow_3d_file} not found")
                         self.model_3d_params_widget = self._create_placeholder_params("3D Model Generation")
@@ -4865,7 +4865,7 @@ print("Refresh result:", result)
                             workflow = json.load(f)
                         
                         self.texture_params_widget = self._create_dynamic_texture_parameters(workflow)
-                        self.logger.info("✅ Loaded dynamic 3D texture parameters")
+                        self.logger.debug("✅ Loaded dynamic 3D texture parameters")
                         self.logger.info(f"Texture params widget created with type: {type(self.texture_params_widget)}")
                     else:
                         self.texture_params_widget = self._create_placeholder_params("3D Texture Generation")
@@ -8628,7 +8628,7 @@ Our support team typically responds within 24 hours.
             self.logger.warning("Model grid not initialized yet - skipping existing model loading")
             return
         
-        self.logger.info(f"Loading existing 3D models from: {self.config.models_3d_dir}")
+        self.logger.debug(f"Loading existing 3D models from: {self.config.models_3d_dir}")
         self.logger.info(f"3D models directory exists: {self.config.models_3d_dir.exists()}")
         
         if self.config.models_3d_dir.exists():
@@ -10364,7 +10364,7 @@ print(f"SUCCESS: Created cube '{cube_name}', total objects: {objects_count}, cub
                     continue
                 
                 # Inject parameters and image path into workflow
-                self.logger.info(f"Injecting parameters for image: {image_path.name}")
+                self.logger.debug(f"Injecting parameters for image: {image_path.name}")
                 workflow_with_params = self.workflow_manager.inject_parameters_3d(
                     workflow, params, str(image_path)
                 )
@@ -10379,7 +10379,7 @@ print(f"SUCCESS: Created cube '{cube_name}', total objects: {objects_count}, cub
                         all_nodes = list(workflow_with_params.keys())
                         sample_nodes = all_nodes[:5]
                         self.logger.info(f"Sample node IDs in final workflow: {sample_nodes}")
-                        self.logger.info(f"All node IDs in final workflow: {sorted(all_nodes)}")
+                        self.logger.debug(f"All node IDs in final workflow: {sorted(all_nodes)}")
                         
                         # Specifically check for problematic nodes
                         missing_nodes = []

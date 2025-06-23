@@ -178,7 +178,7 @@ class UnifiedObjectSelectionWidget(QWidget):
                 selected=False,
                 display_name=image_path.name
             )
-            logger.info(f"Added image {image_path.name} to object pool")
+            logger.debug(f"Added image {image_path.name} to object pool")
             self._update_display()
         
         return object_id
@@ -202,7 +202,7 @@ class UnifiedObjectSelectionWidget(QWidget):
             )
             
         self._update_display()
-        logger.info(f"Added image to workflow: {image_path.name}")
+        logger.debug(f"Added image to workflow: {image_path.name}")
         return object_id
     
     def remove_image_selection(self, image_path: Path):
@@ -219,7 +219,7 @@ class UnifiedObjectSelectionWidget(QWidget):
                 obj.selected = False
                 
         self._update_display()
-        logger.info(f"Removed image from workflow: {image_path.name}")
+        logger.debug(f"Removed image from workflow: {image_path.name}")
         
     def link_model_to_image(self, model_path: Path, source_image_path: Path):
         """Link a generated 3D model to its source image"""
@@ -229,7 +229,7 @@ class UnifiedObjectSelectionWidget(QWidget):
             obj = self.objects[object_id]
             obj.model_3d = model_path
             obj.state = ObjectState.MODEL_3D
-            logger.info(f"Linked model {model_path.name} to image {source_image_path.name}")
+            logger.debug(f"Linked model {model_path.name} to image {source_image_path.name}")
         else:
             # Create new object if image wasn't tracked
             self.objects[object_id] = WorkflowObject(
@@ -240,10 +240,54 @@ class UnifiedObjectSelectionWidget(QWidget):
                 state=ObjectState.MODEL_3D,
                 selected=True
             )
-            logger.info(f"Created new workflow object for model: {model_path.name}")
+            logger.debug(f"Created new workflow object for model: {model_path.name}")
             
         self._update_display()
         
+    def add_standalone_model(self, model_path: Path) -> str:
+        """Add a standalone 3D model without a source image"""
+        # Check if this model already exists
+        for obj_id, obj in self.objects.items():
+            if obj.model_3d == model_path:
+                obj.selected = True
+                logger.debug(f"Model already exists, marked as selected: {model_path.name}")
+                self._update_display()
+                return obj_id
+        
+        # Create new standalone model object
+        object_id = f"standalone_{model_path.stem}"
+        
+        self.objects[object_id] = WorkflowObject(
+            id=object_id,
+            source_image=None,  # No source image
+            model_3d=model_path,
+            texture_files=[],
+            state=ObjectState.MODEL_3D,
+            selected=True
+        )
+        logger.debug(f"Added standalone 3D model: {model_path.name}")
+        self._update_display()
+        
+        return object_id
+    
+    def remove_object(self, object_id: str):
+        """Remove or deselect an object by its ID"""
+        if object_id in self.objects:
+            obj = self.objects[object_id]
+            
+            # If it's a standalone model with no source image, remove completely
+            if obj.source_image is None:
+                del self.objects[object_id]
+                logger.debug(f"Removed standalone object: {object_id}")
+            else:
+                # For workflow objects, just mark as unselected
+                obj.selected = False
+                logger.debug(f"Deselected workflow object: {object_id}")
+                
+            self._update_display()
+        else:
+            logger.warning(f"Object not found for removal: {object_id}")
+    
     def mark_as_textured(self, model_path: Path, texture_files: List[Path] = None):
         """Mark a model as textured"""
         # Find object by model path
@@ -252,7 +296,7 @@ class UnifiedObjectSelectionWidget(QWidget):
                 obj.state = ObjectState.TEXTURED
                 if texture_files:
                     obj.texture_files = texture_files
-                logger.info(f"Marked {model_path.name} as textured")
+                logger.debug(f"Marked {model_path.name} as textured")
                 break
                 
         self._update_display()
@@ -287,6 +331,11 @@ class UnifiedObjectSelectionWidget(QWidget):
         
     def _update_display(self):
         """Update the visual display of objects"""
+        # Skip update if widget isn't properly initialized
+        if not hasattr(self, 'objects_list') or self.objects_list is None:
+            logger.warning(f"_update_display called on uninitialized widget {id(self)}")
+            return
+            
         self.objects_list.clear()
         
         selected_objects = [obj for obj in self.objects.values() if obj.selected]
@@ -294,6 +343,12 @@ class UnifiedObjectSelectionWidget(QWidget):
         # Update count
         count = len(selected_objects)
         self.count_label.setText(f"{count} object{'s' if count != 1 else ''}")
+        
+        # Debug logging
+        logger.debug(f"_update_display called on {id(self)}: {count} selected objects out of {len(self.objects)} total")
+        for obj in selected_objects:
+            logger.debug(f"  - {obj.id}: {obj.display_name} (state: {obj.state})")
+        logger.debug(f"Widget visible: {self.isVisible()}, parent: {self.parent()}")
         
         # Add objects to list
         for obj in selected_objects:
@@ -312,6 +367,17 @@ class UnifiedObjectSelectionWidget(QWidget):
             
         # Update workflow hint
         self._update_workflow_hint(selected_objects)
+        
+        # Force Qt to refresh the display
+        # Note: In PySide6, update() on widgets doesn't need parameters
+        # But we'll use repaint() for immediate update instead
+        self.objects_list.repaint()
+        self.repaint()
+        
+        # Process events to ensure immediate update only if widget is properly parented
+        if self.parent() is not None:
+            from PySide6.QtCore import QCoreApplication
+            QCoreApplication.processEvents()
         
     def _update_workflow_hint(self, selected_objects: List[WorkflowObject]):
         """Update the workflow hint based on current selection"""

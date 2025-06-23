@@ -42,37 +42,38 @@ from qasync import asyncSlot
 from loguru import logger
 
 # Import all enhanced components
-from ui.enhanced_console import ConsoleContainer, TerminalConsoleWidget
-from ui.mcp_indicators import MCPStatusBar, ConnectionStatus
-from ui.prompt_with_magic import PositivePromptWidget, NegativePromptWidget as NegativePromptWidgetWithMagic
-from ui.terminal_theme_complete import get_complete_terminal_theme
+from src.ui.enhanced_console import ConsoleContainer, TerminalConsoleWidget
+from src.ui.mcp_indicators import MCPStatusBar, ConnectionStatus
+from src.ui.prompt_with_magic import PositivePromptWidget, NegativePromptWidget as NegativePromptWidgetWithMagic
+from src.ui.terminal_theme_complete import get_complete_terminal_theme
 
 # Import existing core components
-from core.config_adapter import AppConfig
-from core.workflow_manager import WorkflowManager
-from core.file_monitor import FileMonitor, AssetTracker
-from core.project_manager import ProjectManager
-from mcp.comfyui_client import ComfyUIClient
-from mcp.cinema4d_client import Cinema4DClient, C4DDeformerType, C4DClonerMode
-from ui.widgets import ImageGridWidget, ConsoleWidget
-from c4d.mcp_wrapper import CommandResult
-from ui.styles import get_available_themes
-from ui.fonts import get_font_manager, load_project_fonts
-from ui.nlp_dictionary_dialog import NLPDictionaryDialog
-from ui.studio_3d_config_dialog import Studio3DConfigDialog
-from pipeline.stages import PipelineStage, ImageGenerationStage, Model3DGenerationStage, SceneAssemblyStage, ExportStage
-from utils.logger import LoggerMixin
+from src.core.config_adapter import AppConfig
+from src.core.workflow_manager import WorkflowManager
+from src.core.file_monitor import FileMonitor, AssetTracker
+from src.core.project_manager import ProjectManager
+from src.mcp.comfyui_client import ComfyUIClient
+from src.mcp.cinema4d_client import Cinema4DClient, C4DDeformerType, C4DClonerMode
+from src.ui.widgets import ImageGridWidget, ConsoleWidget
+from src.c4d.mcp_wrapper import CommandResult
+from src.ui.styles import get_available_themes
+from src.ui.fonts import get_font_manager, load_project_fonts
+from src.ui.nlp_dictionary_dialog import NLPDictionaryDialog
+from src.ui.studio_3d_config_dialog import Studio3DConfigDialog
+from src.ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
+from src.pipeline.stages import PipelineStage, ImageGenerationStage, Model3DGenerationStage, SceneAssemblyStage, ExportStage
+from src.utils.logger import LoggerMixin
 
 # Test import theme manager
 try:
-    from utils.theme_manager import get_theme_manager
+    from src.utils.theme_manager import get_theme_manager
     THEME_MANAGER_AVAILABLE = True
 except ImportError as e:
     print(f"Theme manager not available: {e}")
     THEME_MANAGER_AVAILABLE = False
 
 # Import debug wrapper for Scene Assembly debugging
-from core.debug_wrapper import wrap_scene_assembly_methods, get_debug_report
+from src.core.debug_wrapper import wrap_scene_assembly_methods, get_debug_report
 
 # Import UI methods
 from .app_ui_methods import UICreationMethods
@@ -192,8 +193,11 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self.console = None
         self.main_tab_widget = None
         
+        # Initialize configuration values
+        self.comfyui_texture_wait_time = 20  # Default 20 seconds, configurable
+        
         # Initialize unified object selector early
-        from ui.object_selection_widget import UnifiedObjectSelectionWidget
+        from src.ui.object_selection_widget import UnifiedObjectSelectionWidget
         self.unified_object_selector = UnifiedObjectSelectionWidget()
         self.unified_object_selector.object_selected.connect(self._on_unified_object_selected)
         self.unified_object_selector.workflow_hint_changed.connect(self._on_workflow_hint_changed)
@@ -209,7 +213,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
     def _get_unified_selector(self, tab_name: str):
         """Get or create a unified selector instance for a specific tab"""
         if tab_name not in self.unified_selectors:
-            from ui.object_selection_widget import UnifiedObjectSelectionWidget
+            from src.ui.object_selection_widget import UnifiedObjectSelectionWidget
             selector = UnifiedObjectSelectionWidget()
             
             # Connect the clear signal for this instance too
@@ -225,12 +229,28 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
     
     def _update_all_unified_selectors(self):
         """Update display for all unified selector instances"""
+        self.logger.debug("Updating all unified selectors...")
+        
         # Update main instance
-        self.unified_object_selector._update_display()
+        if hasattr(self, 'unified_object_selector'):
+            try:
+                self.unified_object_selector._update_display()
+                self.logger.debug(f"Updated main selector: {id(self.unified_object_selector)}")
+            except Exception as e:
+                self.logger.error(f"Error updating main unified selector: {e}")
+                import traceback
+                self.logger.error(f"Traceback: {traceback.format_exc()}")
         
         # Update all tab instances
-        for tab_name, selector in self.unified_selectors.items():
-            selector._update_display()
+        if hasattr(self, 'unified_selectors'):
+            for tab_name, selector in self.unified_selectors.items():
+                try:
+                    selector._update_display()
+                    self.logger.debug(f"Updated {tab_name} selector: {id(selector)}")
+                except Exception as e:
+                    self.logger.error(f"Error updating unified selector for {tab_name}: {e}")
+                    import traceback
+                    self.logger.error(f"Traceback: {traceback.format_exc()}")
             
         self.logger.debug("Updated all unified selector displays")
         
@@ -261,6 +281,10 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self.session_start_time = time.time()
         self.session_images = []
         self.session_models = []
+        
+        # Selection tracking
+        self.selected_images = []
+        self.selected_models = []
         
         # Initialize NLP dictionary
         self.nlp_dictionary = {}
@@ -528,6 +552,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         texture_controls = self._create_texture_controls()
         self.left_panel_stack.addWidget(texture_controls)
         
+        
         # Cinema4D controls
         c4d_controls = self._create_cinema4d_controls()
         self.left_panel_stack.addWidget(c4d_controls)
@@ -560,6 +585,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         # Texture Generation tab
         texture_tab = self._create_enhanced_texture_generation_tab()
         self.main_tab_widget.addTab(texture_tab, "Texture Generation")
+        
         
         # Cinema4D Intelligence tab
         c4d_tab = self._create_enhanced_cinema4d_tab()
@@ -809,13 +835,21 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         prompt_section = self._create_parameter_section("Prompt Generation")
         prompt_layout = prompt_section.layout()
         
-        # Texture prompt with embedded magic button
+        # Positive texture prompt with embedded magic button
         texture_prompt_label = QLabel("Texture Description")
         texture_prompt_label.setObjectName("section_title")
         prompt_layout.addWidget(texture_prompt_label)
         
         self.texture_prompt = PositivePromptWidget()
         prompt_layout.addWidget(self.texture_prompt)
+        
+        # Negative texture prompt
+        negative_prompt_label = QLabel("Negative Prompt")
+        negative_prompt_label.setObjectName("section_title")
+        prompt_layout.addWidget(negative_prompt_label)
+        
+        self.texture_negative_prompt = NegativePromptWidgetWithMagic()
+        prompt_layout.addWidget(self.texture_negative_prompt)
         
         layout.addWidget(prompt_section)
         
@@ -829,16 +863,11 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self.generate_texture_btn.clicked.connect(self._on_generate_textures)
         controls_layout.addWidget(self.generate_texture_btn)
         
-        # Texture viewer launcher
-        viewer_btn = QPushButton("LAUNCH TEXTURE VIEWER")
-        viewer_btn.setObjectName("launch_texture_viewer")
-        viewer_btn.clicked.connect(self._launch_texture_viewer)
-        controls_layout.addWidget(viewer_btn)
-        
         # Additional controls
         refresh_layout = QHBoxLayout()
         refresh_btn = QPushButton("Refresh")
         refresh_btn.setObjectName("refresh_btn")
+        refresh_btn.clicked.connect(self._refresh_textured_models)
         clear_btn = QPushButton("Clear")
         clear_btn.setObjectName("secondary_btn")
         refresh_layout.addWidget(refresh_btn)
@@ -939,20 +968,78 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         view_all_models = self._create_view_all_models()
         model_tabs.addTab(view_all_models, "View All Models")
         
+        # Connect tab change to load models when View All is selected
+        model_tabs.currentChanged.connect(lambda index: self._on_model_tab_changed(index, model_tabs))
+        
         layout.addWidget(model_tabs)
         
         return widget
         
     def _create_enhanced_texture_generation_tab(self) -> QWidget:
-        """Create enhanced texture generation tab with viewer integration"""
+        """Create enhanced texture generation tab matching Tab 2 structure"""
         widget = QWidget()
+        layout = QVBoxLayout(widget)
+        layout.setContentsMargins(0, 0, 0, 0)  # Match Tab 2 margins
+        layout.setSpacing(0)
+        
+        # Sub-tabs for Scene Textures vs View All Textures
+        texture_tabs = QTabWidget()
+        
+        # Scene Textures tab (current session textures)
+        scene_textures = self._create_scene_textures_view()
+        texture_tabs.addTab(scene_textures, "Scene Textures")
+        
+        # View All Textures tab (all textured models)
+        view_all_textures = self._create_view_all_textures()
+        texture_tabs.addTab(view_all_textures, "View All Textures")
+        
+        layout.addWidget(texture_tabs)
+        
+        return widget
+    
+    def _create_scene_textures_view(self) -> QWidget:
+        """Create scene textures view for current session"""
+        widget = QWidget()
+        widget.setStyleSheet("background-color: transparent;")
         layout = QVBoxLayout(widget)
         layout.setContentsMargins(16, 16, 16, 16)
         layout.setSpacing(16)
         
         # Header
         header_layout = QHBoxLayout()
-        header_label = QLabel("Texture Generation Workspace")
+        header_label = QLabel("Current Session Textures")
+        header_label.setObjectName("section_title")
+        header_layout.addWidget(header_label)
+        header_layout.addStretch()
+        
+        layout.addLayout(header_layout)
+        
+        # Use ResponsiveStudio3DGrid for textured models (same as Tab 2)
+        from src.ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
+        
+        # Get theme accent color
+        accent_color = "#4CAF50"  # Default green
+        if hasattr(self, 'accent_color'):
+            accent_color = self.accent_color
+            
+        self.texture_models_grid = ResponsiveStudio3DGrid(columns=2, card_size=580, accent_color=accent_color)
+        self.texture_models_grid.model_selected.connect(self._on_textured_model_selected)
+        self.texture_models_grid.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        layout.addWidget(self.texture_models_grid, 1)  # Add with stretch factor 1
+        
+        return widget
+    
+    def _create_view_all_textures(self) -> QWidget:
+        """Create view all textures tab"""
+        widget = QWidget()
+        widget.setStyleSheet("background-color: transparent;")
+        layout = QVBoxLayout(widget)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(16)
+        
+        # Header
+        header_layout = QHBoxLayout()
+        header_label = QLabel("All Textured Models")
         header_label.setObjectName("section_title")
         header_layout.addWidget(header_label)
         
@@ -966,40 +1053,21 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         layout.addLayout(header_layout)
         
-        # Textured models grid
-        self.textured_models_scroll = QScrollArea()
-        self.textured_models_scroll.setWidgetResizable(True)
+        # Use ResponsiveStudio3DGrid for all textured models
+        from src.ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
         
-        self.textured_models_content = QWidget()
-        self.textured_models_grid = QGridLayout(self.textured_models_content)
-        self.textured_models_grid.setContentsMargins(20, 20, 20, 20)
-        self.textured_models_grid.setSpacing(16)
-        
-        self.textured_models_scroll.setWidget(self.textured_models_content)
-        layout.addWidget(self.textured_models_scroll)
-        
-        # Texture viewer integration
-        viewer_section = QWidget()
-        viewer_section.setObjectName("texture_viewer_container")
-        viewer_layout = QVBoxLayout(viewer_section)
-        
-        viewer_label = QLabel("Texture Viewer Integration")
-        viewer_label.setObjectName("section_title")
-        viewer_layout.addWidget(viewer_label)
-        
-        viewer_info = QLabel("Use the texture viewer to examine generated textures in detail")
-        viewer_info.setObjectName("connection_info")
-        viewer_layout.addWidget(viewer_info)
-        
-        launch_viewer_btn = QPushButton("LAUNCH TEXTURE VIEWER")
-        launch_viewer_btn.setObjectName("launch_texture_viewer")
-        launch_viewer_btn.clicked.connect(self._launch_texture_viewer)
-        viewer_layout.addWidget(launch_viewer_btn)
-        
-        layout.addWidget(viewer_section)
+        # Get theme accent color
+        accent_color = "#4CAF50"  # Default green
+        if hasattr(self, 'accent_color'):
+            accent_color = self.accent_color
+            
+        self.all_textured_models_grid = ResponsiveStudio3DGrid(columns=3, card_size=400, accent_color=accent_color)
+        self.all_textured_models_grid.model_selected.connect(self._on_textured_model_selected)
+        self.all_textured_models_grid.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        layout.addWidget(self.all_textured_models_grid, 1)  # Add with stretch factor 1
         
         return widget
-        
+    
     def _create_enhanced_cinema4d_tab(self) -> QWidget:
         """Create enhanced Cinema4D intelligence tab with chat interface"""
         widget = QWidget()
@@ -1340,96 +1408,84 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         try:
             self.logger.info("Refreshing textured models...")
             
-            # Clear existing grid
-            for i in reversed(range(self.textured_models_grid.count())):
-                child = self.textured_models_grid.itemAt(i).widget()
-            if child:
-                child.setParent(None)
-            
-            # Get textured models from enhanced file monitor
-            if hasattr(self, 'enhanced_monitor'):
-                textured_models = self.enhanced_monitor.get_textured_models()
-            
-            if not textured_models:
-                # Show empty state
-                empty_label = QLabel("No textured models found\n\nGenerate textures for 3D models to see them here")
-                empty_label.setObjectName("image_placeholder")
-                empty_label.setAlignment(Qt.AlignCenter)
-                empty_label.setMinimumHeight(200)
-                self.textured_models_grid.addWidget(empty_label, 0, 0)
-                return
-            
-            # Add model cards
-            cols = 3  # 3 models per row
-            for i, model_path in enumerate(textured_models[:12]):  # Limit to 12 models
-                card = self._create_textured_model_card(model_path)
-                row = i // cols
-                col = i % cols
-                self.textured_models_grid.addWidget(card, row, col)
+            # First, retry any pending texture copies
+            if hasattr(self, '_pending_texture_copies') and self._pending_texture_copies:
+                self.logger.info(f"Retrying {len(self._pending_texture_copies)} pending texture copies...")
+                successful_copies = []
+                failed_copies = []
                 
-            self.logger.info(f"Loaded {len(textured_models)} textured models")
+                for source_path, dest_path in self._pending_texture_copies[:]:  # Use slice to allow modification
+                    try:
+                        import shutil
+                        # Check if source still exists
+                        if not source_path.exists():
+                            self.logger.warning(f"Source file no longer exists: {source_path}")
+                            self._pending_texture_copies.remove((source_path, dest_path))
+                            continue
+                            
+                        shutil.copy2(source_path, dest_path)
+                        self.logger.info(f"Successfully copied pending texture: {source_path.name}")
+                        successful_copies.append((source_path, dest_path))
+                        self._pending_texture_copies.remove((source_path, dest_path))
+                        
+                        # Add to grid
+                        if hasattr(self, 'texture_models_grid'):
+                            self.texture_models_grid.add_model(dest_path)
+                            
+                    except PermissionError:
+                        # Still locked
+                        failed_copies.append(source_path.name)
+                    except Exception as e:
+                        self.logger.error(f"Unexpected error copying {source_path.name}: {e}")
+                        self._pending_texture_copies.remove((source_path, dest_path))
+                
+                if failed_copies:
+                    self.logger.info(f"Still locked: {', '.join(failed_copies)}. Try again later.")
             
-            # Update status if we have a texture status label
-            if hasattr(self, 'texture_status_label'):
-                self.texture_status_label.setText(f"{len(textured_models)} textured models available")
+            # Also check for recently generated files that might have been missed
+            comfyui_output = Path("D:/Comfy3D_WinPortable/ComfyUI/output/3D/textured")
+            if comfyui_output.exists():
+                import time
+                current_time = time.time()
+                
+                for file_path in comfyui_output.glob("Hy3D_textured_*.glb"):
+                    file_age = current_time - file_path.stat().st_mtime
+                    if file_age < 600:  # Files from last 10 minutes
+                        # Check if this file is already in our textured models directory
+                        local_path = Path(self.config.models_3d_dir) / "textured" / file_path.name
+                        if not local_path.exists():
+                            # Copy the file
+                            import shutil
+                            try:
+                                shutil.copy2(file_path, local_path)
+                                self.logger.debug(f"Found and copied missed textured model: {file_path.name}")
+                                
+                                # Add to grid
+                                if hasattr(self, 'texture_models_grid'):
+                                    self.texture_models_grid.add_model(local_path)
+                                    
+                            except Exception as copy_error:
+                                self.logger.error(f"Failed to copy textured model: {copy_error}")
+                                # Add to pending list for later retry
+                                if not hasattr(self, '_pending_texture_copies'):
+                                    self._pending_texture_copies = []
+                                self._pending_texture_copies.append((file_path, local_path))
+            
+            # Refresh the "View All" grid if it exists
+            if hasattr(self, 'all_textured_models_grid'):
+                self._refresh_all_textured_models_grid()
                 
         except Exception as e:
             self.logger.error(f"Error refreshing textured models: {e}")
             
-    def _create_textured_model_card(self, model_path: Path) -> QFrame:
-        """Create a card widget for a textured model"""
-        card = QFrame()
-        card.setObjectName("model_grid_item")
-        card.setFixedSize(180, 220)
-        
-        layout = QVBoxLayout(card)
-        layout.setContentsMargins(8, 8, 8, 8)
-        layout.setSpacing(4)
-        
-        # Model preview placeholder
-        preview = QLabel()
-        preview.setObjectName("image_placeholder")
-        preview.setText("3D Model")
-        preview.setAlignment(Qt.AlignCenter)
-        preview.setMinimumHeight(120)
-        layout.addWidget(preview)
-        
-        # Model name
-        name_label = QLabel(model_path.stem[:20] + "..." if len(model_path.stem) > 20 else model_path.stem)
-        name_label.setObjectName("model_name")
-        name_label.setWordWrap(True)
-        layout.addWidget(name_label)
-        
-        # Size info
-        try:
-            size_bytes = model_path.stat().st_size
-            size_str = f"{size_bytes / (1024 * 1024):.1f} MB" if size_bytes > 1024 * 1024 else f"{size_bytes / 1024:.1f} KB"
-            size_label = QLabel(size_str)
-            size_label.setObjectName("connection_info")
-            layout.addWidget(size_label)
-        except (AttributeError, ValueError) as e:
-            logger.debug(f"Could not display model size: {e}")
-        
-        # View button
-        view_btn = QPushButton("View in 3D")
-        view_btn.setObjectName("secondary_btn")
-        view_btn.clicked.connect(lambda: self._view_textured_model(model_path))
-        layout.addWidget(view_btn)
-        
-        return card
         
     def _view_textured_model(self, model_path: Path):
         """View a textured model in the embedded viewer or external viewer"""
         try:
             self.logger.info(f"Viewing textured model: {model_path.name}")
             
-            # If we have an embedded viewer and auto-preview is enabled
-            if hasattr(self, 'embedded_texture_viewer') and hasattr(self, 'auto_preview_check') and self.auto_preview_check.isChecked():
-                self.embedded_texture_viewer.load_model(str(model_path))
-                self.logger.info("Loaded model in embedded viewer")
-            else:
-                # Launch external viewer
-                self._launch_texture_viewer()
+            # Launch external viewer since we removed the embedded viewer
+            self._launch_texture_viewer()
             
         except Exception as e:
             self.logger.error(f"Error viewing textured model: {e}")
@@ -1474,7 +1530,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             # Initialize NLP parser if not exists
             if not hasattr(self, 'nlp_parser'):
                 from src.c4d.nlp_parser import C4DNaturalLanguageParser
-            self.nlp_parser = C4DNaturalLanguageParser()
+                self.nlp_parser = C4DNaturalLanguageParser()
             
             # Initialize MCP wrapper if not exists
             if not hasattr(self, 'mcp_wrapper'):
@@ -1618,9 +1674,9 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             from core.parameter_validator import ParameterValidator
             validator = ParameterValidator()
             params = validator.validate_parameters(params)
-            self.logger.info(f"Validated parameters: {list(params.keys())}")
+            self.logger.debug(f"Validated parameters: {list(params.keys())}")
             
-            self.logger.info(f"Injecting parameters into workflow...")
+            self.logger.debug(f"Injecting parameters into workflow...")
             
             # Use our new dynamic workflow handler for better compatibility
             from .dynamic_workflow_handler import DynamicWorkflowHandler
@@ -1999,7 +2055,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             return
             
         # Get selected images from unified object system
-        from ui.object_selection_widget import ObjectState
+        from src.ui.object_selection_widget import ObjectState
         selected_objects = self.unified_object_selector.get_selected_objects(ObjectState.IMAGE)
         
         if not selected_objects:
@@ -2114,7 +2170,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                     continue
             
                 # Inject parameters and image path into workflow
-                self.logger.info(f"Injecting parameters for image: {image_path.name}")
+                self.logger.debug(f"Injecting parameters for image: {image_path.name}")
                 workflow_with_params = self.workflow_manager.inject_parameters_3d(
                     workflow, params, str(image_path)
                 )
@@ -2323,7 +2379,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                             newest_file = comfyui_files[0]
                             # Check if it was created recently (within last 10 seconds)
                             if time.time() - newest_file.stat().st_mtime < 10:
-                                self.logger.info(f"Found new 3D model in ComfyUI output: {newest_file}")
+                                self.logger.debug(f"Found new 3D model in ComfyUI output: {newest_file}")
                                 
                                 # Copy to our 3D models directory with traceable name
                                 import re
@@ -2370,7 +2426,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                     
                     if new_files:
                         for new_file in new_files:
-                            self.logger.info(f"Found new 3D model in local directory: {new_file}")
+                            self.logger.debug(f"Found new 3D model in local directory: {new_file}")
                             
                             # Update the unified object selector
                             if hasattr(self, 'unified_object_selector'):
@@ -2413,36 +2469,68 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
     def _on_generate_textures(self):
         """Handle texture generation"""
-        if not hasattr(self, 'unified_object_selector'):
-            self.logger.warning("Unified object selector not available")
-            return
-            
-        # Get selected models from unified object system
-        from ui.object_selection_widget import ObjectState
-        selected_objects = self.unified_object_selector.get_selected_objects(ObjectState.MODEL_3D)
+        # Get selected models from multiple sources
+        model_paths = []
         
-        if not selected_objects:
+        # First, check the internal selected_models list (from View All tab)
+        if hasattr(self, 'selected_models') and self.selected_models:
+            model_paths.extend(self.selected_models)
+            self.logger.info(f"Found {len(self.selected_models)} models from internal selection")
+        
+        # Also check unified object selector for models linked to images
+        if hasattr(self, 'unified_object_selector'):
+            from src.ui.object_selection_widget import ObjectState
+            selected_objects = self.unified_object_selector.get_selected_objects(ObjectState.MODEL_3D)
+            
+            for obj in selected_objects:
+                if obj.model_3d and obj.model_3d not in model_paths:
+                    model_paths.append(obj.model_3d)
+            
+            if selected_objects:
+                self.logger.info(f"Found {len(selected_objects)} models from unified selector")
+        
+        # Remove duplicates while preserving order
+        unique_paths = []
+        seen = set()
+        for path in model_paths:
+            if path not in seen:
+                seen.add(path)
+                unique_paths.append(path)
+        model_paths = unique_paths
+        
+        if not model_paths:
             self.logger.warning("No 3D models selected for texture generation")
             return
             
         prompt = self.texture_prompt.get_prompt()
-        selected_count = len(selected_objects)
+        selected_count = len(model_paths)
         
         self.logger.info(f"Starting texture generation for {selected_count} models")
-        self.logger.info(f"Selected models: {[obj.display_name for obj in selected_objects]}")
+        self.logger.info(f"Selected models: {[path.name for path in model_paths]}")
         self.logger.info(f"Texture prompt: {prompt[:50]}...")
-        
-        # Get the model paths from selected objects
-        model_paths = [obj.model_3d for obj in selected_objects if obj.model_3d]
-        
-        if not model_paths:
-            self.logger.error("No valid model paths found from selected objects")
-            return
-            
-        self.logger.info(f"Model paths to texture: {[path.name for path in model_paths]}")
         
         # Start the actual texture generation
         asyncio.create_task(self._async_generate_textures(model_paths, prompt))
+    
+    def _on_texture_test_mode_changed(self, state: int):
+        """Handle texture test mode checkbox state change"""
+        is_checked = state == Qt.Checked
+        self._texture_test_mode = is_checked
+        
+        if is_checked:
+            self.logger.warning("⚠️ TEXTURE TEST MODE ENABLED: Prompts will NOT be injected into workflow")
+            # Disable prompt widgets to make it clear they won't be used
+            if hasattr(self, 'texture_prompt'):
+                self.texture_prompt.setEnabled(False)
+            if hasattr(self, 'texture_negative_prompt'):
+                self.texture_negative_prompt.setEnabled(False)
+        else:
+            self.logger.info("Texture test mode disabled - prompts will be injected normally")
+            # Re-enable prompt widgets
+            if hasattr(self, 'texture_prompt'):
+                self.texture_prompt.setEnabled(True)
+            if hasattr(self, 'texture_negative_prompt'):
+                self.texture_negative_prompt.setEnabled(True)
     
     async def _async_generate_textures(self, model_paths: List[Path], prompt: str):
         """Handle async texture generation using ComfyUI workflow"""
@@ -2471,16 +2559,32 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             config_path = Path("config/texture_parameters_config.json")
             workflow_file = "texture_generation/Model_texturing_juggernautXL_v08.json"  # Default to latest version in new structure
             
+            
             if config_path.exists():
                 try:
                     with open(config_path, 'r') as f:
                         config = json.load(f)
-                    workflow_file = config.get("workflow_file", workflow_file)
+                    configured_workflow = config.get("workflow_file", workflow_file)
+                    
+                    # Handle case where config doesn't include subdirectory
+                    if configured_workflow and "/" not in configured_workflow:
+                        # Add subdirectory if missing
+                        configured_workflow = f"texture_generation/{configured_workflow}"
+                        self.logger.info(f"Added subdirectory to workflow path: {configured_workflow}")
+                    
+                    workflow_file = configured_workflow
                     self.logger.info(f"Using configured texture workflow: {workflow_file}")
                 except Exception as e:
                     self.logger.error(f"Error loading texture config: {e}")
             
             self.logger.info(f"Loading texture generation workflow: {workflow_file}")
+            
+            # Debug: Check if workflow file exists
+            workflow_path = self.config.workflows_dir / workflow_file
+            self.logger.info(f"Looking for workflow at: {workflow_path}")
+            self.logger.info(f"Workflow file exists: {workflow_path.exists()}")
+            self.logger.info(f"Workflows directory: {self.config.workflows_dir}")
+            
             workflow = self.workflow_manager.load_workflow(workflow_file)
             if not workflow:
                 QMessageBox.critical(self, "Error", f"Failed to load texture generation workflow ({workflow_file})")
@@ -2499,8 +2603,10 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                     continue
                 
                 # Collect parameters from UI
+                negative_prompt = self.texture_negative_prompt.get_prompt() if hasattr(self, 'texture_negative_prompt') else ""
                 params = {
                     "prompt": prompt,
+                    "negative_prompt": negative_prompt,
                     "model_path": str(model_path),
                     "width": 1024,
                     "height": 1024,
@@ -2509,21 +2615,37 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                     "seed": -1
                 }
                 
-                # Inject parameters into workflow
-                self.logger.info(f"Injecting parameters for model: {model_path.name}")
-                workflow_with_params = self.workflow_manager.inject_parameters_comfyui(workflow, params)
+                # Use the new dedicated texture workflow handler
+                self.logger.info("Using dedicated texture workflow injection method")
                 
-                if not workflow_with_params:
+                # Inject model path and parameters in one step with single conversion
+                api_workflow = self.workflow_manager.inject_parameters_texture(
+                    workflow, 
+                    params, 
+                    str(model_path)
+                )
+                
+                if not api_workflow:
                     self.logger.error(f"Failed to inject parameters for {model_path.name}")
                     continue
                 
-                # Execute workflow in ComfyUI (skip UI loading for automated execution)
-                self.logger.info(f"Executing ComfyUI workflow for {model_path.name}")
-                success = await self.comfyui_client.queue_prompt(workflow_with_params, load_in_ui_first=False)
+                # Check the converted workflow
+                self.logger.info(f"API workflow has {len(api_workflow)} nodes")
+                if len(api_workflow) == 0:
+                    self.logger.error(f"API workflow is empty after conversion!")
+                    self.logger.error(f"Original workflow had {len(workflow.get('nodes', []))} nodes")
+                    continue
                 
-                if success:
+                # Execute workflow in ComfyUI
+                self.logger.info(f"Executing ComfyUI workflow for {model_path.name}")
+                prompt_id = await self.comfyui_client.queue_prompt(api_workflow, load_in_ui_first=False)
+                
+                if prompt_id:
                     successful_count += 1
-                    self.logger.info(f"Successfully queued texture generation for {model_path.name}")
+                    self.logger.info(f"Successfully queued texture generation for {model_path.name} with prompt_id: {prompt_id}")
+                    
+                    # Start monitoring for this texture generation
+                    self._start_texture_workflow_monitoring(prompt_id, model_path)
                 else:
                     self.logger.error(f"Failed to queue texture generation for {model_path.name}")
                 
@@ -2536,7 +2658,9 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             if successful_count > 0:
                 QMessageBox.information(self, "Texture Generation Queued",
                                   f"Successfully queued {successful_count}/{total_models} models for texture generation in ComfyUI.\n\n"
-                                  f"Textures will be applied when generation completes.")
+                                  f"Texture generation typically takes 30-60 seconds per model.\n"
+                                  f"The app will monitor progress and load results automatically.\n\n"
+                                  f"If files appear locked, use the Refresh button after generation completes.")
             else:
                 QMessageBox.warning(self, "Texture Generation Failed",
                               "Failed to queue any models for texture generation. Please check ComfyUI connection.")
@@ -2553,8 +2677,254 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 self.generate_texture_btn.setEnabled(True)
                 self.generate_texture_btn.setText("GENERATE TEXTURES")
     
+    def _start_texture_workflow_monitoring(self, prompt_id: str, model_path: Path):
+        """Start monitoring for texture workflow completion"""
+        # Store texture workflow info
+        if not hasattr(self, '_texture_workflows'):
+            self._texture_workflows = {}
+        
+        self._texture_workflows[prompt_id] = {
+            'model_path': model_path,
+            'check_count': 0
+        }
+        
+        self.logger.debug(f"Started monitoring texture workflow {prompt_id} for model {model_path.name}")
+        
+        # Start or use existing timer for texture monitoring
+        if not hasattr(self, 'texture_monitor_timer'):
+            self.texture_monitor_timer = None
+            
+        # Delay timer start to avoid async conflict and give texture generation time to start
+        QTimer.singleShot(2000, self._start_texture_monitor_timer)
+    
+    def _start_texture_monitor_timer(self):
+        """Start the texture monitor timer safely"""
+        if not self.texture_monitor_timer or not self.texture_monitor_timer.isActive():
+            if not self.texture_monitor_timer:
+                self.texture_monitor_timer = QTimer()
+                self.texture_monitor_timer.timeout.connect(self._check_texture_workflows)
+            self.texture_monitor_timer.start(10000)  # Check every 10 seconds (texture generation is slow)
+            self.logger.debug("Started texture workflow monitor timer")
+    
+    def _check_texture_workflows(self):
+        """Check all pending texture workflows"""
+        if hasattr(self, '_texture_workflows') and self._texture_workflows:
+            # Prevent multiple concurrent checks
+            if hasattr(self, '_texture_check_running') and self._texture_check_running:
+                self.logger.debug("Texture workflow check already in progress, skipping")
+                return
+            # Create async task to check all workflows
+            asyncio.create_task(self._async_check_texture_workflows())
+    
+    async def _async_check_texture_workflows(self):
+        """Async method to check texture workflow completions"""
+        # Set flag to prevent concurrent checks
+        self._texture_check_running = True
+        try:
+            completed_workflows = []
+            
+            for prompt_id, workflow_info in self._texture_workflows.items():
+                # Get workflow history
+                history = await self.comfyui_client.get_history(prompt_id)
+                
+                if prompt_id in history:
+                    workflow_data = history[prompt_id]
+                    status = workflow_data.get("status", {})
+                    
+                    if status.get("completed", False):
+                        # Workflow completed!
+                        self.logger.info(f"Texture workflow {prompt_id} completed for {workflow_info['model_path'].name}")
+                        
+                        # Handle texture results
+                        await self._handle_texture_results(prompt_id, workflow_data, workflow_info['model_path'])
+                        
+                        completed_workflows.append(prompt_id)
+                    else:
+                        # Still running
+                        workflow_info['check_count'] += 1
+                        if workflow_info['check_count'] % 3 == 0:  # Log every 30 seconds
+                            self.logger.debug(f"Texture workflow {prompt_id} still running...")
+                else:
+                    # Not in history yet
+                    workflow_info['check_count'] += 1
+                    if workflow_info['check_count'] > 36:  # Timeout after 6 minutes (36 * 10 seconds)
+                        self.logger.warning(f"Texture workflow {prompt_id} timed out after 6 minutes - checking for files anyway")
+                        # Check for texture files anyway in case they were generated
+                        await self._handle_texture_results(prompt_id, {}, workflow_info['model_path'])
+                        completed_workflows.append(prompt_id)
+            
+            # Remove completed workflows
+            for prompt_id in completed_workflows:
+                del self._texture_workflows[prompt_id]
+            
+            # Stop timer if no more workflows
+            if not self._texture_workflows and hasattr(self, 'texture_monitor_timer'):
+                self.texture_monitor_timer.stop()
+                self.texture_monitor_timer = None
+                self.logger.debug("Stopped texture workflow monitoring (all completed)")
+                
+        except Exception as e:
+            self.logger.error(f"Error checking texture workflows: {e}")
+            import traceback
+            self.logger.error(traceback.format_exc())
+        finally:
+            # Clear the flag to allow future checks
+            self._texture_check_running = False
+    
+    async def _handle_texture_results(self, prompt_id: str, workflow_data: Dict, model_path: Path):
+        """Handle texture generation results from ComfyUI"""
+        try:
+            outputs = workflow_data.get("outputs", {})
+            
+            # Look for texture outputs in the workflow
+            texture_files = []
+            preview_images = []  # Initialize preview_images list outside the loop
+            
+            # Debug: Log the full output structure
+            self.logger.debug(f"Texture workflow outputs for {prompt_id}: {list(outputs.keys())}")
+            
+            for node_id, output_data in outputs.items():
+                # Check for Hy3DExportMesh node outputs (node ID 99 is the textured export)
+                # These nodes output files but ComfyUI history might not show them directly
+                
+                # Check for mesh outputs
+                if "meshes" in output_data:
+                    for mesh_info in output_data["meshes"]:
+                        if mesh_info and "filename" in mesh_info:
+                            texture_files.append(mesh_info["filename"])
+                            self.logger.debug(f"Found textured mesh output: {mesh_info['filename']}")
+                
+                # Collect preview images separately (don't add to texture_files)
+                if "images" in output_data:
+                    for image_info in output_data["images"]:
+                        if image_info and "filename" in image_info:
+                            preview_images.append(image_info["filename"])
+                            self.logger.debug(f"Found texture/preview image: {image_info['filename']}")
+            
+            # If no files found in outputs, check for generated files directly
+            # The Hy3DExportMesh node with save_file=True saves to: 3D/textured/Hy3D_textured_xxxxx.glb
+            if not texture_files:
+                self.logger.info("No texture files in outputs, checking ComfyUI output directory...")
+                
+                # Look for recently generated textured models
+                comfyui_output = Path("D:/Comfy3D_WinPortable/ComfyUI/output/3D/textured")
+                if comfyui_output.exists():
+                    # Find files matching the pattern from the last 5 minutes
+                    import time
+                    current_time = time.time()
+                    
+                    for file_path in comfyui_output.glob("Hy3D_textured_*.glb"):
+                        file_age = current_time - file_path.stat().st_mtime
+                        self.logger.debug(f"Checking file: {file_path.name}, age: {file_age:.1f} seconds")
+                        if file_age < 300:  # 5 minutes
+                            texture_files.append(f"3D/textured/{file_path.name}")
+                            self.logger.debug(f"Found recent textured model: {file_path.name}")
+                            # Don't break - collect all recent textured models
+                    
+                    # Also check for other naming patterns
+                    for pattern in ["*.glb", "*.gltf"]:
+                        for file_path in comfyui_output.glob(pattern):
+                            if "textured" in file_path.name.lower() and current_time - file_path.stat().st_mtime < 300:
+                                if f"3D/textured/{file_path.name}" not in texture_files:
+                                    texture_files.append(f"3D/textured/{file_path.name}")
+                                    self.logger.debug(f"Found additional textured model: {file_path.name}")
+            
+            if texture_files:
+                # Download/copy texture files from ComfyUI
+                textured_model_path = await self._download_textured_model(texture_files, model_path)
+                if textured_model_path:
+                    # Update model-to-image mapping for the textured model
+                    if hasattr(self, 'model_to_image_map') and str(model_path) in self.model_to_image_map:
+                        source_image = self.model_to_image_map[str(model_path)]
+                        self.model_to_image_map[str(textured_model_path)] = source_image
+                        self.logger.debug(f"Linked textured model {textured_model_path.name} to source image")
+                    
+                    self._on_texture_generated(textured_model_path)
+                    
+                    # Update preview images grid (it will search for images if none provided)
+                    self._update_texture_preview_grid(textured_model_path, preview_images)
+            else:
+                self.logger.warning(f"No texture model files found for workflow {prompt_id}")
+                self.logger.info("Textured models should be saved to: ComfyUI/output/3D/textured/Hy3D_textured_*.glb")
+                self.logger.info(f"Note: Found {len(preview_images) if 'preview_images' in locals() else 0} preview images but no 3D model file")
+                
+        except Exception as e:
+            self.logger.error(f"Error handling texture results: {e}")
+            import traceback
+            self.logger.error(traceback.format_exc())
+    
+    async def _download_textured_model(self, texture_files: List[str], original_model_path: Path) -> Optional[Path]:
+        """Download textured model from ComfyUI output"""
+        try:
+            # For now, assume the first file is the textured model
+            if not texture_files:
+                return None
+            
+            textured_filename = texture_files[0]
+            
+            # Determine output path
+            textured_models_dir = Path(self.config.models_3d_dir) / "textured"
+            textured_models_dir.mkdir(parents=True, exist_ok=True)
+            
+            # The texture file already has the full path from ComfyUI
+            # Extract just the filename from the path
+            if "/" in textured_filename:
+                texture_file_name = textured_filename.split("/")[-1]
+            else:
+                texture_file_name = textured_filename
+            
+            # Use the same filename as ComfyUI generated
+            textured_model_path = textured_models_dir / texture_file_name
+            
+            # Check if textured model exists in ComfyUI output
+            comfyui_output = Path("D:/Comfy3D_WinPortable/ComfyUI/output")
+            possible_paths = [
+                comfyui_output / textured_filename,
+                comfyui_output / "3D" / textured_filename,
+                comfyui_output / "3D" / "textured" / texture_file_name,  # This is where texture workflow saves
+                comfyui_output / "textured" / texture_file_name
+            ]
+            
+            for path in possible_paths:
+                if path.exists():
+                    # Copy to our textured models directory with retry
+                    import shutil
+                    import time
+                    
+                    # For texture files, we need to wait longer as ComfyUI locks them during export
+                    # Unlike 3D models which are fetched via API, textures must be copied from filesystem
+                    self.logger.info(f"Waiting for ComfyUI to finish writing texture file...")
+                    await asyncio.sleep(self.comfyui_texture_wait_time)  # Give ComfyUI time to release the file (configurable)
+                    
+                    try:
+                        shutil.copy2(path, textured_model_path)
+                        self.logger.info(f"Copied textured model from {path} to {textured_model_path}")
+                        return textured_model_path
+                    except Exception as e:
+                        self.logger.warning(f"Could not copy textured model after 10s wait: {e}")
+                        # Schedule for later retry
+                        if not hasattr(self, '_pending_texture_copies'):
+                            self._pending_texture_copies = []
+                        self._pending_texture_copies.append((path, textured_model_path))
+                        self.logger.info(f"Added to pending copies list. The file exists at: {path}")
+                        self.logger.info(f"Use the Refresh button to retry copying once ComfyUI fully releases the file.")
+                        # Return the path so we know it exists
+                        return textured_model_path  # Return destination path even if copy failed
+            
+            self.logger.warning(f"Could not find textured model file: {textured_filename}")
+            self.logger.warning(f"Searched in: {[str(p) for p in possible_paths]}")
+            return None
+            
+        except Exception as e:
+            self.logger.error(f"Error downloading textured model: {e}")
+            return None
+    
     def _on_texture_generated(self, model_path: Path):
         """Handle texture generation completion"""
+        # Ensure model_path is a Path object
+        if isinstance(model_path, str):
+            model_path = Path(model_path)
+            
         if hasattr(self, 'unified_object_selector'):
             # Detect texture files
             texture_files = self._detect_texture_files(model_path)
@@ -2567,6 +2937,42 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 self.textured_models.add(model_path)
             
             self.logger.info(f"Texture generation completed for: {model_path.name}")
+            
+            # Add textured model to the texture models grid
+            if hasattr(self, 'texture_models_grid') and model_path.exists():
+                # Only add if it's a local file that was successfully copied
+                if "ComfyUI/output" not in str(model_path):
+                    # Find the source image for this model
+                    source_image = None
+                    if hasattr(self, 'model_to_image_map') and str(model_path) in self.model_to_image_map:
+                        source_image = self.model_to_image_map[str(model_path)]
+                    
+                    # Add the model card to the grid
+                    self.texture_models_grid.add_model(model_path)
+                    self.logger.info(f"Added textured model to grid: {model_path.name}")
+                else:
+                    self.logger.info(f"Textured model is in ComfyUI output, will be added after successful copy")
+            
+            # Refresh the textured models display
+            self._refresh_textured_models()
+            
+            # Also refresh the "View All" grid if it exists
+            if hasattr(self, 'all_textured_models_grid'):
+                self._refresh_all_textured_models_grid()
+            
+            # Auto-load in viewer if enabled
+                self.logger.info(f"Auto-loaded textured model in viewer: {model_path.name}")
+            
+            # Also update texture preview grid with images
+            self._update_texture_preview_grid(model_path, texture_files)
+    
+    def _on_textured_model_selected(self, model_path: str):
+        """Handle textured model selection in texture tab"""
+        self.logger.info(f"Textured model selected: {model_path}")
+        
+        # Update selection in unified system
+        if hasattr(self, 'unified_object_selector'):
+            self.unified_object_selector.select_model(Path(model_path))
         
     def _setup_file_monitoring(self):
         """Setup enhanced file monitoring"""
@@ -2650,6 +3056,10 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             
             if hasattr(self, 'cfg_spin'):
                 self.cfg_spin.setValue(settings.value("params/cfg", 7.5, float))
+            
+            # Load ComfyUI wait time setting
+            self.comfyui_texture_wait_time = settings.value("comfyui/texture_wait_time", 20, int)
+            self.logger.info(f"Loaded ComfyUI texture wait time: {self.comfyui_texture_wait_time} seconds")
             
             self.logger.info("Saved values applied successfully")
             
@@ -2995,7 +3405,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
     def _show_configure_image_parameters_dialog(self):
         """Show configure image parameters dialog"""
         try:
-            from ui.configure_parameters_dialog import ConfigureParametersDialog
+            from src.ui.configure_parameters_dialog import ConfigureParametersDialog
             dialog = ConfigureParametersDialog(self)
             dialog.configuration_saved.connect(self._on_parameters_configuration_saved)
             dialog.exec()
@@ -3005,7 +3415,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
     def _show_configure_3d_parameters_dialog(self):
         """Show configure 3D parameters dialog"""
         try:
-            from ui.configure_3d_parameters_dialog import Configure3DParametersDialog
+            from src.ui.configure_3d_parameters_dialog import Configure3DParametersDialog
             dialog = Configure3DParametersDialog(self)
             dialog.configuration_saved.connect(self._on_3d_parameters_configuration_saved)
             dialog.exec()
@@ -3036,7 +3446,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
     def _show_configure_texture_parameters_dialog(self):
         """Show configure texture parameters dialog"""
         try:
-            from ui.configure_3d_parameters_dialog import Configure3DParametersDialog
+            from src.ui.configure_3d_parameters_dialog import Configure3DParametersDialog
             dialog = Configure3DParametersDialog(self)
             dialog.setWindowTitle("Configure 3D Texture Generation Parameters")
             dialog.config_path = Path("config/texture_parameters_config.json")
@@ -3139,6 +3549,16 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 self.all_models_grid.apply_viewer_settings(settings)
                 self.logger.debug("Applied settings to all models grid")
                 
+            # Update Scene Textures grid viewers
+            if hasattr(self, 'texture_models_grid'):
+                self.texture_models_grid.apply_viewer_settings(settings)
+                self.logger.debug("Applied settings to texture models grid")
+                
+            # Update View All Textures grid viewers
+            if hasattr(self, 'all_textured_models_grid'):
+                self.all_textured_models_grid.apply_viewer_settings(settings)
+                self.logger.debug("Applied settings to all textured models grid")
+                
             self.logger.info("3D viewer settings applied to all viewers")
         except Exception as e:
             self.logger.error(f"Failed to apply 3D viewer settings: {e}")
@@ -3162,8 +3582,13 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             
         # Update all tab instances that share the same data
         if hasattr(self, 'unified_selectors'):
-            for selector in self.unified_selectors.values():
-                selector._update_display()  # Just update display, don't modify data
+            for tab_name, selector in self.unified_selectors.items():
+                try:
+                    selector._update_display()  # Just update display, don't modify data
+                except Exception as e:
+                    self.logger.error(f"Error updating unified selector for {tab_name}: {e}")
+                    import traceback
+                    self.logger.error(f"Traceback: {traceback.format_exc()}")
         
         # Maintain backward compatibility with existing selected_images list
         if selected:
@@ -3259,6 +3684,10 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             model_path_obj = Path(model_path)
         else:
             model_path_obj = model_path
+        
+        # Keep track of object IDs for models
+        if not hasattr(self, '_model_object_ids'):
+            self._model_object_ids = {}
             
         if selected:
             # Add to selection
@@ -3271,12 +3700,38 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             
             # Update unified object selector
             if hasattr(self, 'unified_object_selector'):
-                from ui.object_selection_widget import ObjectState
-                self.unified_object_selector.add_object(
-                    name=model_path_obj.name,
-                    state=ObjectState.MODEL_3D,
-                    model_3d=model_path_obj
-                )
+                # Try to find the source image for this model
+                source_image = None
+                
+                # Check if model name contains image reference (e.g., Hy3D_00001_.glb from ComfyUI_00001_.png)
+                model_stem = model_path_obj.stem
+                if "Hy3D_" in model_stem:
+                    # Extract number from model name
+                    import re
+                    match = re.search(r'Hy3D_(\d+)_', model_stem)
+                    if match:
+                        number = match.group(1)
+                        # Look for corresponding image
+                        images_dir = Path(self.config.images_dir)
+                        for img_path in images_dir.glob(f"*{number}*.png"):
+                            source_image = img_path
+                            break
+                
+                if source_image and source_image.exists():
+                    # If we found the source image, link the model to it
+                    self.logger.info(f"Linking model {model_path_obj.name} to source image {source_image.name}")
+                    self.unified_object_selector.link_model_to_image(model_path_obj, source_image)
+                    # Store the object ID for later removal
+                    self._model_object_ids[str(model_path_obj)] = f"obj_{source_image.stem}"
+                else:
+                    # If no source image, add as standalone model
+                    self.logger.info(f"No source image found for model {model_path_obj.name}, adding as standalone")
+                    object_id = self.unified_object_selector.add_standalone_model(model_path_obj)
+                    # Store the object ID for later removal
+                    self._model_object_ids[str(model_path_obj)] = object_id
+                
+                # Update all selector instances
+                self._update_all_unified_selectors()
         else:
             # Remove from selection
             if hasattr(self, 'selected_models') and model_path_obj in self.selected_models:
@@ -3290,9 +3745,21 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                         break
             self.logger.info(f"Removed {model_path_obj.name} from selected models")
             
-            # Update unified object selector
-            if hasattr(self, 'unified_object_selector'):
-                self.unified_object_selector.remove_object(model_path_obj.name)
+            # Update unified object selector only if the object exists there
+            if hasattr(self, 'unified_object_selector') and hasattr(self, '_model_object_ids'):
+                # Use the stored object ID for removal
+                model_key = str(model_path_obj)
+                if model_key in self._model_object_ids:
+                    object_id = self._model_object_ids[model_key]
+                    self.unified_object_selector.remove_object(object_id)
+                    self.logger.info(f"Removed {model_path_obj.name} from unified object selector (ID: {object_id})")
+                    # Clean up the stored ID
+                    del self._model_object_ids[model_key]
+                    
+                    # Update all selector instances
+                    self._update_all_unified_selectors()
+                else:
+                    self.logger.debug(f"No stored object ID for model {model_path_obj.name}")
         
         # Update selection count display
         self._update_selection_displays()
@@ -3308,21 +3775,22 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             if hasattr(self, 'generate_3d_btn'):
                 if image_count > 0:
                     self.generate_3d_btn.setText(f"GENERATE 3D MODELS ({image_count})")
-                self.generate_3d_btn.setEnabled(True)
-            else:
-                self.generate_3d_btn.setText("GENERATE 3D MODELS")
-                self.generate_3d_btn.setEnabled(False)
+                    self.generate_3d_btn.setEnabled(True)
+                else:
+                    self.generate_3d_btn.setText("GENERATE 3D MODELS")
+                    self.generate_3d_btn.setEnabled(False)
         
-        if hasattr(self, 'selected_models') and hasattr(self, 'selected_models_list'):
+        # Update texture generation button based on selected models
+        if hasattr(self, 'selected_models'):
             model_count = len(self.selected_models)
             # Update generate texture button text with count
             if hasattr(self, 'generate_texture_btn'):
                 if model_count > 0:
                     self.generate_texture_btn.setText(f"GENERATE TEXTURES ({model_count})")
-                self.generate_texture_btn.setEnabled(True)
-            else:
-                self.generate_texture_btn.setText("GENERATE TEXTURES")
-                self.generate_texture_btn.setEnabled(False)
+                    self.generate_texture_btn.setEnabled(True)
+                else:
+                    self.generate_texture_btn.setText("GENERATE TEXTURES")
+                    self.generate_texture_btn.setEnabled(False)
     
     def _sync_image_selection_to_grids(self):
         """Sync the selected_images list to the visual state of image grids"""
@@ -3330,15 +3798,15 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         if hasattr(self, 'session_image_grid'):
             for thumbnail in self.session_image_grid.thumbnails:
                 should_be_selected = thumbnail.image_path in self.selected_images
-            if thumbnail._selected != should_be_selected:
-                thumbnail.set_selected(should_be_selected)
+                if thumbnail._selected != should_be_selected:
+                    thumbnail.set_selected(should_be_selected)
         
         # Update all images grid selection  
         if hasattr(self, 'all_images_grid'):
             for thumbnail in self.all_images_grid.thumbnails:
                 should_be_selected = thumbnail.image_path in self.selected_images
-            if thumbnail._selected != should_be_selected:
-                thumbnail.set_selected(should_be_selected)
+                if thumbnail._selected != should_be_selected:
+                    thumbnail.set_selected(should_be_selected)
     
     def _sync_model_selection_to_grids(self):
         """Sync the selected_models list to the visual state of model grids"""
@@ -3346,15 +3814,18 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         if hasattr(self, 'session_models_grid'):
             for card in self.session_models_grid.cards:
                 should_be_selected = card.model_path in self.selected_models
-            if card._selected != should_be_selected:
-                card.set_selected(should_be_selected)
+                if card._selected != should_be_selected:
+                    card.set_selected(should_be_selected)
         
         # Update all models grid selection  
-        if hasattr(self, 'all_models_grid'):
-            for card in self.all_models_grid.cards:
-                should_be_selected = card.model_path in self.selected_models
-            if card._selected != should_be_selected:
-                card.set_selected(should_be_selected)
+        if hasattr(self, 'model_grid') and self.model_grid:
+            # ResponsiveStudio3DGrid stores models differently
+            for i, model_path in enumerate(self.model_grid.models):
+                card = self.model_grid.cards.get(i)
+                if card:
+                    should_be_selected = model_path in self.selected_models
+                    if card._selected != should_be_selected:
+                        card.set_selected(should_be_selected)
     
     def _add_selection_context_menu(self):
         """Add context menu functionality to selection lists"""
@@ -3971,6 +4442,29 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                         "title": title,
                         "supported": True
                     }
+                    
+                    # Extract prompts for texture generation workflows
+                    if "texture_generation" in workflow_name:
+                        widgets = node.get('widgets_values', [])
+                        if widgets and len(widgets) > 0:
+                            prompt_text = widgets[0]
+                            
+                            # Node 510 is positive prompt, 177 is negative prompt (from texture workflow)
+                            if node_id == "510" and hasattr(self, 'texture_prompt'):
+                                self.texture_prompt.set_text(prompt_text)
+                                self.logger.info(f"Loaded positive prompt from workflow: {prompt_text[:50]}...")
+                            elif node_id == "177" and hasattr(self, 'texture_negative_prompt'):
+                                self.texture_negative_prompt.set_text(prompt_text)
+                                self.logger.info(f"Loaded negative prompt from workflow: {prompt_text[:50]}...")
+                            
+                            # Also try title-based detection
+                            elif "positive" in title.lower() and hasattr(self, 'texture_prompt'):
+                                self.texture_prompt.set_text(prompt_text)
+                                self.logger.info(f"Loaded positive prompt from workflow (by title)")
+                            elif "negative" in title.lower() and hasattr(self, 'texture_negative_prompt'):
+                                self.texture_negative_prompt.set_text(prompt_text)
+                                self.logger.info(f"Loaded negative prompt from workflow (by title)")
+                    
                     continue
                     
                 # Only include nodes with configurable parameters
@@ -4036,16 +4530,19 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
     def _load_all_models(self):
         """Load all 3D models from models directory to View All"""
         if hasattr(self, 'all_models_grid'):
+            self.logger.info("Found all_models_grid, clearing existing models...")
             self.all_models_grid.clear_models()
             # Use configured models directory
             models_dir = getattr(self.config, 'models_3d_dir', None)
             if not models_dir:
                 # Fallback to default ComfyUI output path
                 models_dir = Path("D:/Comfy3D_WinPortable/ComfyUI/output/3D")
+                self.logger.info("Using fallback ComfyUI output path")
             else:
                 models_dir = Path(models_dir)
+                self.logger.debug(f"Using configured models directory: {models_dir}")
             
-            self.logger.info(f"Loading 3D models from: {models_dir}")
+            self.logger.debug(f"Loading 3D models from: {models_dir}")
             
             if models_dir.exists():
                 # Get all model files - focusing on GLB files which are most common from ComfyUI
@@ -4062,16 +4559,68 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             
                 self.logger.info(f"Found {len(all_models)} 3D models to load into View All grid")
             
+                if len(all_models) == 0:
+                    self.logger.warning("No 3D models found in directory. Please check if models exist.")
+                    # Also check the local models/3d directory
+                    local_models_dir = Path(self.config.base_dir) / "models" / "3d"
+                    self.logger.debug(f"Checking local models directory: {local_models_dir}")
+                    if local_models_dir.exists():
+                        for pattern in model_patterns:
+                            local_models = list(local_models_dir.glob(pattern))
+                            all_models.extend(local_models)
+                            if local_models:
+                                self.logger.info(f"Found {len(local_models)} {pattern} files in local directory")
+                
                 # Add to grid
-                for model_path in all_models:
+                for model_path in all_models[:50]:  # Limit to 50 models to prevent UI freeze
                     self.all_models_grid.add_model(model_path)
                     self.logger.debug(f"Added model to View All: {model_path.name}")
                 
-                self.logger.info(f"Successfully loaded {len(all_models)} 3D models into View All tab")
+                self.logger.info(f"Successfully loaded {min(len(all_models), 50)} 3D models into View All tab")
             else:
                 self.logger.warning(f"3D models directory does not exist: {models_dir}")
+                # Try local directory as fallback
+                local_models_dir = Path(self.config.base_dir) / "models" / "3d"
+                self.logger.debug(f"Trying local models directory: {local_models_dir}")
+                if local_models_dir.exists():
+                    # Load from local directory directly
+                    model_patterns = ["*.glb", "*.gltf", "*.obj", "*.fbx", "*.ply", "*.stl"]
+                    all_models = []
+                    for pattern in model_patterns:
+                        found_files = list(local_models_dir.glob(pattern))
+                        all_models.extend(found_files)
+                        if found_files:
+                            self.logger.info(f"Found {len(found_files)} {pattern} files in local directory")
+                    
+                    # Sort by modification time (newest first)
+                    all_models.sort(key=lambda x: x.stat().st_mtime, reverse=True)
+                    
+                    # Add to grid
+                    for model_path in all_models[:50]:  # Limit to 50 models
+                        self.all_models_grid.add_model(model_path)
+                    
+                    self.logger.info(f"Loaded {min(len(all_models), 50)} models from local directory")
         else:
             self.logger.error("all_models_grid not found - UI not properly initialized")
+    
+    def _ensure_models_loaded(self):
+        """Ensure models are loaded - fallback method"""
+        if hasattr(self, 'all_models_grid'):
+            # Check if grid is empty
+            if not hasattr(self.all_models_grid, 'cards') or len(self.all_models_grid.cards) == 0:
+                self.logger.info("Models grid is empty, attempting to load models again...")
+                self._load_all_models()
+            else:
+                self.logger.info(f"Models grid has {len(self.all_models_grid.cards)} models loaded")
+        else:
+            self.logger.warning("all_models_grid still not found after delay")
+    
+    def _on_model_tab_changed(self, index: int, tab_widget: QTabWidget):
+        """Handle model tab changes"""
+        if index == 1:  # View All Models tab
+            self.logger.info("Switched to View All Models tab, loading models...")
+            # Load models with a short delay to ensure UI is ready
+            QTimer.singleShot(100, self._load_all_models)
     
     # File monitoring callbacks
     def _on_new_image(self, image_path: str):
@@ -4136,7 +4685,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             
                 # Link the model to the image
                 self.unified_object_selector.link_model_to_image(model_path, image_path)
-            self.logger.info(f"Auto-linked model {model_path.name} to image {image_path.name}")
+            self.logger.debug(f"Auto-linked model {model_path.name} to image {image_path.name}")
             break
     
     def _detect_texture_files(self, model_path: Path) -> List[Path]:
@@ -4160,28 +4709,176 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             
         return texture_files
     
+    def _update_texture_preview_grid(self, model_path: Path, texture_files: List):
+        """Update the texture preview with generated texture images in horizontal layout"""
+        # Preview grid has been removed from UI - this method is deprecated
+        # Keeping empty implementation to avoid errors from existing calls
+        pass
+    
+    def _create_texture_preview_card(self, image_path: Path, model_path: Path) -> QFrame:
+        """Create a preview card for a texture image - optimized for horizontal layout"""
+        card = QFrame()
+        card.setObjectName("texture_preview_card")
+        card.setFixedSize(200, 220)
+        card.setStyleSheet("""
+            QFrame#texture_preview_card {
+                background-color: #2a2a2a;
+                border: 1px solid #3a3a3a;
+                border-radius: 8px;
+                padding: 8px;
+            }
+            QFrame#texture_preview_card:hover {
+                border-color: #4CAF50;
+                cursor: pointer;
+            }
+        """)
+        
+        layout = QVBoxLayout(card)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(4)
+        
+        # Image preview
+        preview_label = QLabel()
+        preview_label.setFixedSize(164, 164)  # Account for padding
+        preview_label.setScaledContents(True)
+        preview_label.setAlignment(Qt.AlignCenter)
+        preview_label.setStyleSheet("""
+            QLabel {
+                background-color: #1a1a1a;
+                border: 1px solid #2a2a2a;
+                border-radius: 4px;
+            }
+        """)
+        
+        # Load and display the image
+        pixmap = QPixmap(str(image_path))
+        if not pixmap.isNull():
+            scaled_pixmap = pixmap.scaled(164, 164, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            preview_label.setPixmap(scaled_pixmap)
+        else:
+            preview_label.setText("Preview\nUnavailable")
+            preview_label.setStyleSheet("color: #666;")
+        
+        layout.addWidget(preview_label)
+        
+        # Image name (shortened)
+        display_name = image_path.name
+        if len(display_name) > 25:
+            display_name = display_name[:22] + "..."
+        name_label = QLabel(display_name)
+        name_label.setToolTip(image_path.name)  # Full name on hover
+        name_label.setAlignment(Qt.AlignCenter)
+        name_label.setStyleSheet("font-size: 9px; color: #999;")
+        layout.addWidget(name_label)
+        
+        # Store references
+        card.image_path = image_path
+        card.model_path = model_path
+        
+        # Make clickable
+        card.mousePressEvent = lambda event: self._on_texture_preview_clicked(image_path)
+        
+        return card
+    
+    def _export_textured_models(self):
+        """Export selected textured models to Cinema4D"""
+        if hasattr(self, 'all_textured_models_grid'):
+            selected_models = self.all_textured_models_grid.get_selected_models()
+            if selected_models:
+                self.logger.info(f"Exporting {len(selected_models)} textured models to Cinema4D")
+                # TODO: Implement actual export functionality
+                QMessageBox.information(self, "Export", f"Export functionality for {len(selected_models)} models coming soon!")
+            else:
+                QMessageBox.warning(self, "No Selection", "Please select models to export")
+    
+    def _select_all_textured_models(self):
+        """Select all textured models in the grid"""
+        if hasattr(self, 'all_textured_models_grid'):
+            for card in self.all_textured_models_grid.cards:
+                card.is_selected = True
+                card.setProperty("selected", True)
+                card.style().unpolish(card)
+                card.style().polish(card)
+                card.selected.emit(card.model_path, True)
+    
+    def _refresh_all_textured_models_grid(self):
+        """Refresh the all textured models grid"""
+        if not hasattr(self, 'all_textured_models_grid'):
+            return
+            
+        try:
+            # Clear existing models
+            self.all_textured_models_grid.clear_models()
+            
+            # Get textured models directory
+            textured_path = self.config.textured_models_dir if hasattr(self.config, 'textured_models_dir') else Path(self.config.models_3d_dir) / "textured"
+            
+            if textured_path.exists():
+                # Find all textured models
+                model_files = []
+                for ext in ['*.glb', '*.gltf', '*.obj', '*.fbx']:
+                    model_files.extend(textured_path.glob(ext))
+                
+                # Add each model to the grid
+                for model_path in model_files:
+                    # Try to find source image
+                    source_image = None
+                    if hasattr(self, 'model_to_image_map') and str(model_path) in self.model_to_image_map:
+                        source_image = self.model_to_image_map[str(model_path)]
+                    
+                    # Add to grid
+                    self.all_textured_models_grid.add_model(model_path)
+                
+                self.logger.info(f"Loaded {len(model_files)} textured models into view all grid")
+            else:
+                self.logger.warning(f"Textured models directory not found: {textured_path}")
+                
+        except Exception as e:
+            self.logger.error(f"Error refreshing all textured models grid: {e}")
+            import traceback
+            self.logger.error(traceback.format_exc())
+    
+    def _on_texture_preview_clicked(self, image_path: Path):
+        """Handle texture preview click"""
+        try:
+            # Open image in default viewer
+            import subprocess
+            import platform
+            
+            if platform.system() == 'Windows':
+                subprocess.run(['start', '', str(image_path)], shell=True)
+            elif platform.system() == 'Darwin':  # macOS
+                subprocess.run(['open', str(image_path)])
+            else:  # Linux
+                subprocess.run(['xdg-open', str(image_path)])
+                
+            self.logger.info(f"Opened texture preview: {image_path.name}")
+            
+        except Exception as e:
+            self.logger.error(f"Error opening texture preview: {e}")
+    
     def _check_for_new_textures(self):
         """Check for newly generated texture files and mark models as textured"""
         if not hasattr(self, 'unified_object_selector'):
             return
             
         # Check all selected models for new texture files
-        from ui.object_selection_widget import ObjectState
+        from src.ui.object_selection_widget import ObjectState
         for obj in self.unified_object_selector.get_selected_objects():
             if obj.model_3d and obj.state != ObjectState.TEXTURED:
                 texture_files = self._detect_texture_files(obj.model_3d)
             if texture_files:
                 self.unified_object_selector.mark_as_textured(obj.model_3d, texture_files)
-                self.logger.info(f"Auto-detected textures for {obj.model_3d.name}: {len(texture_files)} files")
+                self.logger.debug(f"Auto-detected textures for {obj.model_3d.name}: {len(texture_files)} files")
     
     def _test_unified_selector_visibility(self):
         """Test method to ensure unified selector is visible and working"""
-        self.logger.info(f"Testing unified selector visibility...")
+        self.logger.debug(f"Testing unified selector visibility...")
         
         # Check main selector
         if hasattr(self, 'unified_object_selector'):
-            self.logger.info(f"Main unified selector visibility: {self.unified_object_selector.isVisible()}")
-            self.logger.info(f"Main unified selector parent: {self.unified_object_selector.parent()}")
+            self.logger.debug(f"Main unified selector visibility: {self.unified_object_selector.isVisible()}")
+            self.logger.debug(f"Main unified selector parent: {self.unified_object_selector.parent()}")
         
         # Check tab instances
         if hasattr(self, 'unified_selectors'):
@@ -4201,16 +4898,15 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self._load_all_images()
         
         # Load existing models - THIS POPULATES VIEW ALL TAB
-        self._load_all_models()
+        # Use a short delay to ensure UI is fully initialized
+        QTimer.singleShot(500, self._load_all_models)
         
         # Load session content (empty at startup)
         self._load_session_images()
         self._load_session_models()
         
-        # Also trigger load on startup for View All if it exists
-        if hasattr(self, '_load_test_models_on_startup'):
-            # This ensures models are loaded into View All tab
-            QTimer.singleShot(1000, self._load_test_models_on_startup)
+        # Also trigger another load after a longer delay as fallback
+        QTimer.singleShot(2000, self._ensure_models_loaded)
     
     # Menu action implementations
     def _new_project(self):
@@ -4379,10 +5075,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
     def _collect_project_data(self) -> Dict[str, Any]:
         """Collect current application state into project data"""
         try:
-            # Get dynamic workflow parameters
-            dynamic_params = self._collect_dynamic_workflow_parameters()
-            
-            # Get current prompts
+            # Get current prompts first
             positive_prompt = ""
             negative_prompt = ""
             
@@ -4390,6 +5083,17 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 positive_prompt = self.positive_prompt_widget.get_prompt()
             if hasattr(self, 'negative_prompt_widget') and self.negative_prompt_widget:
                 negative_prompt = self.negative_prompt_widget.get_prompt()
+            
+            # Get dynamic workflow parameters only if we have a loaded workflow
+            dynamic_params = {}
+            if hasattr(self, 'current_workflow') and self.current_workflow:
+                batch_size = getattr(self, 'batch_size_spin', QSpinBox()).value() if hasattr(self, 'batch_size_spin') else 1
+                dynamic_params = self._collect_dynamic_workflow_parameters(
+                    self.current_workflow, 
+                    positive_prompt, 
+                    negative_prompt, 
+                    batch_size
+                )
             
             # Get selected workflow
             current_workflow = ""
@@ -4704,7 +5408,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         """Open environment variables dialog"""
         try:
             self.logger.info("Opening environment variables dialog...")
-            from ui.env_dialog import EnvironmentVariablesDialog
+            from src.ui.env_dialog import EnvironmentVariablesDialog
             
             dialog = EnvironmentVariablesDialog(self.config, self)
             dialog.env_updated.connect(self._on_environment_updated)
@@ -4727,7 +5431,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         """Open application settings dialog"""
         try:
             self.logger.info("Opening application settings dialog...")
-            from ui.settings_dialog import ApplicationSettingsDialog
+            from src.ui.settings_dialog import ApplicationSettingsDialog
             
             dialog = ApplicationSettingsDialog(self.config, self)
             dialog.settings_updated.connect(self._on_settings_updated)
@@ -4745,6 +5449,11 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self.logger.info("Application settings have been updated")
         # Apply new settings to the application
         self._apply_saved_accent_color()
+        
+        # Reload ComfyUI wait time
+        settings = QSettings("YamboStudio", "ComfyToC4DApp")
+        self.comfyui_texture_wait_time = settings.value("comfyui/texture_wait_time", 20, int)
+        self.logger.info(f"Updated ComfyUI texture wait time: {self.comfyui_texture_wait_time} seconds")
     
     def _apply_saved_accent_color(self):
         """Apply saved accent color to the application on startup"""

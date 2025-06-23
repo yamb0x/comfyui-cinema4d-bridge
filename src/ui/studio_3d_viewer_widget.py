@@ -18,7 +18,7 @@ from PySide6.QtWebEngineWidgets import QWebEngineView
 from loguru import logger
 
 # Import ThreeJS3DViewer for embedding in preview cards
-from ui.viewers.threejs_3d_viewer import ThreeJS3DViewer
+from src.ui.viewers.threejs_3d_viewer import ThreeJS3DViewer
 
 
 class LocalFileServer(SimpleHTTPRequestHandler):
@@ -97,7 +97,6 @@ class Studio3DPreviewCard(QFrame):
         # Load the model if it exists
         if self.model_path.exists():
             self.viewer.load_model(str(self.model_path))
-            logger.info(f"Loaded 3D model into preview card: {self.model_path.name}")
         else:
             logger.warning(f"Model file not found: {self.model_path}")
     
@@ -129,6 +128,7 @@ class Studio3DPreviewCard(QFrame):
                 background-color: #2e2e2e;
             }}
         """)
+    
     
     def update_accent_color(self, color: str):
         """Update the selection border color based on settings"""
@@ -166,8 +166,17 @@ class ResponsiveStudio3DGrid(QScrollArea):
         # Remove the fixed maximum height to allow proper sizing
         # The parent container should control the height
         
+        # Set transparent background to prevent black overlay
+        self.setStyleSheet("""
+            QScrollArea {
+                background-color: transparent;
+                border: none;
+            }
+        """)
+        
         # Content widget
         self.content = QWidget()
+        self.content.setStyleSheet("background-color: transparent;")
         self.setWidget(self.content)
         
         # Main layout
@@ -178,7 +187,7 @@ class ResponsiveStudio3DGrid(QScrollArea):
         # Info label
         self.info_label = QLabel("No 3D models loaded")
         self.info_label.setAlignment(Qt.AlignCenter)
-        self.info_label.setStyleSheet("color: #888; font-size: 12px; padding: 10px;")
+        self.info_label.setStyleSheet("color: #888; font-size: 12px; padding: 10px; background-color: transparent;")
         self.info_label.setMaximumHeight(40)
         layout.addWidget(self.info_label)
         
@@ -188,7 +197,8 @@ class ResponsiveStudio3DGrid(QScrollArea):
         self.grid_layout.setContentsMargins(0, 0, 0, 0)
         layout.addLayout(self.grid_layout)
         
-        # REMOVED addStretch() - was causing UI height expansion
+        # Add stretch to push content to top
+        layout.addStretch()
     
     def add_model(self, model_path: Path):
         """Add a 3D model to the grid"""

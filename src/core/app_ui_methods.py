@@ -15,7 +15,7 @@ from pathlib import Path
 from loguru import logger
 
 # Import the actual grid widgets
-from ui.widgets import ImageGridWidget
+from src.ui.widgets import ImageGridWidget
 
 
 class UICreationMethods:
@@ -116,7 +116,7 @@ class UICreationMethods:
         # The grid itself is already a QScrollArea
         
         # Use new ResponsiveStudio3DGrid for session models
-        from ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
+        from src.ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
         # Get accent color from config
         accent_color = getattr(self.config.ui, 'accent_color', '#4CAF50')
         # Calculate optimal card size based on available space
@@ -157,7 +157,7 @@ class UICreationMethods:
         layout.addLayout(header_layout)
         
         # Use ResponsiveStudio3DGrid - same as Scene Objects
-        from ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
+        from src.ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
         # Get accent color from config
         accent_color = getattr(self.config.ui, 'accent_color', '#4CAF50')
         # Use 3 columns for View All (more models)
@@ -319,7 +319,7 @@ class UICreationMethods:
                 layout.addWidget(dynamic_section)
                 # REMOVED addStretch() - was causing UI height expansion
                 
-                self.logger.info("Loaded dynamic 3D parameters on demand")
+                self.logger.debug("Loaded dynamic 3D parameters on demand")
             else:
                 self.logger.info("Failed to create dynamic 3D parameters, keeping static")
                 
@@ -418,7 +418,7 @@ class UICreationMethods:
             
             layout.addWidget(section)
         
-        self.logger.info(f"Created dynamic 3D parameters section for {len(selected_nodes)} configured nodes")
+        self.logger.debug(f"Created dynamic 3D parameters section for {len(selected_nodes)} configured nodes")
         return widget
     
     
@@ -982,7 +982,7 @@ class UICreationMethods:
     def _open_nlp_dictionary(self):
         """Open NLP Dictionary dialog"""
         try:
-            from ui.nlp_dictionary_dialog import NLPDictionaryDialog
+            from src.ui.nlp_dictionary_dialog import NLPDictionaryDialog
             dialog = NLPDictionaryDialog(self, self.config)
             result = dialog.exec()
             if result:
@@ -996,7 +996,7 @@ class UICreationMethods:
         """Show Configure Image Parameters dialog"""
         try:
             self.logger.info("🔄 Opening Configure Image Parameters dialog...")
-            from ui.configure_parameters_dialog import ConfigureParametersDialog
+            from src.ui.configure_parameters_dialog import ConfigureParametersDialog
             
             dialog = ConfigureParametersDialog("image", parent=self)
             
@@ -1080,7 +1080,7 @@ class UICreationMethods:
     def _load_parameters_from_config(self, param_type: str):
         """Load parameters from configuration and update UI widgets"""
         try:
-            self.logger.info(f"🔄 _load_parameters_from_config called for {param_type}...")
+            self.logger.debug(f"🔄 _load_parameters_from_config called for {param_type}...")
             
             # Initialize parameter widget tracking if not exists
             if not hasattr(self, 'parameter_widgets'):
@@ -1093,7 +1093,7 @@ class UICreationMethods:
                 'positive_prompt': hasattr(self, 'positive_prompt'),
                 'negative_prompt': hasattr(self, 'negative_prompt')
             }
-            self.logger.info(f"🔍 UI Components status: {ui_components}")
+            self.logger.debug(f"🔍 UI Components status: {ui_components}")
             
             missing_components = [name for name, exists in ui_components.items() if not exists]
             if missing_components:
@@ -2761,7 +2761,7 @@ class UICreationMethods:
         """Open environment variables dialog"""
         try:
             self.logger.info("Opening environment variables dialog...")
-            from ui.env_dialog import EnvironmentVariablesDialog
+            from src.ui.env_dialog import EnvironmentVariablesDialog
             
             dialog = EnvironmentVariablesDialog(self.config, self)
             dialog.env_updated.connect(self._on_environment_updated)
@@ -2783,7 +2783,7 @@ class UICreationMethods:
         """Open application settings dialog"""
         try:
             self.logger.info("Opening application settings dialog...")
-            from ui.settings_dialog import ApplicationSettingsDialog
+            from src.ui.settings_dialog import ApplicationSettingsDialog
             
             dialog = ApplicationSettingsDialog(self.config, self)
             dialog.settings_updated.connect(self._on_settings_updated)
@@ -2816,7 +2816,7 @@ class UICreationMethods:
     def _show_magic_prompts_database(self):
         """Show Magic Prompts Database dialog"""
         try:
-            from ui.magic_prompts_dialog import MagicPromptsDialog
+            from src.ui.magic_prompts_dialog import MagicPromptsDialog
             dialog = MagicPromptsDialog(self)
             dialog.exec()
         except Exception as e:
@@ -2827,7 +2827,7 @@ class UICreationMethods:
     def _show_magic_prompts_dialog(self, prompt_type: str):
         """Show magic prompts selection dialog for positive or negative prompts"""
         try:
-            from ui.magic_prompts_selector import MagicPromptsSelector
+            from src.ui.magic_prompts_selector import MagicPromptsSelector
             dialog = MagicPromptsSelector(prompt_type, self)
             if dialog.exec() == QDialog.Accepted:
                 selected_template = dialog.get_selected_template()

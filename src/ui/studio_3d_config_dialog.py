@@ -202,7 +202,7 @@ class Studio3DConfigDialog(QDialog):
         
         # Live 3D viewer preview
         try:
-            from ui.viewers.threejs_3d_viewer import ThreeJS3DViewer
+            from src.ui.viewers.threejs_3d_viewer import ThreeJS3DViewer
             self.preview_viewer = ThreeJS3DViewer(parent=self, width=400, height=400)
             
             # Start the server first

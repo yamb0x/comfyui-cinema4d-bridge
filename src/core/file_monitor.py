@@ -33,7 +33,7 @@ class OutputFileHandler(FileSystemEventHandler, LoggerMixin):
             return
             
         file_path = Path(event.src_path)
-        self.logger.info(f"File monitor detected CREATED: {file_path.name}")
+        self.logger.debug(f"File monitor detected CREATED: {file_path.name}")
         
         # Skip if already processed
         if str(file_path) in self.processed_files:
@@ -51,7 +51,7 @@ class OutputFileHandler(FileSystemEventHandler, LoggerMixin):
         file_path = Path(event.src_path)
         # Only log image files to avoid spam
         if file_path.suffix.lower() in ['.png', '.jpg', '.jpeg']:
-            self.logger.info(f"File monitor detected MODIFIED: {file_path.name}")
+            self.logger.debug(f"File monitor detected MODIFIED: {file_path.name}")
         
         # Schedule delayed processing
         self._schedule_delayed_processing(file_path, "modified")

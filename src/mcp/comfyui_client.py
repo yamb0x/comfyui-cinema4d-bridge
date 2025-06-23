@@ -250,7 +250,7 @@ class ComfyUIClient(LoggerMixin):
         try:
             with open(workflow_path, "r") as f:
                 workflow = json.load(f)
-            self.logger.info(f"Loaded workflow: {workflow_path}")
+            self.logger.debug(f"Loaded workflow: {workflow_path}")
             return workflow
         except Exception as e:
             self.logger.error(f"Failed to load workflow: {e}")
@@ -302,8 +302,8 @@ class ComfyUIClient(LoggerMixin):
             with open(workflow_file, 'w') as f:
                 json.dump(workflow, f, indent=2)
             
-            self.logger.info(f"💾 Workflow saved to: {workflow_file}")
-            self.logger.info(f"📋 INSTRUCTIONS:")
+            self.logger.debug(f"💾 Workflow saved to: {workflow_file}")
+            self.logger.debug(f"📋 INSTRUCTIONS:")
             self.logger.info(f"  1. ComfyUI should open in your browser")
             self.logger.info(f"  2. Drag the file '{workflow_file.name}' from your Desktop into ComfyUI")
             self.logger.info(f"  3. The workflow will load with your parameters (1024x1024 tiles, 30 steps)")
@@ -372,8 +372,8 @@ class ComfyUIClient(LoggerMixin):
                 with open(final_workflow_path, 'w') as f:
                     json.dump(prompt.get('prompt', {}), f, indent=2)
                 
-                self.logger.info(f"🔍 SAVED FINAL WORKFLOW for comparison: {final_workflow_path}")
-                self.logger.info(f"🔍 Compare this with the original workflow file to see parameter differences")
+                self.logger.debug(f"🔍 SAVED FINAL WORKFLOW for comparison: {final_workflow_path}")
+                self.logger.debug(f"🔍 Compare this with the original workflow file to see parameter differences")
                 
             except Exception as e:
                 self.logger.error(f"Failed to save final workflow for comparison: {e}")
@@ -384,10 +384,10 @@ class ComfyUIClient(LoggerMixin):
                     class_type = node_data.get('class_type')
                     if class_type == 'Hy3DLoadMesh':
                         mesh_path = node_data.get('inputs', {}).get('glb_path', 'NOT_SET')
-                        self.logger.info(f"🚀 SENDING TO COMFYUI: Hy3DLoadMesh node {node_id} glb_path='{mesh_path}'")
+                        self.logger.debug(f"🚀 SENDING TO COMFYUI: Hy3DLoadMesh node {node_id} glb_path='{mesh_path}'")
                     elif class_type == 'Hy3DUploadMesh':
                         mesh_input = node_data.get('inputs', {}).get('mesh', 'NOT_SET')
-                        self.logger.info(f"🚀 SENDING TO COMFYUI: Hy3DUploadMesh node {node_id} mesh='{mesh_input}'")
+                        self.logger.debug(f"🚀 SENDING TO COMFYUI: Hy3DUploadMesh node {node_id} mesh='{mesh_input}'")
             
             # Ensure HTTP client exists in current event loop
             await self._ensure_http_client()
@@ -582,10 +582,10 @@ class ComfyUIClient(LoggerMixin):
                         models["embeddings"] = embedding_info["embedding_name"][0]
                 
                 # Log what we found
-                self.logger.info(f"Found models from ComfyUI:")
-                self.logger.info(f"  Checkpoints: {len(models['checkpoints'])} models")
-                self.logger.info(f"  LoRAs: {len(models['loras'])} models")
-                self.logger.info(f"  VAE: {len(models['vae'])} models")
+                self.logger.debug(f"Found models from ComfyUI:")
+                self.logger.debug(f"  Checkpoints: {len(models['checkpoints'])} models")
+                self.logger.debug(f"  LoRAs: {len(models['loras'])} models")
+                self.logger.debug(f"  VAE: {len(models['vae'])} models")
                 self.logger.debug(f"  Checkpoint list: {models['checkpoints'][:3]}..." if models['checkpoints'] else "  No checkpoints found")
                 self.logger.debug(f"  LoRA list: {models['loras'][:3]}..." if models['loras'] else "  No LoRAs found")
                 
