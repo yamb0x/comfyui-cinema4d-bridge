@@ -666,6 +666,10 @@ class WorkflowManager(LoggerMixin):
             # Convert widgets_values to inputs based on node type
             widgets = node.get("widgets_values", [])
             
+            # Debug logging for problematic nodes
+            if node_type in ["QuadrupleCLIPLoader", "UNETLoader"]:
+                self.logger.warning(f"🔍 DEBUG: Converting {node_type} node {node_id} - widgets: {widgets}")
+            
             if node_type == "CLIPTextEncode" and widgets:
                 api_node["inputs"]["text"] = widgets[0] if widgets else ""
             elif node_type == "EmptySD3LatentImage" and len(widgets) >= 3:
@@ -697,17 +701,23 @@ class WorkflowManager(LoggerMixin):
                 api_node["inputs"]["guidance"] = widgets[0] if widgets else 3.5
             
             # SD3 specific nodes
-            elif node_type == "QuadrupleCLIPLoader" and len(widgets) >= 4:
-                api_node["inputs"]["clip_name1"] = widgets[0]
-                api_node["inputs"]["clip_name2"] = widgets[1]
-                api_node["inputs"]["clip_name3"] = widgets[2]
-                api_node["inputs"]["clip_name4"] = widgets[3]
-                self.logger.debug(f"QuadrupleCLIPLoader node {node_id} - loaded 4 CLIP models")
+            elif node_type == "QuadrupleCLIPLoader":
+                if len(widgets) >= 4:
+                    api_node["inputs"]["clip_name1"] = widgets[0]
+                    api_node["inputs"]["clip_name2"] = widgets[1]
+                    api_node["inputs"]["clip_name3"] = widgets[2]
+                    api_node["inputs"]["clip_name4"] = widgets[3]
+                    self.logger.warning(f"✅ QuadrupleCLIPLoader node {node_id} - SUCCESS: clips: {widgets[:4]}")
+                else:
+                    self.logger.error(f"❌ QuadrupleCLIPLoader node {node_id} - FAILED: widgets: {widgets} (length: {len(widgets)})")
             
-            elif node_type == "UNETLoader" and len(widgets) >= 2:
-                api_node["inputs"]["unet_name"] = widgets[0]
-                api_node["inputs"]["weight_dtype"] = widgets[1]
-                self.logger.debug(f"UNETLoader node {node_id} - model: {widgets[0]}, dtype: {widgets[1]}")
+            elif node_type == "UNETLoader":
+                if len(widgets) >= 2:
+                    api_node["inputs"]["unet_name"] = widgets[0]
+                    api_node["inputs"]["weight_dtype"] = widgets[1]
+                    self.logger.warning(f"✅ UNETLoader node {node_id} - SUCCESS: model: {widgets[0]}, dtype: {widgets[1]}")
+                else:
+                    self.logger.error(f"❌ UNETLoader node {node_id} - FAILED: widgets: {widgets} (length: {len(widgets)})")
             
             elif node_type == "ModelSamplingSD3" and widgets:
                 api_node["inputs"]["shift"] = widgets[0] if widgets else 3.0

@@ -59,7 +59,7 @@ from src.c4d.mcp_wrapper import CommandResult
 from src.ui.styles import get_available_themes
 from src.ui.fonts import get_font_manager, load_project_fonts
 from src.ui.nlp_dictionary_dialog import NLPDictionaryDialog
-from src.ui.studio_3d_config_dialog import Studio3DConfigDialog
+from src.ui.simple_3d_config_dialog import Simple3DConfigDialog
 from src.ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
 from src.pipeline.stages import PipelineStage, ImageGenerationStage, Model3DGenerationStage, SceneAssemblyStage, ExportStage
 from src.utils.logger import LoggerMixin
@@ -74,6 +74,12 @@ except ImportError as e:
 
 # Import debug wrapper for Scene Assembly debugging
 from src.core.debug_wrapper import wrap_scene_assembly_methods, get_debug_report
+
+# Import async task manager for preventing RuntimeError crashes
+from src.core.async_task_manager import get_task_manager, execute_texture_workflow
+
+# Import unified selection manager for consolidating scattered selection lists
+from src.core.unified_selection_manager import UnifiedSelectionManager, SelectionType
 
 # Import UI methods
 from .app_ui_methods import UICreationMethods
@@ -209,6 +215,124 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         # Setup the redesigned UI
         self._setup_redesigned_ui()
+    
+    def _on_unified_selection_changed(self, path: str, selection_type: SelectionType, selected: bool):
+        """Handle unified selection changes and sync with legacy systems"""
+        try:
+            path_obj = Path(path)
+            
+            # Update legacy lists (maintained for backward compatibility)
+            if selection_type == SelectionType.IMAGE:
+                if selected:
+                    if path_obj not in self.selected_images:
+                        self.selected_images.append(path_obj)
+                else:
+                    if path_obj in self.selected_images:
+                        self.selected_images.remove(path_obj)
+            elif selection_type in [SelectionType.MODEL_3D, SelectionType.TEXTURED_MODEL]:
+                if selected:
+                    if path_obj not in self.selected_models:
+                        self.selected_models.append(path_obj)
+                else:
+                    if path_obj in self.selected_models:
+                        self.selected_models.remove(path_obj)
+            
+            # Sync with UI grids
+            self._sync_selection_to_ui_grids()
+            
+            # Note: Unified object selector updates are handled in individual selection methods
+            # to avoid circular dependencies and timing issues
+            
+            # Always update the unified selector displays after selection changes
+            self._update_all_unified_selectors()
+            
+            logger.debug(f"Unified selection: {path_obj.name} {'selected' if selected else 'deselected'}")
+        except Exception as e:
+            logger.error(f"Error in _on_unified_selection_changed: {e}")
+            import traceback
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            # Even if there's an error, try to update displays
+            try:
+                self._update_all_unified_selectors()
+            except Exception as update_error:
+                logger.error(f"Failed to update unified selectors after error: {update_error}")
+    
+    def _on_selection_count_changed(self, selection_type: SelectionType, count: int):
+        """Handle selection count changes and update UI"""
+        try:
+            # Update button states and text
+            if selection_type == SelectionType.IMAGE:
+                if hasattr(self, 'generate_3d_btn'):
+                    if count > 0:
+                        self.generate_3d_btn.setText(f"GENERATE 3D MODELS ({count})")
+                        self.generate_3d_btn.setEnabled(True)
+                    else:
+                        self.generate_3d_btn.setText("GENERATE 3D MODELS")
+                        self.generate_3d_btn.setEnabled(False)
+            
+            elif selection_type in [SelectionType.MODEL_3D, SelectionType.TEXTURED_MODEL]:
+                # Count both model types for texture generation
+                if hasattr(self, 'selection_manager') and self.selection_manager:
+                    total_models = (self.selection_manager.get_count(SelectionType.MODEL_3D) + 
+                                  self.selection_manager.get_count(SelectionType.TEXTURED_MODEL))
+                    if hasattr(self, 'generate_texture_btn'):
+                        if total_models > 0:
+                            self.generate_texture_btn.setText(f"GENERATE TEXTURES ({total_models})")
+                            self.generate_texture_btn.setEnabled(True)
+                        else:
+                            self.generate_texture_btn.setText("GENERATE TEXTURES")
+                            self.generate_texture_btn.setEnabled(False)
+        except Exception as e:
+            logger.error(f"Error in _on_selection_count_changed: {e}")
+            import traceback
+            logger.error(f"Traceback: {traceback.format_exc()}")
+    
+    def _sync_selection_to_ui_grids(self):
+        """Sync unified selection state to UI grids"""
+        try:
+            # This replaces the old _sync_image_selection_to_grids and _sync_model_selection_to_grids
+            
+            if not hasattr(self, 'selection_manager') or not self.selection_manager:
+                logger.debug("Selection manager not available for UI sync")
+                return
+            
+            # Update image grids
+            selected_images = set(self.selection_manager.get_selected_paths(SelectionType.IMAGE))
+            
+            if hasattr(self, 'session_image_grid') and hasattr(self.session_image_grid, 'thumbnails'):
+                for thumbnail in self.session_image_grid.thumbnails:
+                    should_be_selected = thumbnail.image_path in selected_images
+                    if hasattr(thumbnail, '_selected') and thumbnail._selected != should_be_selected:
+                        thumbnail.set_selected(should_be_selected)
+            
+            if hasattr(self, 'all_images_grid') and hasattr(self.all_images_grid, 'thumbnails'):
+                for thumbnail in self.all_images_grid.thumbnails:
+                    should_be_selected = thumbnail.image_path in selected_images
+                    if hasattr(thumbnail, '_selected') and thumbnail._selected != should_be_selected:
+                        thumbnail.set_selected(should_be_selected)
+            
+            # Update model grids
+            selected_models = set(self.selection_manager.get_selected_paths(SelectionType.MODEL_3D))
+            selected_textured = set(self.selection_manager.get_selected_paths(SelectionType.TEXTURED_MODEL))
+            all_selected_models = selected_models | selected_textured
+            
+            if hasattr(self, 'session_models_grid') and hasattr(self.session_models_grid, 'cards'):
+                for card in self.session_models_grid.cards:
+                    should_be_selected = card.model_path in all_selected_models
+                    if hasattr(card, '_selected') and card._selected != should_be_selected:
+                        card.set_selected(should_be_selected)
+            
+            if hasattr(self, 'model_grid') and self.model_grid and hasattr(self.model_grid, 'models'):
+                for i, model_path in enumerate(self.model_grid.models):
+                    card = self.model_grid.cards.get(i) if hasattr(self.model_grid, 'cards') else None
+                    if card:
+                        should_be_selected = model_path in all_selected_models
+                        if hasattr(card, '_selected') and card._selected != should_be_selected:
+                            card.set_selected(should_be_selected)
+        except Exception as e:
+            logger.error(f"Error in _sync_selection_to_ui_grids: {e}")
+            import traceback
+            logger.error(f"Traceback: {traceback.format_exc()}")
         
     def _get_unified_selector(self, tab_name: str):
         """Get or create a unified selector instance for a specific tab"""
@@ -282,9 +406,14 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self.session_images = []
         self.session_models = []
         
-        # Selection tracking
+        # Legacy selection tracking - now managed by UnifiedSelectionManager
+        # These properties will be kept in sync automatically
         self.selected_images = []
         self.selected_models = []
+        
+        # Migrate any existing selections to unified manager
+        if self.selected_images or self.selected_models:
+            self.selection_manager.migrate_from_legacy_lists(self.selected_images, self.selected_models)
         
         # Initialize NLP dictionary
         self.nlp_dictionary = {}
@@ -302,6 +431,27 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             self.config.paths.cinema4d_path,
             self.config.mcp.cinema4d_port
         )
+        
+        # Initialize async task manager to prevent RuntimeError crashes
+        self.task_manager = get_task_manager()
+        
+        # Initialize unified selection manager to replace scattered selection lists
+        try:
+            self.selection_manager = UnifiedSelectionManager()
+            self.selection_manager.selection_changed.connect(self._on_unified_selection_changed)
+            self.selection_manager.selection_count_changed.connect(self._on_selection_count_changed)
+            logger.info("UnifiedSelectionManager initialized successfully")
+        except Exception as e:
+            logger.error(f"Failed to initialize UnifiedSelectionManager: {e}")
+            import traceback
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            self.selection_manager = None
+        
+        # Setup workflow evolution timer for automatic detection
+        self.workflow_evolution_timer = QTimer()
+        self.workflow_evolution_timer.timeout.connect(self._check_workflow_evolution)
+        self.workflow_evolution_timer.start(30000)  # Check every 30 seconds
+        self.logger.debug("Workflow evolution detection timer started")
         
         # Pipeline stages
         self.stages: Dict[str, PipelineStage] = {}
@@ -347,17 +497,17 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             main_layout.addWidget(header_widget)
             
             # Main vertical splitter for content and console
-            main_splitter = QSplitter(Qt.Vertical)
-            main_splitter.setChildrenCollapsible(False)
+            self.main_splitter = QSplitter(Qt.Vertical)
+            self.main_splitter.setChildrenCollapsible(True)  # Allow panel collapse for better control
             
             # Main content area with dynamic panels
-            content_splitter = self._create_main_content_area()
-            main_splitter.addWidget(content_splitter)
+            self.content_splitter = self._create_main_content_area()
+            self.main_splitter.addWidget(self.content_splitter)
             
             # Console at bottom using original ConsoleWidget
             console = QWidget()
             console.setMinimumHeight(120)
-            console.setMaximumHeight(400)
+            # console.setMaximumHeight(400)  # Removed height limit for free panel movement
             console_layout = QVBoxLayout(console)
             console_layout.setContentsMargins(8, 8, 8, 8)
             
@@ -390,16 +540,13 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             console_layout.addWidget(self.console)
             
             # Add console to splitter
-            main_splitter.addWidget(console)
-            
-            # Store splitter reference for dynamic resizing
-            self.main_splitter = main_splitter
+            self.main_splitter.addWidget(console)
             
             # Set initial splitter proportions
-            self._recalculate_splitter_sizes()
+            # self._recalculate_splitter_sizes()  # Disabled to allow saved sizes to be restored
             
             # Add splitter to main layout
-            main_layout.addWidget(main_splitter)
+            main_layout.addWidget(self.main_splitter)
             
             # Status bar
             self.status_bar = self.statusBar()
@@ -422,10 +569,13 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             QTimer.singleShot(1000, self._load_last_workflow_state)
             
             # Load window settings after UI is fully initialized
-            QTimer.singleShot(50, self._load_window_settings)
+            QTimer.singleShot(200, self._load_window_settings)
+            
+            # Save current panel sizes on startup (after restoration) for persistence
+            QTimer.singleShot(1500, self._save_startup_panel_sizes)
             
             # Auto-refresh ComfyUI connection after UI is ready
-            QTimer.singleShot(2000, lambda: asyncio.create_task(self._async_refresh_comfyui()))
+            QTimer.singleShot(2000, lambda: asyncio.create_task(self.task_manager.execute_background("refresh_comfyui", self._async_refresh_comfyui())))
             
             # Initial performance metrics update
             QTimer.singleShot(1000, self.update_performance_metrics)
@@ -497,7 +647,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
     def _create_main_content_area(self) -> QSplitter:
         """Create main content area with dynamic panels"""
         content_splitter = QSplitter(Qt.Horizontal)
-        content_splitter.setChildrenCollapsible(False)
+        content_splitter.setChildrenCollapsible(True)  # Allow panel collapse for better control
         
         # Left panel - Dynamic controls
         left_panel = self._create_enhanced_left_panel()
@@ -519,11 +669,11 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         content_splitter.setStretchFactor(1, 3)  # Center panel gets priority
         content_splitter.setStretchFactor(2, 1)  # Right panel can stretch
         
-        # Set minimum and maximum sizes for better usability
-        left_panel.setMinimumWidth(250)
-        left_panel.setMaximumWidth(600)  # Allow up to 600px
-        right_panel.setMinimumWidth(250)
-        right_panel.setMaximumWidth(600)  # Allow up to 600px
+        # Set minimum and maximum sizes for better usability - GREATLY EXPANDED RANGES
+        left_panel.setMinimumWidth(100)   # Much lower minimum
+        left_panel.setMaximumWidth(2000)  # Much higher maximum for full flexibility
+        right_panel.setMinimumWidth(100)  # Much lower minimum
+        right_panel.setMaximumWidth(2000) # Much higher maximum for full flexibility
         
         return content_splitter
         
@@ -559,7 +709,157 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         layout.addWidget(self.left_panel_stack)
         
+        # Add fixed Objects Selector at the bottom (shared across all tabs)
+        self.objects_selector = self._create_shared_objects_selector()
+        layout.addWidget(self.objects_selector)
+        
+        # Set consistent size constraints for left panel - GREATLY EXPANDED RANGES
+        panel.setMaximumWidth(2000)  # Much higher maximum for full flexibility
+        panel.setMinimumWidth(100)   # Much lower minimum for compact layouts
+        panel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        
         return panel
+    
+    def _create_shared_objects_selector(self) -> QWidget:
+        """Create shared Objects Selector that appears at bottom of left panel"""
+        # Use the existing unified selector instead of creating a new one
+        objects_section = self._create_parameter_section("Objects Selector")
+        objects_layout = objects_section.layout()
+        
+        # Use the existing unified_object_selector (don't create a new instance!)
+        # This fixes the bug where selections were stored in one widget but displayed in another
+        self.shared_objects_selector = self.unified_object_selector
+        
+        # Connect signals (these might already be connected, but it's safe to reconnect)
+        self.shared_objects_selector.all_objects_cleared.connect(self._on_all_objects_cleared)
+        
+        objects_layout.addWidget(self.shared_objects_selector)
+        
+        # Set dynamic height - grows with selections but has reasonable bounds
+        objects_section.setMinimumHeight(180)   # Match empty state height for consistency
+        objects_section.setMaximumHeight(400)   # Maximum to prevent taking over entire left panel
+        objects_section.setFixedHeight(180)     # Start with reasonable empty state height
+        # objects_section.setMinimumWidth(280)    # Removed to allow panel to be narrower
+        objects_section.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  # Fixed height, expanding width
+        
+        # Ensure the inner widget also has proper sizing
+        self.shared_objects_selector.setMinimumHeight(70)   # Content area minimum
+        # self.shared_objects_selector.setMinimumWidth(250)   # Removed to allow panel flexibility
+        self.shared_objects_selector.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        
+        # Connect to selection changes to update height dynamically
+        if hasattr(self.shared_objects_selector, 'selection_count_changed'):
+            self.shared_objects_selector.selection_count_changed.connect(self._on_object_selector_size_changed)
+        
+        return objects_section
+    
+    def _on_object_selector_size_changed(self, count):
+        """Dynamically adjust Object Selector panel height based on selection count"""
+        if not hasattr(self, 'objects_selector') or self.objects_selector is None:
+            return
+            
+        # Calculate dynamic height based on number of selected objects
+        # Ensure comfortable viewing for small numbers of selections
+        base_height = 80    # Title + padding
+        item_height = 35    # Per item height
+        
+        if count == 0:
+            # Empty state: Show reasonable preview size, not too dominant
+            final_height = 180  # Comfortable preview without being overwhelming
+        elif count == 1:
+            # First selection: Should feel like growth, not shrinkage
+            final_height = 190  # Slightly larger than empty state for positive feedback
+        elif count == 2:
+            # Second selection: Maintain comfortable size
+            final_height = 190  # Stay same as single selection
+        elif count == 3:
+            # Third selection: Jump to more generous size
+            final_height = 220  # Clear step up for 3 items
+        else:
+            # Fourth+ selections: Natural growth from 220px base
+            calculated_height = 220 + ((count - 3) * item_height)  # Start from 220px for 3 items
+            max_height = 400
+            final_height = min(calculated_height, max_height)
+        
+        # Set height on the correct widget (objects_section container)
+        self.objects_selector.setFixedHeight(final_height)
+        
+        # Also ensure the inner widget has adequate height
+        inner_height = final_height - 30  # Account for title and padding
+        if hasattr(self, 'shared_objects_selector') and self.shared_objects_selector:
+            self.shared_objects_selector.setMinimumHeight(max(60, inner_height))
+        
+        height_reason = "empty" if count == 0 else "single" if count == 1 else "double" if count == 2 else "triple" if count == 3 else "growing"
+        self.logger.debug(f"Object Selector height adjusted: {count} items → {final_height}px ({height_reason}) (inner: {inner_height}px)")
+        
+        # Debug: Log actual widget dimensions
+        if hasattr(self, 'shared_objects_selector') and self.shared_objects_selector:
+            actual_size = self.shared_objects_selector.size()
+            self.logger.debug(f"Object Selector actual size: {actual_size.width()}x{actual_size.height()}px")
+    
+    def _check_workflow_evolution(self):
+        """
+        Periodically check for workflow evolution (new models, textures, etc.)
+        This implements the observer pattern for automatic UI updates
+        """
+        if hasattr(self, 'unified_object_selector') and self.unified_object_selector:
+            try:
+                # Trigger automatic detection in the object selector
+                self.unified_object_selector.auto_detect_workflow_evolution()
+                self.logger.debug("🔄 Workflow evolution check completed")
+            except Exception as e:
+                self.logger.error(f"Error during workflow evolution check: {e}")
+    
+    def trigger_workflow_evolution_check(self):
+        """
+        Manually trigger workflow evolution check
+        Call this after generation processes to immediately update object states
+        """
+        self._check_workflow_evolution()
+    
+    def refresh_object_selector(self):
+        """
+        Manually refresh the Object Selector display
+        Useful for ensuring UI is up-to-date after batch operations
+        """
+        if hasattr(self, 'unified_object_selector') and self.unified_object_selector:
+            self.unified_object_selector._update_display()
+            self.logger.debug("Object Selector display refreshed manually")
+    
+    def get_selection_status(self) -> Dict[str, Any]:
+        """
+        Get comprehensive selection system status for debugging and monitoring
+        """
+        status = {
+            "unified_selection_manager": {
+                "available": hasattr(self, 'selection_manager') and self.selection_manager is not None,
+                "total_selections": 0,
+                "by_type": {}
+            },
+            "object_selector_widget": {
+                "available": hasattr(self, 'unified_object_selector') and self.unified_object_selector is not None,
+                "objects_count": 0,
+                "summary": {}
+            },
+            "ui_panels": {
+                "objects_selector_exists": hasattr(self, 'objects_selector') and self.objects_selector is not None,
+                "shared_selector_exists": hasattr(self, 'shared_objects_selector') and self.shared_objects_selector is not None
+            }
+        }
+        
+        # Get UnifiedSelectionManager status
+        if status["unified_selection_manager"]["available"]:
+            status["unified_selection_manager"]["total_selections"] = self.selection_manager.get_count()
+            from src.core.unified_selection_manager import SelectionType
+            for sel_type in SelectionType:
+                status["unified_selection_manager"]["by_type"][sel_type.value] = self.selection_manager.get_count(sel_type)
+        
+        # Get ObjectSelectionWidget status  
+        if status["object_selector_widget"]["available"]:
+            status["object_selector_widget"]["objects_count"] = len(self.unified_object_selector.objects)
+            status["object_selector_widget"]["summary"] = self.unified_object_selector.get_selection_summary()
+        
+        return status
         
     def _create_enhanced_center_panel(self) -> QWidget:
         """Create enhanced center panel with main workspace"""
@@ -623,8 +923,10 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         layout.addWidget(self.right_panel_stack)
         
-        # Set size constraint to prevent vertical expansion
-        panel.setMaximumHeight(1000)  # Reasonable max height for parameter panel
+        # Set size constraints for better responsive behavior - GREATLY EXPANDED RANGES
+        panel.setMaximumWidth(2000)  # Much higher maximum for full flexibility
+        panel.setMinimumWidth(100)   # Much lower minimum for compact layouts
+        panel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         
         return panel
         
@@ -769,18 +1071,22 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         layout.addWidget(controls_section)
         
-        # Unified Object Selection section (positioned below generation controls)
-        image_selector = self._get_unified_selector("image_generation")
-        layout.addWidget(image_selector)
-        # REMOVED addStretch() - was causing UI height expansion
+        # Objects Selector now shared at bottom of left panel - removed from here
         
         return widget
     
-    def _create_parameter_section(self, title: str) -> QGroupBox:
+    def _create_parameter_section(self, title: str, compact: bool = False) -> QGroupBox:
         """Create a parameter section with consistent styling"""
         from PySide6.QtWidgets import QGroupBox
         section = QGroupBox(title)
         section.setObjectName("sidebar_section")
+        
+        if compact:
+            # For right panel: follow texture parameters pattern exactly
+            section.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+        else:
+            # For left panel: can expand in both directions  
+            section.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         
         layout = QVBoxLayout(section)
         layout.setContentsMargins(8, 12, 8, 8)
@@ -798,6 +1104,14 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         # Generation Controls section
         controls_section = self._create_parameter_section("Generation Controls")
         controls_layout = controls_section.layout()
+        
+        # 3D Workflow selection
+        workflow_label = QLabel("3D Workflow:")
+        workflow_label.setObjectName("section_title")
+        controls_layout.addWidget(workflow_label)
+        
+        self.workflow_3d_combo = QComboBox()
+        controls_layout.addWidget(self.workflow_3d_combo)
         
         # Generate button
         self.generate_3d_btn = QPushButton("GENERATE 3D MODELS")
@@ -817,10 +1131,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         layout.addWidget(controls_section)
         
-        # Unified Object Selection section (positioned below generation controls)
-        model_selector = self._get_unified_selector("3d_model_generation")
-        layout.addWidget(model_selector)
-        # REMOVED addStretch() - was causing UI height expansion
+        # Objects Selector now shared at bottom of left panel - removed from here
         
         return widget
         
@@ -857,6 +1168,14 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         controls_section = self._create_parameter_section("Generation Controls")
         controls_layout = controls_section.layout()
         
+        # Texture Workflow selection
+        workflow_label = QLabel("Texture Workflow:")
+        workflow_label.setObjectName("section_title")
+        controls_layout.addWidget(workflow_label)
+        
+        self.workflow_texture_combo = QComboBox()
+        controls_layout.addWidget(self.workflow_texture_combo)
+        
         # Generate button
         self.generate_texture_btn = QPushButton("GENERATE TEXTURES")
         self.generate_texture_btn.setObjectName("generate_btn")
@@ -876,10 +1195,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         layout.addWidget(controls_section)
         
-        # Unified Object Selection section (shared across all tabs) - positioned below generation controls
-        texture_selector = self._get_unified_selector("texture_generation")
-        layout.addWidget(texture_selector)
-        # REMOVED addStretch() - was causing UI height expansion
+        # Objects Selector now shared at bottom of left panel - removed from here
         
         return widget
         
@@ -921,10 +1237,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         layout.addWidget(objects_section)
         
-        # Unified Object Selection section
-        c4d_selector = self._get_unified_selector("cinema4d")
-        layout.addWidget(c4d_selector)
-        # REMOVED addStretch() - was causing UI height expansion
+        # Objects Selector now shared at bottom of left panel - removed from here
         
         return widget
         
@@ -938,6 +1251,13 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         # Sub-tabs for New Canvas vs View All
         image_tabs = QTabWidget()
         
+        # Add refresh button as corner widget to save main space
+        refresh_images_btn = QPushButton("Refresh")
+        refresh_images_btn.setObjectName("refresh_btn")
+        refresh_images_btn.setMaximumWidth(80)  # Keep compact
+        refresh_images_btn.clicked.connect(self._refresh_all_images)
+        image_tabs.setCornerWidget(refresh_images_btn, Qt.TopRightCorner)
+        
         # New Canvas tab
         new_canvas = self._create_new_canvas_view()
         image_tabs.addTab(new_canvas, "New Canvas")
@@ -945,6 +1265,9 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         # View All tab
         view_all = self._create_view_all_images()
         image_tabs.addTab(view_all, "View All")
+        
+        # Connect sub-tab change to refresh content
+        image_tabs.currentChanged.connect(lambda index: self._on_image_subtab_changed(index))
         
         layout.addWidget(image_tabs)
         
@@ -959,6 +1282,13 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         # Sub-tabs for Scene Objects vs View All
         model_tabs = QTabWidget()
+        
+        # Add refresh button as corner widget to save main space
+        refresh_models_btn = QPushButton("Refresh")
+        refresh_models_btn.setObjectName("refresh_btn")
+        refresh_models_btn.setMaximumWidth(80)  # Keep compact
+        refresh_models_btn.clicked.connect(self._refresh_all_models)
+        model_tabs.setCornerWidget(refresh_models_btn, Qt.TopRightCorner)
         
         # Scene Objects tab
         scene_objects = self._create_scene_objects_view()
@@ -985,6 +1315,13 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         # Sub-tabs for Scene Textures vs View All Textures
         texture_tabs = QTabWidget()
         
+        # Add refresh button as corner widget to save main space
+        refresh_textures_btn = QPushButton("Refresh")
+        refresh_textures_btn.setObjectName("refresh_btn")
+        refresh_textures_btn.setMaximumWidth(80)  # Keep compact
+        refresh_textures_btn.clicked.connect(self._refresh_textured_models)
+        texture_tabs.setCornerWidget(refresh_textures_btn, Qt.TopRightCorner)
+        
         # Scene Textures tab (current session textures)
         scene_textures = self._create_scene_textures_view()
         texture_tabs.addTab(scene_textures, "Scene Textures")
@@ -1005,7 +1342,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         layout.setContentsMargins(16, 16, 16, 16)
         layout.setSpacing(16)
         
-        # Header
+        # Clean header - workflow controls moved to right panel
         header_layout = QHBoxLayout()
         header_label = QLabel("Current Session Textures")
         header_label.setObjectName("section_title")
@@ -1022,7 +1359,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         if hasattr(self, 'accent_color'):
             accent_color = self.accent_color
             
-        self.texture_models_grid = ResponsiveStudio3DGrid(columns=2, card_size=580, accent_color=accent_color)
+        self.texture_models_grid = ResponsiveStudio3DGrid(columns=1, card_size=1024, accent_color=accent_color)
         self.texture_models_grid.model_selected.connect(self._on_textured_model_selected)
         self.texture_models_grid.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         layout.addWidget(self.texture_models_grid, 1)  # Add with stretch factor 1
@@ -1037,21 +1374,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         layout.setContentsMargins(16, 16, 16, 16)
         layout.setSpacing(16)
         
-        # Header
-        header_layout = QHBoxLayout()
-        header_label = QLabel("All Textured Models")
-        header_label.setObjectName("section_title")
-        header_layout.addWidget(header_label)
-        
-        header_layout.addStretch()
-        
-        # Refresh button
-        refresh_textures_btn = QPushButton("Refresh Textures")
-        refresh_textures_btn.setObjectName("refresh_btn")
-        refresh_textures_btn.clicked.connect(self._refresh_textured_models)
-        header_layout.addWidget(refresh_textures_btn)
-        
-        layout.addLayout(header_layout)
+        # Removed header section to save vertical space for 3D viewer
         
         # Use ResponsiveStudio3DGrid for all textured models
         from src.ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
@@ -1061,7 +1384,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         if hasattr(self, 'accent_color'):
             accent_color = self.accent_color
             
-        self.all_textured_models_grid = ResponsiveStudio3DGrid(columns=3, card_size=400, accent_color=accent_color)
+        self.all_textured_models_grid = ResponsiveStudio3DGrid(columns=1, card_size=1024, accent_color=accent_color)
         self.all_textured_models_grid.model_selected.connect(self._on_textured_model_selected)
         self.all_textured_models_grid.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         layout.addWidget(self.all_textured_models_grid, 1)  # Add with stretch factor 1
@@ -1213,6 +1536,11 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self.texture_check_timer = QTimer()
         self.texture_check_timer.timeout.connect(self._check_for_new_textures)
         self.texture_check_timer.start(5000)  # Check every 5 seconds
+        
+        # Start periodic prompt auto-save
+        self.prompt_autosave_timer = QTimer()
+        self.prompt_autosave_timer.timeout.connect(self._auto_save_prompts)
+        self.prompt_autosave_timer.start(30000)  # Auto-save every 30 seconds
             
     def _on_tab_changed_sync_selection(self, index: int):
         """Handle tab change and sync selection visuals"""
@@ -1269,6 +1597,16 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         if index < len(stage_names):
             self.logger.info(f"Switched to: {stage_names[index]}")
             
+            # Reload session images when returning to Image Generation tab
+            if index == 0:  # Tab 0: Image Generation
+                self.logger.debug("Reloading session images for Image Generation tab")
+                self._load_session_images()
+                # Ensure selection states are preserved
+                self._sync_image_selection_to_grids()
+            
+            # Auto-save prompts when switching tabs to prevent data loss
+            self._auto_save_prompts()
+            
             # Lazy load dynamic 3D parameters when Tab 2 is accessed
             if index == 1:  # Tab 2: 3D Model Generation
                 self._load_dynamic_3d_parameters_on_demand()
@@ -1278,7 +1616,20 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             
             # CRITICAL: Recalculate splitter sizes to prevent UI height explosion
             # This ensures console remains visible when switching tabs
-            self._recalculate_splitter_sizes()
+            # self._recalculate_splitter_sizes()  # Disabled to allow free panel movement
+    
+    def _on_image_subtab_changed(self, index: int):
+        """Handle image sub-tab changes (New Canvas vs View All)"""
+        tab_names = ["New Canvas", "View All"]
+        if index < len(tab_names):
+            self.logger.debug(f"Image sub-tab changed to: {tab_names[index]}")
+            
+            if index == 0:  # New Canvas - reload session images
+                self._load_session_images()
+                self._sync_image_selection_to_grids()
+            elif index == 1:  # View All - reload all images
+                self._load_all_images()
+                self._sync_image_selection_to_grids()
     
     def _sync_panel_tabs(self, index: int):
         """Synchronize side panel tabs with main tab"""
@@ -1294,7 +1645,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self.logger.info("Refreshing ComfyUI connection...")
         
         # Trigger actual connection refresh
-        asyncio.create_task(self._async_refresh_comfyui())
+        asyncio.create_task(self.task_manager.execute_background("refresh_comfyui_manual", self._async_refresh_comfyui()))
         
     def _refresh_cinema4d_connection(self):
         """Refresh Cinema4D connection"""
@@ -1303,7 +1654,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self.logger.info("Refreshing Cinema4D connection...")
         
         # Trigger actual connection refresh
-        asyncio.create_task(self._async_refresh_cinema4d())
+        asyncio.create_task(self.task_manager.execute_background("refresh_cinema4d_manual", self._async_refresh_cinema4d()))
     
     def _recalculate_splitter_sizes(self):
         """Recalculate main splitter sizes to maintain proper console visibility"""
@@ -1323,6 +1674,122 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             # Apply new sizes
             self.main_splitter.setSizes([content_height, console_height])
             self.logger.debug(f"Recalculated splitter sizes: content={content_height}, console={console_height}")
+        
+    def _restore_splitter_sizes(self, settings):
+        """Restore saved splitter sizes for panel customization"""
+        try:
+            self.logger.debug("Starting splitter size restoration...")
+            
+            # Check if splitters exist
+            main_exists = hasattr(self, 'main_splitter') and self.main_splitter is not None
+            content_exists = hasattr(self, 'content_splitter') and self.content_splitter is not None
+            self.logger.debug(f"Splitter availability - main: {main_exists}, content: {content_exists}")
+            
+            # Restore main splitter sizes (content vs console)
+            main_sizes = settings.value("splitter/main_sizes")
+            self.logger.debug(f"Saved main sizes: {main_sizes} (type: {type(main_sizes)})")
+            
+            if main_sizes and main_exists:
+                # Convert to list of integers if needed
+                if isinstance(main_sizes, str):
+                    main_sizes = [int(x) for x in main_sizes.split(',')]
+                elif isinstance(main_sizes, list):
+                    # QSettings might return strings in a list
+                    main_sizes = [int(x) for x in main_sizes]
+                else:
+                    main_sizes = list(main_sizes)
+                    
+                # Ensure we have valid sizes
+                if len(main_sizes) >= 2 and all(x > 0 for x in main_sizes):
+                    self.main_splitter.setSizes(main_sizes)
+                    self.logger.info(f"✓ Restored main splitter sizes: {main_sizes}")
+                else:
+                    self.logger.warning(f"Invalid main splitter sizes: {main_sizes}")
+            else:
+                self.logger.debug("No main splitter sizes to restore or splitter not available")
+            
+            # Restore content splitter sizes (left, center, right panels)
+            content_sizes = settings.value("splitter/content_sizes")
+            self.logger.debug(f"Saved content sizes: {content_sizes} (type: {type(content_sizes)})")
+            
+            if content_sizes and content_exists:
+                # Convert to list of integers if needed
+                if isinstance(content_sizes, str):
+                    content_sizes = [int(x) for x in content_sizes.split(',')]
+                elif isinstance(content_sizes, list):
+                    # QSettings might return strings in a list
+                    content_sizes = [int(x) for x in content_sizes]
+                else:
+                    content_sizes = list(content_sizes)
+                    
+                # Ensure we have valid sizes
+                if len(content_sizes) >= 3 and all(x > 0 for x in content_sizes):
+                    self.content_splitter.setSizes(content_sizes)
+                    self.logger.info(f"✓ Restored content splitter sizes: {content_sizes}")
+                else:
+                    self.logger.warning(f"Invalid content splitter sizes: {content_sizes}")
+            else:
+                self.logger.debug("No content splitter sizes to restore or splitter not available")
+                
+        except Exception as e:
+            self.logger.error(f"Failed to restore splitter sizes: {e}")
+            import traceback
+            self.logger.error(f"Traceback: {traceback.format_exc()}")
+            # Fallback to default sizes if restoration fails
+            if hasattr(self, 'content_splitter') and self.content_splitter:
+                self.content_splitter.setSizes([350, 1220, 350])
+                self.logger.debug("Applied fallback content splitter sizes")
+        
+    def _restore_project_splitter_sizes(self, splitter_sizes: Dict[str, List[int]]):
+        """Restore splitter sizes from project data"""
+        try:
+            self.logger.debug(f"Restoring project splitter sizes: {splitter_sizes}")
+            
+            # Restore main splitter (content vs console)
+            main_sizes = splitter_sizes.get("main_splitter")
+            if main_sizes and hasattr(self, 'main_splitter') and self.main_splitter:
+                if len(main_sizes) >= 2 and all(isinstance(x, int) and x > 0 for x in main_sizes):
+                    self.main_splitter.setSizes(main_sizes)
+                    self.logger.info(f"✓ Restored project main splitter sizes: {main_sizes}")
+                else:
+                    self.logger.warning(f"Invalid project main splitter sizes: {main_sizes}")
+            
+            # Restore content splitter (left, center, right panels)
+            content_sizes = splitter_sizes.get("content_splitter")
+            if content_sizes and hasattr(self, 'content_splitter') and self.content_splitter:
+                if len(content_sizes) >= 3 and all(isinstance(x, int) and x > 0 for x in content_sizes):
+                    self.content_splitter.setSizes(content_sizes)
+                    self.logger.info(f"✓ Restored project content splitter sizes: {content_sizes}")
+                else:
+                    self.logger.warning(f"Invalid project content splitter sizes: {content_sizes}")
+                    
+        except Exception as e:
+            self.logger.error(f"Failed to restore project splitter sizes: {e}")
+        
+    def _save_startup_panel_sizes(self):
+        """Save current panel sizes after startup for persistence"""
+        try:
+            # Save to QSettings for global persistence
+            settings = QSettings("YamboStudio", "ComfyToC4DApp")
+            
+            if hasattr(self, 'main_splitter') and self.main_splitter:
+                main_sizes = self.main_splitter.sizes()
+                settings.setValue("splitter/main_sizes", main_sizes)
+                self.logger.debug(f"Saved startup main splitter sizes: {main_sizes}")
+                
+            if hasattr(self, 'content_splitter') and self.content_splitter:
+                content_sizes = self.content_splitter.sizes()
+                settings.setValue("splitter/content_sizes", content_sizes)
+                self.logger.debug(f"Saved startup content splitter sizes: {content_sizes}")
+            
+            # Also save to current project if it exists
+            if hasattr(self, 'current_project') and self.current_project:
+                # Mark project as modified so it will save the new sizes
+                self.project_manager.is_modified = True
+                self.logger.debug("Marked project as modified for panel size persistence")
+                
+        except Exception as e:
+            self.logger.error(f"Failed to save startup panel sizes: {e}")
         
     async def _async_refresh_comfyui(self):
         """Async ComfyUI connection refresh with actual validation"""
@@ -1626,7 +2093,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             self.logger.info(f"Prompt: {prompt[:50]}...")
             
             # Start the async image generation
-            asyncio.create_task(self._async_generate_images(prompt, neg_prompt, batch_size))
+            asyncio.create_task(self.task_manager.execute_background("image_generation", self._async_generate_images(prompt, neg_prompt, batch_size), timeout=600))
         except Exception as e:
             self.logger.error(f"Error in _on_generate_images: {e}")
             import traceback
@@ -1740,7 +2207,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                     self.logger.error(f"Error checking queue status: {e}")
             
             # Run the check in background
-            asyncio.create_task(check_queue_after_delay())
+            asyncio.create_task(self.task_manager.execute_background("queue_check_after_delay", check_queue_after_delay()))
             
         except Exception as e:
             self.logger.error(f"Error during image generation: {e}")
@@ -1810,7 +2277,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 return
             
             # Create async task to check completion
-            asyncio.create_task(self._async_check_workflow_completion())
+            asyncio.create_task(self.task_manager.execute_background("workflow_completion_check", self._async_check_workflow_completion()))
             
         except Exception as e:
             self.logger.error(f"Error in workflow completion check: {e}")
@@ -2050,6 +2517,15 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
     def _on_generate_3d_models(self):
         """Handle 3D model generation"""
+        # Check if workflow is selected
+        if hasattr(self, 'workflow_3d_combo') and self.workflow_3d_combo.currentData():
+            workflow_name = self.workflow_3d_combo.currentData()
+            self.logger.info(f"Using 3D workflow: {workflow_name}")
+        else:
+            # Use default workflow if none selected
+            workflow_name = "3d_generation/3D_gen_Hunyuan2_onlymesh.json"
+            self.logger.info(f"No workflow selected, using default: {workflow_name}")
+        
         if not hasattr(self, 'unified_object_selector'):
             self.logger.warning("Unified object selector not available")
             return
@@ -2063,7 +2539,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             return
             
         selected_count = len(selected_objects)
-        self.logger.info(f"Starting 3D generation from {selected_count} selected images")
+        self.logger.info(f"Starting 3D generation from {selected_count} selected images using workflow {workflow_name}")
         self.logger.info(f"Selected images: {[obj.display_name for obj in selected_objects]}")
         
         # Get the actual image paths
@@ -2076,9 +2552,9 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self.logger.info(f"Image paths to generate: {[path.name for path in image_paths]}")
         
         # Start the actual 3D generation
-        asyncio.create_task(self._async_generate_3d_models(image_paths))
+        asyncio.create_task(self.task_manager.execute_background("3d_model_generation", self._async_generate_3d_models(image_paths, workflow_name), timeout=1800))
         
-    async def _async_generate_3d_models(self, image_paths: List[Path]):
+    async def _async_generate_3d_models(self, image_paths: List[Path], workflow_name: str = None):
         """Handle async 3D model generation using ComfyUI workflow"""
         from PySide6.QtWidgets import QMessageBox
         import json
@@ -2241,7 +2717,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             await self._check_3d_workflow_completion(prompt_id, source_image, check_count, max_checks)
         
         def timer_callback():
-            asyncio.ensure_future(check_completion())
+            asyncio.create_task(self.task_manager.execute_background("3d_completion_check", check_completion()))
         
         # Check every 2 seconds for 3D models (they take longer)
         timer = QTimer()
@@ -2469,6 +2945,15 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
     def _on_generate_textures(self):
         """Handle texture generation"""
+        # Check if workflow is selected
+        if hasattr(self, 'workflow_texture_combo') and self.workflow_texture_combo.currentData():
+            workflow_name = self.workflow_texture_combo.currentData()
+            self.logger.info(f"Using texture workflow: {workflow_name}")
+        else:
+            # Use default workflow if none selected
+            workflow_name = "texture_generation/Model_texturing_juggernautXL_v07.json"
+            self.logger.info(f"No workflow selected, using default: {workflow_name}")
+        
         # Get selected models from multiple sources
         model_paths = []
         
@@ -2510,7 +2995,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self.logger.info(f"Texture prompt: {prompt[:50]}...")
         
         # Start the actual texture generation
-        asyncio.create_task(self._async_generate_textures(model_paths, prompt))
+        asyncio.create_task(self.task_manager.execute_background("texture_generation", self._async_generate_textures(model_paths, prompt, workflow_name), timeout=1800))
     
     def _on_texture_test_mode_changed(self, state: int):
         """Handle texture test mode checkbox state change"""
@@ -2532,7 +3017,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             if hasattr(self, 'texture_negative_prompt'):
                 self.texture_negative_prompt.setEnabled(True)
     
-    async def _async_generate_textures(self, model_paths: List[Path], prompt: str):
+    async def _async_generate_textures(self, model_paths: List[Path], prompt: str, workflow_name: str = None):
         """Handle async texture generation using ComfyUI workflow"""
         from PySide6.QtWidgets import QMessageBox
         import json
@@ -2602,12 +3087,28 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                     self.logger.error(f"Model file not found: {model_path}")
                     continue
                 
+                # Copy 3D model to ComfyUI input directory
+                import shutil
+                comfyui_input_dir = Path("D:/Comfy3D_WinPortable/ComfyUI/input")
+                comfyui_input_dir.mkdir(exist_ok=True)
+                
+                # Use just the filename for the copy
+                input_model_path = comfyui_input_dir / model_path.name
+                
+                try:
+                    # Copy the model file to ComfyUI input directory
+                    shutil.copy2(model_path, input_model_path)
+                    self.logger.info(f"Copied 3D model to ComfyUI input: {input_model_path}")
+                except Exception as e:
+                    self.logger.error(f"Failed to copy 3D model to ComfyUI input: {e}")
+                    continue
+                
                 # Collect parameters from UI
                 negative_prompt = self.texture_negative_prompt.get_prompt() if hasattr(self, 'texture_negative_prompt') else ""
                 params = {
                     "prompt": prompt,
                     "negative_prompt": negative_prompt,
-                    "model_path": str(model_path),
+                    "model_path": model_path.name,  # Use just the filename for ComfyUI
                     "width": 1024,
                     "height": 1024,
                     "steps": 20,
@@ -2622,7 +3123,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 api_workflow = self.workflow_manager.inject_parameters_texture(
                     workflow, 
                     params, 
-                    str(model_path)
+                    model_path.name  # Use just the filename since we copied it to ComfyUI input
                 )
                 
                 if not api_workflow:
@@ -2709,17 +3210,16 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
     def _check_texture_workflows(self):
         """Check all pending texture workflows"""
         if hasattr(self, '_texture_workflows') and self._texture_workflows:
-            # Prevent multiple concurrent checks
-            if hasattr(self, '_texture_check_running') and self._texture_check_running:
-                self.logger.debug("Texture workflow check already in progress, skipping")
-                return
-            # Create async task to check all workflows
-            asyncio.create_task(self._async_check_texture_workflows())
+            # Use managed async execution to prevent RuntimeError
+            asyncio.create_task(self.task_manager.execute_background(
+                "texture_workflow_check",
+                self._async_check_texture_workflows(),
+                timeout=30.0
+            ))
     
     async def _async_check_texture_workflows(self):
         """Async method to check texture workflow completions"""
-        # Set flag to prevent concurrent checks
-        self._texture_check_running = True
+        # AsyncTaskManager handles concurrent execution prevention
         try:
             completed_workflows = []
             
@@ -2768,8 +3268,8 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             import traceback
             self.logger.error(traceback.format_exc())
         finally:
-            # Clear the flag to allow future checks
-            self._texture_check_running = False
+            # AsyncTaskManager handles cleanup automatically
+            pass
     
     async def _handle_texture_results(self, prompt_id: str, workflow_data: Dict, model_path: Path):
         """Handle texture generation results from ComfyUI"""
@@ -2966,13 +3466,51 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             # Also update texture preview grid with images
             self._update_texture_preview_grid(model_path, texture_files)
     
-    def _on_textured_model_selected(self, model_path: str):
-        """Handle textured model selection in texture tab"""
-        self.logger.info(f"Textured model selected: {model_path}")
+    def _on_textured_model_selected(self, model_path: str, selected: bool = True):
+        """Handle textured model selection in texture tab - now uses unified selection manager"""
+        try:
+            self.logger.info(f"Textured model {'selected' if selected else 'deselected'}: {model_path}")
+            
+            model_path_obj = Path(model_path) if isinstance(model_path, str) else model_path
+            
+            # Check if selection manager is initialized
+            if not hasattr(self, 'selection_manager') or self.selection_manager is None:
+                self.logger.error("UnifiedSelectionManager not initialized, falling back to legacy method")
+                self._on_textured_model_selected_legacy(model_path_obj, selected)
+                return
+            
+            # Use unified selection manager for textured models
+            if selected:
+                self.selection_manager.add_selection(model_path_obj, SelectionType.TEXTURED_MODEL)
+            else:
+                self.selection_manager.remove_selection(model_path_obj)
+        except Exception as e:
+            self.logger.error(f"Error in _on_textured_model_selected: {e}")
+            import traceback
+            self.logger.error(f"Traceback: {traceback.format_exc()}")
+            # Fallback to legacy method
+            self._on_textured_model_selected_legacy(model_path_obj, selected)
         
-        # Update selection in unified system
+        # Update unified object selector for workflow tracking
         if hasattr(self, 'unified_object_selector'):
-            self.unified_object_selector.select_model(Path(model_path))
+            try:
+                if selected:
+                    # For textured models, mark as textured in the workflow
+                    self.unified_object_selector.mark_as_textured(model_path_obj)
+                else:
+                    # Remove or deselect the textured model
+                    source_image = self._find_source_image_for_model(model_path_obj)
+                    if source_image:
+                        object_id = self.unified_object_selector._generate_object_id(source_image)
+                    else:
+                        object_id = f"standalone_{model_path_obj.stem}"
+                    
+                    self.unified_object_selector.remove_object(object_id)
+            except Exception as e:
+                logger.error(f"Error updating unified object selector for textured model: {e}")
+        
+        # Update all unified selector instances
+        self._update_all_unified_selectors()
         
     def _setup_file_monitoring(self):
         """Setup enhanced file monitoring"""
@@ -3029,10 +3567,78 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             if state:
                 self.restoreState(state)
             
+            # Restore splitter sizes for panel customization (after restoreState to override it)
+            QTimer.singleShot(50, lambda: self._restore_splitter_sizes(settings))
+            
             self.logger.info("Window settings loaded successfully")
             
         except Exception as e:
             self.logger.error(f"Failed to load window settings: {e}")
+    
+    def _auto_save_prompts(self):
+        """Automatically save prompts to prevent data loss"""
+        try:
+            settings = QSettings("YamboStudio", "ComfyToC4DApp")
+            
+            # Save all prompts
+            if hasattr(self, 'positive_prompt'):
+                prompt_text = self.positive_prompt.get_prompt()
+                settings.setValue("prompts/positive", prompt_text)
+            
+            if hasattr(self, 'negative_prompt'):
+                prompt_text = self.negative_prompt.get_prompt()
+                settings.setValue("prompts/negative", prompt_text)
+            
+            if hasattr(self, 'texture_prompt'):
+                prompt_text = self.texture_prompt.get_prompt()
+                settings.setValue("prompts/texture_positive", prompt_text)
+            
+            if hasattr(self, 'texture_negative_prompt'):
+                prompt_text = self.texture_negative_prompt.get_prompt()
+                settings.setValue("prompts/texture_negative", prompt_text)
+            
+            self.logger.debug("Auto-saved all prompts")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to auto-save prompts: {e}")
+    
+    def _save_prompts_now(self):
+        """Immediately save all prompts (for manual save or menu action)"""
+        try:
+            settings = QSettings("YamboStudio", "ComfyToC4DApp")
+            prompts_saved = 0
+            
+            # Save all prompts
+            if hasattr(self, 'positive_prompt'):
+                prompt_text = self.positive_prompt.get_prompt()
+                settings.setValue("prompts/positive", prompt_text)
+                if prompt_text.strip():
+                    prompts_saved += 1
+            
+            if hasattr(self, 'negative_prompt'):
+                prompt_text = self.negative_prompt.get_prompt()
+                settings.setValue("prompts/negative", prompt_text)
+                if prompt_text.strip():
+                    prompts_saved += 1
+            
+            if hasattr(self, 'texture_prompt'):
+                prompt_text = self.texture_prompt.get_prompt()
+                settings.setValue("prompts/texture_positive", prompt_text)
+                if prompt_text.strip():
+                    prompts_saved += 1
+            
+            if hasattr(self, 'texture_negative_prompt'):
+                prompt_text = self.texture_negative_prompt.get_prompt()
+                settings.setValue("prompts/texture_negative", prompt_text)
+                if prompt_text.strip():
+                    prompts_saved += 1
+            
+            self.logger.info(f"Manually saved {prompts_saved} prompts")
+            return prompts_saved
+            
+        except Exception as e:
+            self.logger.error(f"Failed to manually save prompts: {e}")
+            return 0
             
     def _apply_saved_values(self):
         """Apply saved values - preserve existing functionality"""
@@ -3040,15 +3646,34 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             settings = QSettings("YamboStudio", "ComfyToC4DApp")
             
             # Load prompts
+            prompts_loaded = 0
             if hasattr(self, 'positive_prompt'):
                 saved_positive = settings.value("prompts/positive", "")
                 if saved_positive:
                     self.positive_prompt.set_text(saved_positive)
+                    prompts_loaded += 1
                 
             if hasattr(self, 'negative_prompt'):
                 saved_negative = settings.value("prompts/negative", "")
                 if saved_negative:
                     self.negative_prompt.set_text(saved_negative)
+                    prompts_loaded += 1
+            
+            # Load texture prompts
+            if hasattr(self, 'texture_prompt'):
+                saved_texture_positive = settings.value("prompts/texture_positive", "")
+                if saved_texture_positive:
+                    self.texture_prompt.set_text(saved_texture_positive)
+                    prompts_loaded += 1
+                    
+            if hasattr(self, 'texture_negative_prompt'):
+                saved_texture_negative = settings.value("prompts/texture_negative", "")
+                if saved_texture_negative:
+                    self.texture_negative_prompt.set_text(saved_texture_negative)
+                    prompts_loaded += 1
+            
+            if prompts_loaded > 0:
+                self.logger.info(f"Loaded {prompts_loaded} saved prompts from previous session")
                 
             # Load parameters
             if hasattr(self, 'steps_spin'):
@@ -3162,10 +3787,26 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
     def closeEvent(self, event):
         """Handle application close - preserve settings"""
         try:
+            # Shutdown async task manager first
+            if hasattr(self, 'task_manager'):
+                asyncio.create_task(self.task_manager.shutdown())
+                self.logger.info("AsyncTaskManager shutdown initiated")
+            
             # Save window settings
             settings = QSettings("YamboStudio", "ComfyToC4DApp")
             settings.setValue("geometry", self.saveGeometry())
             settings.setValue("windowState", self.saveState())
+            
+            # Save splitter sizes for panel customization
+            if hasattr(self, 'main_splitter') and self.main_splitter:
+                main_sizes = self.main_splitter.sizes()
+                settings.setValue("splitter/main_sizes", main_sizes)
+                self.logger.info(f"✓ Saved main splitter sizes: {main_sizes}")
+                
+            if hasattr(self, 'content_splitter') and self.content_splitter:
+                content_sizes = self.content_splitter.sizes()
+                settings.setValue("splitter/content_sizes", content_sizes)
+                self.logger.info(f"✓ Saved content splitter sizes: {content_sizes}")
             
             # Save prompts
             if hasattr(self, 'positive_prompt'):
@@ -3175,6 +3816,15 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             if hasattr(self, 'negative_prompt'):
                 prompt_text = self.negative_prompt.get_prompt()
                 settings.setValue("prompts/negative", prompt_text)
+            
+            # Save texture prompts
+            if hasattr(self, 'texture_prompt'):
+                prompt_text = self.texture_prompt.get_prompt()
+                settings.setValue("prompts/texture_positive", prompt_text)
+            
+            if hasattr(self, 'texture_negative_prompt'):
+                prompt_text = self.texture_negative_prompt.get_prompt()
+                settings.setValue("prompts/texture_negative", prompt_text)
             
             # Save parameters
             if hasattr(self, 'steps_spin'):
@@ -3190,6 +3840,10 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             # Stop performance monitoring
             if hasattr(self, 'performance_update_timer') and self.performance_update_timer:
                 self.performance_update_timer.stop()
+            
+            # Stop prompt auto-save timer
+            if hasattr(self, 'prompt_autosave_timer') and self.prompt_autosave_timer:
+                self.prompt_autosave_timer.stop()
             
             self.logger.info("Application closed successfully")
             
@@ -3423,21 +4077,36 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             self.logger.error(f"Failed to open 3D parameters dialog: {e}")
             
     def _show_3d_viewer_config_dialog(self):
-        """Show 3D viewer configuration dialog"""
+        """Show new simplified 3D viewer configuration dialog"""
         try:
-            self.logger.info("Opening 3D viewer configuration dialog...")
-            # Keep a reference to prevent garbage collection
-            self._3d_config_dialog = Studio3DConfigDialog(self)
-            self.logger.info("Dialog created successfully")
-            self._3d_config_dialog.settings_saved.connect(self._on_3d_viewer_settings_saved)
-            self.logger.info("Signal connected successfully")
-            # Try setting window modality explicitly
-            self._3d_config_dialog.setWindowModality(Qt.ApplicationModal)
-            self._3d_config_dialog.show()
-            self._3d_config_dialog.raise_()
-            self._3d_config_dialog.activateWindow()
-            result = self._3d_config_dialog.exec()
-            self.logger.info(f"Dialog closed with result: {result}")
+            self.logger.info("Opening simplified 3D viewer configuration dialog...")
+            
+            # Get currently selected model for auto-loading
+            selected_model_path = None
+            if hasattr(self, 'selected_models') and self.selected_models:
+                selected_model_path = str(self.selected_models[0])  # Use first selected model
+                self.logger.info(f"Auto-loading selected model: {Path(selected_model_path).name}")
+            else:
+                # Try to get from any grid with selections
+                selected_models = []
+                if hasattr(self, 'session_models_grid'):
+                    selected_models.extend(self.session_models_grid.get_selected_models())
+                if hasattr(self, 'all_models_grid'):
+                    selected_models.extend(self.all_models_grid.get_selected_models())
+                if hasattr(self, 'model_grid'):
+                    selected_models.extend(self.model_grid.get_selected_models())
+                
+                if selected_models:
+                    selected_model_path = str(selected_models[0])
+                    self.logger.info(f"Auto-loading model from grid selection: {Path(selected_model_path).name}")
+                else:
+                    self.logger.info("No model selected, dialog will show without model")
+            
+            # Create and show dialog
+            dialog = Simple3DConfigDialog(self, selected_model_path)
+            dialog.settings_saved.connect(self._on_3d_viewer_settings_saved)
+            dialog.exec()
+            
         except Exception as e:
             import traceback
             self.logger.error(f"Failed to open 3D viewer configuration dialog: {e}")
@@ -3518,9 +4187,68 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         return False
     
+    def _load_dynamic_3d_parameters_on_demand(self):
+        """Load dynamic 3D parameters on demand from configuration"""
+        try:
+            # Check if we have the right panel stack for 3D tab
+            if not hasattr(self, 'right_panel_stack') or self.right_panel_stack.count() < 2:
+                self.logger.debug("Right panel stack not ready for 3D parameters")
+                return
+                
+            # Get the 3D parameters widget from the right panel
+            model_params_widget = self.right_panel_stack.widget(1)  # Index 1 = 3D tab
+            if not model_params_widget:
+                self.logger.debug("3D parameters widget not found")
+                return
+                
+            # Check if we have a scroll area in the parameters widget
+            scroll_area = None
+            for child in model_params_widget.findChildren(QScrollArea):
+                scroll_area = child
+                break
+                
+            if not scroll_area:
+                self.logger.debug("3D parameters scroll area not found")
+                return
+                
+            # Get the scroll area content widget
+            content_widget = scroll_area.widget()
+            if not content_widget:
+                self.logger.debug("3D parameters content widget not found")
+                return
+                
+            # Get the layout of the content widget
+            layout = content_widget.layout()
+            if not layout:
+                self.logger.debug("3D parameters layout not found")
+                return
+                
+            # Store layout reference for the UI methods
+            self._3d_params_layout = layout
+            
+            # Call the UI method to create dynamic parameters
+            self._load_dynamic_3d_parameters()
+            
+        except Exception as e:
+            self.logger.error(f"Failed to load dynamic 3D parameters on demand: {e}")
+    
     def _on_3d_parameters_configuration_saved(self, config):
         """Handle 3D parameters configuration saved"""
         self.logger.info("3D parameters configuration saved")
+        
+        # Update 3D workflow dropdown to reflect newly loaded workflow
+        try:
+            if hasattr(self, 'workflow_3d_combo') and self.workflow_3d_combo:
+                self._populate_workflow_combo("3d_generation", self.workflow_3d_combo)
+                # Set the current workflow to the newly loaded one if available
+                if config and 'workflow_file' in config:
+                    workflow_file = config['workflow_file']
+                    index = self.workflow_3d_combo.findData(workflow_file)
+                    if index >= 0:
+                        self.workflow_3d_combo.setCurrentIndex(index)
+                        self.logger.info(f"Updated 3D workflow dropdown to: {workflow_file}")
+        except Exception as e:
+            self.logger.error(f"Failed to update 3D workflow dropdown: {e}")
         
         # Reload 3D parameters with new configuration using lazy loading
         try:
@@ -3558,50 +4286,67 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             if hasattr(self, 'all_textured_models_grid'):
                 self.all_textured_models_grid.apply_viewer_settings(settings)
                 self.logger.debug("Applied settings to all textured models grid")
+            
+            # Also check for the model_grid (main View All tab)
+            if hasattr(self, 'model_grid'):
+                self.model_grid.apply_viewer_settings(settings)
+                self.logger.debug("Applied settings to main model grid")
+            
+            # Apply to any standalone ThreeJS viewers if they exist
+            from src.ui.viewers.threejs_3d_viewer import ThreeJS3DViewer
+            for attr_name in dir(self):
+                attr = getattr(self, attr_name)
+                if isinstance(attr, ThreeJS3DViewer):
+                    attr.apply_settings(settings)
+                    self.logger.debug(f"Applied settings to standalone viewer: {attr_name}")
                 
             self.logger.info("3D viewer settings applied to all viewers")
         except Exception as e:
             self.logger.error(f"Failed to apply 3D viewer settings: {e}")
-    
+        
     # Image and Model Event Handlers
     def _on_image_selected(self, image_path, selected: bool):
-        """Handle image selection toggle - now uses unified object system"""
-        if isinstance(image_path, str):
-            image_path_obj = Path(image_path)
-        else:
-            image_path_obj = image_path
-            
-        self.logger.info(f"Image selection event: {image_path_obj.name} -> {'SELECTED' if selected else 'DESELECTED'}")
-            
-        # Update main unified object selector
-        if hasattr(self, 'unified_object_selector'):
-            if selected:
-                self.unified_object_selector.add_image_selection(image_path_obj)
+        """Handle image selection toggle - now uses unified selection manager"""
+        try:
+            if isinstance(image_path, str):
+                image_path_obj = Path(image_path)
             else:
-                self.unified_object_selector.remove_image_selection(image_path_obj)
+                image_path_obj = image_path
+                
+            self.logger.info(f"Image selection event: {image_path_obj.name} -> {'SELECTED' if selected else 'DESELECTED'}")
             
-        # Update all tab instances that share the same data
-        if hasattr(self, 'unified_selectors'):
-            for tab_name, selector in self.unified_selectors.items():
-                try:
-                    selector._update_display()  # Just update display, don't modify data
-                except Exception as e:
-                    self.logger.error(f"Error updating unified selector for {tab_name}: {e}")
-                    import traceback
-                    self.logger.error(f"Traceback: {traceback.format_exc()}")
+            # Check if selection manager is initialized
+            if not hasattr(self, 'selection_manager') or self.selection_manager is None:
+                self.logger.error("UnifiedSelectionManager not initialized, falling back to legacy method")
+                self._on_image_selected_legacy(image_path_obj, selected)
+                return
+            
+            # Use unified selection manager (this will handle all synchronization)
+            if selected:
+                self.selection_manager.add_selection(image_path_obj, SelectionType.IMAGE)
+            else:
+                self.selection_manager.remove_selection(image_path_obj)
+        except Exception as e:
+            self.logger.error(f"Error in _on_image_selected: {e}")
+            import traceback
+            self.logger.error(f"Traceback: {traceback.format_exc()}")
+            # Fallback to legacy method
+            self._on_image_selected_legacy(image_path_obj, selected)
         
-        # Maintain backward compatibility with existing selected_images list
-        if selected:
-            if hasattr(self, 'selected_images') and image_path_obj not in self.selected_images:
-                self.selected_images.append(image_path_obj)
-            self.logger.info(f"Added {image_path_obj.name} to selected images")
-        else:
-            if hasattr(self, 'selected_images') and image_path_obj in self.selected_images:
-                self.selected_images.remove(image_path_obj)
-            self.logger.info(f"Removed {image_path_obj.name} from selected images")
+        # Update unified object selector for workflow tracking
+        if hasattr(self, 'unified_object_selector'):
+            try:
+                if selected:
+                    self.unified_object_selector.add_image_selection(image_path_obj)
+                else:
+                    self.unified_object_selector.remove_image_selection(image_path_obj)
+            except Exception as e:
+                logger.error(f"Error updating unified object selector for image: {e}")
         
-        # Update selection count display
-        self._update_selection_displays()
+        # Update all unified selector instances
+        self._update_all_unified_selectors()
+        
+        # Note: Backward compatibility and UI updates are now handled by unified selection manager
     
     def _on_unified_object_selected(self, object_id: str, selected: bool):
         """Handle unified object selection"""
@@ -3679,93 +4424,193 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self.logger.info("Cleared all image card selections")
             
     def _on_model_selected(self, model_path, selected: bool):
-        """Handle 3D model selection toggle"""
-        if isinstance(model_path, str):
-            model_path_obj = Path(model_path)
-        else:
-            model_path_obj = model_path
+        """Handle 3D model selection toggle - now uses unified selection manager"""
+        try:
+            if isinstance(model_path, str):
+                model_path_obj = Path(model_path)
+            else:
+                model_path_obj = model_path
+            
+            self.logger.info(f"Model selection event: {model_path_obj.name} -> {'SELECTED' if selected else 'DESELECTED'}")
+            
+            # Check if selection manager is initialized
+            if not hasattr(self, 'selection_manager') or self.selection_manager is None:
+                self.logger.error("UnifiedSelectionManager not initialized, falling back to legacy method")
+                self._on_model_selected_legacy(model_path_obj, selected)
+                return
+            
+            # Determine if this is a textured model or regular 3D model
+            selection_type = SelectionType.MODEL_3D
+            if "textured" in str(model_path_obj).lower() or "texture" in str(model_path_obj).lower():
+                selection_type = SelectionType.TEXTURED_MODEL
+            
+            # Use unified selection manager (this will handle all synchronization)
+            if selected:
+                self.selection_manager.add_selection(model_path_obj, selection_type)
+            else:
+                self.selection_manager.remove_selection(model_path_obj)
+        except Exception as e:
+            self.logger.error(f"Error in _on_model_selected: {e}")
+            import traceback
+            self.logger.error(f"Traceback: {traceback.format_exc()}")
+            # Fallback to legacy method
+            self._on_model_selected_legacy(model_path_obj, selected)
         
-        # Keep track of object IDs for models
-        if not hasattr(self, '_model_object_ids'):
-            self._model_object_ids = {}
+        # Update unified object selector for workflow tracking
+        if hasattr(self, 'unified_object_selector'):
+            try:
+                if selected:
+                    # Try to find source image and link if possible
+                    source_image = self._find_source_image_for_model(model_path_obj)
+                    if source_image:
+                        self.logger.info(f"Linking model {model_path_obj.name} to source image {source_image.name}")
+                        self.unified_object_selector.link_model_to_image(model_path_obj, source_image)
+                    else:
+                        self.logger.info(f"No source image found for model {model_path_obj.name}, adding as standalone")
+                        self.unified_object_selector.add_standalone_model(model_path_obj)
+                else:
+                    # Remove from unified object selector - find the correct object_id
+                    # First try to find if it's linked to an image
+                    source_image = self._find_source_image_for_model(model_path_obj)
+                    if source_image:
+                        object_id = self.unified_object_selector._generate_object_id(source_image)
+                    else:
+                        # It's likely a standalone model
+                        object_id = f"standalone_{model_path_obj.stem}"
+                    
+                    self.unified_object_selector.remove_object(object_id)
+            except Exception as e:
+                logger.error(f"Error updating unified object selector for model: {e}")
+            
+            # Update all selector instances
+            self._update_all_unified_selectors()
+        
+        # Note: All UI updates and backward compatibility handled by unified selection manager
+    
+    def _on_image_selected_legacy(self, image_path_obj: Path, selected: bool):
+        """Legacy image selection handler - fallback when unified manager fails"""
+        self.logger.info(f"Using legacy image selection for: {image_path_obj.name}")
+        
+        # Update legacy list
+        if not hasattr(self, 'selected_images'):
+            self.selected_images = []
             
         if selected:
-            # Add to selection
-            if hasattr(self, 'selected_models') and model_path_obj not in self.selected_models:
-                self.selected_models.append(model_path_obj)
-            # Update the UI list widget
-            if hasattr(self, 'selected_models_list'):
-                self.selected_models_list.addItem(model_path_obj.name)
-            self.logger.info(f"Added {model_path_obj.name} to selected models")
-            
-            # Update unified object selector
-            if hasattr(self, 'unified_object_selector'):
-                # Try to find the source image for this model
-                source_image = None
-                
-                # Check if model name contains image reference (e.g., Hy3D_00001_.glb from ComfyUI_00001_.png)
-                model_stem = model_path_obj.stem
-                if "Hy3D_" in model_stem:
-                    # Extract number from model name
-                    import re
-                    match = re.search(r'Hy3D_(\d+)_', model_stem)
-                    if match:
-                        number = match.group(1)
-                        # Look for corresponding image
-                        images_dir = Path(self.config.images_dir)
-                        for img_path in images_dir.glob(f"*{number}*.png"):
-                            source_image = img_path
-                            break
-                
-                if source_image and source_image.exists():
-                    # If we found the source image, link the model to it
-                    self.logger.info(f"Linking model {model_path_obj.name} to source image {source_image.name}")
-                    self.unified_object_selector.link_model_to_image(model_path_obj, source_image)
-                    # Store the object ID for later removal
-                    self._model_object_ids[str(model_path_obj)] = f"obj_{source_image.stem}"
-                else:
-                    # If no source image, add as standalone model
-                    self.logger.info(f"No source image found for model {model_path_obj.name}, adding as standalone")
-                    object_id = self.unified_object_selector.add_standalone_model(model_path_obj)
-                    # Store the object ID for later removal
-                    self._model_object_ids[str(model_path_obj)] = object_id
-                
-                # Update all selector instances
-                self._update_all_unified_selectors()
+            if image_path_obj not in self.selected_images:
+                self.selected_images.append(image_path_obj)
         else:
-            # Remove from selection
-            if hasattr(self, 'selected_models') and model_path_obj in self.selected_models:
-                self.selected_models.remove(model_path_obj)
-            # Update the UI list widget
-            if hasattr(self, 'selected_models_list'):
-                # Find and remove the item
-                for i in range(self.selected_models_list.count()):
-                    if self.selected_models_list.item(i).text() == model_path_obj.name:
-                        self.selected_models_list.takeItem(i)
-                        break
-            self.logger.info(f"Removed {model_path_obj.name} from selected models")
-            
-            # Update unified object selector only if the object exists there
-            if hasattr(self, 'unified_object_selector') and hasattr(self, '_model_object_ids'):
-                # Use the stored object ID for removal
-                model_key = str(model_path_obj)
-                if model_key in self._model_object_ids:
-                    object_id = self._model_object_ids[model_key]
-                    self.unified_object_selector.remove_object(object_id)
-                    self.logger.info(f"Removed {model_path_obj.name} from unified object selector (ID: {object_id})")
-                    # Clean up the stored ID
-                    del self._model_object_ids[model_key]
-                    
-                    # Update all selector instances
-                    self._update_all_unified_selectors()
-                else:
-                    self.logger.debug(f"No stored object ID for model {model_path_obj.name}")
+            if image_path_obj in self.selected_images:
+                self.selected_images.remove(image_path_obj)
         
-        # Update selection count display
+        # Update UI manually
         self._update_selection_displays()
         
-        # Sync model selection to grids
-        self._sync_model_selection_to_grids()
+    def _on_model_selected_legacy(self, model_path_obj: Path, selected: bool):
+        """Legacy model selection handler - fallback when unified manager fails"""
+        self.logger.info(f"Using legacy model selection for: {model_path_obj.name}")
+        
+        # Update legacy list
+        if not hasattr(self, 'selected_models'):
+            self.selected_models = []
+            
+        if selected:
+            if model_path_obj not in self.selected_models:
+                self.selected_models.append(model_path_obj)
+        else:
+            if model_path_obj in self.selected_models:
+                self.selected_models.remove(model_path_obj)
+        
+        # Update UI manually
+        self._update_selection_displays()
+        
+    def _on_textured_model_selected_legacy(self, model_path_obj: Path, selected: bool):
+        """Legacy textured model selection handler - fallback when unified manager fails"""
+        self.logger.info(f"Using legacy textured model selection for: {model_path_obj.name}")
+        
+        # Update legacy list (textured models go in selected_models)
+        if not hasattr(self, 'selected_models'):
+            self.selected_models = []
+            
+        if selected:
+            if model_path_obj not in self.selected_models:
+                self.selected_models.append(model_path_obj)
+        else:
+            if model_path_obj in self.selected_models:
+                self.selected_models.remove(model_path_obj)
+        
+        # Update UI manually
+        self._update_selection_displays()
+    
+    def _find_source_image_for_model(self, model_path: Path) -> Optional[Path]:
+        """
+        Intelligent source image finder for 3D models
+        Uses multiple matching strategies to link models back to their source images
+        """
+        model_stem = model_path.stem
+        images_dir = Path(self.config.images_dir)
+        
+        # Strategy 1: ComfyUI Hy3D pattern matching (e.g., Hy3D_00312_.glb -> ComfyUI_*_00312_*.png)
+        if "Hy3D_" in model_stem:
+            import re
+            match = re.search(r'Hy3D_(\d+)_', model_stem)
+            if match:
+                number = match.group(1)
+                # Try multiple ComfyUI naming patterns
+                patterns = [
+                    f"ComfyUI_*{number}*.png",
+                    f"ComfyUI_{number}*.png", 
+                    f"*{number}*.png",
+                    f"{number}*.png"
+                ]
+                for pattern in patterns:
+                    for img_path in images_dir.glob(pattern):
+                        if img_path.exists():
+                            self.logger.debug(f"🔗 Strategy 1 match: {model_path.name} → {img_path.name}")
+                            return img_path
+        
+        # Strategy 2: Timestamp-based matching (if both files share similar timestamps)
+        if hasattr(self, 'selection_manager') and self.selection_manager:
+            selected_images = self.selection_manager.get_selected_paths(SelectionType.IMAGE)
+            model_mtime = model_path.stat().st_mtime if model_path.exists() else 0
+            
+            # Find images with timestamps within 5 minutes of model creation
+            for img_path in selected_images:
+                if img_path.exists():
+                    img_mtime = img_path.stat().st_mtime
+                    time_diff = abs(model_mtime - img_mtime)
+                    if time_diff < 300:  # 5 minutes tolerance
+                        self.logger.debug(f"🔗 Strategy 2 match: {model_path.name} → {img_path.name} (time diff: {time_diff:.1f}s)")
+                        return img_path
+        
+        # Strategy 3: Sequence number extraction and fuzzy matching
+        import re
+        model_numbers = re.findall(r'\d+', model_stem)
+        if model_numbers:
+            for img_path in images_dir.glob("*.png"):
+                if img_path.exists():
+                    img_numbers = re.findall(r'\d+', img_path.stem)
+                    # Check if any numbers match
+                    if any(num in img_numbers for num in model_numbers):
+                        self.logger.debug(f"🔗 Strategy 3 match: {model_path.name} → {img_path.name}")
+                        return img_path
+        
+        # Strategy 4: Direct stem matching (exact filename match)
+        for img_path in images_dir.glob(f"{model_stem}.*"):
+            if img_path.suffix.lower() in ['.png', '.jpg', '.jpeg'] and img_path.exists():
+                self.logger.debug(f"🔗 Strategy 4 match: {model_path.name} → {img_path.name}")
+                return img_path
+        
+        # Strategy 5: Partial stem matching (remove common prefixes/suffixes)
+        cleaned_stem = model_stem.replace("Hy3D_", "").replace("_3d", "").replace("_model", "")
+        for img_path in images_dir.glob("*.png"):
+            if img_path.exists():
+                img_cleaned = img_path.stem.replace("ComfyUI_", "").replace("_img", "").replace("_image", "")
+                if cleaned_stem in img_cleaned or img_cleaned in cleaned_stem:
+                    self.logger.debug(f"🔗 Strategy 5 match: {model_path.name} → {img_path.name}")
+                    return img_path
+        
+        self.logger.debug(f"❌ No source image found for model: {model_path.name}")
+        return None
     
     def _update_selection_displays(self):
         """Update selection count displays and enable/disable generation buttons"""
@@ -4260,11 +5105,15 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         # No LoRAs available at all
         return None
     
-    def _populate_workflow_combo(self, workflow_type: str = "image_generation"):
+    def _populate_workflow_combo(self, workflow_type: str = "image_generation", combo_widget=None):
         """Populate workflow combo box with available workflow files for specific type"""
         try:
+            # Use the provided combo widget, or default to image generation combo
+            if combo_widget is None:
+                combo_widget = self.workflow_combo
+            
             # Clear existing items
-            self.workflow_combo.clear()
+            combo_widget.clear()
             
             workflows_dir = self.config.workflows_dir / workflow_type
             if workflows_dir and workflows_dir.exists():
@@ -4279,27 +5128,27 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                     # Store relative path from workflows root for proper loading
                     relative_path = f"{workflow_type}/{workflow_file.name}"
                     # Use exact filename as display name
-                    self.workflow_combo.addItem(workflow_file.name, relative_path)
+                    combo_widget.addItem(workflow_file.name, relative_path)
             
                 self.logger.debug(f"Populated workflow combo with {len(workflow_files)} {workflow_type} workflows")
             else:
                 self.logger.warning(f"Workflow directory not found: {workflows_dir}")
                 # Add fallback options based on type
                 if workflow_type == "image_generation":
-                    self.workflow_combo.addItem("generate_thermal_shapes.json", "image_generation/generate_thermal_shapes.json")
-                    self.workflow_combo.addItem("generate_sealife_images.json", "image_generation/generate_sealife_images.json")
+                    combo_widget.addItem("generate_thermal_shapes.json", "image_generation/generate_thermal_shapes.json")
+                    combo_widget.addItem("generate_sealife_images.json", "image_generation/generate_sealife_images.json")
                 elif workflow_type == "3d_generation":
-                    self.workflow_combo.addItem("3D_gen_Hunyuan2_onlymesh.json", "3d_generation/3D_gen_Hunyuan2_onlymesh.json")
+                    combo_widget.addItem("3D_gen_Hunyuan2_onlymesh.json", "3d_generation/3D_gen_Hunyuan2_onlymesh.json")
                 elif workflow_type == "texture_generation":
-                    self.workflow_combo.addItem("Model_texturing_juggernautXL_v07.json", "texture_generation/Model_texturing_juggernautXL_v07.json")
-                    self.workflow_combo.addItem("Model_texturing_juggernautXL_v08.json", "texture_generation/Model_texturing_juggernautXL_v08.json")
+                    combo_widget.addItem("Model_texturing_juggernautXL_v07.json", "texture_generation/Model_texturing_juggernautXL_v07.json")
+                    combo_widget.addItem("Model_texturing_juggernautXL_v08.json", "texture_generation/Model_texturing_juggernautXL_v08.json")
             
         except Exception as e:
             self.logger.error(f"Failed to populate workflow combo for {workflow_type}: {e}")
             # Add fallback options
             if workflow_type == "image_generation":
-                self.workflow_combo.addItem("generate_thermal_shapes.json", "image_generation/generate_thermal_shapes.json")
-            self.workflow_combo.addItem("generate_sealife_images.json", "image_generation/generate_sealife_images.json")
+                combo_widget.addItem("generate_thermal_shapes.json", "image_generation/generate_thermal_shapes.json")
+                combo_widget.addItem("generate_sealife_images.json", "image_generation/generate_sealife_images.json")
     
     def _initialize_workflow_parameters(self):
         """Initialize workflow parameters after UI is fully set up"""
@@ -4309,8 +5158,23 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 current_tab = self.main_tab_widget.currentIndex()
                 self.logger.info(f"Initializing workflow parameters for tab {current_tab}")
             
-                # Connect workflow change handler now that UI is ready
+                # Connect workflow change handlers now that UI is ready
                 self.workflow_combo.currentIndexChanged.connect(self._on_workflow_index_changed)
+                
+                # Initialize and connect additional workflow combos if they exist
+                if hasattr(self, 'workflow_3d_combo'):
+                    # Populate 3D workflow combo
+                    self._populate_workflow_combo("3d_generation", self.workflow_3d_combo)
+                    self.workflow_3d_combo.currentIndexChanged.connect(
+                        lambda index: self._on_workflow_index_changed_for_tab(index, "3d_generation", self.workflow_3d_combo)
+                    )
+                
+                if hasattr(self, 'workflow_texture_combo'):
+                    # Populate texture workflow combo
+                    self._populate_workflow_combo("texture_generation", self.workflow_texture_combo)
+                    self.workflow_texture_combo.currentIndexChanged.connect(
+                        lambda index: self._on_workflow_index_changed_for_tab(index, "texture_generation", self.workflow_texture_combo)
+                    )
             
                 # Update workflow dropdown for current tab
                 self._update_workflow_dropdown_for_tab(current_tab)
@@ -4405,6 +5269,129 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             workflow_name = self.workflow_combo.itemData(index)
             if workflow_name:
                 self._on_workflow_changed(workflow_name)
+    
+    def _on_workflow_index_changed_for_tab(self, index: int, workflow_type: str, combo_widget):
+        """Handle workflow selection index change for specific tab"""
+        if index >= 0:
+            workflow_name = combo_widget.itemData(index)
+            if workflow_name:
+                self.logger.info(f"Workflow changed in {workflow_type} tab to: {workflow_name}")
+                # Update dynamic parameters based on the workflow type
+                self._on_workflow_changed_for_tab(workflow_name, workflow_type)
+    
+    def _on_workflow_changed_for_tab(self, workflow_name: str, workflow_type: str):
+        """Handle workflow selection change for specific tab types"""
+        try:
+            self.logger.debug(f"Workflow changed for {workflow_type}: {workflow_name}")
+            
+            # Get the full workflow path
+            workflow_path = self.config.workflows_dir / workflow_name
+            if not workflow_path.exists():
+                self.logger.error(f"Workflow file not found: {workflow_path}")
+                return
+            
+            # Load the workflow to extract parameters
+            with open(workflow_path, 'r') as f:
+                workflow_data = f.read()
+            workflow_json = json.loads(workflow_data)
+            
+            # Map workflow type to parameter type for loading
+            param_type_map = {
+                "3d_generation": "3d_parameters",
+                "texture_generation": "texture_parameters"
+            }
+            
+            param_type = param_type_map.get(workflow_type, workflow_type)
+            
+            # Extract and save parameters specific to this workflow type
+            self._extract_and_save_workflow_parameters(workflow_json, param_type, workflow_name)
+            
+            # Only refresh UI if we're on the correct tab
+            current_tab = self.main_tab_widget.currentIndex() if hasattr(self, 'main_tab_widget') else 0
+            expected_tab = {"3d_generation": 1, "texture_generation": 2}.get(workflow_type, 0)
+            
+            if current_tab == expected_tab:
+                # Refresh the parameters UI for this tab
+                self._load_parameters_from_config(param_type)
+                self.logger.info(f"Updated {workflow_type} parameters for workflow: {workflow_name}")
+            else:
+                self.logger.debug(f"Workflow changed for {workflow_type} but not currently active tab")
+                
+        except Exception as e:
+            self.logger.error(f"Failed to handle workflow change for {workflow_type}: {e}")
+            import traceback
+            self.logger.error(traceback.format_exc())
+    
+    def _extract_and_save_workflow_parameters(self, workflow_json: dict, param_type: str, workflow_name: str):
+        """Extract parameters from workflow and save to appropriate config file"""
+        try:
+            # Reuse the existing parameter extraction logic from _on_workflow_changed
+            extracted_params = {}
+            
+            # Extract parameters from workflow nodes (same logic as main workflow handler)
+            for node_id, node_data in workflow_json.items():
+                class_type = node_data.get("class_type", "")
+                inputs = node_data.get("inputs", {})
+                
+                # Extract relevant parameters based on node type
+                if "CLIPTextEncode" in class_type:
+                    # Handle prompt nodes
+                    if "text" in inputs:
+                        prompt_text = inputs["text"]
+                        title = node_data.get("_meta", {}).get("title", "")
+                        
+                        # Map to appropriate prompt fields based on param_type
+                        if param_type == "texture_parameters":
+                            if "positive" in title.lower() or node_id == "510":
+                                extracted_params["texture_prompt"] = prompt_text
+                            elif "negative" in title.lower() or node_id == "177":
+                                extracted_params["texture_negative_prompt"] = prompt_text
+                        elif param_type == "3d_parameters":
+                            if "positive" in title.lower():
+                                extracted_params["model_prompt"] = prompt_text
+                            elif "negative" in title.lower():
+                                extracted_params["model_negative_prompt"] = prompt_text
+                
+                # Extract other parameter types based on class_type
+                elif "KSampler" in class_type or "SamplerCustomAdvanced" in class_type:
+                    # Sampling parameters
+                    if "steps" in inputs:
+                        extracted_params["steps"] = inputs["steps"]
+                    if "cfg" in inputs:
+                        extracted_params["cfg"] = inputs["cfg"]
+                    if "seed" in inputs:
+                        extracted_params["seed"] = inputs["seed"]
+                    if "sampler_name" in inputs:
+                        extracted_params["sampler_name"] = inputs["sampler_name"]
+                    if "scheduler" in inputs:
+                        extracted_params["scheduler"] = inputs["scheduler"]
+            
+            # Save to appropriate config file
+            config_file_map = {
+                "3d_parameters": "3d_parameters_config.json",
+                "texture_parameters": "texture_parameters_config.json"
+            }
+            
+            config_filename = config_file_map.get(param_type, f"{param_type}_config.json")
+            config_path = self.config.config_dir / config_filename
+            
+            # Prepare config data
+            config_data = {
+                "workflow_file": workflow_name,
+                "parameters": extracted_params,
+                "last_updated": datetime.now().isoformat()
+            }
+            
+            # Save to file
+            with open(config_path, 'w') as f:
+                json.dump(config_data, f, indent=2)
+                
+            self.logger.info(f"Saved {len(extracted_params)} parameters for {param_type} from workflow {workflow_name}")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to extract and save workflow parameters: {e}")
+    
+    
     
     def _on_workflow_changed(self, workflow_name: str):
         """Handle workflow selection change and refresh parameters UI"""
@@ -5111,6 +6098,10 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 "window_geometry": self.saveGeometry().data().hex(),
                 "window_state": self.saveState().data().hex(),
                 "accent_color": self.theme_manager.get_accent_color(),
+                "splitter_sizes": {
+                    "main_splitter": self.main_splitter.sizes() if hasattr(self, 'main_splitter') and self.main_splitter else [800, 200],
+                    "content_splitter": self.content_splitter.sizes() if hasattr(self, 'content_splitter') and self.content_splitter else [350, 1220, 350]
+                }
             }
             
             project_data = {
@@ -5193,6 +6184,9 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                     self.restoreGeometry(geometry_data)
                 except Exception:
                     pass  # Ignore if restore fails
+            
+            # Restore splitter sizes from project
+            self._restore_project_splitter_sizes(ui_state.get("splitter_sizes", {}))
                     
             # Mark as not modified since we just loaded
             self.project_manager.is_modified = False
@@ -5462,6 +6456,12 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             settings = QSettings("ComfyUI-Cinema4D", "Bridge")
             accent_color = settings.value("interface/accent_color", "#4CAF50")
             
+            # Store accent color as instance variable for 3D grids
+            self.accent_color = accent_color
+            
+            # Update all existing 3D grids with new accent color
+            self._update_grids_accent_color(accent_color)
+            
             # If theme manager is available, use it for better accent color support
             if self.theme_manager:
                 self.theme_manager.set_accent_color(accent_color)
@@ -5494,6 +6494,22 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 
         except Exception as e:
             self.logger.error(f"Failed to apply saved accent color on startup: {e}")
+    
+    def _update_grids_accent_color(self, accent_color: str):
+        """Update accent color for all 3D grids"""
+        try:
+            # Update texture models grid if it exists
+            if hasattr(self, 'texture_models_grid') and self.texture_models_grid:
+                self.texture_models_grid.update_accent_color(accent_color)
+                self.logger.debug(f"Updated texture_models_grid accent color to {accent_color}")
+            
+            # Update all textured models grid if it exists
+            if hasattr(self, 'all_textured_models_grid') and self.all_textured_models_grid:
+                self.all_textured_models_grid.update_accent_color(accent_color)
+                self.logger.debug(f"Updated all_textured_models_grid accent color to {accent_color}")
+                
+        except Exception as e:
+            self.logger.error(f"Failed to update grids accent color: {e}")
     
     def _get_enhanced_accent_css(self, accent_color: str) -> str:
         """Get enhanced accent color CSS that preserves terminal theme"""
@@ -5753,4 +6769,4 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         """Handle window resize events to maintain proper layout proportions"""
         super().resizeEvent(event)
         # Recalculate splitter sizes when window is resized
-        self._recalculate_splitter_sizes()
+        # self._recalculate_splitter_sizes()  # Disabled to allow free panel movement

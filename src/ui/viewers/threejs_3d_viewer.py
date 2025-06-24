@@ -10,7 +10,7 @@ import time
 from pathlib import Path
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
-from PySide6.QtWidgets import QWidget, QVBoxLayout
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QSizePolicy
 from PySide6.QtCore import QUrl, Signal, QTimer, Qt
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from loguru import logger
@@ -65,10 +65,18 @@ class ThreeJS3DViewer(QWidget):
     _next_port = 8893
     _port_lock = threading.Lock()
     
-    def __init__(self, parent=None, width=496, height=460, auto_start=True):
+    def __init__(self, parent=None, width=496, height=460, auto_start=True, responsive=False):
         super().__init__(parent)
-        self.setFixedSize(width, height)
-        self.settings_file = "studio_viewer_settings.json"
+        
+        if responsive and width is None:
+            # Responsive mode - expand to fill width, maintain minimum height
+            self.setMinimumHeight(height)
+            self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        else:
+            # Fixed size mode (default)
+            self.setFixedSize(width, height)
+            
+        self.settings_file = "viewer/studio_viewer_settings.json"
         self.server_thread = None
         self.server = None
         self.model_path = None
@@ -153,6 +161,8 @@ class ThreeJS3DViewer(QWidget):
                 "shadowSoftness": 1,
                 "fillIntensity": 0.6,
                 "fillPosX": -5,
+                "fillPosY": 5,
+                "fillPosZ": -3,
                 "rimIntensity": 0.4,
                 "materialMetalness": 1.0,
                 "materialRoughness": 1.0,
@@ -173,7 +183,9 @@ class ThreeJS3DViewer(QWidget):
                 "floorRoughness": 0.8,
                 "gridSize": 20,
                 "gridDivisions": 40,
-                "gridOpacity": 0.3
+                "gridOpacity": 0.3,
+                "modelOffsetY": 0.0,
+                "axesSize": 0.5
             },
             "checkboxes": {
                 "shadows": True,
@@ -185,6 +197,14 @@ class ThreeJS3DViewer(QWidget):
             "combos": {
                 "toneMapping": "ACESFilmic",
                 "background": "Dark Gray"
+            },
+            "advanced_effects": {
+                "ssaoEnabled": False,
+                "ssaoIntensity": 0.5,
+                "ssaoRadius": 0.3,
+                "ssaoQuality": 32.0,
+                "fxaaEnabled": True,
+                "temporalAAEnabled": False
             }
         }
         
@@ -192,13 +212,18 @@ class ThreeJS3DViewer(QWidget):
             try:
                 with open(self.settings_file, 'r') as f:
                     loaded_settings = json.load(f)
+                    logger.debug(f"ThreeJS3DViewer: Loading settings from {self.settings_file}")
+                    logger.debug(f"ThreeJS3DViewer: Loaded ambient={loaded_settings.get('sliders', {}).get('ambientIntensity', 'missing')}")
                     # Merge with defaults
                     for key in default_settings:
                         if key in loaded_settings:
                             default_settings[key].update(loaded_settings[key])
+                    logger.debug(f"ThreeJS3DViewer: Final ambient={default_settings['sliders']['ambientIntensity']}")
                     return default_settings
             except Exception as e:
                 logger.error(f"Error loading settings: {e}")
+        else:
+            logger.debug(f"ThreeJS3DViewer: Settings file not found: {self.settings_file}")
         
         return default_settings
         
@@ -208,6 +233,7 @@ class ThreeJS3DViewer(QWidget):
         sliders = settings.get("sliders", {})
         checkboxes = settings.get("checkboxes", {})
         combos = settings.get("combos", {})
+        advanced_effects = settings.get("advanced_effects", {})
         
         # Build parameters object from settings
         params_js = json.dumps({
@@ -251,7 +277,14 @@ class ThreeJS3DViewer(QWidget):
             "showGrid": checkboxes.get("grid", True),
             "gridSize": sliders.get("gridSize", 20),
             "gridDivisions": sliders.get("gridDivisions", 40),
-            "gridOpacity": sliders.get("gridOpacity", 0.3)
+            "gridOpacity": sliders.get("gridOpacity", 0.3),
+            # Advanced Effects
+            "ssaoEnabled": advanced_effects.get("ssaoEnabled", False),
+            "ssaoIntensity": advanced_effects.get("ssaoIntensity", 0.5),
+            "ssaoRadius": advanced_effects.get("ssaoRadius", 0.3),
+            "ssaoQuality": advanced_effects.get("ssaoQuality", 32.0),
+            "fxaaEnabled": advanced_effects.get("fxaaEnabled", True),
+            "temporalAAEnabled": advanced_effects.get("temporalAAEnabled", False)
         })
         
         html = f'''<!DOCTYPE html>
@@ -675,6 +708,7 @@ class ThreeJS3DViewer(QWidget):
             const sliders = newSettings.sliders || {{}};
             const checkboxes = newSettings.checkboxes || {{}};
             const combos = newSettings.combos || {{}};
+            const advancedEffects = newSettings.advanced_effects || {{}};
             
             // Update parameters
             params.ambientIntensity = sliders.ambientIntensity ?? params.ambientIntensity;
@@ -717,6 +751,14 @@ class ThreeJS3DViewer(QWidget):
             params.gridOpacity = sliders.gridOpacity ?? params.gridOpacity;
             params.modelOffsetY = sliders.modelOffsetY ?? params.modelOffsetY;
             params.axesSize = sliders.axesSize ?? params.axesSize;
+            
+            // Update advanced effects parameters
+            params.ssaoEnabled = advancedEffects.ssaoEnabled ?? params.ssaoEnabled;
+            params.ssaoIntensity = advancedEffects.ssaoIntensity ?? params.ssaoIntensity;
+            params.ssaoRadius = advancedEffects.ssaoRadius ?? params.ssaoRadius;
+            params.ssaoQuality = advancedEffects.ssaoQuality ?? params.ssaoQuality;
+            params.fxaaEnabled = advancedEffects.fxaaEnabled ?? params.fxaaEnabled;
+            params.temporalAAEnabled = advancedEffects.temporalAAEnabled ?? params.temporalAAEnabled;
             
             // Update lights
             if (lights.ambient) lights.ambient.intensity = params.ambientIntensity;
@@ -815,6 +857,7 @@ class ThreeJS3DViewer(QWidget):
                 sliders = settings.get("sliders", {})
                 checkboxes = settings.get("checkboxes", {})
                 combos = settings.get("combos", {})
+                advanced_effects = settings.get("advanced_effects", {})
                 
                 # Build JavaScript to update parameters
                 js_code = """
@@ -827,7 +870,8 @@ class ThreeJS3DViewer(QWidget):
                 """ % json.dumps({
                     "sliders": sliders,
                     "checkboxes": checkboxes,
-                    "combos": combos
+                    "combos": combos,
+                    "advanced_effects": advanced_effects
                 })
                 
                 # Execute JavaScript to update settings

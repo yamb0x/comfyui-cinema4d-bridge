@@ -75,20 +75,7 @@ class UICreationMethods:
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(16)
         
-        # Header with controls
-        header_layout = QHBoxLayout()
-        title = QLabel("All Generated Images")
-        title.setObjectName("section_title")
-        header_layout.addWidget(title)
-        
-        header_layout.addStretch()
-        
-        refresh_btn = QPushButton("Refresh")
-        refresh_btn.setObjectName("refresh_btn")
-        refresh_btn.clicked.connect(self._refresh_all_images)
-        header_layout.addWidget(refresh_btn)
-        
-        layout.addLayout(header_layout)
+        # Removed header section to save vertical space for image grid
         
         # Use actual ImageGridWidget for all images
         self.all_images_grid = ImageGridWidget(columns=6, thumbnail_size=180)
@@ -109,19 +96,14 @@ class UICreationMethods:
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         
-        # Remove header section entirely - 3D viewers should take full space
-        # No title, no refresh/clear buttons - just the 3D grid
-        
-        # Use ResponsiveStudio3DGrid directly without scroll area wrapper
-        # The grid itself is already a QScrollArea
+        # Clean scene objects view - no header controls (moved to right panel)
         
         # Use new ResponsiveStudio3DGrid for session models
         from src.ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
         # Get accent color from config
         accent_color = getattr(self.config.ui, 'accent_color', '#4CAF50')
-        # Calculate optimal card size based on available space
-        # Center panel is ~1220px, minus margins and spacing for 2 columns = ~580px per card
-        self.session_models_grid = ResponsiveStudio3DGrid(columns=2, card_size=580, accent_color=accent_color)
+        # Large 1024px cards - use single column due to size
+        self.session_models_grid = ResponsiveStudio3DGrid(columns=1, card_size=1024, accent_color=accent_color)
         self.session_models_grid.model_selected.connect(self._on_model_selected)
         self.session_models_grid.model_clicked.connect(self._on_model_clicked)
         self.session_models_grid.models_changed.connect(self._on_scene_models_changed)
@@ -139,29 +121,14 @@ class UICreationMethods:
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         
-        # Simple header with refresh button (minimal UI)
-        header_layout = QHBoxLayout()
-        header_layout.setContentsMargins(10, 10, 10, 10)
-        
-        title = QLabel("All 3D Models")
-        title.setObjectName("section_title")
-        header_layout.addWidget(title)
-        
-        header_layout.addStretch()
-        
-        refresh_btn = QPushButton("Refresh")
-        refresh_btn.setObjectName("secondary_btn")
-        refresh_btn.clicked.connect(self._refresh_all_models)
-        header_layout.addWidget(refresh_btn)
-        
-        layout.addLayout(header_layout)
+        # Removed header section to save vertical space for 3D viewer
         
         # Use ResponsiveStudio3DGrid - same as Scene Objects
         from src.ui.studio_3d_viewer_widget import ResponsiveStudio3DGrid
         # Get accent color from config
         accent_color = getattr(self.config.ui, 'accent_color', '#4CAF50')
-        # Use 3 columns for View All (more models)
-        self.all_models_grid = ResponsiveStudio3DGrid(columns=3, card_size=400, accent_color=accent_color)
+        # Large 1024px cards - use single column due to size
+        self.all_models_grid = ResponsiveStudio3DGrid(columns=1, card_size=1024, accent_color=accent_color)
         self.all_models_grid.model_selected.connect(self._on_model_selected)
         self.all_models_grid.model_clicked.connect(self._on_model_clicked)
         self.all_models_grid.models_changed.connect(self._on_all_models_changed)
@@ -179,8 +146,8 @@ class UICreationMethods:
         layout.setSpacing(12)
         
         
-        # Dynamic Parameters section with scrollable area
-        dynamic_section = self._create_parameter_section("Workflow Parameters")
+        # Dynamic Parameters section with scrollable area - COMPACT for right panel
+        dynamic_section = self._create_parameter_section("Workflow Parameters", compact=True)
         dynamic_section_layout = dynamic_section.layout()
         
         # Create scrollable area for parameters
@@ -188,8 +155,10 @@ class UICreationMethods:
         scroll_area.setWidgetResizable(True)
         scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        # CRITICAL: Set maximum height to prevent UI explosion when loading many parameters
-        scroll_area.setMaximumHeight(400)  # Reasonable height that leaves room for console
+        # Set reasonable size for right panel - compact but usable
+        scroll_area.setMinimumHeight(150)
+        scroll_area.setMaximumHeight(400)  # Prevent excessive expansion
+        scroll_area.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         
         # Container widget for scrollable content
         self.dynamic_params_container = QWidget()
@@ -206,10 +175,13 @@ class UICreationMethods:
         
         # Set container as scroll area widget
         scroll_area.setWidget(self.dynamic_params_container)
-        dynamic_section_layout.addWidget(scroll_area, 1)  # Give scroll area all space in the section
+        dynamic_section_layout.addWidget(scroll_area)  # Don't give scroll area excessive space
         
-        # Give the dynamic section all available space
-        layout.addWidget(dynamic_section, 1)  # stretch factor of 1
+        # Add the dynamic section without giving it excessive space
+        layout.addWidget(dynamic_section)  # No stretch factor - compact size
+        
+        # Add stretch to push content to top and leave empty space at bottom
+        layout.addStretch()
         
         return widget
         
@@ -231,8 +203,8 @@ class UICreationMethods:
     
     def _create_static_3d_parameters(self, layout: QVBoxLayout):
         """Create the static 3D parameters (always available)"""
-        # 3D Model Settings section
-        model_section = self._create_parameter_section("3D Model Settings")
+        # 3D Model Settings section - COMPACT for right panel
+        model_section = self._create_parameter_section("3D Model Settings", compact=True)
         model_layout = model_section.layout()
         
         # Quality
@@ -257,7 +229,7 @@ class UICreationMethods:
         layout.addWidget(model_section)
         
         # Generation Settings section
-        gen_section = self._create_parameter_section("Generation Settings")
+        gen_section = self._create_parameter_section("Generation Settings", compact=True)
         gen_layout = gen_section.layout()
         
         # Guidance scale
@@ -356,19 +328,7 @@ class UICreationMethods:
             self.dynamic_3d_widgets = {}
         self.dynamic_3d_widgets.clear()
         
-        # Add workflow selector at the top
-        workflow_section = self._create_parameter_section("3D Workflow")
-        workflow_layout = workflow_section.layout()
-        
-        workflow_label = QLabel("Workflow:")
-        workflow_label.setObjectName("section_title")
-        self.workflow_3d_combo = QComboBox()
-        self.workflow_3d_combo.addItems(["3D_gen_Hunyuan2_onlymesh.json"])
-        self.workflow_3d_combo.setCurrentText("3D_gen_Hunyuan2_onlymesh.json")
-        workflow_layout.addWidget(workflow_label)
-        workflow_layout.addWidget(self.workflow_3d_combo)
-        
-        layout.addWidget(workflow_section)
+        # Workflow selector is now in the left panel controls - no duplicate here
         
         # Create parameter sections grouped by node type
         node_types = {}
@@ -380,59 +340,230 @@ class UICreationMethods:
                     node_types[node_type] = []
                 node_types[node_type].append((node_key, info))
         
-        # Create sections for each node type
+        # Create sections for each node type, but only for nodes with meaningful parameters
+        sections_created = 0
         for node_type, nodes in node_types.items():
-            section = self._create_parameter_section(f"{node_type} Parameters")
-            section_layout = section.layout()
+            # Check if any nodes in this type have meaningful parameters
+            has_meaningful_params = False
+            nodes_with_params = []
             
             for node_key, info in nodes:
-                node_id = info.get('id', '')
-                node_title = info.get('title', '')
                 widgets_values = info.get('widgets_values', [])
-                
-                self.logger.debug(f"Node {node_key}: widgets_values = {widgets_values}")
-                
-                # Create label for this specific node instance
-                display_name = f"Node {node_id}"
-                if node_title:
-                    display_name += f" ({node_title})"
-                    
-                node_label = QLabel(display_name + ":")
-                node_label.setObjectName("section_subtitle")
-                section_layout.addWidget(node_label)
-                
-                # Create widgets for each parameter (if any exist)
+                # Only include nodes that have actual parameter values (not empty or None values)
+                meaningful_params = []
                 if widgets_values:
+                    for value in widgets_values:
+                        # Skip empty, None, or default empty values
+                        if value is not None and value != "" and value != [] and value != {}:
+                            meaningful_params.append(value)
+                
+                if meaningful_params:
+                    has_meaningful_params = True
+                    nodes_with_params.append((node_key, info, meaningful_params))
+            
+            # Only create section if there are nodes with meaningful parameters
+            if has_meaningful_params:
+                section = self._create_parameter_section(f"{node_type} Parameters", compact=True)
+                section_layout = section.layout()
+                
+                for node_key, info, meaningful_params in nodes_with_params:
+                    node_id = info.get('id', '')
+                    node_title = info.get('title', '')
+                    widgets_values = info.get('widgets_values', [])
+                    
+                    self.logger.debug(f"Node {node_key}: widgets_values = {widgets_values}")
+                    
+                    # Create label for this specific node instance
+                    display_name = f"Node {node_id}"
+                    if node_title:
+                        display_name += f" ({node_title})"
+                        
+                    node_label = QLabel(display_name + ":")
+                    node_label.setObjectName("section_subtitle")
+                    section_layout.addWidget(node_label)
+                    
+                    # Create widgets for meaningful parameters only
+                    param_count = 0
                     for i, value in enumerate(widgets_values):
+                        # Skip empty, None, or meaningless values
+                        if value is None or value == "" or value == [] or value == {}:
+                            continue
+                            
                         widget_key = f"{node_key}_widget_{i}"
-                        param_widget = self._create_parameter_widget(f"Parameter {i}", value, f"{node_key}_param_{i}")
+                        # Get meaningful parameter name based on node type and index
+                        param_name = self._get_parameter_name(info.get('type', ''), i, value)
+                        param_widget = self._create_parameter_widget(param_name, value, f"{node_key}_param_{i}")
                         
                         if param_widget:
                             section_layout.addWidget(param_widget)
                             self.dynamic_3d_widgets[widget_key] = param_widget
-                else:
-                    # No widget values available - show info message
-                    info_label = QLabel(f"No configurable parameters for this node")
-                    info_label.setStyleSheet("color: #888888; font-style: italic;")
-                    section_layout.addWidget(info_label)
-            
-            layout.addWidget(section)
+                            param_count += 1
+                    
+                    # If no meaningful parameters were created, show a note
+                    if param_count == 0:
+                        info_label = QLabel(f"Node configured (no user parameters)")
+                        info_label.setStyleSheet("color: #666666; font-style: italic; font-size: 11px;")
+                        section_layout.addWidget(info_label)
+                
+                layout.addWidget(section)
+                sections_created += 1
+        
+        # If no sections were created, show a message
+        if sections_created == 0:
+            info_section = self._create_parameter_section("Workflow Information", compact=True)
+            info_layout = info_section.layout()
+            info_label = QLabel("This workflow has no user-configurable parameters.\nAll nodes are using their default settings.")
+            info_label.setStyleSheet("color: #888888; font-style: italic; text-align: center;")
+            info_label.setWordWrap(True)
+            info_layout.addWidget(info_label)
+            layout.addWidget(info_section)
         
         self.logger.debug(f"Created dynamic 3D parameters section for {len(selected_nodes)} configured nodes")
         return widget
     
+    def _get_parameter_name(self, node_type: str, param_index: int, value) -> str:
+        """Get meaningful parameter name based on node type and parameter index"""
+        # Parameter name mappings for common ComfyUI node types
+        parameter_mappings = {
+            "Hy3DPostprocessMesh": {
+                0: "Optimization Level",
+                1: "Simplification Ratio", 
+                2: "Texture Resolution",
+                3: "Normal Smoothing",
+                4: "UV Unwrap Method"
+            },
+            "Hy3DGenerateMesh": {
+                0: "Mesh Quality",
+                1: "Subdivision Level",
+                2: "Detail Enhancement",
+                3: "Surface Smoothing",
+                4: "Topology Mode"
+            },
+            "Hy3DVAEDecode": {
+                0: "Decode Mode",
+                1: "Quality Setting",
+                2: "Color Space",
+                3: "Gamma Correction",
+                4: "Output Format"
+            },
+            "ImageResize+": {
+                0: "Width",
+                1: "Height", 
+                2: "Interpolation Method",
+                3: "Maintain Aspect Ratio",
+                4: "Crop Mode"
+            },
+            "TransparentBGSession+": {
+                0: "Background Mode",
+                1: "Alpha Threshold",
+                2: "Edge Softness",
+                3: "Color Keying",
+                4: "Anti-aliasing"
+            },
+            "DownloadAndLoadHy3DDelightModel": {
+                0: "Model Version"
+            },
+            "Preview3D": {
+                0: "View Mode",
+                1: "Lighting Setup",
+                2: "Material Display",
+                3: "Camera Angle",
+                4: "Background"
+            },
+            "KSampler": {
+                0: "Seed",
+                1: "Steps",
+                2: "CFG Scale",
+                3: "Sampler Name",
+                4: "Scheduler"
+            },
+            "EmptyLatentImage": {
+                0: "Width",
+                1: "Height",
+                2: "Batch Size"
+            },
+            "Hy3DSetMeshPBRTextures": {
+                0: "Base Color Map",
+                1: "Normal Map",
+                2: "Roughness Map",
+                3: "Metallic Map",
+                4: "Height Map"
+            },
+            "Hy3DSampleMultiView": {
+                0: "View Count",
+                1: "Angle Step",
+                2: "Camera Distance",
+                3: "Lighting Mode",
+                4: "Resolution"
+            },
+            "Hy3DRenderMultiView": {
+                0: "Render Quality",
+                1: "Output Format",
+                2: "Background Type",
+                3: "Shading Mode",
+                4: "Anti-aliasing"
+            },
+            "ControlNetApplyAdvanced": {
+                0: "Strength",
+                1: "Start Percent",
+                2: "End Percent",
+                3: "Control Mode",
+                4: "Guidance Scale"
+            },
+            "UltimateSDUpscale": {
+                0: "Upscale Factor",
+                1: "Tile Size",
+                2: "Mask Blur",
+                3: "Seam Fix Mode",
+                4: "Denoise Strength"
+            },
+            "CheckpointLoaderSimple": {
+                0: "Model Name"
+            },
+            "CLIPTextEncode": {
+                0: "Text Prompt"
+            }
+        }
+        
+        # Try to get specific parameter name for this node type and index
+        if node_type in parameter_mappings:
+            param_names = parameter_mappings[node_type]
+            if param_index in param_names:
+                return param_names[param_index]
+        
+        # For unknown node types, try to infer from value type
+        if isinstance(value, bool):
+            return f"Enable/Disable Option {param_index}"
+        elif isinstance(value, (int, float)) and value >= 0 and value <= 1:
+            return f"Scale Factor {param_index}"
+        elif isinstance(value, (int, float)) and value > 1:
+            return f"Size/Count {param_index}"
+        elif isinstance(value, str):
+            if value in ["fixed", "random", "auto"]:
+                return f"Mode Setting {param_index}"
+            elif "." in value or "/" in value:
+                return f"File/Path {param_index}"
+            else:
+                return f"Text Setting {param_index}"
+        
+        # Fallback to generic name
+        return f"Parameter {param_index}"
     
     def _create_parameter_widget(self, label: str, value, param_name: str = None) -> QWidget:
         """Create a parameter widget based on the value type"""
         from PySide6.QtWidgets import QHBoxLayout, QSpinBox, QDoubleSpinBox, QLineEdit, QComboBox, QCheckBox
         
-        widget = QWidget()
-        layout = QHBoxLayout(widget)
-        layout.setContentsMargins(5, 2, 5, 2)
+        # Follow texture parameters pattern exactly - separate label and widget
+        container = QWidget()
+        container.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         
-        # Create label
+        layout = QVBoxLayout(container)
+        layout.setContentsMargins(0, 2, 0, 2)
+        layout.setSpacing(2)
+        
+        # Create label exactly like texture parameters
         param_label = QLabel(f"{label}:")
-        param_label.setMinimumWidth(120)
+        param_label.setObjectName("section_title")  # Match texture parameter styling
         layout.addWidget(param_label)
         
         # Create appropriate input widget based on value type
@@ -443,11 +574,13 @@ class UICreationMethods:
             input_widget = QSpinBox()
             input_widget.setRange(-999999, 999999)
             input_widget.setValue(value)
+            # Use natural sizing like texture parameters
         elif isinstance(value, float):
             input_widget = QDoubleSpinBox()
             input_widget.setRange(-999999.0, 999999.0)
             input_widget.setDecimals(3)
             input_widget.setValue(value)
+            # Use natural sizing like texture parameters
         elif isinstance(value, str):
             # Check if it looks like a combo box value (common options)
             common_options = {
@@ -464,25 +597,27 @@ class UICreationMethods:
                     input_widget = QComboBox()
                     input_widget.addItems(options)
                     input_widget.setCurrentText(value)
+                    # Use natural sizing like texture parameters
                     is_dropdown = True
                     break
             
             if not is_dropdown:
                 input_widget = QLineEdit()
                 input_widget.setText(str(value))
+                # Use natural sizing like texture parameters
         else:
             # Fallback to string input
             input_widget = QLineEdit()
             input_widget.setText(str(value))
+            # Use natural sizing like texture parameters
         
-        layout.addWidget(input_widget)
-        layout.addStretch()
+        layout.addWidget(input_widget)  # No flex space - natural sizing
         
         # Store reference to the input widget for value retrieval
-        widget.input_widget = input_widget
-        widget.get_value = lambda: self._get_widget_value(input_widget)
+        container.input_widget = input_widget
+        container.get_value = lambda: self._get_widget_value(input_widget)
         
-        return widget
+        return container
     
     def _get_widget_value(self, widget):
         """Get value from a widget regardless of type"""
@@ -641,7 +776,7 @@ class UICreationMethods:
         layout.setSpacing(12)
         
         # Texture Quality section
-        quality_section = self._create_parameter_section("Texture Quality")
+        quality_section = self._create_parameter_section("Texture Quality", compact=True)
         quality_layout = quality_section.layout()
         
         # Resolution
@@ -665,7 +800,7 @@ class UICreationMethods:
         layout.addWidget(quality_section)
         
         # Material Properties section
-        material_section = self._create_parameter_section("Material Properties")
+        material_section = self._create_parameter_section("Material Properties", compact=True)
         material_layout = material_section.layout()
         
         # Material type

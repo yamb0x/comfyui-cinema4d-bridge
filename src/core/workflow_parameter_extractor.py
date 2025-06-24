@@ -58,6 +58,16 @@ class WorkflowParameterExtractor:
         "VAELoader": {
             "vae_name": {"ui_name": "VAE Model", "type": "choice", "default": ""}
         },
+        "UNETLoader": {
+            "unet_name": {"ui_name": "UNET Model", "type": "choice", "default": "hidream_i1_fast_fp8.safetensors"},
+            "weight_dtype": {"ui_name": "Weight Data Type", "type": "choice", "default": "default"}
+        },
+        "QuadrupleCLIPLoader": {
+            "clip_name1": {"ui_name": "CLIP L Model", "type": "choice", "default": "clip_l_hidream.safetensors"},
+            "clip_name2": {"ui_name": "CLIP G Model", "type": "choice", "default": "clip_g_hidream.safetensors"},
+            "clip_name3": {"ui_name": "T5XXL Model", "type": "choice", "default": "t5xxl_fp8_e4m3fn_scaled.safetensors"},
+            "clip_name4": {"ui_name": "LLaMA Model", "type": "choice", "default": "llama_3.1_8b_instruct_fp8_scaled.safetensors"}
+        },
         "ControlNetLoader": {
             "control_net_name": {"ui_name": "ControlNet Model", "type": "choice", "default": ""}
         },
@@ -170,6 +180,26 @@ class WorkflowParameterExtractor:
             elif node_type in ["CheckpointLoader", "CheckpointLoaderSimple"] and widgets_values:
                 if param_name == "ckpt_name" and len(widgets_values) > 0:
                     param_data["current_value"] = widgets_values[0]
+                    
+            elif node_type == "VAELoader" and widgets_values:
+                if param_name == "vae_name" and len(widgets_values) > 0:
+                    param_data["current_value"] = widgets_values[0]
+                    
+            elif node_type == "UNETLoader" and widgets_values:
+                if param_name == "unet_name" and len(widgets_values) > 0:
+                    param_data["current_value"] = widgets_values[0]
+                elif param_name == "weight_dtype" and len(widgets_values) > 1:
+                    param_data["current_value"] = widgets_values[1]
+                    
+            elif node_type == "QuadrupleCLIPLoader" and widgets_values:
+                if param_name == "clip_name1" and len(widgets_values) > 0:
+                    param_data["current_value"] = widgets_values[0]
+                elif param_name == "clip_name2" and len(widgets_values) > 1:
+                    param_data["current_value"] = widgets_values[1]
+                elif param_name == "clip_name3" and len(widgets_values) > 2:
+                    param_data["current_value"] = widgets_values[2]
+                elif param_name == "clip_name4" and len(widgets_values) > 3:
+                    param_data["current_value"] = widgets_values[3]
                     
             elif node_type == "Note" and widgets_values:
                 if param_name == "text" and len(widgets_values) > 0:

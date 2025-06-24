@@ -8285,3 +8285,641 @@ OverflowError
 2025-06-21 18:52:06.486 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
 2025-06-21 18:52:06.582 | ERROR    | core.app_redesigned:_collect_project_data:4447 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
 2025-06-21 21:28:27.129 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-22 00:59:08.463 | ERROR    | core.app_redesigned:_collect_project_data:4640 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-22 00:59:08.480 | ERROR    | core.app_redesigned:_collect_project_data:4640 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-22 00:59:16.203 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 00:59:17.281 | ERROR    | core.app_redesigned:_collect_project_data:4640 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-22 00:59:17.310 | ERROR    | core.app_redesigned:_collect_project_data:4640 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-22 01:00:01.383 | ERROR    | core.app_redesigned:_collect_project_data:4640 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-22 01:00:01.416 | ERROR    | core.app_redesigned:_collect_project_data:4640 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-22 01:00:02.167 | ERROR    | core.app_redesigned:_collect_project_data:4640 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-22 01:00:02.203 | ERROR    | core.app_redesigned:_collect_project_data:4640 - Failed to collect project data: ComfyToC4DAppRedesigned._collect_dynamic_workflow_parameters() missing 4 required positional arguments: 'workflow', 'prompt', 'neg_prompt', and 'batch_size'
+2025-06-22 09:37:37.506 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 09:37:43.125 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 09:37:43.618 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 09:38:03.599 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-22 10:01:53.294 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 10:01:53.352 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 10:05:33.673 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-22 10:12:32.462 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 10:24:19.066 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 10:24:22.886 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 10:24:37.990 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 10:24:39.344 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 10:32:09.174 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 10:32:12.389 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 11:41:40.987 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 11:41:46.936 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 11:41:55.053 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 11:41:56.857 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 11:51:59.933 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 11:52:03.670 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 12:14:59.813 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 12:15:02.713 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-22 13:25:40.919 | ERROR    | core.workflow_manager:load_workflow:56 - Workflow not found: Model_texturing_juggernautXL_v08.json
+2025-06-22 13:44:56.348 | ERROR    | core.workflow_manager:load_workflow:62 - Workflow not found: Model_texturing_juggernautXL_v08.json
+2025-06-22 13:44:56.359 | ERROR    | core.workflow_manager:load_workflow:63 - Expected at: D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\workflows\Model_texturing_juggernautXL_v08.json
+2025-06-22 13:48:06.942 | ERROR    | core.app_redesigned:_async_generate_textures:2596 - Failed to convert workflow to API format for Hy3D_00295_.glb
+2025-06-22 14:35:27.982 | ERROR    | core.app_redesigned:_on_workflow_changed:4431 - ❌ Failed to switch workflow: 'PositivePromptWidget' object has no attribute 'set_prompt'
+2025-06-22 14:35:27.997 | ERROR    | core.app_redesigned:_on_workflow_changed:4433 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 4367, in _on_workflow_changed
+    self.texture_prompt.set_prompt(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PositivePromptWidget' object has no attribute 'set_prompt'. Did you mean: 'get_prompt'?
+
+2025-06-22 15:50:43.397 | ERROR    | core.app_redesigned:_on_workflow_changed:4467 - ❌ Failed to switch workflow: 'PositivePromptWidget' object has no attribute 'set_prompt'
+2025-06-22 15:50:43.405 | ERROR    | core.app_redesigned:_on_workflow_changed:4469 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 4403, in _on_workflow_changed
+    self.texture_prompt.set_prompt(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PositivePromptWidget' object has no attribute 'set_prompt'. Did you mean: 'get_prompt'?
+
+2025-06-22 15:51:13.661 | ERROR    | core.app_redesigned:_on_workflow_changed:4467 - ❌ Failed to switch workflow: 'PositivePromptWidget' object has no attribute 'set_prompt'
+2025-06-22 15:51:13.671 | ERROR    | core.app_redesigned:_on_workflow_changed:4469 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 4403, in _on_workflow_changed
+    self.texture_prompt.set_prompt(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PositivePromptWidget' object has no attribute 'set_prompt'. Did you mean: 'get_prompt'?
+
+2025-06-22 15:55:07.137 | ERROR    | core.app_redesigned:_on_workflow_changed:4467 - ❌ Failed to switch workflow: 'PositivePromptWidget' object has no attribute 'set_prompt'
+2025-06-22 15:55:07.150 | ERROR    | core.app_redesigned:_on_workflow_changed:4469 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 4403, in _on_workflow_changed
+    self.texture_prompt.set_prompt(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PositivePromptWidget' object has no attribute 'set_prompt'. Did you mean: 'get_prompt'?
+
+2025-06-22 16:08:23.026 | ERROR    | core.app_redesigned:_on_workflow_changed:4480 - ❌ Failed to switch workflow: 'PositivePromptWidget' object has no attribute 'set_prompt'
+2025-06-22 16:08:23.038 | ERROR    | core.app_redesigned:_on_workflow_changed:4482 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 4416, in _on_workflow_changed
+    self.texture_prompt.set_prompt(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PositivePromptWidget' object has no attribute 'set_prompt'. Did you mean: 'get_prompt'?
+
+2025-06-22 16:12:42.846 | ERROR    | core.app_redesigned:_on_workflow_changed:4468 - ❌ Failed to switch workflow: 'PositivePromptWidget' object has no attribute 'set_prompt'
+2025-06-22 16:12:42.859 | ERROR    | core.app_redesigned:_on_workflow_changed:4470 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 4404, in _on_workflow_changed
+    self.texture_prompt.set_prompt(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PositivePromptWidget' object has no attribute 'set_prompt'. Did you mean: 'get_prompt'?
+
+2025-06-22 17:00:02.393 | ERROR    | core.workflow_manager:_minimal_ui_to_api_conversion:334 - ⚠️ WARNING: Workflow contains angles (180°/270°) that may not be supported by current Hunyuan3D nodes!
+2025-06-22 17:00:02.407 | ERROR    | core.workflow_manager:_minimal_ui_to_api_conversion:335 - ⚠️ Consider updating the workflow or the Hunyuan3D nodes to match versions
+2025-06-22 17:00:02.853 | ERROR    | mcp.comfyui_client:queue_prompt:443 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'invalid_prompt', 'message': 'Cannot execute because node PrimitiveNode does not exist.', 'details': "Node ID '#144'", 'extra_info': {}}, 'node_errors': {}}
+2025-06-22 17:00:02.869 | ERROR    | core.app_redesigned:_async_generate_textures:2718 - Failed to queue texture generation for Hy3D_00293_.glb
+2025-06-22 17:04:35.475 | ERROR    | mcp.comfyui_client:queue_prompt:447 - Timeout queuing prompt: 
+2025-06-22 17:04:35.498 | ERROR    | core.app_redesigned:_async_generate_textures:2718 - Failed to queue texture generation for Hy3D_00293_.glb
+2025-06-22 17:10:51.972 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:748 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 17:10:51.986 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:749 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 17:27:58.579 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:846 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 17:27:58.593 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:847 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 17:28:31.452 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:846 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 17:28:31.481 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:847 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 17:30:12.411 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:846 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 17:30:12.427 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:847 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 19:31:19.532 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:897 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 19:31:19.548 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:898 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 20:10:41.496 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 20:10:41.511 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 20:17:05.704 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 20:17:05.718 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 20:24:19.157 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 20:24:19.171 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 20:24:27.649 | ERROR    | core.app_redesigned:_download_textured_model:2981 - Error downloading textured model: [WinError 32] The process cannot access the file because it is being used by another process
+2025-06-22 20:43:23.319 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 20:43:23.333 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 20:46:42.342 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 20:46:42.378 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 21:01:05.051 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 21:01:05.065 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 21:03:48.256 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 21:03:48.270 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 21:06:59.470 | ERROR    | core.app_redesigned:_download_textured_model:2959 - Error downloading textured model: [WinError 32] The process cannot access the file because it is being used by another process
+2025-06-22 21:23:21.388 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 21:23:21.407 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 21:30:10.123 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 21:30:10.137 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 21:33:24.337 | ERROR    | core.app_redesigned:_refresh_textured_models:1535 - Error refreshing textured models: 'AppConfigAdapter' object has no attribute 'models_dir'
+2025-06-22 21:33:40.601 | ERROR    | core.app_redesigned:_download_textured_model:2993 - Failed to copy after 5 attempts. File may still be locked by ComfyUI.
+2025-06-22 21:33:40.816 | ERROR    | core.app_redesigned:_handle_texture_results:2925 - Error handling texture results: ResponsiveStudio3DGrid.add_model() got an unexpected keyword argument 'source_image'
+2025-06-22 21:33:40.854 | ERROR    | core.app_redesigned:_handle_texture_results:2927 - Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 2914, in _handle_texture_results
+    self._on_texture_generated(textured_model_path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 3039, in _on_texture_generated
+    self.texture_models_grid.add_model(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        model_path=str(model_path),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        source_image=source_image,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        thumbnail_path=source_image  # Use source image as thumbnail for now
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+TypeError: ResponsiveStudio3DGrid.add_model() got an unexpected keyword argument 'source_image'
+
+2025-06-22 21:37:38.617 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 21:37:38.632 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 21:40:50.781 | ERROR    | core.app_redesigned:_refresh_all_textured_models_grid:4859 - Error refreshing all textured models grid: ResponsiveStudio3DGrid.add_model() got an unexpected keyword argument 'source_image'
+2025-06-22 21:40:50.809 | ERROR    | core.app_redesigned:_refresh_all_textured_models_grid:4861 - Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 4848, in _refresh_all_textured_models_grid
+    self.all_textured_models_grid.add_model(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        model_path=str(model_path),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        source_image=source_image,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        thumbnail_path=source_image  # Use source image as thumbnail
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+TypeError: ResponsiveStudio3DGrid.add_model() got an unexpected keyword argument 'source_image'
+
+2025-06-22 21:43:33.681 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 21:43:33.696 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 21:46:51.466 | ERROR    | core.app_redesigned:_handle_texture_results:2939 - Error handling texture results: 'str' object has no attribute 'stem'
+2025-06-22 21:46:51.494 | ERROR    | core.app_redesigned:_handle_texture_results:2941 - Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 2928, in _handle_texture_results
+    self._on_texture_generated(textured_model_path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 3037, in _on_texture_generated
+    self.texture_models_grid.add_model(str(model_path))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\studio_3d_viewer_widget.py", line 202, in add_model
+    card = Studio3DPreviewCard(model_path, self.card_size, self.card_size, self.accent_color)
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\studio_3d_viewer_widget.py", line 76, in __init__
+    self.title_label = QLabel(self.model_path.stem)
+                              ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'stem'
+
+2025-06-22 21:47:03.373 | ERROR    | core.app_redesigned:_refresh_all_textured_models_grid:4875 - Error refreshing all textured models grid: 'str' object has no attribute 'stem'
+2025-06-22 21:47:03.401 | ERROR    | core.app_redesigned:_refresh_all_textured_models_grid:4877 - Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 4868, in _refresh_all_textured_models_grid
+    self.all_textured_models_grid.add_model(str(model_path))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\studio_3d_viewer_widget.py", line 202, in add_model
+    card = Studio3DPreviewCard(model_path, self.card_size, self.card_size, self.accent_color)
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\studio_3d_viewer_widget.py", line 76, in __init__
+    self.title_label = QLabel(self.model_path.stem)
+                              ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'stem'
+
+2025-06-22 21:49:28.403 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 21:49:28.417 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-22 22:25:08.785 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-22 22:25:08.800 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-23 00:16:42.507 | ERROR    | core.app_redesigned:_setup_redesigned_ui:444 - Failed to setup UI: name 'ResponsiveStudio3DGrid' is not defined
+2025-06-23 00:16:42.510 | ERROR    | core.app_redesigned:_setup_redesigned_ui:446 - UI setup traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 353, in _setup_redesigned_ui
+    content_splitter = self._create_main_content_area()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 506, in _create_main_content_area
+    center_panel = self._create_enhanced_center_panel()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 592, in _create_enhanced_center_panel
+    textured_models_tab = self._create_textured_models_tab()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 1144, in _create_textured_models_tab
+    self.all_textured_models_grid = ResponsiveStudio3DGrid(columns=3, card_size=300)
+                                    ^^^^^^^^^^^^^^^^^^^^^^
+NameError: name 'ResponsiveStudio3DGrid' is not defined
+
+2025-06-23 00:16:42.511 | ERROR    | __main__:<module>:87 - Unhandled exception: name 'ResponsiveStudio3DGrid' is not defined
+Traceback (most recent call last):
+
+> File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 83, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x000001FDF0B294E0>
+    │       └ <function run at 0x000001FDBE60C860>
+    └ <module 'asyncio' from 'C:\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x000001FDEFE6DD40>
+           │      └ <function Runner.run at 0x000001FDBE6BED40>
+           └ <asyncio.runners.Runner object at 0x000001FDEFDF6660>
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │                        └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+           │    └ None
+           └ <asyncio.runners.Runner object at 0x000001FDEFDF6660>
+  File "C:\Python313\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           │      └ <method 'result' of '_asyncio.Task' objects>
+           └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 48, in main
+    main_window = ComfyToC4DApp(config)
+                  │             └ <core.config_adapter.AppConfigAdapter object at 0x000001FDBEFF2120>
+                  └ <class 'core.app_redesigned.ComfyToC4DAppRedesigned'>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 210, in __init__
+    self._setup_redesigned_ui()
+    │    └ <function ComfyToC4DAppRedesigned._setup_redesigned_ui at 0x000001FDF0AB9F80>
+    └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1fdbfb086e0) at 0x000001FDEFC7A400>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 353, in _setup_redesigned_ui
+    content_splitter = self._create_main_content_area()
+                       │    └ <function ComfyToC4DAppRedesigned._create_main_content_area at 0x000001FDF0ABA0C0>
+                       └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1fdbfb086e0) at 0x000001FDEFC7A400>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 506, in _create_main_content_area
+    center_panel = self._create_enhanced_center_panel()
+                   │    └ <function ComfyToC4DAppRedesigned._create_enhanced_center_panel at 0x000001FDF0ABA200>
+                   └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1fdbfb086e0) at 0x000001FDEFC7A400>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 592, in _create_enhanced_center_panel
+    textured_models_tab = self._create_textured_models_tab()
+                          │    └ <function ComfyToC4DAppRedesigned._create_textured_models_tab at 0x000001FDF0ABA980>
+                          └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1fdbfb086e0) at 0x000001FDEFC7A400>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 1144, in _create_textured_models_tab
+    self.all_textured_models_grid = ResponsiveStudio3DGrid(columns=3, card_size=300)
+    │    └ <src.ui.studio_3d_viewer_widget.ResponsiveStudio3DGrid(0x1fdc03e73c0) at 0x000001FDF132B900>
+    └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1fdbfb086e0) at 0x000001FDEFC7A400>
+
+NameError: name 'ResponsiveStudio3DGrid' is not defined
+2025-06-23 00:31:44.040 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-23 00:31:44.069 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-23 00:39:33.799 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-23 00:39:33.814 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-23 00:43:38.320 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-23 00:43:38.337 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-23 01:21:48.288 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-23 01:21:48.308 | ERROR    | core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-23 10:07:49.353 | ERROR    | mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-23 11:43:46.352 | ERROR    | core.app_redesigned:_setup_redesigned_ui:445 - Failed to setup UI: 'ComfyToC4DAppRedesigned' object has no attribute '_create_textured_models_parameters'
+2025-06-23 11:43:46.354 | ERROR    | core.app_redesigned:_setup_redesigned_ui:447 - UI setup traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 354, in _setup_redesigned_ui
+    content_splitter = self._create_main_content_area()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 511, in _create_main_content_area
+    right_panel = self._create_enhanced_right_panel()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 621, in _create_enhanced_right_panel
+    textured_models_params = self._create_textured_models_parameters()
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ComfyToC4DAppRedesigned' object has no attribute '_create_textured_models_parameters'. Did you mean: '_create_texture_parameters'?
+
+2025-06-23 11:43:46.355 | ERROR    | __main__:<module>:87 - Unhandled exception: 'ComfyToC4DAppRedesigned' object has no attribute '_create_textured_models_parameters'
+Traceback (most recent call last):
+
+> File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 83, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x000001FDB79E8E00>
+    │       └ <function run at 0x000001FD8547C860>
+    └ <module 'asyncio' from 'C:\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x000001FDB6D72D40>
+           │      └ <function Runner.run at 0x000001FD8552ED40>
+           └ <asyncio.runners.Runner object at 0x000001FDB6CF78C0>
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │                        └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+           │    └ None
+           └ <asyncio.runners.Runner object at 0x000001FDB6CF78C0>
+  File "C:\Python313\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           │      └ <method 'result' of '_asyncio.Task' objects>
+           └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 48, in main
+    main_window = ComfyToC4DApp(config)
+                  │             └ <core.config_adapter.AppConfigAdapter object at 0x000001FD86682120>
+                  └ <class 'core.app_redesigned.ComfyToC4DAppRedesigned'>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 211, in __init__
+    self._setup_redesigned_ui()
+    │    └ <function ComfyToC4DAppRedesigned._setup_redesigned_ui at 0x000001FDB7981B20>
+    └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1fd86b9e3a0) at 0x000001FDB7A82F00>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 354, in _setup_redesigned_ui
+    content_splitter = self._create_main_content_area()
+                       │    └ <function ComfyToC4DAppRedesigned._create_main_content_area at 0x000001FDB7981C60>
+                       └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1fd86b9e3a0) at 0x000001FDB7A82F00>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 511, in _create_main_content_area
+    right_panel = self._create_enhanced_right_panel()
+                  │    └ <function ComfyToC4DAppRedesigned._create_enhanced_right_panel at 0x000001FDB7981E40>
+                  └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1fd86b9e3a0) at 0x000001FDB7A82F00>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 621, in _create_enhanced_right_panel
+    textured_models_params = self._create_textured_models_parameters()
+                             └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1fd86b9e3a0) at 0x000001FDB7A82F00>
+
+AttributeError: 'ComfyToC4DAppRedesigned' object has no attribute '_create_textured_models_parameters'. Did you mean: '_create_texture_parameters'?
+2025-06-23 11:43:53.454 | ERROR    | core.app_redesigned:_setup_redesigned_ui:445 - Failed to setup UI: 'ComfyToC4DAppRedesigned' object has no attribute '_create_textured_models_parameters'
+2025-06-23 11:43:53.456 | ERROR    | core.app_redesigned:_setup_redesigned_ui:447 - UI setup traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 354, in _setup_redesigned_ui
+    content_splitter = self._create_main_content_area()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 511, in _create_main_content_area
+    right_panel = self._create_enhanced_right_panel()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 621, in _create_enhanced_right_panel
+    textured_models_params = self._create_textured_models_parameters()
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ComfyToC4DAppRedesigned' object has no attribute '_create_textured_models_parameters'. Did you mean: '_create_texture_parameters'?
+
+2025-06-23 11:43:53.457 | ERROR    | __main__:<module>:87 - Unhandled exception: 'ComfyToC4DAppRedesigned' object has no attribute '_create_textured_models_parameters'
+Traceback (most recent call last):
+
+> File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 83, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x000002098A0F8CC0>
+    │       └ <function run at 0x00000209D79DC860>
+    └ <module 'asyncio' from 'C:\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x00000209893EED40>
+           │      └ <function Runner.run at 0x00000209D7A8ED40>
+           └ <asyncio.runners.Runner object at 0x0000020989397E00>
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │                        └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+           │    └ None
+           └ <asyncio.runners.Runner object at 0x0000020989397E00>
+  File "C:\Python313\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           │      └ <method 'result' of '_asyncio.Task' objects>
+           └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 48, in main
+    main_window = ComfyToC4DApp(config)
+                  │             └ <core.config_adapter.AppConfigAdapter object at 0x00000209D83D2120>
+                  └ <class 'core.app_redesigned.ComfyToC4DAppRedesigned'>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 211, in __init__
+    self._setup_redesigned_ui()
+    │    └ <function ComfyToC4DAppRedesigned._setup_redesigned_ui at 0x000002098A0899E0>
+    └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x2098814f6b0) at 0x0000020989352440>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 354, in _setup_redesigned_ui
+    content_splitter = self._create_main_content_area()
+                       │    └ <function ComfyToC4DAppRedesigned._create_main_content_area at 0x000002098A089B20>
+                       └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x2098814f6b0) at 0x0000020989352440>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 511, in _create_main_content_area
+    right_panel = self._create_enhanced_right_panel()
+                  │    └ <function ComfyToC4DAppRedesigned._create_enhanced_right_panel at 0x000002098A089D00>
+                  └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x2098814f6b0) at 0x0000020989352440>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 621, in _create_enhanced_right_panel
+    textured_models_params = self._create_textured_models_parameters()
+                             └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x2098814f6b0) at 0x0000020989352440>
+
+AttributeError: 'ComfyToC4DAppRedesigned' object has no attribute '_create_textured_models_parameters'. Did you mean: '_create_texture_parameters'?
+2025-06-23 11:45:15.080 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-23 11:45:15.098 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-23 12:50:51.385 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-23 12:56:36.420 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-23 12:56:36.440 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-23 13:00:57.439 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-23 13:13:07.929 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-23 13:14:03.263 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-23 13:19:02.380 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:104 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-23 13:19:24.441 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-23 13:19:24.467 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-23 14:19:12.115 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-23 14:28:23.421 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:104 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-23 14:30:16.142 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:104 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-23 14:30:27.181 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-23 14:30:27.198 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-23 15:09:02.959 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:104 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-23 15:09:16.439 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-23 15:09:16.456 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-23 15:58:07.733 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-23 15:58:34.200 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-23 15:58:34.237 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-23 16:07:43.016 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-23 18:33:19.830 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:104 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-23 18:38:59.342 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:104 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-23 18:40:57.167 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:104 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-23 19:56:29.900 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:104 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-23 20:08:28.732 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:104 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-23 20:17:48.655 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:104 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-23 20:18:54.599 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-23 20:24:47.811 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:104 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-23 20:58:30.921 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:104 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-23 23:24:43.799 | ERROR    | src.ui.studio_3d_config_dialog:__init__:166 - Studio3DConfigDialog: Error during initialization: cannot access local variable 'Path' where it is not associated with a value
+2025-06-23 23:24:43.844 | ERROR    | src.ui.studio_3d_config_dialog:__init__:168 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\studio_3d_config_dialog.py", line 147, in __init__
+    self.settings_file = Path("viewer/studio_viewer_settings.json")
+                         ^^^^
+UnboundLocalError: cannot access local variable 'Path' where it is not associated with a value
+
+2025-06-23 23:24:43.862 | ERROR    | core.app_redesigned:_show_3d_viewer_config_dialog:3643 - Failed to open 3D viewer configuration dialog: cannot access local variable 'Path' where it is not associated with a value
+2025-06-23 23:24:43.881 | ERROR    | core.app_redesigned:_show_3d_viewer_config_dialog:3644 - Full traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 3630, in _show_3d_viewer_config_dialog
+    self._3d_config_dialog = Studio3DConfigDialog(self, selected_model_path)
+                             ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\studio_3d_config_dialog.py", line 147, in __init__
+    self.settings_file = Path("viewer/studio_viewer_settings.json")
+                         ^^^^
+UnboundLocalError: cannot access local variable 'Path' where it is not associated with a value
+
+2025-06-24 00:02:26.449 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:02:44.159 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:02:44.655 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:02:47.721 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:02:50.287 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:06:57.152 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:09:29.776 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:18:58.602 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:19:00.867 | ERROR    | core.app_redesigned:_show_3d_viewer_config_dialog:3667 - Failed to open 3D viewer configuration dialog: name 'QScrollArea' is not defined
+2025-06-24 00:19:00.877 | ERROR    | core.app_redesigned:_show_3d_viewer_config_dialog:3668 - Full traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 3661, in _show_3d_viewer_config_dialog
+    dialog = Simple3DConfigDialog(self, selected_model_path)
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\simple_3d_config_dialog.py", line 41, in __init__
+    self.setup_ui()
+    ~~~~~~~~~~~~~^^
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\simple_3d_config_dialog.py", line 62, in setup_ui
+    controls_widget = self._create_controls_widget()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\simple_3d_config_dialog.py", line 87, in _create_controls_widget
+    scroll_area = QScrollArea()
+                  ^^^^^^^^^^^
+NameError: name 'QScrollArea' is not defined
+
+2025-06-24 00:19:22.379 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:19:24.390 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:19:24.810 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:19:26.540 | ERROR    | core.app_redesigned:_show_3d_viewer_config_dialog:3667 - Failed to open 3D viewer configuration dialog: name 'QScrollArea' is not defined
+2025-06-24 00:19:26.550 | ERROR    | core.app_redesigned:_show_3d_viewer_config_dialog:3668 - Full traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 3661, in _show_3d_viewer_config_dialog
+    dialog = Simple3DConfigDialog(self, selected_model_path)
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\simple_3d_config_dialog.py", line 41, in __init__
+    self.setup_ui()
+    ~~~~~~~~~~~~~^^
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\simple_3d_config_dialog.py", line 62, in setup_ui
+    controls_widget = self._create_controls_widget()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\simple_3d_config_dialog.py", line 87, in _create_controls_widget
+    scroll_area = QScrollArea()
+                  ^^^^^^^^^^^
+NameError: name 'QScrollArea' is not defined
+
+2025-06-24 00:19:42.120 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:19:44.006 | ERROR    | core.app_redesigned:_show_3d_viewer_config_dialog:3667 - Failed to open 3D viewer configuration dialog: type object 'PySide6.QtCore.Qt' has no attribute 'ScrollBarNever'
+2025-06-24 00:19:44.017 | ERROR    | core.app_redesigned:_show_3d_viewer_config_dialog:3668 - Full traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 3661, in _show_3d_viewer_config_dialog
+    dialog = Simple3DConfigDialog(self, selected_model_path)
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\simple_3d_config_dialog.py", line 41, in __init__
+    self.setup_ui()
+    ~~~~~~~~~~~~~^^
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\simple_3d_config_dialog.py", line 62, in setup_ui
+    controls_widget = self._create_controls_widget()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\ui\simple_3d_config_dialog.py", line 91, in _create_controls_widget
+    scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarNever)
+                                             ^^^^^^^^^^^^^^^^^
+AttributeError: type object 'PySide6.QtCore.Qt' has no attribute 'ScrollBarNever'
+
+2025-06-24 00:20:51.504 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:31:35.071 | ERROR    | core.app_redesigned:_update_grids_accent_color:5956 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 00:31:48.104 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:31:49.980 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:31:51.608 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:31:52.688 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:31:53.176 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:31:53.772 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:31:54.361 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:31:55.028 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:31:55.418 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:31:55.967 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:31:56.439 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:33:58.294 | ERROR    | core.app_redesigned:_update_grids_accent_color:5956 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 00:34:15.661 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:34:16.328 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:53:04.742 | ERROR    | core.app_redesigned:_update_grids_accent_color:5963 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 00:53:32.458 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 00:54:36.049 | ERROR    | src.mcp.comfyui_client:queue_prompt:443 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'prompt_outputs_failed_validation', 'message': 'Prompt outputs failed validation', 'details': '', 'extra_info': {}}, 'node_errors': {'54': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name3: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name3', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name2: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name2', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name4: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name4', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name1: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name1', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'QuadrupleCLIPLoader'}, '76': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "unet_name: '' not in ['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors']", 'extra_info': {'input_name': 'unet_name', 'input_config': [['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'UNETLoader'}}}
+2025-06-24 00:55:35.110 | ERROR    | src.mcp.comfyui_client:queue_prompt:443 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'prompt_outputs_failed_validation', 'message': 'Prompt outputs failed validation', 'details': '', 'extra_info': {}}, 'node_errors': {'54': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name3: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name3', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name2: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name2', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name4: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name4', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name1: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name1', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'QuadrupleCLIPLoader'}, '76': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "unet_name: '' not in ['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors']", 'extra_info': {'input_name': 'unet_name', 'input_config': [['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'UNETLoader'}}}
+2025-06-24 01:07:44.122 | ERROR    | core.app_redesigned:_update_grids_accent_color:5963 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 01:07:53.743 | ERROR    | src.mcp.comfyui_client:queue_prompt:443 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'prompt_outputs_failed_validation', 'message': 'Prompt outputs failed validation', 'details': '', 'extra_info': {}}, 'node_errors': {'54': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name3: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name3', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name2: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name2', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name4: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name4', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name1: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name1', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'QuadrupleCLIPLoader'}, '76': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "unet_name: '' not in ['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors']", 'extra_info': {'input_name': 'unet_name', 'input_config': [['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'UNETLoader'}}}
+2025-06-24 01:08:31.195 | ERROR    | core.app_redesigned:_update_grids_accent_color:5963 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 01:10:58.727 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:4850 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-24 01:11:56.681 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 01:12:38.372 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-24 01:12:38.401 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-24 10:27:00.792 | ERROR    | core.app_redesigned:_update_grids_accent_color:6044 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 10:27:17.423 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 10:27:20.014 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 10:27:21.520 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 10:27:24.710 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 10:27:36.959 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 10:27:39.154 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 10:27:40.562 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 10:28:26.663 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 10:28:28.117 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 10:34:36.998 | ERROR    | core.app_redesigned:_update_grids_accent_color:6164 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 10:34:44.572 | ERROR    | core.app_redesigned:_on_unified_selection_changed:252 - Error in _on_unified_selection_changed: 'UnifiedObjectSelectionWidget' object has no attribute 'add_image'
+2025-06-24 10:34:44.598 | ERROR    | core.app_redesigned:_on_unified_selection_changed:254 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 246, in _on_unified_selection_changed
+    self.unified_object_selector.add_image(path_obj)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'UnifiedObjectSelectionWidget' object has no attribute 'add_image'
+
+2025-06-24 10:34:51.839 | ERROR    | core.app_redesigned:_on_unified_selection_changed:252 - Error in _on_unified_selection_changed: 'UnifiedObjectSelectionWidget' object has no attribute 'select_model'
+2025-06-24 10:34:51.852 | ERROR    | core.app_redesigned:_on_unified_selection_changed:254 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 248, in _on_unified_selection_changed
+    self.unified_object_selector.select_model(path_obj)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'UnifiedObjectSelectionWidget' object has no attribute 'select_model'
+
+2025-06-24 10:49:57.441 | ERROR    | core.app_redesigned:_update_grids_accent_color:6185 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 11:34:08.496 | ERROR    | core.app_redesigned:_update_grids_accent_color:6185 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 11:38:57.402 | ERROR    | core.app_redesigned:_update_grids_accent_color:6189 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 11:50:14.671 | ERROR    | core.app_redesigned:_update_grids_accent_color:6189 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 11:54:29.108 | ERROR    | core.app_redesigned:_update_grids_accent_color:6202 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 11:58:43.389 | ERROR    | core.app_redesigned:_update_grids_accent_color:6202 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 12:11:20.282 | ERROR    | core.app_redesigned:_update_grids_accent_color:6287 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 12:28:09.814 | ERROR    | core.app_redesigned:_update_grids_accent_color:6303 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 12:34:35.039 | ERROR    | core.app_redesigned:_update_grids_accent_color:6311 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 12:35:23.629 | ERROR    | core.app_redesigned:_update_grids_accent_color:6311 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 12:45:14.106 | ERROR    | core.app_redesigned:_update_grids_accent_color:6355 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 12:49:40.019 | ERROR    | core.app_redesigned:_update_grids_accent_color:6355 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 12:54:54.348 | ERROR    | core.app_redesigned:_update_grids_accent_color:6359 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 13:27:42.175 | ERROR    | core.app_redesigned:_update_grids_accent_color:6359 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 13:37:43.061 | ERROR    | core.app_redesigned:_update_grids_accent_color:6359 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 13:38:56.606 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-24 13:50:57.618 | ERROR    | core.app_redesigned:_update_grids_accent_color:6399 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 13:51:32.258 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-24 13:51:42.381 | ERROR    | core.app_redesigned:_update_grids_accent_color:6399 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 13:51:49.967 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-24 13:51:55.818 | ERROR    | core.app_redesigned:_update_grids_accent_color:6399 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 13:56:50.378 | ERROR    | core.app_redesigned:_update_grids_accent_color:6490 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 13:56:56.922 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-24 13:57:06.955 | ERROR    | core.app_redesigned:_update_grids_accent_color:6490 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 13:57:27.005 | ERROR    | core.app_redesigned:_update_grids_accent_color:6490 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 13:59:39.000 | ERROR    | core.app_redesigned:_update_grids_accent_color:6496 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 13:59:47.348 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-24 13:59:59.110 | ERROR    | core.app_redesigned:_update_grids_accent_color:6496 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 14:05:10.825 | ERROR    | core.app_redesigned:_update_grids_accent_color:6496 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 14:05:49.640 | ERROR    | core.app_redesigned:_update_grids_accent_color:6496 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 14:06:09.158 | ERROR    | core.app_redesigned:_update_grids_accent_color:6496 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 14:06:48.979 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-24 14:06:59.986 | ERROR    | core.app_redesigned:_update_grids_accent_color:6496 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 14:08:53.970 | ERROR    | core.app_redesigned:_update_grids_accent_color:6496 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 14:15:58.748 | ERROR    | core.app_redesigned:_update_grids_accent_color:6496 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 15:06:30.922 | ERROR    | core.app_redesigned:_update_grids_accent_color:6496 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 15:06:35.656 | ERROR    | src.core.async_task_manager:cleanup_callback:122 - Background task failed: image_generation - object function can't be used in 'await' expression
+2025-06-24 15:10:11.701 | ERROR    | core.app_redesigned:_update_grids_accent_color:6496 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 15:11:39.747 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5376 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-24 15:14:02.880 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5376 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-24 15:14:07.046 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:927 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-24 15:14:07.078 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:928 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-24 15:18:34.387 | ERROR    | core.app_redesigned:_update_grids_accent_color:6512 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 15:20:12.701 | ERROR    | src.mcp.comfyui_client:queue_prompt:443 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'prompt_outputs_failed_validation', 'message': 'Prompt outputs failed validation', 'details': '', 'extra_info': {}}, 'node_errors': {'54': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name3: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name3', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name1: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name1', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name2: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name2', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name4: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name4', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'QuadrupleCLIPLoader'}, '76': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "unet_name: '' not in ['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors']", 'extra_info': {'input_name': 'unet_name', 'input_config': [['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'UNETLoader'}}}
+2025-06-24 15:21:00.631 | ERROR    | src.mcp.comfyui_client:queue_prompt:443 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'prompt_outputs_failed_validation', 'message': 'Prompt outputs failed validation', 'details': '', 'extra_info': {}}, 'node_errors': {'54': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name3: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name3', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name1: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name1', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name2: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name2', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name4: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name4', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'QuadrupleCLIPLoader'}, '76': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "unet_name: '' not in ['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors']", 'extra_info': {'input_name': 'unet_name', 'input_config': [['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'UNETLoader'}}}
+2025-06-24 15:25:39.280 | ERROR    | core.app_redesigned:_update_grids_accent_color:6512 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 15:25:48.163 | ERROR    | src.mcp.comfyui_client:queue_prompt:443 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'prompt_outputs_failed_validation', 'message': 'Prompt outputs failed validation', 'details': '', 'extra_info': {}}, 'node_errors': {'54': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name3: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name3', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name1: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name1', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name2: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name2', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name4: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name4', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'QuadrupleCLIPLoader'}, '76': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "unet_name: '' not in ['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors']", 'extra_info': {'input_name': 'unet_name', 'input_config': [['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'UNETLoader'}}}
+2025-06-24 15:32:38.738 | ERROR    | core.app_redesigned:_update_grids_accent_color:6512 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 15:33:12.240 | ERROR    | src.mcp.comfyui_client:queue_prompt:443 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'prompt_outputs_failed_validation', 'message': 'Prompt outputs failed validation', 'details': '', 'extra_info': {}}, 'node_errors': {'54': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name3: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name3', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name1: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name1', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name2: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name2', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name4: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name4', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'QuadrupleCLIPLoader'}, '76': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "unet_name: '' not in ['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors']", 'extra_info': {'input_name': 'unet_name', 'input_config': [['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'UNETLoader'}}}
+2025-06-24 15:34:20.624 | ERROR    | src.mcp.comfyui_client:queue_prompt:443 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'prompt_outputs_failed_validation', 'message': 'Prompt outputs failed validation', 'details': '', 'extra_info': {}}, 'node_errors': {'54': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name3: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name3', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name1: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name1', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name2: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name2', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name4: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name4', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'QuadrupleCLIPLoader'}, '76': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "unet_name: '' not in ['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors']", 'extra_info': {'input_name': 'unet_name', 'input_config': [['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'UNETLoader'}}}
+2025-06-24 15:35:44.555 | ERROR    | core.app_redesigned:_update_grids_accent_color:6512 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 15:35:55.521 | ERROR    | src.mcp.comfyui_client:queue_prompt:443 - Failed to queue prompt: HTTP 400 - {'error': {'type': 'prompt_outputs_failed_validation', 'message': 'Prompt outputs failed validation', 'details': '', 'extra_info': {}}, 'node_errors': {'54': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name3: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name3', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name1: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name1', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name2: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name2', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}, {'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "clip_name4: '' not in ['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors']", 'extra_info': {'input_name': 'clip_name4', 'input_config': [['clip_g_hidream.safetensors', 'clip_l.safetensors', 'clip_l_hidream.safetensors', 'llama_3.1_8b_instruct_fp8_scaled.safetensors', 'llava_llama3_fp8_scaled.safetensors', 'oldt5_xxl_fp8_e4m3fn_scaled.safetensors', 't5xxl_fp16.safetensors', 't5xxl_fp8_e4m3fn.safetensors', 't5xxl_fp8_e4m3fn_scaled.safetensors', 'umt5_xxl_fp8_e4m3fn_scaled.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'QuadrupleCLIPLoader'}, '76': {'errors': [{'type': 'value_not_in_list', 'message': 'Value not in list', 'details': "unet_name: '' not in ['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors']", 'extra_info': {'input_name': 'unet_name', 'input_config': [['Cosmos-1_0-Diffusion-7B-Video2World.safetensors', 'Flux_dev_v1.safetensors', 'hidream_i1_fast_fp8.safetensors', 'hunyuan_video_720_cfgdistill_bf16.safetensors', 'hunyuan_video_I2V_720_fixed_bf16.safetensors', 'hunyuan_video_image_to_video_720p_bf16.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fast.safetensors', 'hunyun3D-2\\hunyuan3d-dit-v2-0-fp16.safetensors', 'wan2.1_i2v_720p_14B_bf16.safetensors', 'wan2.1_t2v_1.3B_fp16.safetensors'], {}], 'received_value': ''}}], 'dependent_outputs': ['9'], 'class_type': 'UNETLoader'}}}
+2025-06-24 15:41:06.462 | ERROR    | core.app_redesigned:_update_grids_accent_color:6512 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 15:42:27.337 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:42:29.370 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:42:31.397 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:42:33.427 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:42:36.678 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:42:39.094 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:16.631 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:19.343 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:20.672 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:22.723 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:24.444 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:26.448 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:28.436 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:30.444 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:32.455 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:34.432 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:36.456 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:38.448 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:40.446 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:42.481 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:44.522 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:46.451 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:48.443 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:50.450 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:43:52.431 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-24 15:45:09.728 | ERROR    | core.app_redesigned:_update_grids_accent_color:6512 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 15:47:30.870 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5392 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-24 15:49:37.572 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5392 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-24 15:49:39.936 | ERROR    | src.core.workflow_manager:inject_3d_model_path:2598 - Source model file not found: 3D_0001.glb
+2025-06-24 15:49:41.707 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:937 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-24 15:49:41.745 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:938 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-24 15:54:29.607 | ERROR    | core.app_redesigned:_async_check_texture_workflows:3267 - Error checking texture workflows: dictionary changed size during iteration
+2025-06-24 15:54:29.688 | ERROR    | core.app_redesigned:_async_check_texture_workflows:3269 - Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 3226, in _async_check_texture_workflows
+    for prompt_id, workflow_info in self._texture_workflows.items():
+                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+RuntimeError: dictionary changed size during iteration
+
+2025-06-24 15:55:56.204 | ERROR    | src.core.workflow_manager:inject_3d_model_path:2598 - Source model file not found: 3D_0001.glb
+2025-06-24 15:55:59.290 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:937 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-24 15:55:59.357 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:938 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-24 15:59:23.441 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-24 15:59:47.714 | ERROR    | core.app_redesigned:_async_check_texture_workflows:3267 - Error checking texture workflows: dictionary changed size during iteration
+2025-06-24 15:59:47.815 | ERROR    | core.app_redesigned:_async_check_texture_workflows:3269 - Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 3226, in _async_check_texture_workflows
+    for prompt_id, workflow_info in self._texture_workflows.items():
+                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+RuntimeError: dictionary changed size during iteration
+
+2025-06-24 16:00:15.290 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop

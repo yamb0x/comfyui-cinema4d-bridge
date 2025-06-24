@@ -59,9 +59,10 @@ class Studio3DPreviewCard(QFrame):
         self.is_selected = False
         self.accent_color = accent_color
         
-        # Set fixed size
-        self.setFixedSize(width, height)
-        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        
+        # Set minimum size but allow expansion to fill width
+        self.setMinimumSize(width, height)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         
         # Basic styling
         self.setFrameStyle(QFrame.Box)
@@ -71,6 +72,8 @@ class Studio3DPreviewCard(QFrame):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(5)
+        
+        # Removed preset sphere - no longer needed
         
         # Model info
         self.title_label = QLabel(self.model_path.stem)
@@ -87,11 +90,11 @@ class Studio3DPreviewCard(QFrame):
         layout.addWidget(self.title_label)
         
         # Embed ThreeJS3DViewer instead of placeholder
-        # Calculate viewer size (account for margins and title)
-        viewer_width = width - 20  # 10px margins on each side
-        viewer_height = height - 60  # 10px top/bottom margins + 30px title + 10px spacing
+        # Use dynamic sizing - viewer will expand to fill available space
+        # Set minimum height but allow width to expand
+        min_viewer_height = height - 60  # 10px top/bottom margins + 30px title + 10px spacing
         
-        self.viewer = ThreeJS3DViewer(self, viewer_width, viewer_height)
+        self.viewer = ThreeJS3DViewer(self, width=None, height=min_viewer_height, responsive=True)
         layout.addWidget(self.viewer)
         
         # Load the model if it exists
@@ -138,6 +141,7 @@ class Studio3DPreviewCard(QFrame):
         if self.is_selected:
             self.style().unpolish(self)
             self.style().polish(self)
+    
 
 
 class ResponsiveStudio3DGrid(QScrollArea):
@@ -184,13 +188,6 @@ class ResponsiveStudio3DGrid(QScrollArea):
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
         
-        # Info label
-        self.info_label = QLabel("No 3D models loaded")
-        self.info_label.setAlignment(Qt.AlignCenter)
-        self.info_label.setStyleSheet("color: #888; font-size: 12px; padding: 10px; background-color: transparent;")
-        self.info_label.setMaximumHeight(40)
-        layout.addWidget(self.info_label)
-        
         # Grid layout
         self.grid_layout = QGridLayout()
         self.grid_layout.setSpacing(15)
@@ -208,19 +205,16 @@ class ResponsiveStudio3DGrid(QScrollArea):
         
         self.models.append(model_path)
         
-        # Create preview card with accent color
+        # Create preview card with accent color (full width)
         card = Studio3DPreviewCard(model_path, self.card_size, self.card_size, self.accent_color)
         card.clicked.connect(self.model_clicked.emit)
         card.selected.connect(self.model_selected.emit)
         
-        # Add to grid
-        row = len(self.cards) // self.columns
-        col = len(self.cards) % self.columns
-        
-        self.grid_layout.addWidget(card, row, col)
+        # Add to grid - use full width by spanning all columns
+        row = len(self.cards)
+        self.grid_layout.addWidget(card, row, 0, 1, self.columns)  # Span all columns for full width
         self.cards.append(card)
         
-        self._update_info_label()
         self.models_changed.emit(len(self.models))
         
         logger.info(f"Added 3D model to grid: {model_path.name}")
@@ -240,7 +234,6 @@ class ResponsiveStudio3DGrid(QScrollArea):
         
         self.models.remove(model_path)
         self._refresh_grid_layout()
-        self._update_info_label()
         self.models_changed.emit(len(self.models))
     
     def clear_models(self):
@@ -251,7 +244,6 @@ class ResponsiveStudio3DGrid(QScrollArea):
         
         self.cards.clear()
         self.models.clear()
-        self._update_info_label()
         self.models_changed.emit(0)
     
     def get_selected_models(self) -> List[Path]:
@@ -261,22 +253,9 @@ class ResponsiveStudio3DGrid(QScrollArea):
     def _refresh_grid_layout(self):
         """Refresh the grid layout after model removal"""
         for i, card in enumerate(self.cards):
-            row = i // self.columns
-            col = i % self.columns
-            self.grid_layout.addWidget(card, row, col)
+            row = i
+            self.grid_layout.addWidget(card, row, 0, 1, self.columns)  # Span all columns for full width
     
-    def _update_info_label(self):
-        """Update the info label"""
-        if not self.models:
-            self.info_label.setText("No 3D models loaded")
-            self.info_label.show()
-        else:
-            selected_count = len(self.get_selected_models())
-            if selected_count > 0:
-                self.info_label.setText(f"{len(self.models)} models • {selected_count} selected")
-            else:
-                self.info_label.setText(f"{len(self.models)} 3D models loaded")
-            self.info_label.show()
     
     def set_accent_color(self, color: str):
         """Set the accent color for all cards"""

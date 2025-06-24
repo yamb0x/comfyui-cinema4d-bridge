@@ -216,16 +216,16 @@ def get_complete_terminal_theme() -> str:
     QWidget#left_panel {
         background-color: #0a0a0a;
         border-right: 1px solid #262626;
-        min-width: 350px;
-        max-width: 450px;
+        min-width: 250px;
+        max-width: 1200px;
     }
     
     /* Right Panel */
     QWidget#right_panel {
         background-color: #0a0a0a;
         border-left: 1px solid #262626;
-        min-width: 300px;
-        max-width: 400px;
+        min-width: 250px;
+        max-width: 1200px;
     }
     
     /* Center Content Area */

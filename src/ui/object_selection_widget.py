@@ -10,7 +10,7 @@ from enum import Enum
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QListWidgetItem,
-    QLabel, QPushButton, QFrame
+    QLabel, QPushButton, QFrame, QSizePolicy
 )
 from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QFont
@@ -76,6 +76,7 @@ class UnifiedObjectSelectionWidget(QWidget):
     object_selected = Signal(str, bool)      # object_id, selected
     workflow_hint_changed = Signal(str)      # hint text
     all_objects_cleared = Signal()           # all objects cleared
+    selection_count_changed = Signal(int)    # total count of selected objects
     
     def __init__(self):
         super().__init__()
@@ -89,6 +90,9 @@ class UnifiedObjectSelectionWidget(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(8, 8, 8, 8)
         layout.setSpacing(8)
+        
+        # Set size policy for the main widget
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         
         # Header
         header_layout = QHBoxLayout()
@@ -109,10 +113,10 @@ class UnifiedObjectSelectionWidget(QWidget):
         
         layout.addLayout(header_layout)
         
-        # Objects list
+        # Objects list - remove fixed height constraints for dynamic sizing
         self.objects_list = QListWidget()
-        self.objects_list.setMaximumHeight(200)
-        self.objects_list.setMinimumHeight(80)
+        # Height will be managed by parent container dynamically
+        self.objects_list.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.objects_list.setStyleSheet("""
             QListWidget {
                 background-color: #171717;
@@ -120,12 +124,13 @@ class UnifiedObjectSelectionWidget(QWidget):
                 border-radius: 3px;
                 color: #fafafa;
                 padding: 4px;
-                width: 220px;
+                min-width: 200px;
             }
             QListWidget::item {
-                padding: 6px;
+                padding: 8px;
                 border-bottom: 1px solid #262626;
-                font-size: 11px;
+                font-size: 12px;
+                min-height: 20px;
             }
             QListWidget::item:selected {
                 background-color: #22c55e;
@@ -151,17 +156,7 @@ class UnifiedObjectSelectionWidget(QWidget):
         """)
         layout.addWidget(self.hint_label)
         
-        # Action buttons
-        buttons_layout = QHBoxLayout()
-        
-        self.clear_btn = QPushButton("Clear All")
-        self.clear_btn.setObjectName("secondary_btn")
-        self.clear_btn.clicked.connect(self.clear_all_objects)
-        buttons_layout.addWidget(self.clear_btn)
-        
-        buttons_layout.addStretch()
-        
-        layout.addLayout(buttons_layout)
+        # Action buttons removed - CLEAR ALL button removed as requested
         
     def add_image_to_pool(self, image_path: Path) -> str:
         """Add an image to the object pool (available for selection)"""
@@ -241,7 +236,9 @@ class UnifiedObjectSelectionWidget(QWidget):
                 selected=True
             )
             logger.debug(f"Created new workflow object for model: {model_path.name}")
-            
+        
+        # Check for automatic texture detection
+        self._check_for_textures(object_id)
         self._update_display()
         
     def add_standalone_model(self, model_path: Path) -> str:
@@ -250,7 +247,6 @@ class UnifiedObjectSelectionWidget(QWidget):
         for obj_id, obj in self.objects.items():
             if obj.model_3d == model_path:
                 obj.selected = True
-                logger.debug(f"Model already exists, marked as selected: {model_path.name}")
                 self._update_display()
                 return obj_id
         
@@ -265,10 +261,105 @@ class UnifiedObjectSelectionWidget(QWidget):
             state=ObjectState.MODEL_3D,
             selected=True
         )
-        logger.debug(f"Added standalone 3D model: {model_path.name}")
         self._update_display()
+        logger.debug(f"Added standalone 3D model: {model_path.name}")
         
         return object_id
+    
+    def _check_for_textures(self, object_id: str):
+        """
+        Intelligent texture detection - automatically detects if textures have been generated
+        for a 3D model and updates the workflow state accordingly
+        """
+        if object_id not in self.objects:
+            return
+            
+        obj = self.objects[object_id]
+        if not obj.model_3d or not obj.model_3d.exists():
+            return
+            
+        # Strategy 1: Look for texture files with similar naming
+        model_dir = obj.model_3d.parent
+        model_stem = obj.model_3d.stem
+        
+        # Common texture file patterns
+        texture_patterns = [
+            f"{model_stem}_texture.*",
+            f"{model_stem}_diffuse.*", 
+            f"{model_stem}_albedo.*",
+            f"{model_stem}_base.*",
+            f"texture_{model_stem}.*",
+            f"textured_{model_stem}.*"
+        ]
+        
+        found_textures = []
+        for pattern in texture_patterns:
+            for texture_file in model_dir.glob(pattern):
+                if texture_file.suffix.lower() in ['.png', '.jpg', '.jpeg', '.exr', '.hdr']:
+                    found_textures.append(texture_file)
+        
+        # Strategy 2: Look in common texture directories
+        texture_dirs = [
+            model_dir / "textures",
+            model_dir / "materials", 
+            model_dir.parent / "textures",
+            model_dir.parent / "textured_models"
+        ]
+        
+        for tex_dir in texture_dirs:
+            if tex_dir.exists():
+                for texture_file in tex_dir.glob(f"*{model_stem}*"):
+                    if texture_file.suffix.lower() in ['.png', '.jpg', '.jpeg', '.exr', '.hdr']:
+                        found_textures.append(texture_file)
+        
+        # Strategy 3: Look for textured model variants
+        textured_model_patterns = [
+            f"textured_{model_stem}.*",
+            f"{model_stem}_textured.*",
+            f"{model_stem}_with_texture.*"
+        ]
+        
+        for pattern in textured_model_patterns:
+            for textured_model in model_dir.glob(pattern):
+                if textured_model.suffix.lower() in ['.glb', '.gltf', '.obj', '.fbx']:
+                    # Found a textured version of the model
+                    obj.model_3d = textured_model  # Update to textured version
+                    obj.state = ObjectState.TEXTURED
+                    logger.debug(f"🎨 Auto-detected textured model: {textured_model.name}")
+                    return
+        
+        # Update texture files if found
+        if found_textures:
+            obj.texture_files = found_textures
+            if obj.state == ObjectState.MODEL_3D:  # Don't downgrade from TEXTURED
+                obj.state = ObjectState.TEXTURED
+                logger.debug(f"🎨 Auto-detected textures for {obj.display_name}: {len(found_textures)} files")
+    
+    def auto_detect_workflow_evolution(self):
+        """
+        Periodically scan for workflow evolution (new models, textures)
+        Call this method when files might have been generated
+        """
+        for object_id in list(self.objects.keys()):
+            self._check_for_textures(object_id)
+        
+        self._update_display()
+        logger.debug("🔄 Completed automatic workflow evolution scan")
+    
+    def clear_all_selections(self):
+        """Clear all selected objects and reset the display"""
+        self.objects.clear()
+        self._update_display()
+        self.all_objects_cleared.emit()
+        logger.debug("🧹 Cleared all object selections")
+    
+    def get_selection_summary(self) -> Dict[str, int]:
+        """Get a summary of current selections by state"""
+        summary = {state.value: 0 for state in ObjectState}
+        for obj in self.objects.values():
+            if obj.selected:
+                summary[obj.state.value] += 1
+        return summary
     
     def remove_object(self, object_id: str):
         """Remove or deselect an object by its ID"""
@@ -344,12 +435,6 @@ class UnifiedObjectSelectionWidget(QWidget):
         count = len(selected_objects)
         self.count_label.setText(f"{count} object{'s' if count != 1 else ''}")
         
-        # Debug logging
-        logger.debug(f"_update_display called on {id(self)}: {count} selected objects out of {len(self.objects)} total")
-        for obj in selected_objects:
-            logger.debug(f"  - {obj.id}: {obj.display_name} (state: {obj.state})")
-        logger.debug(f"Widget visible: {self.isVisible()}, parent: {self.parent()}")
-        
         # Add objects to list
         for obj in selected_objects:
             item_text = f"{obj.state_icon} {obj.display_name}"
@@ -378,6 +463,9 @@ class UnifiedObjectSelectionWidget(QWidget):
         if self.parent() is not None:
             from PySide6.QtCore import QCoreApplication
             QCoreApplication.processEvents()
+        
+        # Emit selection count changed signal for dynamic sizing
+        self.selection_count_changed.emit(count)
         
     def _update_workflow_hint(self, selected_objects: List[WorkflowObject]):
         """Update the workflow hint based on current selection"""
