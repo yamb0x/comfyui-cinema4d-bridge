@@ -1,0 +1,221 @@
+{
+  "current_workflow": "hidream_i1_fast_02.json",
+  "parameters": {
+    "KSampler": {
+      "priority": 1,
+      "color": "#4CAF50",
+      "parameters": {
+        "seed": {
+          "ui_name": "Seed",
+          "type": "int",
+          "min": 0,
+          "max": 2147483647,
+          "default": 42,
+          "current_value": 1000,
+          "node_id": 3,
+          "node_type": "KSampler",
+          "param_name": "seed"
+        },
+        "steps": {
+          "ui_name": "Steps",
+          "type": "int",
+          "min": 1,
+          "max": 150,
+          "default": 20,
+          "current_value": 16,
+          "node_id": 3,
+          "node_type": "KSampler",
+          "param_name": "steps"
+        },
+        "cfg": {
+          "ui_name": "CFG Scale",
+          "type": "float",
+          "min": 1.0,
+          "max": 30.0,
+          "default": 7.0,
+          "current_value": 1,
+          "node_id": 3,
+          "node_type": "KSampler",
+          "param_name": "cfg"
+        },
+        "sampler_name": {
+          "ui_name": "Sampler",
+          "type": "choice",
+          "default": "dpmpp_2m",
+          "current_value": "lcm",
+          "node_id": 3,
+          "node_type": "KSampler",
+          "param_name": "sampler_name"
+        },
+        "scheduler": {
+          "ui_name": "Scheduler",
+          "type": "choice",
+          "default": "karras",
+          "current_value": "normal",
+          "node_id": 3,
+          "node_type": "KSampler",
+          "param_name": "scheduler"
+        },
+        "denoise": {
+          "ui_name": "Denoise",
+          "type": "float",
+          "min": 0.0,
+          "max": 1.0,
+          "default": 1.0,
+          "node_id": 3,
+          "node_type": "KSampler",
+          "param_name": "denoise"
+        }
+      },
+      "node_id": 3,
+      "display_name": "Sampling Settings"
+    },
+    "UNETLoader": {
+      "priority": 2,
+      "color": "#2196F3",
+      "parameters": {
+        "unet_name": {
+          "ui_name": "UNET Model",
+          "type": "choice",
+          "default": "hidream_i1_fast_fp8.safetensors",
+          "current_value": "hidream_i1_fast_fp8.safetensors",
+          "node_id": 76,
+          "node_type": "UNETLoader",
+          "param_name": "unet_name"
+        },
+        "weight_dtype": {
+          "ui_name": "Weight Data Type",
+          "type": "choice",
+          "default": "default",
+          "current_value": "default",
+          "node_id": 76,
+          "node_type": "UNETLoader",
+          "param_name": "weight_dtype"
+        }
+      },
+      "node_id": 76,
+      "display_name": "UNET Model"
+    },
+    "VAELoader": {
+      "priority": 4,
+      "color": "#FF9800",
+      "parameters": {
+        "vae_name": {
+          "ui_name": "VAE Model",
+          "type": "choice",
+          "default": "",
+          "current_value": "ae.safetensors",
+          "node_id": 55,
+          "node_type": "VAELoader",
+          "param_name": "vae_name"
+        }
+      },
+      "node_id": 55,
+      "display_name": "VAE Model"
+    },
+    "CLIPTextEncode": {
+      "priority": 5,
+      "color": "#00BCD4",
+      "parameters": {
+        "text": {
+          "ui_name": "Prompt",
+          "type": "text",
+          "default": "",
+          "current_value": "A lo-fi portrait image of a large gummy worm softly swirling on the ground, it has glittery details and the overall look is cinematic",
+          "node_id": 16,
+          "node_type": "CLIPTextEncode",
+          "param_name": "text"
+        }
+      },
+      "node_id": 40,
+      "display_name": "Text Prompts"
+    },
+    "EmptySD3LatentImage": {
+      "priority": 7,
+      "color": "#795548",
+      "parameters": {
+        "width": {
+          "ui_name": "Width",
+          "type": "int",
+          "min": 16,
+          "max": 2048,
+          "default": 1024,
+          "current_value": 1024,
+          "node_id": 53,
+          "node_type": "EmptySD3LatentImage",
+          "param_name": "width"
+        },
+        "height": {
+          "ui_name": "Height",
+          "type": "int",
+          "min": 16,
+          "max": 2048,
+          "default": 1024,
+          "current_value": 1024,
+          "node_id": 53,
+          "node_type": "EmptySD3LatentImage",
+          "param_name": "height"
+        },
+        "batch_size": {
+          "ui_name": "Batch Size",
+          "type": "int",
+          "min": 1,
+          "max": 64,
+          "default": 1,
+          "current_value": 1,
+          "node_id": 53,
+          "node_type": "EmptySD3LatentImage",
+          "param_name": "batch_size"
+        }
+      },
+      "node_id": 53,
+      "display_name": "SD3 Dimensions"
+    },
+    "QuadrupleCLIPLoader": {
+      "priority": 9,
+      "color": "#00BCD4",
+      "parameters": {
+        "clip_name1": {
+          "ui_name": "CLIP L Model",
+          "type": "choice",
+          "default": "clip_l_hidream.safetensors",
+          "current_value": "clip_l_hidream.safetensors",
+          "node_id": 54,
+          "node_type": "QuadrupleCLIPLoader",
+          "param_name": "clip_name1"
+        },
+        "clip_name2": {
+          "ui_name": "CLIP G Model",
+          "type": "choice",
+          "default": "clip_g_hidream.safetensors",
+          "current_value": "clip_g_hidream.safetensors",
+          "node_id": 54,
+          "node_type": "QuadrupleCLIPLoader",
+          "param_name": "clip_name2"
+        },
+        "clip_name3": {
+          "ui_name": "T5XXL Model",
+          "type": "choice",
+          "default": "t5xxl_fp8_e4m3fn_scaled.safetensors",
+          "current_value": "t5xxl_fp8_e4m3fn_scaled.safetensors",
+          "node_id": 54,
+          "node_type": "QuadrupleCLIPLoader",
+          "param_name": "clip_name3"
+        },
+        "clip_name4": {
+          "ui_name": "LLaMA Model",
+          "type": "choice",
+          "default": "llama_3.1_8b_instruct_fp8_scaled.safetensors",
+          "current_value": "llama_3.1_8b_instruct_fp8_scaled.safetensors",
+          "node_id": 54,
+          "node_type": "QuadrupleCLIPLoader",
+          "param_name": "clip_name4"
+        }
+      },
+      "node_id": 54,
+      "display_name": "CLIP Models"
+    }
+  },
+  "user_overrides": {},
+  "ticked_parameters": []
+}

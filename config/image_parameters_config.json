@@ -1,85 +1,78 @@
 {
   "selected_nodes": [
-    "FluxGuidance_2",
-    "LoraLoader_3",
-    "Note_4",
-    "CheckpointLoaderSimple_5",
-    "EmptySD3LatentImage_8",
-    "CLIPTextEncode_13",
-    "LoraLoader_7",
-    "CLIPTextEncode_12",
-    "Image Save_17",
-    "KSampler_10",
-    "LoraLoader_6"
+    "CLIPTextEncode_40",
+    "ModelSamplingSD3_70",
+    "VAELoader_55",
+    "UNETLoader_76",
+    "MarkdownNote_72",
+    "SaveImage_9",
+    "QuadrupleCLIPLoader_54",
+    "EmptySD3LatentImage_53",
+    "CLIPTextEncode_16",
+    "KSampler_3"
   ],
   "node_info": {
-    "FluxGuidance_2": {
-      "type": "FluxGuidance",
-      "id": "2",
-      "title": "FluxGuidance",
+    "CLIPTextEncode_40": {
+      "type": "CLIPTextEncode",
+      "id": "40",
+      "title": "Negative Prompt",
       "supported": true
     },
-    "LoraLoader_3": {
-      "type": "LoraLoader",
-      "id": "3",
-      "title": "LoraLoader",
-      "supported": true
+    "ModelSamplingSD3_70": {
+      "type": "ModelSamplingSD3",
+      "id": "70",
+      "title": "",
+      "supported": false
     },
-    "Note_4": {
-      "type": "Note",
-      "id": "4",
+    "VAELoader_55": {
+      "type": "VAELoader",
+      "id": "55",
       "title": "",
       "supported": true
     },
-    "CheckpointLoaderSimple_5": {
-      "type": "CheckpointLoaderSimple",
-      "id": "5",
-      "title": "CheckpointLoaderSimple",
-      "supported": true
+    "UNETLoader_76": {
+      "type": "UNETLoader",
+      "id": "76",
+      "title": "",
+      "supported": false
     },
-    "EmptySD3LatentImage_8": {
+    "MarkdownNote_72": {
+      "type": "MarkdownNote",
+      "id": "72",
+      "title": "Sampling Settings",
+      "supported": false
+    },
+    "SaveImage_9": {
+      "type": "SaveImage",
+      "id": "9",
+      "title": "",
+      "supported": false
+    },
+    "QuadrupleCLIPLoader_54": {
+      "type": "QuadrupleCLIPLoader",
+      "id": "54",
+      "title": "",
+      "supported": false
+    },
+    "EmptySD3LatentImage_53": {
       "type": "EmptySD3LatentImage",
-      "id": "8",
-      "title": "EmptySD3LatentImage",
+      "id": "53",
+      "title": "",
       "supported": true
     },
-    "CLIPTextEncode_13": {
+    "CLIPTextEncode_16": {
       "type": "CLIPTextEncode",
-      "id": "13",
-      "title": "CLIP Text Encode (Negative Prompt)",
+      "id": "16",
+      "title": "Positive Prompt",
       "supported": true
     },
-    "LoraLoader_7": {
-      "type": "LoraLoader",
-      "id": "7",
-      "title": "LoraLoader",
-      "supported": true
-    },
-    "CLIPTextEncode_12": {
-      "type": "CLIPTextEncode",
-      "id": "12",
-      "title": "CLIP Text Encode (Positive Prompt)",
-      "supported": true
-    },
-    "Image Save_17": {
-      "type": "Image Save",
-      "id": "17",
-      "title": "Image Save",
-      "supported": true
-    },
-    "KSampler_10": {
+    "KSampler_3": {
       "type": "KSampler",
-      "id": "10",
-      "title": "KSampler",
-      "supported": true
-    },
-    "LoraLoader_6": {
-      "type": "LoraLoader",
-      "id": "6",
-      "title": "LoraLoader",
+      "id": "3",
+      "title": "",
       "supported": true
     }
   },
-  "workflow_file": "image_generation/generate_sealife_images.json",
-  "workflow_path": "D:\\Yambo Studio Dropbox\\Admin\\_studio-dashboard-app-dev\\comfy-to-c4d\\workflows\\image_generation\\generate_sealife_images.json"
+  "workflow_file": "hidream_i1_fast_02.json",
+  "workflow_path": "D:\\Yambo Studio Dropbox\\Admin\\_studio-dashboard-app-dev\\comfy-to-c4d\\workflows\\image_generation\\hidream_i1_fast_02.json"
 }

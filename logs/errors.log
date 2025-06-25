@@ -8923,3 +8923,118 @@ RuntimeError: dictionary changed size during iteration
 RuntimeError: dictionary changed size during iteration
 
 2025-06-24 16:00:15.290 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-24 17:11:38.112 | ERROR    | core.app_redesigned:_update_grids_accent_color:6804 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 19:06:28.003 | ERROR    | core.app_redesigned:_update_grids_accent_color:6804 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 19:49:09.608 | ERROR    | core.app_redesigned:_update_grids_accent_color:6804 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 19:49:48.611 | ERROR    | core.app_redesigned:_validate_model_file:5355 - No vae models available for fallback
+2025-06-24 19:51:33.429 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5684 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-24 19:51:52.291 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5684 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-24 20:00:47.511 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5684 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-24 20:01:34.048 | ERROR    | src.core.workflow_manager:inject_3d_model_path:2598 - Source model file not found: 3D_0001.glb
+2025-06-24 20:01:35.889 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:937 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-24 20:01:35.930 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:938 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-24 20:02:48.105 | ERROR    | src.core.async_task_manager:cleanup_callback:122 - Background task failed: texture_workflow_check - 
+2025-06-24 20:03:08.551 | ERROR    | src.core.async_task_manager:cleanup_callback:122 - Background task failed: texture_workflow_check - 
+2025-06-24 20:03:18.054 | ERROR    | src.core.async_task_manager:cleanup_callback:122 - Background task failed: texture_workflow_check - 
+2025-06-24 20:07:25.621 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-24 20:07:46.829 | ERROR    | core.app_redesigned:_async_check_texture_workflows:3267 - Error checking texture workflows: dictionary changed size during iteration
+2025-06-24 20:07:46.899 | ERROR    | core.app_redesigned:_async_check_texture_workflows:3269 - Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 3226, in _async_check_texture_workflows
+    for prompt_id, workflow_info in self._texture_workflows.items():
+                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+RuntimeError: dictionary changed size during iteration
+
+2025-06-24 20:25:04.386 | ERROR    | core.app_redesigned:_update_grids_accent_color:6815 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 20:27:03.802 | ERROR    | core.app_redesigned:_validate_model_file:5366 - No vae models available for fallback
+2025-06-24 20:27:55.956 | ERROR    | core.app_redesigned:_validate_model_file:5366 - No vae models available for fallback
+2025-06-24 20:29:20.544 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5695 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-24 20:29:57.300 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5695 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-24 20:46:26.622 | ERROR    | core.app_redesigned:_update_grids_accent_color:6815 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 20:48:36.138 | ERROR    | src.core.workflow_manager:inject_3d_model_path:2598 - Source model file not found: Hy3D_00315_.glb
+2025-06-24 20:48:37.439 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:937 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-24 20:48:37.467 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:938 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-24 20:49:46.843 | ERROR    | src.core.async_task_manager:cleanup_callback:122 - Background task failed: texture_workflow_check - 
+2025-06-24 20:50:06.897 | ERROR    | src.core.async_task_manager:cleanup_callback:122 - Background task failed: texture_workflow_check - 
+2025-06-24 20:50:16.814 | ERROR    | src.core.async_task_manager:cleanup_callback:122 - Background task failed: texture_workflow_check - 
+2025-06-24 20:54:20.787 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-24 20:54:44.942 | ERROR    | core.app_redesigned:_async_check_texture_workflows:3279 - Error checking texture workflows: dictionary changed size during iteration
+2025-06-24 20:54:45.003 | ERROR    | core.app_redesigned:_async_check_texture_workflows:3281 - Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 3238, in _async_check_texture_workflows
+    for prompt_id, workflow_info in self._texture_workflows.items():
+                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+RuntimeError: dictionary changed size during iteration
+
+2025-06-24 21:04:39.761 | ERROR    | core.app_redesigned:_simulate_ai_response:2081 - NLP processing error: 'coroutine' object has no attribute 'operations'
+2025-06-24 21:05:09.335 | ERROR    | core.app_redesigned:_simulate_ai_response:2081 - NLP processing error: 'coroutine' object has no attribute 'operations'
+2025-06-24 21:12:04.486 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-24 21:12:05.571 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-24 22:15:09.908 | ERROR    | core.app_redesigned:_update_grids_accent_color:6857 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 22:34:12.767 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5702 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-24 22:36:07.308 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5702 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-24 22:36:28.219 | ERROR    | src.core.workflow_manager:inject_3d_model_path:2598 - Source model file not found: sks_nature_organic_o_2 (3)_3d.glb
+2025-06-24 22:36:29.964 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:937 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-24 22:36:30.005 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:938 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-24 22:40:10.859 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-24 22:40:33.198 | ERROR    | core.app_redesigned:_async_check_texture_workflows:3279 - Error checking texture workflows: dictionary changed size during iteration
+2025-06-24 22:40:33.287 | ERROR    | core.app_redesigned:_async_check_texture_workflows:3281 - Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 3238, in _async_check_texture_workflows
+    for prompt_id, workflow_info in self._texture_workflows.items():
+                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+RuntimeError: dictionary changed size during iteration
+
+2025-06-24 22:52:53.808 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 22:52:53.974 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-24 22:56:33.466 | ERROR    | src.core.workflow_manager:inject_3d_model_path:2598 - Source model file not found: sks_nature_organic_o_0 (3)_3d.glb
+2025-06-24 22:56:38.545 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:937 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-24 22:56:38.657 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:938 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-24 23:01:30.841 | ERROR    | core.app_redesigned:_async_check_texture_workflows:3279 - Error checking texture workflows: dictionary changed size during iteration
+2025-06-24 23:01:30.980 | ERROR    | core.app_redesigned:_async_check_texture_workflows:3281 - Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 3238, in _async_check_texture_workflows
+    for prompt_id, workflow_info in self._texture_workflows.items():
+                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+RuntimeError: dictionary changed size during iteration
+
+2025-06-24 23:25:33.483 | ERROR    | core.app_redesigned:_update_grids_accent_color:6857 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-24 23:25:51.520 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5702 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-24 23:38:43.226 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5702 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-24 23:38:48.337 | ERROR    | src.core.workflow_manager:inject_3d_model_path:2598 - Source model file not found: 3D_0.glb
+2025-06-24 23:38:51.267 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:937 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-24 23:38:51.331 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:938 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-24 23:42:51.578 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-24 23:43:18.560 | ERROR    | core.app_redesigned:_async_check_texture_workflows:3279 - Error checking texture workflows: dictionary changed size during iteration
+2025-06-24 23:43:18.658 | ERROR    | core.app_redesigned:_async_check_texture_workflows:3281 - Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 3238, in _async_check_texture_workflows
+    for prompt_id, workflow_info in self._texture_workflows.items():
+                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+RuntimeError: dictionary changed size during iteration
+
+2025-06-24 23:44:48.134 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-24 23:53:46.562 | ERROR    | core.app_redesigned:_update_grids_accent_color:6857 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 00:03:10.836 | ERROR    | core.app_redesigned:_update_grids_accent_color:6857 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 00:03:23.734 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5702 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-25 00:03:55.872 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5702 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-25 00:05:19.124 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 00:14:50.331 | ERROR    | src.core.workflow_manager:inject_3d_model_path:2598 - Source model file not found: 3D_1.glb
+2025-06-25 00:14:52.485 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:937 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-25 00:14:52.538 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:938 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-25 00:15:56.388 | ERROR    | src.core.async_task_manager:cleanup_callback:122 - Background task failed: texture_workflow_check - 
+2025-06-25 00:16:03.340 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5702 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-25 00:16:16.463 | ERROR    | src.core.async_task_manager:cleanup_callback:122 - Background task failed: texture_workflow_check - 
+2025-06-25 00:16:24.058 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: 
+2025-06-25 00:16:24.125 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: 
+2025-06-25 00:16:28.350 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-25 00:16:38.341 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-25 00:16:48.364 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-25 00:16:58.358 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: All connection attempts failed
+2025-06-25 00:17:33.032 | ERROR    | src.core.workflow_manager:inject_3d_model_path:2598 - Source model file not found: 3D_1.glb
+2025-06-25 00:17:35.789 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:937 - 🔄 TEXTURE WORKFLOW FIX: Detected swapped elevation/azimuth values!
+2025-06-25 00:17:35.856 | ERROR    | src.core.workflow_manager:_convert_ui_to_api_format:938 - 🔄 Swapping elevation and azimuth to match working configuration
+2025-06-25 00:18:36.404 | ERROR    | src.core.async_task_manager:cleanup_callback:122 - Background task failed: texture_workflow_check - 
+2025-06-25 00:18:56.495 | ERROR    | src.core.async_task_manager:cleanup_callback:122 - Background task failed: texture_workflow_check - 
+2025-06-25 00:19:06.337 | ERROR    | src.core.async_task_manager:cleanup_callback:122 - Background task failed: texture_workflow_check - 
+2025-06-25 00:19:24.045 | ERROR    | src.mcp.comfyui_client:_ensure_http_client:76 - Error ensuring HTTP client: no running event loop
+2025-06-25 09:14:54.880 | ERROR    | core.app_redesigned:_update_grids_accent_color:6936 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 09:15:54.940 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 09:19:46.267 | ERROR    | core.app_redesigned:_update_grids_accent_color:6936 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 09:33:37.480 | ERROR    | core.app_redesigned:_update_grids_accent_color:6936 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 09:34:20.725 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions

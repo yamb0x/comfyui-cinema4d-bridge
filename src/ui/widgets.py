@@ -18,6 +18,9 @@ from PySide6.QtGui import QPixmap, QPainter, QBrush, QColor, QFont, QImage
 from PIL import Image
 from loguru import logger
 
+# Import async image loading
+from src.ui.async_image_loader import get_async_image_manager
+
 # 3D visualization imports
 try:
     import trimesh
@@ -257,6 +260,7 @@ class ImageThumbnail(QFrame):
         self.image_path = image_path
         self.size = size
         self._selected = False
+        self._loading = False
         
         self.setFixedSize(size + 20, size + 40)
         self.setFrameStyle(QFrame.NoFrame)  # Remove default frame, use CSS instead
@@ -306,7 +310,7 @@ class ImageThumbnail(QFrame):
         
         # Debug: Log initial checkbox state
         from loguru import logger
-        logger.info(f"ImageThumbnail created: {image_path.name}, checkbox checked: {self.select_check.isChecked()}, _selected: {self._selected}")
+        logger.debug(f"ImageThumbnail created: {image_path.name}, checkbox checked: {self.select_check.isChecked()}, _selected: {self._selected}")
         
         # Filename label
         self.name_label = QLabel(image_path.name)
@@ -318,44 +322,71 @@ class ImageThumbnail(QFrame):
         self.name_label.setFont(font)
         main_layout.addWidget(self.name_label)
         
-        # Load thumbnail
-        self._load_thumbnail()
+        # Load thumbnail asynchronously
+        self._load_thumbnail_async()
         
         # Apply initial style
         self._update_style()
         
-    def _load_thumbnail(self):
-        """Load and display thumbnail"""
+    def _load_thumbnail_async(self):
+        """Load thumbnail asynchronously"""
+        if self._loading:
+            return
+            
+        self._loading = True
+        
+        # Show loading placeholder
+        self.image_label.setText("Loading...")
+        self.image_label.setStyleSheet("""
+            background-color: #2a2a2a;
+            color: #888888;
+            border: 1px dashed #444444;
+        """)
+        
+        # Load image asynchronously
+        async_manager = get_async_image_manager()
+        async_manager.load_image_async(
+            self.image_path, 
+            self.size, 
+            self._on_image_loaded
+        )
+    
+    def _on_image_loaded(self, image_path: Path, pixmap: QPixmap, size: int):
+        """Handle async image loading completion"""
+        if image_path != self.image_path:
+            return  # This callback is for a different image
+            
+        self._loading = False
+        
         try:
-            # Load with PIL for better format support
-            img = Image.open(self.image_path)
-            img.thumbnail((self.size, self.size), Image.Resampling.LANCZOS)
-            
-            # Convert to QPixmap
-            if img.mode == "RGBA":
-                # Handle transparency
-                data = img.tobytes("raw", "RGBA")
-                qimage = QImage(data, img.width, img.height, QImage.Format_RGBA8888)
+            # Scale to fit if needed
+            if pixmap.width() > self.size or pixmap.height() > self.size:
+                scaled_pixmap = pixmap.scaled(
+                    self.size, self.size,
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation
+                )
             else:
-                # Convert to RGB
-                img = img.convert("RGB")
-                data = img.tobytes("raw", "RGB")
-                qimage = QImage(data, img.width, img.height, QImage.Format_RGB888)
+                scaled_pixmap = pixmap
             
-            pixmap = QPixmap.fromImage(qimage)
-            
-            # Scale to fit
-            scaled_pixmap = pixmap.scaled(
-                self.size, self.size,
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation
-            )
-            
+            # Set the pixmap
             self.image_label.setPixmap(scaled_pixmap)
+            self.image_label.setStyleSheet("background-color: #2a2a2a;")
             
         except Exception as e:
-            logger.error(f"Failed to load thumbnail for {self.image_path}: {e}")
-            self.image_label.setText("Failed to\nload image")
+            logger.error(f"Failed to display thumbnail for {self.image_path}: {e}")
+            self._show_error_placeholder()
+    
+    def _show_error_placeholder(self):
+        """Show error placeholder"""
+        self._loading = False
+        self.image_label.clear()
+        self.image_label.setText("Failed to\nload image")
+        self.image_label.setStyleSheet("""
+            background-color: #2a2a2a;
+            color: #ff6b6b;
+            border: 1px solid #ff6b6b;
+        """)
     
     def mousePressEvent(self, event):
         """Handle mouse press"""
@@ -409,6 +440,10 @@ class ImageGridWidget(QScrollArea):
         self.thumbnail_size = thumbnail_size
         self.thumbnails: List[ImageThumbnail] = []
         
+        # State preservation
+        self._preserved_state = None
+        self._preserve_state = True
+        
         # Setup scroll area
         self.setWidgetResizable(True)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
@@ -442,12 +477,81 @@ class ImageGridWidget(QScrollArea):
         thumbnail.select_check.show()
         thumbnail.select_check.setVisible(True)
     
+    def preserve_state(self):
+        """Preserve current grid state for restoration"""
+        if not self._preserve_state:
+            return
+            
+        self._preserved_state = {
+            'images': [thumb.image_path for thumb in self.thumbnails],
+            'selections': [thumb.image_path for thumb in self.thumbnails if thumb._selected],
+            'scroll_position': self.verticalScrollBar().value(),
+            'thumbnail_count': len(self.thumbnails)
+        }
+        logger.debug(f"Preserved state: {len(self._preserved_state['images'])} images, {len(self._preserved_state['selections'])} selected")
+    
+    def restore_state(self):
+        """Restore preserved state"""
+        if not self._preserved_state:
+            return
+            
+        # Restore selections
+        for thumbnail in self.thumbnails:
+            should_be_selected = thumbnail.image_path in self._preserved_state['selections']
+            if thumbnail._selected != should_be_selected:
+                thumbnail.set_selected(should_be_selected)
+        
+        # Restore scroll position with a small delay to ensure layout is complete
+        QTimer.singleShot(100, lambda: self.verticalScrollBar().setValue(self._preserved_state['scroll_position']))
+        
+        logger.debug(f"Restored state: {len(self._preserved_state['selections'])} selections, scroll position {self._preserved_state['scroll_position']}")
+    
+    def smart_refresh(self, new_images: List[Path]):
+        """Smart refresh that preserves existing thumbnails and adds new ones"""
+        if self._preserve_state:
+            self.preserve_state()
+        
+        # Get current image paths
+        existing_paths = {thumb.image_path for thumb in self.thumbnails}
+        new_paths = set(new_images)
+        
+        # Remove thumbnails for images that no longer exist
+        to_remove = []
+        for i, thumbnail in enumerate(self.thumbnails):
+            if thumbnail.image_path not in new_paths:
+                to_remove.append(i)
+        
+        # Remove in reverse order to maintain indices
+        for i in reversed(to_remove):
+            thumbnail = self.thumbnails.pop(i)
+            self.grid_layout.removeWidget(thumbnail)
+            thumbnail.deleteLater()
+        
+        # Add new images
+        for image_path in new_images:
+            if image_path not in existing_paths and image_path.exists():
+                self.add_image(image_path)
+        
+        # Reorganize grid to fill gaps
+        self._reorganize_grid()
+        
+        # Restore state
+        if self._preserve_state:
+            self.restore_state()
+        
+        logger.debug(f"Smart refresh completed: {len(self.thumbnails)} total thumbnails")
+    
     def clear(self):
-        """Clear all images"""
+        """Clear all images (with optional state preservation)"""
+        if self._preserve_state:
+            self.preserve_state()
+            
         for thumbnail in self.thumbnails:
             self.grid_layout.removeWidget(thumbnail)
             thumbnail.deleteLater()
         self.thumbnails.clear()
+        
+        logger.debug("Grid cleared")
     
     def get_selected_images(self) -> List[Path]:
         """Get list of selected images"""

@@ -210,11 +210,65 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self.unified_object_selector.all_objects_cleared.connect(self._on_all_objects_cleared)
         self.logger.debug("Unified object selector created")
         
+        # Initialize configuration integration for consistent parameter handling
+        from src.core.configuration_integration import ConfigurationIntegration
+        self.config_integration = ConfigurationIntegration(self.workflow_manager)
+        self.config_integration.configuration_updated.connect(self._on_configuration_updated)
+        self.config_integration.workflow_changed.connect(self._on_workflow_changed_unified)
+        self.logger.debug("Configuration integration initialized")
+        
+        # Initialize prompt memory manager for proper hierarchy
+        from src.core.prompt_memory_manager import PromptMemoryManager
+        self.prompt_memory = PromptMemoryManager()
+        self.logger.debug("Prompt memory manager initialized")
+        
         # Create separate instances for each tab (Qt doesn't allow same widget in multiple parents)
         self.unified_selectors = {}
         
         # Setup the redesigned UI
         self._setup_redesigned_ui()
+    
+    def _on_configuration_updated(self, config: Dict[str, Any]):
+        """Handle configuration updates from unified configuration manager"""
+        self.logger.info("Configuration updated from unified manager")
+        # Configuration updates are handled through the parameter panels
+        
+    def _on_workflow_changed_unified(self, workflow_name: str):
+        """Handle workflow changes from unified configuration manager"""
+        self.logger.info(f"Workflow changed via unified manager: {workflow_name}")
+        # Update workflow dropdowns to reflect the change
+        self._sync_workflow_dropdowns(workflow_name)
+    
+    def _sync_workflow_dropdowns(self, workflow_name: str):
+        """Synchronize all workflow dropdowns to show the same workflow"""
+        try:
+            # Extract just the filename from the full path if needed
+            workflow_filename = Path(workflow_name).name
+            
+            # Update main workflow dropdown
+            if hasattr(self, 'workflow_combo'):
+                for i in range(self.workflow_combo.count()):
+                    if self.workflow_combo.itemText(i) == workflow_filename:
+                        self.workflow_combo.setCurrentIndex(i)
+                        break
+            
+            # Update tab-specific dropdowns
+            if hasattr(self, 'workflow_3d_combo'):
+                for i in range(self.workflow_3d_combo.count()):
+                    if self.workflow_3d_combo.itemText(i) == workflow_filename:
+                        self.workflow_3d_combo.setCurrentIndex(i)
+                        break
+                        
+            if hasattr(self, 'workflow_texture_combo'):
+                for i in range(self.workflow_texture_combo.count()):
+                    if self.workflow_texture_combo.itemText(i) == workflow_filename:
+                        self.workflow_texture_combo.setCurrentIndex(i)
+                        break
+                        
+            self.logger.info(f"Synchronized all workflow dropdowns to: {workflow_filename}")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to sync workflow dropdowns: {e}")
     
     def _on_unified_selection_changed(self, path: str, selection_type: SelectionType, selected: bool):
         """Handle unified selection changes and sync with legacy systems"""
@@ -969,6 +1023,11 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         prompt_layout.addWidget(self.negative_prompt)
         
+        # Register prompts with memory manager
+        if hasattr(self, 'prompt_memory'):
+            self.prompt_memory.register_prompt_widget('positive', self.positive_prompt)
+            self.prompt_memory.register_prompt_widget('negative', self.negative_prompt)
+        
         layout.addWidget(prompt_section)
         
         # Generation Controls section
@@ -1161,6 +1220,9 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         self.texture_negative_prompt = NegativePromptWidgetWithMagic()
         prompt_layout.addWidget(self.texture_negative_prompt)
+        
+        # Register texture prompts with memory manager (separate from image prompts)
+        # Note: These could be tracked separately if needed
         
         layout.addWidget(prompt_section)
         
@@ -1591,45 +1653,57 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             self.logger.error(f"Failed to initialize image loading and selection: {e}")
     
     def _on_main_tab_changed(self, index: int):
-        """Handle main tab change"""
+        """Handle main tab change with optimized performance"""
+        # Sync panel tabs immediately (critical for UI consistency)
         self._sync_panel_tabs(index)
+        
         stage_names = ["Image Generation", "3D Model Generation", "Texture Generation", "Cinema4D Intelligence"]
         if index < len(stage_names):
-            self.logger.info(f"Switched to: {stage_names[index]}")
+            self.logger.debug(f"Switched to: {stage_names[index]}")
             
-            # Reload session images when returning to Image Generation tab
+            # Use QTimer.singleShot for non-critical operations to prevent UI blocking
             if index == 0:  # Tab 0: Image Generation
-                self.logger.debug("Reloading session images for Image Generation tab")
-                self._load_session_images()
-                # Ensure selection states are preserved
-                self._sync_image_selection_to_grids()
+                self.logger.debug("Scheduling async reload of session images")
+                QTimer.singleShot(50, self._async_load_session_images)
             
-            # Auto-save prompts when switching tabs to prevent data loss
-            self._auto_save_prompts()
+            # Auto-save prompts asynchronously
+            QTimer.singleShot(100, self._auto_save_prompts)
             
             # Lazy load dynamic 3D parameters when Tab 2 is accessed
             if index == 1:  # Tab 2: 3D Model Generation
-                self._load_dynamic_3d_parameters_on_demand()
+                QTimer.singleShot(100, self._load_dynamic_3d_parameters_on_demand)
             
-            # Update workflow dropdown based on current tab
-            self._update_workflow_dropdown_for_tab(index)
-            
-            # CRITICAL: Recalculate splitter sizes to prevent UI height explosion
-            # This ensures console remains visible when switching tabs
-            # self._recalculate_splitter_sizes()  # Disabled to allow free panel movement
+            # Update workflow dropdown asynchronously
+            QTimer.singleShot(10, lambda: self._update_workflow_dropdown_for_tab(index))
+    
+    def _async_load_session_images(self):
+        """Asynchronously load session images to prevent UI blocking"""
+        try:
+            self._load_session_images()
+            # Ensure selection states are preserved
+            self._sync_image_selection_to_grids()
+        except Exception as e:
+            self.logger.error(f"Failed to async load session images: {e}")
     
     def _on_image_subtab_changed(self, index: int):
-        """Handle image sub-tab changes (New Canvas vs View All)"""
+        """Handle image sub-tab changes (New Canvas vs View All) with optimized performance"""
         tab_names = ["New Canvas", "View All"]
         if index < len(tab_names):
             self.logger.debug(f"Image sub-tab changed to: {tab_names[index]}")
             
+            # Use QTimer.singleShot for non-blocking image loading
             if index == 0:  # New Canvas - reload session images
-                self._load_session_images()
-                self._sync_image_selection_to_grids()
+                QTimer.singleShot(50, self._async_load_session_images)
             elif index == 1:  # View All - reload all images
-                self._load_all_images()
-                self._sync_image_selection_to_grids()
+                QTimer.singleShot(50, self._async_load_all_images)
+    
+    def _async_load_all_images(self):
+        """Asynchronously load all images to prevent UI blocking"""
+        try:
+            self._load_all_images()
+            self._sync_image_selection_to_grids()
+        except Exception as e:
+            self.logger.error(f"Failed to async load all images: {e}")
     
     def _sync_panel_tabs(self, index: int):
         """Synchronize side panel tabs with main tab"""
@@ -3971,6 +4045,13 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
         file_menu.addSeparator()
         
+        # Magic Prompt Configuration action
+        magic_prompt_action = QAction("Magic Prompt Configuration", self)
+        magic_prompt_action.triggered.connect(self._show_magic_prompt_dialog)
+        file_menu.addAction(magic_prompt_action)
+        
+        file_menu.addSeparator()
+        
         # Environment Variables action
         env_vars_action = QAction("Environment Variables", self)
         env_vars_action.triggered.connect(self._open_environment_variables)
@@ -4835,13 +4916,14 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
     def _load_session_images(self):
         """Load images generated in current session to New Canvas"""
         if hasattr(self, 'session_image_grid') and hasattr(self, 'session_images'):
-            self.session_image_grid.clear()
-            self.logger.info(f"Loading {len(self.session_images)} session images")
-            for image_path in self.session_images:
-                if image_path.exists():
-                    self.session_image_grid.add_image(image_path)
-                # Also add to unified object selector pool
-                if hasattr(self, 'unified_object_selector'):
+            # Use smart refresh instead of clear to preserve state
+            valid_session_images = [img for img in self.session_images if img.exists()]
+            self.session_image_grid.smart_refresh(valid_session_images)
+            self.logger.debug(f"Smart refresh completed: {len(valid_session_images)} session images")
+            
+            # Also add to unified object selector pool
+            if hasattr(self, 'unified_object_selector'):
+                for image_path in valid_session_images:
                     self.unified_object_selector.add_image_to_pool(image_path)
             
             # Force grid visibility after loading
@@ -4860,13 +4942,12 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 
     def _load_all_images(self):
         """Load all images from images directory to View All"""
-        self.logger.info(f"_load_all_images called. hasattr(self, 'all_images_grid'): {hasattr(self, 'all_images_grid')}")
+        self.logger.debug(f"_load_all_images called. hasattr(self, 'all_images_grid'): {hasattr(self, 'all_images_grid')}")
         if hasattr(self, 'all_images_grid'):
-            self.all_images_grid.clear()
             # Use configured images directory
             images_dir = self.config.images_dir if hasattr(self.config, 'images_dir') else Path("images")
             
-            self.logger.info(f"Loading images from: {images_dir}")
+            self.logger.debug(f"Loading images from: {images_dir}")
             
             if images_dir.exists():
                 # Get all image files
@@ -4878,11 +4959,10 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 # Sort by modification time (newest first)
                 all_images.sort(key=lambda x: x.stat().st_mtime, reverse=True)
             
-                self.logger.info(f"Found {len(all_images)} images to load")
+                self.logger.debug(f"Found {len(all_images)} images to load")
             
-                # Add to grid
-                for image_path in all_images:
-                    self.all_images_grid.add_image(image_path)
+                # Use smart refresh instead of clear + add
+                self.all_images_grid.smart_refresh(all_images)
             
                 # Force grid visibility after loading
                 self.all_images_grid.show()
@@ -4911,13 +4991,112 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self._refresh_all_images()
     
     def _collect_dynamic_workflow_parameters(self, workflow: dict, prompt: str, neg_prompt: str, batch_size: int) -> dict:
-        """Dynamically collect parameters from UI widgets and workflow structure"""
-        params = {
-            "positive_prompt": prompt,
-            "negative_prompt": neg_prompt,
-            "batch_size": batch_size,
+        """Dynamically collect parameters from UI widgets and workflow structure with enhanced compatibility"""
+        import copy
+        
+        try:
+            # Create safe copy to avoid modifying original workflow
+            workflow_copy = copy.deepcopy(workflow)
+            
+            # Detect and normalize workflow format
+            workflow_format = self._detect_workflow_format(workflow_copy)
+            normalized_workflow = self._normalize_workflow_format(workflow_copy, workflow_format)
+            
+            # Initialize with validated base parameters
+            params = self._get_base_parameters(prompt, neg_prompt, batch_size)
+            
+            # Collect parameters with comprehensive error handling
+            collected_params = self._collect_params_with_validation(normalized_workflow, params)
+            
+            return collected_params
+            
+        except Exception as e:
+            self.logger.error(f"Parameter collection failed: {e}")
+            return self._get_fallback_parameters(prompt, neg_prompt, batch_size)
+    
+    def _detect_workflow_format(self, workflow: dict) -> str:
+        """Detect the format of the workflow for proper handling"""
+        if not isinstance(workflow, dict):
+            return "unknown"
+            
+        # ComfyUI API format (nodes + links)
+        if "nodes" in workflow and "links" in workflow:
+            if isinstance(workflow["nodes"], list) and len(workflow["nodes"]) > 0:
+                first_node = workflow["nodes"][0]
+                if "type" in first_node and "widgets_values" in first_node:
+                    return "comfyui_api"
+        
+        # ComfyUI prompt format (numbered nodes)
+        if isinstance(workflow, dict) and all(key.isdigit() for key in workflow.keys() if isinstance(key, str)):
+            return "comfyui_prompt"
+        
+        # Check for A1111 style workflow
+        if "prompt" in workflow and "negative_prompt" in workflow and "steps" in workflow:
+            return "a1111_style"
+        
+        # Check for nested prompt structure
+        if "prompt" in workflow and isinstance(workflow["prompt"], dict):
+            return "comfyui_nested_prompt"
+        
+        return "unknown"
+    
+    def _normalize_workflow_format(self, workflow: dict, format_type: str) -> dict:
+        """Normalize different workflow formats to standard structure"""
+        if format_type == "comfyui_api":
+            return workflow  # Already in correct format
+        
+        elif format_type == "comfyui_prompt":
+            # Convert prompt format to API format
+            nodes = []
+            for node_id, node_data in workflow.items():
+                if isinstance(node_data, dict) and "class_type" in node_data:
+                    normalized_node = {
+                        "id": node_id,
+                        "type": node_data["class_type"],
+                        "widgets_values": node_data.get("inputs", {})
+                    }
+                    nodes.append(normalized_node)
+            return {"nodes": nodes, "links": []}
+        
+        elif format_type == "comfyui_nested_prompt":
+            # Extract from nested prompt structure
+            prompt_data = workflow.get("prompt", {})
+            return self._normalize_workflow_format(prompt_data, "comfyui_prompt")
+        
+        elif format_type == "a1111_style":
+            # Convert A1111 style to basic node structure
+            nodes = [{
+                "id": "1",
+                "type": "KSampler",
+                "widgets_values": [
+                    workflow.get("seed", -1),
+                    "fixed",
+                    workflow.get("steps", 20),
+                    workflow.get("cfg_scale", 7.0),
+                    workflow.get("sampler_name", "euler"),
+                    workflow.get("scheduler", "normal"),
+                    workflow.get("denoising_strength", 1.0)
+                ]
+            }]
+            return {"nodes": nodes, "links": []}
+        
+        else:
+            # Unknown format, try to extract what we can
+            self.logger.warning(f"Unknown workflow format: {format_type}")
+            return {"nodes": [], "links": []}
+    
+    def _get_base_parameters(self, prompt: str, neg_prompt: str, batch_size: int) -> dict:
+        """Get validated base parameters"""
+        return {
+            "positive_prompt": self._validate_parameter("positive_prompt", prompt),
+            "negative_prompt": self._validate_parameter("negative_prompt", neg_prompt),
+            "batch_size": self._validate_parameter("batch_size", batch_size),
             "seed": -1  # Random seed
         }
+    
+    def _collect_params_with_validation(self, workflow: dict, base_params: dict) -> dict:
+        """Collect parameters with comprehensive validation and error handling"""
+        params = base_params.copy()
         
         # DYNAMIC APPROACH: Update workflow with UI widget values first
         if hasattr(self, 'parameter_widgets') and self.parameter_widgets:
@@ -4929,181 +5108,374 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             # Update the workflow with UI widget values - WORKS FOR ANY NODE TYPE
             workflow = updater.update_workflow_from_ui_widgets(workflow, self.parameter_widgets)
         
-        # Now run the existing parameter extraction logic on the UPDATED workflow
-        # This preserves all existing functionality while using UI values
+        # Initialize node schema cache for dynamic parameter mapping
+        if not hasattr(self, '_node_schema_cache'):
+            self._node_schema_cache = {}
+        
+        # Extract parameters using enhanced node handlers
         lora_counter = 1
         nodes = workflow.get("nodes", [])
         
-        for node in nodes:
-            node_id = node.get("id")
-            node_type = node.get("type")
-            widgets_values = node.get("widgets_values", [])
-            
-            # Extract parameters based on node type
-            if node_type == "KSampler" and widgets_values:
-                # Extract sampler parameters from widgets_values
-                # Order: seed, control_after_generation, steps, cfg, sampler_name, scheduler, denoise
-                if len(widgets_values) >= 7:
-                    params["seed"] = widgets_values[0] if widgets_values[0] != -1 else -1
-                    params["seed_control"] = widgets_values[1] if len(widgets_values) > 1 else "fixed"
-                    params["steps"] = widgets_values[2] if len(widgets_values) > 2 else 20
-                    params["cfg"] = widgets_values[3] if len(widgets_values) > 3 else 7.0
-                    params["sampler_name"] = widgets_values[4] if len(widgets_values) > 4 else "euler"
-                    params["scheduler"] = widgets_values[5] if len(widgets_values) > 5 else "normal"
-                    params["denoise"] = widgets_values[6] if len(widgets_values) > 6 else 1.0
-                    
-            elif node_type == "FluxGuidance" and widgets_values:
-                params["cfg"] = widgets_values[0] if widgets_values else 7.0
-                
-            elif node_type in ["EmptyLatentImage", "EmptySD3LatentImage"] and widgets_values:
-                if len(widgets_values) >= 3:
-                    # Use dimensions from left panel controls
-                    if hasattr(self, 'width_spin') and hasattr(self, 'height_spin'):
-                        params["width"] = self.width_spin.value()
-                        params["height"] = self.height_spin.value()
-                    else:
-                        params["width"] = 1024
-                        params["height"] = 1024
-                    # batch_size already set from UI
-                    
-            elif node_type == "LoraLoader" and widgets_values:
-                # Extract LoRA parameters dynamically
-                if len(widgets_values) >= 3:
-                    lora_model = widgets_values[0] if widgets_values[0] else ""
-                    lora_strength = widgets_values[1] if len(widgets_values) > 1 else 1.0
-                    
-                    # Only add if LoRA model is not empty
-                    if lora_model and lora_model != "None" and lora_model.strip():
-                        # Validate LoRA model availability and provide fallback
-                        validated_model = self._validate_and_fix_lora_model(lora_model)
-                        if validated_model:
-                            params[f"lora{lora_counter}_model"] = validated_model
-                            params[f"lora{lora_counter}_strength"] = lora_strength
-                            params[f"lora{lora_counter}_active"] = True
-                            
-                            # Check if bypass checkbox exists and is checked
-                            # The bypass checkbox is the 4th widget (index 3) for LoraLoader
-                            bypass_key = f"LoraLoader_{node_id}_3"
-                            if hasattr(self, 'parameter_widgets') and bypass_key in self.parameter_widgets:
-                                try:
-                                    bypass_value = self.parameter_widgets[bypass_key]['get_value']()
-                                    params[f"lora{lora_counter}_bypassed"] = bypass_value
-                                    if bypass_value:
-                                        self.logger.info(f"LoRA {lora_counter} is set to bypass")
-                                except RuntimeError as e:
-                                    if "deleted" in str(e):
-                                        self.logger.warning(f"Bypass widget for LoRA {lora_counter} was deleted, defaulting to False")
-                                        params[f"lora{lora_counter}_bypassed"] = False
-                                    else:
-                                        raise
-                            else:
-                                params[f"lora{lora_counter}_bypassed"] = False
-                            
-                            if validated_model != lora_model:
-                                self.logger.warning(f"LoRA {lora_counter} fallback: {lora_model} → {validated_model}")
-                            else:
-                                self.logger.info(f"Found LoRA {lora_counter} in node {node_id}: {lora_model} (strength: {lora_strength})")
-                            lora_counter += 1
-                        else:
-                            self.logger.warning(f"Skipping unavailable LoRA in node {node_id}: {lora_model}")
+        # Get available model files with caching
+        model_cache = self._get_cached_model_files()
         
-        # Set default values for missing essential parameters
-        if "width" not in params:
-            if hasattr(self, 'width_spin'):
-                params["width"] = self.width_spin.value()
-            else:
-                params["width"] = 1024
-        if "height" not in params:
-            if hasattr(self, 'height_spin'):
-                params["height"] = self.height_spin.value()
-            else:
-                params["height"] = 1024
-        if "steps" not in params:
-            params["steps"] = 20
-        if "cfg" not in params:
-            params["cfg"] = 7.0
-        if "sampler_name" not in params:
-            params["sampler_name"] = "euler"
-        if "scheduler" not in params:
-            params["scheduler"] = "normal"
-        if "denoise" not in params:
-            params["denoise"] = 1.0
-            
-        self.logger.info(f"Collected {len(params)} dynamic parameters: {list(params.keys())}")
+        for node in nodes:
+            try:
+                node_id = node.get("id")
+                node_type = node.get("type")
+                widgets_values = node.get("widgets_values", [])
+                
+                # Use enhanced node parameter extraction
+                if node_type in self._get_known_node_types():
+                    extracted_params = self._extract_known_node_params(node_type, widgets_values, node_id, model_cache)
+                    if node_type == "LoraLoader" and extracted_params:
+                        # Handle LoRA counter for multiple LoRAs
+                        for key, value in extracted_params.items():
+                            if key.startswith("lora_"):
+                                new_key = key.replace("lora_", f"lora{lora_counter}_")
+                                params[new_key] = value
+                        if any(k.startswith("lora_") for k in extracted_params.keys()):
+                            lora_counter += 1
+                    else:
+                        params.update(extracted_params)
+                else:
+                    # Handle unknown node types with generic extraction
+                    generic_params = self._extract_generic_node_params(node, model_cache)
+                    params.update(generic_params)
+                    
+            except Exception as e:
+                self.logger.warning(f"Failed to extract parameters from node {node_id} ({node_type}): {e}")
+                continue
+        
+        # Apply comprehensive parameter validation and defaults
+        params = self._apply_parameter_defaults(params)
+        params = self._validate_all_parameters(params)
+        
+        self.logger.info(f"Collected {len(params)} validated parameters: {list(params.keys())}")
         return params
     
-    def _validate_and_fix_lora_model(self, lora_model: str) -> str:
-        """Validate LoRA model availability and provide fallbacks for missing models"""
-        # Get available LoRAs dynamically from ComfyUI models folder
-        available_loras = self.config.get_lora_files() if hasattr(self.config, 'get_lora_files') else []
-        
-        # If config method not available, fallback to direct filesystem scan
-        if not available_loras:
-            if hasattr(self.config, 'loras_dir') and self.config.loras_dir and self.config.loras_dir.exists():
-                available_loras = [f.name for f in self.config.loras_dir.glob("*.safetensors")]
-            else:
-                # Fallback to hardcoded list if filesystem access fails
-                available_loras = [
-                '8mm Film Lora_Flux_LatentShadows_v1.safetensors',
-                'FLUX_Editorial Zine.safetensors', 
-                'Flux Any Thing plush.safetensors',
-                'Flux LoRA Thermal Image.safetensors',
-                'SDXLthermalimage.safetensors',
-                'SynthWave - Glitchy Analog Video Synthesis - Flux - v1.safetensors',
-                'aidmaFLUXpro1.1-FLUX-V0.1.safetensors',
-                'deep_sea_creatures_cts.safetensors',
-                'fruit_animals.safetensors',
-                'hyvideo_FastVideo_LoRA-fp8.safetensors',
-                'pokemon_flux_lora.safetensors'
-            ]
-        
-        self.logger.info(f"Found {len(available_loras)} LoRA models: {available_loras[:5]}...")  # Log first 5
-        
-        # Direct match - model is available
-        if lora_model in available_loras:
-            return lora_model
-        
-        # Fallback mappings for known missing models
-        fallback_mappings = {
-            'Flux\\Luminous_Shadowscape-000016.safetensors': '8mm Film Lora_Flux_LatentShadows_v1.safetensors',
-            'Flux\\\\Luminous_Shadowscape-000016.safetensors': '8mm Film Lora_Flux_LatentShadows_v1.safetensors',
-            'Luminous_Shadowscape-000016.safetensors': '8mm Film Lora_Flux_LatentShadows_v1.safetensors'
+    def _validate_parameter(self, param_name: str, value: Any) -> Any:
+        """Validate and coerce parameter values with type checking and range validation"""
+        validators = {
+            "positive_prompt": lambda x: str(x) if x is not None else "",
+            "negative_prompt": lambda x: str(x) if x is not None else "",
+            "batch_size": lambda x: max(1, min(8, int(x))) if x is not None else 1,
+            "seed": lambda x: int(x) if x is not None and x != -1 else -1,
+            "steps": lambda x: max(1, min(150, int(x))) if x is not None else 20,
+            "cfg": lambda x: max(0.1, min(30.0, float(x))) if x is not None else 7.0,
+            "width": lambda x: max(64, min(8192, int(x))) if x is not None else 1024,
+            "height": lambda x: max(64, min(8192, int(x))) if x is not None else 1024,
+            "denoise": lambda x: max(0.0, min(1.0, float(x))) if x is not None else 1.0,
+            "sampler_name": lambda x: str(x) if x is not None else "euler",
+            "scheduler": lambda x: str(x) if x is not None else "normal"
         }
         
-        # Check fallback mappings
-        if lora_model in fallback_mappings:
-            return fallback_mappings[lora_model]
+        try:
+            if param_name in validators:
+                return validators[param_name](value)
+            else:
+                return value  # Return as-is for unknown parameters
+        except (ValueError, TypeError) as e:
+            self.logger.warning(f"Parameter validation failed for {param_name}={value}: {e}")
+            # Return safe default
+            defaults = {
+                "batch_size": 1, "steps": 20, "cfg": 7.0, "width": 1024, "height": 1024,
+                "denoise": 1.0, "sampler_name": "euler", "scheduler": "normal",
+                "positive_prompt": "", "negative_prompt": "", "seed": -1
+            }
+            return defaults.get(param_name, value)
+    
+    def _get_fallback_parameters(self, prompt: str, neg_prompt: str, batch_size: int) -> dict:
+        """Get safe fallback parameters when collection fails"""
+        return {
+            "positive_prompt": prompt or "",
+            "negative_prompt": neg_prompt or "",
+            "batch_size": max(1, min(8, batch_size)) if batch_size else 1,
+            "seed": -1,
+            "steps": 20,
+            "cfg": 7.0,
+            "width": 1024,
+            "height": 1024,
+            "sampler_name": "euler",
+            "scheduler": "normal",
+            "denoise": 1.0
+        }
+    
+    def _get_known_node_types(self) -> set:
+        """Get set of known node types that have specialized handlers"""
+        return {
+            "KSampler", "FluxGuidance", "EmptyLatentImage", "EmptySD3LatentImage",
+            "LoraLoader", "CheckpointLoaderSimple", "VAELoader", "ControlNetLoader",
+            "IPAdapterLoader", "UNETLoader"
+        }
+    
+    def _extract_known_node_params(self, node_type: str, widgets_values: list, node_id: str, model_cache: dict) -> dict:
+        """Extract parameters from known node types with proper validation"""
+        params = {}
         
-        # Try to find similar models by partial name matching
-        lora_lower = lora_model.lower()
-        for available in available_loras:
-            available_lower = available.lower()
-            # Check for partial matches
-            if 'thermal' in lora_lower and 'thermal' in available_lower:
-                return available
-            elif 'flux' in lora_lower and 'pro' in lora_lower and 'flux' in available_lower and 'pro' in available_lower:
-                return available
-            elif 'pokemon' in lora_lower and 'pokemon' in available_lower:
-                return available
-            elif 'sealife' in lora_lower or 'creature' in lora_lower:
-                # Try to find sea creature LoRA in available models
-                for available in available_loras:
-                    if 'creature' in available.lower() or 'sea' in available.lower():
-                        return available
+        try:
+            if node_type == "KSampler" and len(widgets_values) >= 7:
+                # Use schema-based extraction instead of hard-coded indices
+                schema = self._get_node_schema(node_type)
+                if schema:
+                    params = self._extract_params_by_schema(widgets_values, schema)
+                else:
+                    # Fallback to legacy extraction
+                    params = {
+                        "seed": self._validate_parameter("seed", widgets_values[0]),
+                        "seed_control": widgets_values[1] if len(widgets_values) > 1 else "fixed",
+                        "steps": self._validate_parameter("steps", widgets_values[2]),
+                        "cfg": self._validate_parameter("cfg", widgets_values[3]),
+                        "sampler_name": self._validate_parameter("sampler_name", widgets_values[4]),
+                        "scheduler": self._validate_parameter("scheduler", widgets_values[5]),
+                        "denoise": self._validate_parameter("denoise", widgets_values[6])
+                    }
+            
+            elif node_type == "FluxGuidance" and widgets_values:
+                params["cfg"] = self._validate_parameter("cfg", widgets_values[0])
+            
+            elif node_type in ["EmptyLatentImage", "EmptySD3LatentImage"] and len(widgets_values) >= 3:
+                # Priority: UI controls > workflow values
+                if hasattr(self, 'width_spin') and hasattr(self, 'height_spin'):
+                    params["width"] = self._validate_parameter("width", self.width_spin.value())
+                    params["height"] = self._validate_parameter("height", self.height_spin.value())
+                else:
+                    params["width"] = self._validate_parameter("width", widgets_values[0])
+                    params["height"] = self._validate_parameter("height", widgets_values[1])
+            
+            elif node_type == "LoraLoader" and len(widgets_values) >= 2:
+                lora_model = widgets_values[0] if widgets_values[0] else ""
+                lora_strength = widgets_values[1] if len(widgets_values) > 1 else 1.0
+                
+                if lora_model and lora_model != "None" and lora_model.strip():
+                    validated_model = self._validate_and_fix_lora_model_enhanced(lora_model, model_cache)
+                    if validated_model:
+                        params["lora_model"] = validated_model
+                        params["lora_strength"] = max(0.0, min(2.0, float(lora_strength)))
+                        params["lora_active"] = True
+                        
+                        # Check bypass status
+                        bypass_key = f"LoraLoader_{node_id}_3"
+                        if hasattr(self, 'parameter_widgets') and bypass_key in self.parameter_widgets:
+                            try:
+                                bypass_value = self.parameter_widgets[bypass_key]['get_value']()
+                                params["lora_bypassed"] = bool(bypass_value)
+                            except (RuntimeError, KeyError):
+                                params["lora_bypassed"] = False
+                        else:
+                            params["lora_bypassed"] = False
+            
+            elif node_type == "CheckpointLoaderSimple" and widgets_values:
+                model_name = widgets_values[0] if widgets_values else ""
+                if model_name:
+                    validated_model = self._validate_model_file(model_name, "checkpoint", model_cache)
+                    if validated_model:
+                        params["checkpoint_model"] = validated_model
+            
+            elif node_type == "VAELoader" and widgets_values:
+                vae_name = widgets_values[0] if widgets_values else ""
+                if vae_name:
+                    validated_vae = self._validate_model_file(vae_name, "vae", model_cache)
+                    if validated_vae:
+                        params["vae_model"] = validated_vae
         
-        # Default fallback to first available LoRA that looks stable
-        if available_loras:
-            # Prefer thermal, flux, or general purpose LoRAs
-            preferred_patterns = ['thermal', 'flux', 'pro', 'general']
-            for pattern in preferred_patterns:
-                for lora in available_loras:
-                    if pattern.lower() in lora.lower():
-                        return lora
-            # If no preferred pattern found, use the first available
-            return available_loras[0]
+        except Exception as e:
+            self.logger.warning(f"Failed to extract parameters from {node_type}: {e}")
+            return {}
         
-        # No LoRAs available at all
+        return params
+    
+    def _extract_generic_node_params(self, node: dict, model_cache: dict) -> dict:
+        """Extract parameters from unknown node types using generic approach"""
+        params = {}
+        node_type = node.get("type", "")
+        widgets_values = node.get("widgets_values", [])
+        
+        # Log unknown node type for future enhancement
+        if node_type not in getattr(self, '_logged_unknown_nodes', set()):
+            self.logger.debug(f"Encountered unknown node type: {node_type} with {len(widgets_values)} widgets")
+            if not hasattr(self, '_logged_unknown_nodes'):
+                self._logged_unknown_nodes = set()
+            self._logged_unknown_nodes.add(node_type)
+        
+        # Try to extract common parameters
+        if widgets_values:
+            # Look for common parameter patterns
+            if "Sampler" in node_type and len(widgets_values) >= 3:
+                params["steps"] = self._validate_parameter("steps", widgets_values[0])
+                params["cfg"] = self._validate_parameter("cfg", widgets_values[1])
+            
+            elif "Loader" in node_type and len(widgets_values) >= 1:
+                model_name = widgets_values[0]
+                if model_name and isinstance(model_name, str):
+                    # Try to determine model type from node name
+                    if "Lora" in node_type:
+                        validated_model = self._validate_model_file(model_name, "lora", model_cache)
+                        if validated_model:
+                            params["generic_lora"] = validated_model
+                    elif "Checkpoint" in node_type:
+                        validated_model = self._validate_model_file(model_name, "checkpoint", model_cache)
+                        if validated_model:
+                            params["generic_checkpoint"] = validated_model
+        
+        return params
+    
+    def _get_node_schema(self, node_type: str) -> dict:
+        """Get node input schema from cache or ComfyUI API"""
+        if node_type in self._node_schema_cache:
+            return self._node_schema_cache[node_type]
+        
+        # Try to get schema from ComfyUI API
+        try:
+            # This would need to be implemented based on ComfyUI API access
+            # For now, return hardcoded schemas for known types
+            schemas = {
+                "KSampler": {
+                    "inputs": ["seed", "control_after_generate", "steps", "cfg", "sampler_name", "scheduler", "denoise"]
+                },
+                "FluxGuidance": {
+                    "inputs": ["guidance"]
+                },
+                "EmptyLatentImage": {
+                    "inputs": ["width", "height", "batch_size"]
+                },
+                "LoraLoader": {
+                    "inputs": ["lora_name", "strength_model", "strength_clip"]
+                }
+            }
+            
+            schema = schemas.get(node_type, {})
+            self._node_schema_cache[node_type] = schema
+            return schema
+            
+        except Exception as e:
+            self.logger.debug(f"Failed to get schema for {node_type}: {e}")
+            return {}
+    
+    def _extract_params_by_schema(self, widgets_values: list, schema: dict) -> dict:
+        """Extract parameters using node schema instead of hard-coded indices"""
+        params = {}
+        inputs = schema.get("inputs", [])
+        
+        for i, input_name in enumerate(inputs):
+            if i < len(widgets_values):
+                value = widgets_values[i]
+                validated_value = self._validate_parameter(input_name, value)
+                params[input_name] = validated_value
+        
+        return params
+    
+    def _get_cached_model_files(self) -> dict:
+        """Get cached model files for all types"""
+        if not hasattr(self, '_model_cache') or not self._model_cache:
+            self._model_cache = {
+                "lora": self._scan_model_files("lora"),
+                "checkpoint": self._scan_model_files("checkpoint"),
+                "vae": self._scan_model_files("vae"),
+                "controlnet": self._scan_model_files("controlnet")
+            }
+        return self._model_cache
+    
+    def _scan_model_files(self, model_type: str) -> list:
+        """Scan for available model files of specific type"""
+        try:
+            extensions = {
+                "lora": ["*.safetensors", "*.ckpt", "*.pt"],
+                "checkpoint": ["*.safetensors", "*.ckpt"],
+                "vae": ["*.safetensors", "*.ckpt", "*.pt"],
+                "controlnet": ["*.safetensors", "*.pth"]
+            }
+            
+            model_files = []
+            type_extensions = extensions.get(model_type, ["*.safetensors"])
+            
+            # Get model directory based on type
+            if hasattr(self.config, f'{model_type}s_dir'):
+                model_dir = getattr(self.config, f'{model_type}s_dir')
+                if model_dir and model_dir.exists():
+                    for ext in type_extensions:
+                        model_files.extend([f.name for f in model_dir.glob(ext)])
+            
+            # Fallback for lora (backward compatibility)
+            if model_type == "lora" and not model_files:
+                if hasattr(self.config, 'loras_dir') and self.config.loras_dir and self.config.loras_dir.exists():
+                    for ext in type_extensions:
+                        model_files.extend([f.name for f in self.config.loras_dir.glob(ext)])
+            
+            return sorted(list(set(model_files)))  # Remove duplicates and sort
+            
+        except Exception as e:
+            self.logger.warning(f"Failed to scan {model_type} files: {e}")
+            return []
+    
+    def _validate_model_file(self, model_name: str, model_type: str, model_cache: dict) -> str:
+        """Validate model file availability with enhanced fallback logic"""
+        if not model_name or model_name == "None":
+            return None
+        
+        available_models = model_cache.get(model_type, [])
+        
+        # Direct match
+        if model_name in available_models:
+            return model_name
+        
+        # Try partial matching
+        model_lower = model_name.lower()
+        for available in available_models:
+            if model_lower in available.lower() or available.lower() in model_lower:
+                self.logger.info(f"{model_type.title()} fallback: {model_name} → {available}")
+                return available
+        
+        # Return first available model as ultimate fallback
+        if available_models:
+            fallback = available_models[0]
+            self.logger.warning(f"{model_type.title()} not found: {model_name}, using fallback: {fallback}")
+            return fallback
+        
+        self.logger.error(f"No {model_type} models available for fallback")
         return None
+    
+    def _validate_and_fix_lora_model_enhanced(self, lora_model: str, model_cache: dict) -> str:
+        """Enhanced LoRA model validation with comprehensive fallback logic"""
+        return self._validate_model_file(lora_model, "lora", model_cache)
+    
+    def _apply_parameter_defaults(self, params: dict) -> dict:
+        """Apply default values for missing essential parameters"""
+        defaults = {
+            "width": 1024 if not (hasattr(self, 'width_spin') and self.width_spin.value()) else self.width_spin.value(),
+            "height": 1024 if not (hasattr(self, 'height_spin') and self.height_spin.value()) else self.height_spin.value(),
+            "steps": 20,
+            "cfg": 7.0,
+            "sampler_name": "euler",
+            "scheduler": "normal",
+            "denoise": 1.0
+        }
+        
+        for key, default_value in defaults.items():
+            if key not in params:
+                params[key] = default_value
+        
+        return params
+    
+    def _validate_all_parameters(self, params: dict) -> dict:
+        """Validate all collected parameters"""
+        validated_params = {}
+        
+        for key, value in params.items():
+            try:
+                validated_params[key] = self._validate_parameter(key, value)
+            except Exception as e:
+                self.logger.warning(f"Parameter validation failed for {key}={value}: {e}")
+                # Skip invalid parameters rather than crash
+                continue
+        
+        return validated_params
+    
+    def _validate_and_fix_lora_model(self, lora_model: str) -> str:
+        """Legacy LoRA model validation - kept for backward compatibility"""
+        # Use enhanced validation system
+        model_cache = self._get_cached_model_files()
+        return self._validate_and_fix_lora_model_enhanced(lora_model, model_cache)
     
     def _populate_workflow_combo(self, workflow_type: str = "image_generation", combo_widget=None):
         """Populate workflow combo box with available workflow files for specific type"""
@@ -5268,6 +5640,18 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         if index >= 0:
             workflow_name = self.workflow_combo.itemData(index)
             if workflow_name:
+                self.logger.info(f"Workflow dropdown changed to: {workflow_name}")
+                
+                # Use unified configuration system if available
+                if hasattr(self, 'config_integration'):
+                    # Trigger full parameter reload through unified system
+                    success = self.config_integration.load_workflow_from_dropdown(workflow_name)
+                    if success:
+                        # Sync all dropdowns to show the same workflow
+                        self._sync_workflow_dropdowns(workflow_name)
+                    return
+                
+                # Fallback to old method
                 self._on_workflow_changed(workflow_name)
     
     def _on_workflow_index_changed_for_tab(self, index: int, workflow_type: str, combo_widget):
@@ -6397,6 +6781,46 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             QMessageBox.information(self, "Clear Recent", "Recent projects list cleared successfully.")
         except Exception as e:
             self.logger.error(f"Failed to clear recent projects: {e}")
+    
+    def _show_magic_prompt_dialog(self):
+        """Show magic prompt configuration dialog"""
+        try:
+            self.logger.info("Opening magic prompt configuration dialog...")
+            from src.ui.magic_prompt_dialog import MagicPromptDialog
+            
+            dialog = MagicPromptDialog(self)
+            
+            # Connect to positive and negative prompt widgets if they exist
+            if hasattr(self, 'positive_prompt'):
+                dialog.positive_prompts = getattr(self.positive_prompt, 'stored_prompts', [])
+                dialog.prompt_selected.connect(
+                    lambda prompt, is_positive: self.positive_prompt.set_prompt(prompt) if is_positive else None
+                )
+                
+            if hasattr(self, 'negative_prompt'):
+                dialog.negative_prompts = getattr(self.negative_prompt, 'stored_prompts', [])
+                dialog.prompt_selected.connect(
+                    lambda prompt, is_positive: self.negative_prompt.set_prompt(prompt) if not is_positive else None
+                )
+            
+            result = dialog.exec()
+            self.logger.info(f"Magic prompt dialog closed with result: {result}")
+            
+            # Update stored prompts if dialog was accepted
+            if result and hasattr(self, 'positive_prompt'):
+                self.positive_prompt.stored_prompts = dialog.positive_prompts
+            if result and hasattr(self, 'negative_prompt'):
+                self.negative_prompt.stored_prompts = dialog.negative_prompts
+                
+        except Exception as e:
+            self.logger.error(f"Failed to open magic prompt dialog: {e}")
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.critical(self, "Error", f"Failed to open magic prompt configuration dialog:\n{e}")
+    
+    def _show_magic_prompts_dialog(self, prompt_type: str):
+        """Show the magic prompt dialog for a specific prompt type (called from widget buttons)"""
+        # Just redirect to the main dialog for now
+        self._show_magic_prompt_dialog()
     
     def _open_environment_variables(self):
         """Open environment variables dialog"""

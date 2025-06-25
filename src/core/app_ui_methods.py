@@ -13,6 +13,8 @@ from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QAction
 from pathlib import Path
 from loguru import logger
+import json
+from typing import Dict, Any, Optional
 
 # Import the actual grid widgets
 from src.ui.widgets import ImageGridWidget
@@ -1212,6 +1214,250 @@ class UICreationMethods:
             import traceback
             self.logger.error(f"Traceback: {traceback.format_exc()}")
     
+    def _load_parameters_unified(self, param_type: str):
+        """Load parameters using the unified configuration system"""
+        try:
+            self.logger.info(f"Loading parameters for {param_type} using unified system")
+            
+            # Map parameter types to configuration files
+            config_map = {
+                "image": "config/image_parameters_config.json",
+                "3d_parameters": "config/3d_parameters_config.json",
+                "texture_parameters": "config/texture_parameters_config.json"
+            }
+            
+            config_path = Path(config_map.get(param_type, ""))
+            if not config_path.exists():
+                self.logger.warning(f"Configuration file not found: {config_path}")
+                return
+            
+            # Load workflow through unified configuration manager
+            with open(config_path, 'r') as f:
+                config = json.load(f)
+            
+            workflow_path = config.get('workflow_path')
+            if workflow_path:
+                workflow_file = Path(workflow_path)
+                if workflow_file.exists():
+                    # Load through unified manager to get organized parameters
+                    params = self.config_integration.config_manager.load_workflow_configuration(workflow_file)
+                    
+                    # Update UI with unified parameters
+                    self._update_unified_parameter_ui(param_type, params)
+                    
+                    # Handle prompt memory
+                    self._update_prompt_memory(config)
+                    
+        except Exception as e:
+            self.logger.error(f"Failed to load parameters through unified system: {e}")
+            import traceback
+            self.logger.error(f"Traceback: {traceback.format_exc()}")
+    
+    def _update_unified_parameter_ui(self, param_type: str, params: Dict[str, Any]):
+        """Update UI with parameters from unified configuration manager"""
+        try:
+            if not hasattr(self, 'dynamic_params_layout'):
+                self.logger.warning("Dynamic params layout not initialized")
+                return
+            
+            # Clear existing parameters
+            self._clear_dynamic_parameters()
+            
+            # Get the unified configuration manager
+            config_manager = self.config_integration.config_manager
+            
+            # Create parameter widgets organized by node type with proper priority
+            for node_id, node_params in sorted(params.items(), 
+                                              key=lambda x: config_manager.PARAMETER_PRIORITY.get(
+                                                  x[1].get('node_type', ''), 999)):
+                
+                node_type = node_params.get('node_type', 'Unknown')
+                
+                # Skip hidden node types
+                if node_type in config_manager.HIDDEN_NODE_TYPES:
+                    continue
+                
+                # Check if parameters are ticked for display
+                if not self._are_parameters_ticked(node_id, node_params):
+                    continue
+                
+                # Create section for this node with color coding
+                section_color = config_manager.NODE_COLORS.get(node_type, "#666666")
+                section_widget = self._create_colored_parameter_section(
+                    f"{node_type} #{node_id}", 
+                    section_color
+                )
+                
+                section_layout = section_widget.layout()
+                
+                # Add parameters for this node
+                for param_name, param_info in node_params.get('parameters', {}).items():
+                    if param_name in ['node_type', 'node_title']:
+                        continue
+                    
+                    # Create parameter widget
+                    param_widget = self._create_unified_parameter_widget(
+                        param_name, 
+                        param_info, 
+                        node_id
+                    )
+                    
+                    if param_widget:
+                        section_layout.addWidget(param_widget)
+                
+                # Add section to main layout
+                self.dynamic_params_layout.addWidget(section_widget)
+            
+            # Add stretch at the end
+            self.dynamic_params_layout.addStretch()
+            
+            self.logger.info(f"Updated UI with {len(params)} parameter groups")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to update unified parameter UI: {e}")
+            import traceback
+            self.logger.error(traceback.format_exc())
+    
+    def _are_parameters_ticked(self, node_id: str, node_params: Dict[str, Any]) -> bool:
+        """Check if parameters for this node should be displayed"""
+        # For now, display all parameters that aren't hidden
+        # TODO: Implement actual ticked parameter tracking
+        return True
+    
+    def _create_colored_parameter_section(self, title: str, color: str) -> QGroupBox:
+        """Create a parameter section with color-coded header"""
+        section = QGroupBox(title)
+        section.setObjectName("colored_parameter_section")
+        
+        # Apply color to the section header
+        section.setStyleSheet(f"""
+            QGroupBox#colored_parameter_section {{
+                border: 2px solid {color};
+                border-radius: 5px;
+                margin-top: 10px;
+                padding-top: 10px;
+            }}
+            QGroupBox#colored_parameter_section::title {{
+                color: {color};
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px 0 5px;
+            }}
+        """)
+        
+        layout = QVBoxLayout(section)
+        layout.setContentsMargins(8, 15, 8, 8)
+        layout.setSpacing(6)
+        
+        return section
+    
+    def _create_unified_parameter_widget(self, param_name: str, param_info: Dict[str, Any], 
+                                       node_id: str) -> Optional[QWidget]:
+        """Create a widget for a unified parameter"""
+        try:
+            param_type = param_info.get('type', 'string')
+            param_value = param_info.get('value')
+            param_ui_name = param_info.get('ui_name', param_name)
+            
+            # Create container
+            container = QWidget()
+            container.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+            
+            layout = QVBoxLayout(container)
+            layout.setContentsMargins(0, 2, 0, 2)
+            layout.setSpacing(2)
+            
+            # Create label
+            label = QLabel(f"{param_ui_name}:")
+            label.setObjectName("section_title")
+            layout.addWidget(label)
+            
+            # Create appropriate input widget
+            if param_type == 'choice' and 'choices' in param_info:
+                input_widget = QComboBox()
+                input_widget.addItems(param_info['choices'])
+                if param_value in param_info['choices']:
+                    input_widget.setCurrentText(str(param_value))
+            elif param_type == 'int':
+                input_widget = QSpinBox()
+                input_widget.setRange(
+                    param_info.get('min', -999999), 
+                    param_info.get('max', 999999)
+                )
+                input_widget.setValue(int(param_value) if param_value is not None else 0)
+            elif param_type == 'float':
+                input_widget = QDoubleSpinBox()
+                input_widget.setRange(
+                    param_info.get('min', -999999.0), 
+                    param_info.get('max', 999999.0)
+                )
+                input_widget.setDecimals(3)
+                input_widget.setValue(float(param_value) if param_value is not None else 0.0)
+            elif param_type == 'bool':
+                input_widget = QCheckBox()
+                input_widget.setChecked(bool(param_value) if param_value is not None else False)
+            else:  # text or string
+                input_widget = QLineEdit()
+                input_widget.setText(str(param_value) if param_value is not None else "")
+            
+            layout.addWidget(input_widget)
+            
+            # Store reference for value retrieval
+            container.input_widget = input_widget
+            container.node_id = node_id
+            container.param_name = param_name
+            container.get_value = lambda: self._get_widget_value(input_widget)
+            
+            # Store in parameter widgets for later retrieval
+            if not hasattr(self, 'parameter_widgets'):
+                self.parameter_widgets = {}
+            widget_key = f"{node_id}.{param_name}"
+            self.parameter_widgets[widget_key] = container
+            
+            return container
+            
+        except Exception as e:
+            self.logger.error(f"Failed to create parameter widget for {param_name}: {e}")
+            return None
+    
+    def _update_prompt_memory(self, config: Dict[str, Any]):
+        """Update prompt memory hierarchy"""
+        try:
+            # Use prompt memory manager if available
+            if hasattr(self, 'prompt_memory'):
+                # Load workflow path to extract prompts
+                workflow_path = config.get('workflow_path')
+                if workflow_path and Path(workflow_path).exists():
+                    with open(workflow_path, 'r') as f:
+                        workflow_data = json.load(f)
+                    
+                    # Load prompts through memory manager
+                    self.prompt_memory.load_workflow_prompts(Path(workflow_path), workflow_data)
+                    
+            else:
+                # Fallback to direct update
+                if 'positive_prompt' in config and hasattr(self, 'positive_prompt'):
+                    self.positive_prompt.setText(config['positive_prompt'])
+                    
+                if 'negative_prompt' in config and hasattr(self, 'negative_prompt'):
+                    self.negative_prompt.setText(config['negative_prompt'])
+                    
+        except Exception as e:
+            self.logger.error(f"Failed to update prompt memory: {e}")
+    
+    def _clear_dynamic_parameters(self):
+        """Clear all dynamic parameter widgets"""
+        if hasattr(self, 'dynamic_params_layout'):
+            # Clear parameter widget references
+            if hasattr(self, 'parameter_widgets'):
+                self.parameter_widgets.clear()
+            
+            # Remove all widgets from layout
+            while self.dynamic_params_layout.count():
+                item = self.dynamic_params_layout.takeAt(0)
+                if item.widget():
+                    item.widget().deleteLater()
+    
     def _load_parameters_from_config(self, param_type: str):
         """Load parameters from configuration and update UI widgets"""
         try:
@@ -1234,6 +1480,12 @@ class UICreationMethods:
             if missing_components:
                 self.logger.warning(f"⚠️ Missing UI components: {missing_components}")
             self.logger.info(f"🔄 Current working directory: {Path.cwd()}")
+            
+            # Use unified configuration system if available
+            if hasattr(self, 'config_integration'):
+                self.logger.info("Using unified configuration system for parameter loading")
+                self._load_parameters_unified(param_type)
+                return
             
             if param_type == "image":
                 # Load actual configuration
@@ -1300,11 +1552,15 @@ class UICreationMethods:
                         
                         # First, handle prompt updates
                         self.logger.debug(f"Processing {len(selected_nodes)} nodes for prompt updates")
+                        self.logger.debug(f"Selected node IDs: {selected_nodes}")
                         positive_prompt_text = ""
                         negative_prompt_text = ""
                         
                         for node_id in selected_nodes:
-                            node = workflow.get(str(node_id))
+                            # Extract numeric ID from node_id like "CLIPTextEncode_13" -> "13"
+                            numeric_id = node_id.split('_')[-1] if '_' in node_id else node_id
+                            node = workflow.get(str(numeric_id))
+                            self.logger.debug(f"Looking for node {numeric_id} in workflow: found={node is not None}")
                             if node and node.get('type') == 'CLIPTextEncode':
                                 widgets_values = node.get('widgets_values', [])
                                 text = widgets_values[0] if widgets_values else ''
@@ -1326,12 +1582,20 @@ class UICreationMethods:
                         
                         # Update prompt widgets
                         if positive_prompt_text and hasattr(self, 'positive_prompt'):
-                            self.positive_prompt.set_text(positive_prompt_text)
+                            self.positive_prompt.setText(positive_prompt_text)
                             self.logger.debug("Updated positive prompt widget")
+                            
+                            # Also update through prompt memory if available
+                            if hasattr(self, 'prompt_memory'):
+                                self.prompt_memory.set_prompt('positive', positive_prompt_text, is_user_edit=False)
                         
                         if negative_prompt_text and hasattr(self, 'negative_prompt'):
-                            self.negative_prompt.set_text(negative_prompt_text)
+                            self.negative_prompt.setText(negative_prompt_text)
                             self.logger.debug("Updated negative prompt widget")
+                            
+                            # Also update through prompt memory if available
+                            if hasattr(self, 'prompt_memory'):
+                                self.prompt_memory.set_prompt('negative', negative_prompt_text, is_user_edit=False)
                         
                         # Log if no prompts were found
                         if not positive_prompt_text and not negative_prompt_text:
@@ -1342,7 +1606,9 @@ class UICreationMethods:
                         # Ordered nodes: {ordered_nodes}
                         
                         for node_id in ordered_nodes:
-                            node = workflow.get(str(node_id))
+                            # Extract numeric ID from node_id like "KSampler_10" -> "10"
+                            numeric_id = node_id.split('_')[-1] if '_' in node_id else node_id
+                            node = workflow.get(str(numeric_id))
                             if not node:
                                 continue
                                 
@@ -1648,7 +1914,9 @@ class UICreationMethods:
         # Separate and sort nodes
         categorized_nodes = {}
         for node_id in node_ids:
-            node = workflow.get(str(node_id))
+            # Extract numeric ID from node_id like "KSampler_10" -> "10"
+            numeric_id = node_id.split('_')[-1] if '_' in node_id else node_id
+            node = workflow.get(str(numeric_id))
             if not node:
                 continue
             
