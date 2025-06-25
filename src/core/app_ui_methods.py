@@ -2144,7 +2144,8 @@ class UICreationMethods:
             comfyui_models_dir = None
             if hasattr(self.config, 'comfyui_path') and self.config.comfyui_path:
                 comfyui_models_dir = self.config.comfyui_path / "models"
-            self._model_scanner = ComfyUIModelScanner(comfyui_models_dir)
+            # Pass config to scanner for comprehensive directory support
+            self._model_scanner = ComfyUIModelScanner(comfyui_models_dir, config=self.config)
         
         # Get models for the specific node type
         if node_type:

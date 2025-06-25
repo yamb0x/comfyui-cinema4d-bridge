@@ -42,6 +42,16 @@ class SimpleConfig:
     checkpoints_dir: Optional[Path] = None
     loras_dir: Optional[Path] = None
     vae_dir: Optional[Path] = None
+    clip_dir: Optional[Path] = None
+    clip_vision_dir: Optional[Path] = None
+    controlnet_dir: Optional[Path] = None
+    diffusers_dir: Optional[Path] = None
+    embeddings_dir: Optional[Path] = None
+    gligen_dir: Optional[Path] = None
+    hypernetworks_dir: Optional[Path] = None
+    style_models_dir: Optional[Path] = None
+    unet_dir: Optional[Path] = None
+    upscale_models_dir: Optional[Path] = None
     
     def __post_init__(self):
         """Initialize computed paths"""
@@ -72,6 +82,26 @@ class SimpleConfig:
             self.loras_dir = Path(os.getenv("COMFYUI_LORAS", str(self.comfyui_path / "models" / "loras")))
         if self.vae_dir is None:
             self.vae_dir = Path(os.getenv("COMFYUI_VAE", str(self.comfyui_path / "models" / "vae")))
+        if self.clip_dir is None:
+            self.clip_dir = Path(os.getenv("COMFYUI_CLIP", str(self.comfyui_path / "models" / "clip")))
+        if self.clip_vision_dir is None:
+            self.clip_vision_dir = Path(os.getenv("COMFYUI_CLIP_VISION", str(self.comfyui_path / "models" / "clip_vision")))
+        if self.controlnet_dir is None:
+            self.controlnet_dir = Path(os.getenv("COMFYUI_CONTROLNET", str(self.comfyui_path / "models" / "controlnet")))
+        if self.diffusers_dir is None:
+            self.diffusers_dir = Path(os.getenv("COMFYUI_DIFFUSERS", str(self.comfyui_path / "models" / "diffusers")))
+        if self.embeddings_dir is None:
+            self.embeddings_dir = Path(os.getenv("COMFYUI_EMBEDDINGS", str(self.comfyui_path / "models" / "embeddings")))
+        if self.gligen_dir is None:
+            self.gligen_dir = Path(os.getenv("COMFYUI_GLIGEN", str(self.comfyui_path / "models" / "gligen")))
+        if self.hypernetworks_dir is None:
+            self.hypernetworks_dir = Path(os.getenv("COMFYUI_HYPERNETWORKS", str(self.comfyui_path / "models" / "hypernetworks")))
+        if self.style_models_dir is None:
+            self.style_models_dir = Path(os.getenv("COMFYUI_STYLE_MODELS", str(self.comfyui_path / "models" / "style_models")))
+        if self.unet_dir is None:
+            self.unet_dir = Path(os.getenv("COMFYUI_UNET", str(self.comfyui_path / "models" / "unet")))
+        if self.upscale_models_dir is None:
+            self.upscale_models_dir = Path(os.getenv("COMFYUI_UPSCALE_MODELS", str(self.comfyui_path / "models" / "upscale_models")))
     
     def ensure_directories(self):
         """Ensure all directories exist"""

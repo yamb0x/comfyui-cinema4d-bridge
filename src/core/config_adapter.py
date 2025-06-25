@@ -97,6 +97,16 @@ class AppConfigAdapter:
         self.loras_dir = simple_config.loras_dir
         self.checkpoints_dir = simple_config.checkpoints_dir
         self.vae_dir = simple_config.vae_dir
+        self.clip_dir = simple_config.clip_dir
+        self.clip_vision_dir = simple_config.clip_vision_dir
+        self.controlnet_dir = simple_config.controlnet_dir
+        self.diffusers_dir = simple_config.diffusers_dir
+        self.embeddings_dir = simple_config.embeddings_dir
+        self.gligen_dir = simple_config.gligen_dir
+        self.hypernetworks_dir = simple_config.hypernetworks_dir
+        self.style_models_dir = simple_config.style_models_dir
+        self.unet_dir = simple_config.unet_dir
+        self.upscale_models_dir = simple_config.upscale_models_dir
         self.recent_projects: List[str] = []
         self.max_recent_projects = simple_config.max_recent_projects
     

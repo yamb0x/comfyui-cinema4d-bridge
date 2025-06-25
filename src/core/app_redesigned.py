@@ -5372,7 +5372,16 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 "lora": self._scan_model_files("lora"),
                 "checkpoint": self._scan_model_files("checkpoint"),
                 "vae": self._scan_model_files("vae"),
-                "controlnet": self._scan_model_files("controlnet")
+                "controlnet": self._scan_model_files("controlnet"),
+                "clip": self._scan_model_files("clip"),
+                "clip_vision": self._scan_model_files("clip_vision"),
+                "diffusers": self._scan_model_files("diffusers"),
+                "embeddings": self._scan_model_files("embeddings"),
+                "gligen": self._scan_model_files("gligen"),
+                "hypernetworks": self._scan_model_files("hypernetworks"),
+                "style_models": self._scan_model_files("style_models"),
+                "unet": self._scan_model_files("unet"),
+                "upscale_models": self._scan_model_files("upscale_models")
             }
         return self._model_cache
     
@@ -5383,7 +5392,16 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 "lora": ["*.safetensors", "*.ckpt", "*.pt"],
                 "checkpoint": ["*.safetensors", "*.ckpt"],
                 "vae": ["*.safetensors", "*.ckpt", "*.pt"],
-                "controlnet": ["*.safetensors", "*.pth"]
+                "controlnet": ["*.safetensors", "*.pth", "*.pt"],
+                "clip": ["*.safetensors", "*.pt", "*.bin"],
+                "clip_vision": ["*.safetensors", "*.pt", "*.bin"],
+                "diffusers": ["*.safetensors", "*.ckpt"],
+                "embeddings": ["*.safetensors", "*.pt", "*.bin"],
+                "gligen": ["*.safetensors", "*.pt"],
+                "hypernetworks": ["*.safetensors", "*.pt", "*.ckpt"],
+                "style_models": ["*.safetensors", "*.pt"],
+                "unet": ["*.safetensors", "*.ckpt", "*.pt"],
+                "upscale_models": ["*.safetensors", "*.pt", "*.pth"]
             }
             
             model_files = []
@@ -5391,12 +5409,22 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             
             # Get model directory based on type
             # Handle special cases for directory naming
-            if model_type == "vae":
-                dir_attr = "vae_dir"  # vae_dir not vaes_dir
-            elif model_type == "lora":
-                dir_attr = "loras_dir"  # loras_dir not lora_dir
-            else:
-                dir_attr = f'{model_type}s_dir'
+            dir_mapping = {
+                "vae": "vae_dir",
+                "lora": "loras_dir", 
+                "checkpoint": "checkpoints_dir",
+                "controlnet": "controlnet_dir",
+                "clip": "clip_dir",
+                "clip_vision": "clip_vision_dir",
+                "diffusers": "diffusers_dir",
+                "embeddings": "embeddings_dir",
+                "gligen": "gligen_dir",
+                "hypernetworks": "hypernetworks_dir",
+                "style_models": "style_models_dir",
+                "unet": "unet_dir",
+                "upscale_models": "upscale_models_dir"
+            }
+            dir_attr = dir_mapping.get(model_type, f'{model_type}s_dir')
                 
             if hasattr(self.config, dir_attr):
                 model_dir = getattr(self.config, dir_attr)

@@ -57,14 +57,16 @@ class ComfyUIModelScanner:
         "diffusion_models": [".safetensors", ".pt", ".onnx"],  # For diffusion models
     }
     
-    def __init__(self, comfyui_models_dir: Optional[Path] = None):
+    def __init__(self, comfyui_models_dir: Optional[Path] = None, config=None):
         """
         Initialize scanner with ComfyUI models directory
         
         Args:
             comfyui_models_dir: Path to ComfyUI/models directory
+            config: Application config with model directory paths
         """
         self.logger = logger
+        self.config = config
         
         # Try to find ComfyUI models directory
         if comfyui_models_dir:
@@ -134,8 +136,40 @@ class ComfyUIModelScanner:
         Returns:
             List of model filenames found
         """
-        model_path = self.models_dir / subdir
-        if not model_path.exists():
+        # Try to use config directory first if available
+        model_path = None
+        
+        if self.config:
+            # Map subdirectory names to config attributes
+            config_dir_mapping = {
+                "checkpoints": "checkpoints_dir",
+                "loras": "loras_dir",
+                "vae": "vae_dir",
+                "clip": "clip_dir",
+                "clip_vision": "clip_vision_dir",
+                "controlnet": "controlnet_dir",
+                "diffusers": "diffusers_dir",
+                "embeddings": "embeddings_dir",
+                "gligen": "gligen_dir",
+                "hypernetworks": "hypernetworks_dir",
+                "style_models": "style_models_dir",
+                "diffusion_models": "unet_dir",  # UNETLoader uses unet_dir
+                "upscale_models": "upscale_models_dir",
+                "text_encoders": "clip_dir"  # QuadrupleCLIPLoader uses clip directory
+            }
+            
+            config_attr = config_dir_mapping.get(subdir)
+            if config_attr and hasattr(self.config, config_attr):
+                config_path = getattr(self.config, config_attr)
+                if config_path and config_path.exists():
+                    model_path = config_path
+                    self.logger.debug(f"Using config directory for {subdir}: {model_path}")
+        
+        # Fallback to default models_dir structure
+        if not model_path and self.models_dir:
+            model_path = self.models_dir / subdir
+        
+        if not model_path or not model_path.exists():
             self.logger.debug(f"Model directory does not exist: {model_path}")
             return []
         
