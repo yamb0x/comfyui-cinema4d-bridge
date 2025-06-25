@@ -41,6 +41,7 @@ class SimpleConfig:
     cinema4d_scripts_dir: Optional[Path] = None
     checkpoints_dir: Optional[Path] = None
     loras_dir: Optional[Path] = None
+    vae_dir: Optional[Path] = None
     
     def __post_init__(self):
         """Initialize computed paths"""
@@ -69,6 +70,8 @@ class SimpleConfig:
             self.checkpoints_dir = Path(os.getenv("COMFYUI_CHECKPOINTS", str(self.comfyui_path / "models" / "checkpoints")))
         if self.loras_dir is None:
             self.loras_dir = Path(os.getenv("COMFYUI_LORAS", str(self.comfyui_path / "models" / "loras")))
+        if self.vae_dir is None:
+            self.vae_dir = Path(os.getenv("COMFYUI_VAE", str(self.comfyui_path / "models" / "vae")))
     
     def ensure_directories(self):
         """Ensure all directories exist"""

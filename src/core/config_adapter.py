@@ -96,6 +96,7 @@ class AppConfigAdapter:
         self.config_dir = simple_config.config_dir
         self.loras_dir = simple_config.loras_dir
         self.checkpoints_dir = simple_config.checkpoints_dir
+        self.vae_dir = simple_config.vae_dir
         self.recent_projects: List[str] = []
         self.max_recent_projects = simple_config.max_recent_projects
     

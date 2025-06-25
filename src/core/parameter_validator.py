@@ -49,7 +49,7 @@ class ParameterValidator:
         self.valid_options = {
             "sampler_name": ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral", 
                            "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_ancestral", 
-                           "dpmpp_sde", "dpmpp_2m", "ddim", "uni_pc", "uni_pc_bh2"],
+                           "dpmpp_sde", "dpmpp_2m", "ddim", "uni_pc", "uni_pc_bh2", "lcm"],
             "scheduler": ["normal", "karras", "exponential", "sgm_uniform", "simple", 
                          "ddim_uniform", "beta", "linear_quadratic", "kl_optimal"],
             "quality_3d": ["low", "medium", "high", "ultra"],

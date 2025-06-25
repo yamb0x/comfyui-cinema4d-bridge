@@ -5390,8 +5390,16 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             type_extensions = extensions.get(model_type, ["*.safetensors"])
             
             # Get model directory based on type
-            if hasattr(self.config, f'{model_type}s_dir'):
-                model_dir = getattr(self.config, f'{model_type}s_dir')
+            # Handle special cases for directory naming
+            if model_type == "vae":
+                dir_attr = "vae_dir"  # vae_dir not vaes_dir
+            elif model_type == "lora":
+                dir_attr = "loras_dir"  # loras_dir not lora_dir
+            else:
+                dir_attr = f'{model_type}s_dir'
+                
+            if hasattr(self.config, dir_attr):
+                model_dir = getattr(self.config, dir_attr)
                 if model_dir and model_dir.exists():
                     for ext in type_extensions:
                         model_files.extend([f.name for f in model_dir.glob(ext)])

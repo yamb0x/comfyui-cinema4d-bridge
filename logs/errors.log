@@ -9038,3 +9038,11 @@ RuntimeError: dictionary changed size during iteration
 2025-06-25 09:19:46.267 | ERROR    | core.app_redesigned:_update_grids_accent_color:6936 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
 2025-06-25 09:33:37.480 | ERROR    | core.app_redesigned:_update_grids_accent_color:6936 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
 2025-06-25 09:34:20.725 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 09:57:07.200 | ERROR    | core.app_redesigned:_update_grids_accent_color:6936 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 09:57:28.641 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 10:00:29.382 | ERROR    | core.app_redesigned:_update_grids_accent_color:6936 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 10:00:52.274 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 10:01:10.025 | ERROR    | core.app_redesigned:_validate_model_file:5435 - No vae models available for fallback
+2025-06-25 10:03:03.233 | ERROR    | core.app_redesigned:_validate_model_file:5435 - No vae models available for fallback
+2025-06-25 10:04:04.669 | ERROR    | src.mcp.comfyui_client:queue_prompt:447 - Timeout queuing prompt: 
+2025-06-25 10:04:05.544 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: 
