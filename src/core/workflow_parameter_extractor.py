@@ -15,10 +15,11 @@ class WorkflowParameterExtractor:
     PARAMETER_MAPPINGS = {
         "KSampler": {
             "seed": {"ui_name": "Seed", "type": "int", "min": 0, "max": 2147483647, "default": 42},
+            "control_after_generation": {"ui_name": "Control After Generation", "type": "choice", "options": ["fixed", "increment", "decrement", "randomize"], "default": "randomize"},
             "steps": {"ui_name": "Steps", "type": "int", "min": 1, "max": 150, "default": 20},
             "cfg": {"ui_name": "CFG Scale", "type": "float", "min": 1.0, "max": 30.0, "default": 7.0},
-            "sampler_name": {"ui_name": "Sampler", "type": "choice", "default": "dpmpp_2m"},
-            "scheduler": {"ui_name": "Scheduler", "type": "choice", "default": "karras"},
+            "sampler_name": {"ui_name": "Sampler", "type": "choice", "options": ["euler", "euler_a", "heun", "dpm_2", "dpm_2_a", "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_a", "dpmpp_2m", "dpmpp_2m_sde", "dpmpp_3m_sde", "ddpm", "lcm"], "default": "dpmpp_2m"},
+            "scheduler": {"ui_name": "Scheduler", "type": "choice", "options": ["normal", "karras", "exponential", "sgm_uniform", "simple", "ddim_uniform"], "default": "karras"},
             "denoise": {"ui_name": "Denoise", "type": "float", "min": 0.0, "max": 1.0, "default": 1.0}
         },
         "KSamplerAdvanced": {
@@ -73,6 +74,41 @@ class WorkflowParameterExtractor:
         },
         "Note": {
             "text": {"ui_name": "Note", "type": "text", "default": "", "multiline": True}
+        },
+        # Hunyuan3D specific nodes
+        "Hy3DVAEDecode": {
+            "threshold": {"ui_name": "Decode Threshold", "type": "float", "min": 0.1, "max": 2.0, "default": 1.01},
+            "resolution": {"ui_name": "Voxel Resolution", "type": "int", "min": 64, "max": 1024, "default": 384},
+            "iterations": {"ui_name": "Decode Iterations", "type": "int", "min": 1000, "max": 20000, "default": 8000},
+            "start_index": {"ui_name": "Start Index", "type": "int", "min": 0, "max": 100, "default": 0},
+            "algorithm": {"ui_name": "Algorithm", "type": "choice", "options": ["mc", "dual_contouring"], "default": "mc"},
+            "enable_smoothing": {"ui_name": "Enable Smoothing", "type": "bool", "default": True},
+            "enable_postprocess": {"ui_name": "Enable Post-processing", "type": "bool", "default": True}
+        },
+        "Hy3DGenerateMesh": {
+            "guidance_scale": {"ui_name": "Guidance Scale", "type": "float", "min": 1.0, "max": 20.0, "default": 5.5},
+            "steps": {"ui_name": "Generation Steps", "type": "int", "min": 10, "max": 200, "default": 100},
+            "seed": {"ui_name": "Seed", "type": "int", "min": 0, "max": 2147483647, "default": 123},
+            "seed_mode": {"ui_name": "Seed Mode", "type": "choice", "options": ["fixed", "random"], "default": "fixed"},
+            "scheduler": {"ui_name": "Scheduler", "type": "choice", "options": ["FlowMatchEulerDiscreteScheduler", "DDIMScheduler", "EulerDiscreteScheduler"], "default": "FlowMatchEulerDiscreteScheduler"},
+            "enable_feature": {"ui_name": "Enable Enhancement", "type": "bool", "default": True}
+        },
+        "Hy3DModelLoader": {
+            "model_name": {"ui_name": "Model File", "type": "choice", "default": "hunyun3D-2\\hunyuan3d-dit-v2-0-fp16.safetensors"},
+            "attention_mode": {"ui_name": "Attention Mode", "type": "choice", "options": ["sdpa", "flash_attention", "default"], "default": "sdpa"},
+            "compile_model": {"ui_name": "Compile Model", "type": "bool", "default": False}
+        },
+        "Hy3DPostprocessMesh": {
+            "smooth_mesh": {"ui_name": "Smooth Mesh", "type": "bool", "default": True},
+            "remove_isolated": {"ui_name": "Remove Isolated", "type": "bool", "default": True},
+            "simplify_mesh": {"ui_name": "Simplify Mesh", "type": "bool", "default": True},
+            "target_faces": {"ui_name": "Target Faces", "type": "int", "min": 1000, "max": 1000000, "default": 500000},
+            "clean_mesh": {"ui_name": "Clean Mesh", "type": "bool", "default": True}
+        },
+        "Hy3DExportMesh": {
+            "filename_prefix": {"ui_name": "Filename Prefix", "type": "text", "default": "3D/Hy3D"},
+            "export_format": {"ui_name": "Export Format", "type": "choice", "options": ["glb", "obj", "ply", "stl"], "default": "glb"},
+            "overwrite": {"ui_name": "Overwrite Files", "type": "bool", "default": True}
         }
     }
     
@@ -134,16 +170,30 @@ class WorkflowParameterExtractor:
             # Try to find the current value in widgets_values
             # This is workflow-specific and may need adjustment based on node structure
             if node_type == "KSampler" and widgets_values:
+                self.logger.info(f"🎯 KSampler {node.get('id')} widgets_values: {widgets_values}")
                 if param_name == "seed" and len(widgets_values) > 0:
                     param_data["current_value"] = widgets_values[0]
+                    self.logger.info(f"✅ Set {param_name} = {widgets_values[0]}")
+                elif param_name == "control_after_generation" and len(widgets_values) > 1:
+                    param_data["current_value"] = widgets_values[1]
+                    self.logger.info(f"✅ Set {param_name} = {widgets_values[1]}")
                 elif param_name == "steps" and len(widgets_values) > 2:
                     param_data["current_value"] = widgets_values[2]
+                    self.logger.info(f"✅ Set {param_name} = {widgets_values[2]}")
                 elif param_name == "cfg" and len(widgets_values) > 3:
                     param_data["current_value"] = widgets_values[3]
+                    self.logger.info(f"✅ Set {param_name} = {widgets_values[3]}")
                 elif param_name == "sampler_name" and len(widgets_values) > 4:
                     param_data["current_value"] = widgets_values[4]
+                    self.logger.info(f"✅ Set {param_name} = {widgets_values[4]}")
                 elif param_name == "scheduler" and len(widgets_values) > 5:
                     param_data["current_value"] = widgets_values[5]
+                    self.logger.info(f"✅ Set {param_name} = {widgets_values[5]}")
+                elif param_name == "denoise" and len(widgets_values) > 6:
+                    param_data["current_value"] = widgets_values[6]
+                    self.logger.info(f"✅ Set {param_name} = {widgets_values[6]}")
+                else:
+                    self.logger.warning(f"⚠️ No value found for {param_name} in widgets_values: {widgets_values}")
                     
             elif node_type == "CLIPTextEncode" and widgets_values:
                 if param_name == "text" and len(widgets_values) > 0:
@@ -205,6 +255,65 @@ class WorkflowParameterExtractor:
                 if param_name == "text" and len(widgets_values) > 0:
                     param_data["current_value"] = widgets_values[0]
             
+            # Hunyuan3D specific nodes
+            elif node_type == "Hy3DVAEDecode" and widgets_values:
+                if param_name == "threshold" and len(widgets_values) > 0:
+                    param_data["current_value"] = widgets_values[0]
+                elif param_name == "resolution" and len(widgets_values) > 1:
+                    param_data["current_value"] = widgets_values[1]
+                elif param_name == "iterations" and len(widgets_values) > 2:
+                    param_data["current_value"] = widgets_values[2]
+                elif param_name == "start_index" and len(widgets_values) > 3:
+                    param_data["current_value"] = widgets_values[3]
+                elif param_name == "algorithm" and len(widgets_values) > 4:
+                    param_data["current_value"] = widgets_values[4]
+                elif param_name == "enable_smoothing" and len(widgets_values) > 5:
+                    param_data["current_value"] = widgets_values[5]
+                elif param_name == "enable_postprocess" and len(widgets_values) > 6:
+                    param_data["current_value"] = widgets_values[6]
+                    
+            elif node_type == "Hy3DGenerateMesh" and widgets_values:
+                if param_name == "guidance_scale" and len(widgets_values) > 0:
+                    param_data["current_value"] = widgets_values[0]
+                elif param_name == "steps" and len(widgets_values) > 1:
+                    param_data["current_value"] = widgets_values[1]
+                elif param_name == "seed" and len(widgets_values) > 2:
+                    param_data["current_value"] = widgets_values[2]
+                elif param_name == "seed_mode" and len(widgets_values) > 3:
+                    param_data["current_value"] = widgets_values[3]
+                elif param_name == "scheduler" and len(widgets_values) > 4:
+                    param_data["current_value"] = widgets_values[4]
+                elif param_name == "enable_feature" and len(widgets_values) > 5:
+                    param_data["current_value"] = widgets_values[5]
+                    
+            elif node_type == "Hy3DModelLoader" and widgets_values:
+                if param_name == "model_name" and len(widgets_values) > 0:
+                    param_data["current_value"] = widgets_values[0]
+                elif param_name == "attention_mode" and len(widgets_values) > 1:
+                    param_data["current_value"] = widgets_values[1]
+                elif param_name == "compile_model" and len(widgets_values) > 2:
+                    param_data["current_value"] = widgets_values[2]
+                    
+            elif node_type == "Hy3DPostprocessMesh" and widgets_values:
+                if param_name == "smooth_mesh" and len(widgets_values) > 0:
+                    param_data["current_value"] = widgets_values[0]
+                elif param_name == "remove_isolated" and len(widgets_values) > 1:
+                    param_data["current_value"] = widgets_values[1]
+                elif param_name == "simplify_mesh" and len(widgets_values) > 2:
+                    param_data["current_value"] = widgets_values[2]
+                elif param_name == "target_faces" and len(widgets_values) > 3:
+                    param_data["current_value"] = widgets_values[3]
+                elif param_name == "clean_mesh" and len(widgets_values) > 4:
+                    param_data["current_value"] = widgets_values[4]
+                    
+            elif node_type == "Hy3DExportMesh" and widgets_values:
+                if param_name == "filename_prefix" and len(widgets_values) > 0:
+                    param_data["current_value"] = widgets_values[0]
+                elif param_name == "export_format" and len(widgets_values) > 1:
+                    param_data["current_value"] = widgets_values[1]
+                elif param_name == "overwrite" and len(widgets_values) > 2:
+                    param_data["current_value"] = widgets_values[2]
+            
             # Add node context
             param_data["node_id"] = node.get("id")
             param_data["node_type"] = node_type
@@ -264,12 +373,14 @@ class WorkflowParameterExtractor:
         
         # Update based on node type and parameter
         if node_type == "KSampler":
-            # Ensure we have enough values
-            while len(widgets_values) < 8:
+            # Ensure we have enough values (KSampler has 7 parameters: seed, control, steps, cfg, sampler, scheduler, denoise)
+            while len(widgets_values) < 7:
                 widgets_values.append(None)
             
             if param_name == "seed":
                 widgets_values[0] = int(value)
+            elif param_name == "control_after_generation":
+                widgets_values[1] = str(value)
             elif param_name == "steps":
                 widgets_values[2] = int(value)
             elif param_name == "cfg":
@@ -278,6 +389,8 @@ class WorkflowParameterExtractor:
                 widgets_values[4] = str(value)
             elif param_name == "scheduler":
                 widgets_values[5] = str(value)
+            elif param_name == "denoise":
+                widgets_values[6] = float(value)
                 
         elif node_type == "CLIPTextEncode":
             if len(widgets_values) == 0:

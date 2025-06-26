@@ -14,6 +14,7 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QSizePolicy
 from PySide6.QtCore import QUrl, Signal, QTimer, Qt
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from loguru import logger
+from src.utils.port_manager import port_manager
 
 
 class LocalFileServer(SimpleHTTPRequestHandler):
@@ -81,10 +82,11 @@ class ThreeJS3DViewer(QWidget):
         self.server = None
         self.model_path = None
         
-        # Get unique port for this instance
-        with ThreeJS3DViewer._port_lock:
-            self.server_port = ThreeJS3DViewer._next_port
-            ThreeJS3DViewer._next_port += 1
+        # Get unique port for this instance using port manager
+        self.server_port = port_manager.allocate_port()
+        if self.server_port is None:
+            logger.error("Failed to allocate port for ThreeJS viewer")
+            self.server_port = 8890  # Fallback port
         
         self.setup_ui()
         if auto_start:
@@ -105,7 +107,7 @@ class ThreeJS3DViewer(QWidget):
             handler = lambda *args: LocalFileServer(*args, viewer_instance=self)
             try:
                 self.server = HTTPServer(('localhost', self.server_port), handler)
-                logger.info(f"Started server for ThreeJS viewer on port {self.server_port}")
+                logger.debug(f"Started server for ThreeJS viewer on port {self.server_port}")
                 self.server_started = True
                 self.server.serve_forever()
             except Exception as e:
@@ -121,7 +123,7 @@ class ThreeJS3DViewer(QWidget):
     def load_model(self, model_path):
         """Load a new model into the viewer"""
         self.model_path = model_path
-        logger.info(f"Loading model: {model_path}")
+        logger.debug(f"Loading model: {model_path}")
         
         # Ensure the path is absolute
         if not os.path.isabs(model_path):
@@ -885,12 +887,24 @@ class ThreeJS3DViewer(QWidget):
             logger.error(f"Failed to apply settings: {e}")
         
     def stop_server(self):
-        """Stop the HTTP server"""
+        """Stop the HTTP server and release the port"""
         if self.server:
             self.server.shutdown()
             self.server_thread.join(timeout=1)
+        
+        # Release the port back to the pool
+        if hasattr(self, 'server_port'):
+            port_manager.release_port(self.server_port)
+            logger.debug(f"Released port {self.server_port} back to pool")
             
     def closeEvent(self, event):
         """Clean up on close"""
         self.stop_server()
         event.accept()
+    
+    def __del__(self):
+        """Ensure port is released when object is destroyed"""
+        try:
+            self.stop_server()
+        except:
+            pass

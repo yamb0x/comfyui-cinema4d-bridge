@@ -8,20 +8,25 @@ from loguru import logger
 from datetime import datetime
 
 
-def setup_logging(log_dir: Path = None, debug: bool = True):
+def setup_logging(log_dir: Path = None, debug: bool = None):
     """
     Setup application logging with loguru
     
     Args:
         log_dir: Directory to store log files
-        debug: Enable debug logging
+        debug: Enable debug logging (defaults to checking COMFY_C4D_DEBUG env var)
     """
     # Remove default logger
     logger.remove()
     
+    # Check environment variable if debug not explicitly set
+    import os
+    if debug is None:
+        debug = os.getenv('COMFY_C4D_DEBUG', '').lower() in ('true', '1', 'yes', 'on')
+    
     # Console logging with color and UTF-8 encoding
-    # Default to INFO level for console to reduce noise
-    level = "INFO" if not debug else "DEBUG"
+    # Default to INFO level for console to reduce noise unless debug mode is enabled
+    level = "DEBUG" if debug else "INFO"
     
     # For Windows, we need to handle encoding properly
     import platform
@@ -101,6 +106,7 @@ def setup_logging(log_dir: Path = None, debug: bool = True):
     
     logger.info(f"Logging initialized. Log directory: {log_dir}")
     logger.info(f"Main log file: {log_file}")
+    logger.info(f"Debug mode: {'ENABLED' if debug else 'DISABLED'} (set COMFY_C4D_DEBUG=true to enable)")
     
     return logger
 

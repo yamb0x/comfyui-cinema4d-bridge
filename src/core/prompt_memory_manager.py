@@ -83,7 +83,7 @@ class PromptMemoryManager(QObject):
             if "negative" in prompts_found:
                 self._file_prompts["negative"] = prompts_found["negative"]
                 
-            logger.info(f"Loaded prompts from workflow: {workflow_path.name}")
+            logger.debug(f"Loaded prompts from workflow: {workflow_path.name}")
             
             # Update UI widgets based on hierarchy
             self._update_prompt_widgets()

@@ -1304,13 +1304,13 @@ class WorkflowManager(LoggerMixin):
                 # CORRECT FIX: Based on actual node definition from GitHub
                 # INPUT_TYPES: "trimesh": (TRIMESH,), "image": (IMAGE,), "texture": (dropdown selection)
                 # The "texture" input is NOT an image connection but a string parameter!
-                self.logger.info(f"🔧 DEBUG: Hy3DSetMeshPBRTextures node {node_id} - setting texture type parameter")
+                self.logger.debug(f"🔧 DEBUG: Hy3DSetMeshPBRTextures node {node_id} - setting texture type parameter")
                 
                 if widgets and len(widgets) >= 1:
                     texture_type = widgets[0]  # e.g., "normal"
                     # The "texture" input expects a string value, not an image connection
                     api_node["inputs"]["texture"] = texture_type
-                    self.logger.info(f"🔧 PBR FIX: Set texture type parameter to '{texture_type}'")
+                    self.logger.debug(f"🔧 PBR FIX: Set texture type parameter to '{texture_type}'")
                 else:
                     self.logger.warning(f"Hy3DSetMeshPBRTextures node {node_id} has no widgets_values")
             
@@ -1682,7 +1682,7 @@ class WorkflowManager(LoggerMixin):
                 mesh_nodes_before.append(f"Hy3DUploadMesh Node {node.get('id')}: {mesh_filename}")
         
         if mesh_nodes_before:
-            self.logger.info(f"🔧 TEXTURE FIX: Mesh nodes before parameter injection: {mesh_nodes_before}")
+            self.logger.debug(f"🔧 TEXTURE FIX: Mesh nodes before parameter injection: {mesh_nodes_before}")
         
         # Reset LoRA usage tracking for dynamic assignment
         for i in range(1, 10):
@@ -1835,7 +1835,7 @@ class WorkflowManager(LoggerMixin):
                 mesh_nodes_after.append(f"Hy3DUploadMesh Node {node.get('id')}: {mesh_filename}")
         
         if mesh_nodes_after:
-            self.logger.info(f"🔧 TEXTURE FIX: Mesh nodes after parameter injection: {mesh_nodes_after}")
+            self.logger.debug(f"🔧 TEXTURE FIX: Mesh nodes after parameter injection: {mesh_nodes_after}")
         
         return workflow_copy
     
@@ -2876,7 +2876,7 @@ class WorkflowManager(LoggerMixin):
                 }
                 
                 api_workflow[save_node_id] = save_node
-                self.logger.info(f"✅ Added SaveImage node {save_node_id} connected to VAEDecode {vae_decode_id}")
+                self.logger.debug(f"✅ Added SaveImage node {save_node_id} connected to VAEDecode {vae_decode_id}")
                 self.logger.info(f"✅ SaveImage will save to ComfyUI default output directory")
 
     def inject_parameters(self, workflow: Dict[str, Any], params: Dict[str, Any]) -> Dict[str, Any]:

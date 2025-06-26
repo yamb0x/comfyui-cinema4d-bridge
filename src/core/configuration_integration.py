@@ -83,6 +83,9 @@ class ConfigurationIntegration(QObject):
             
             if config:
                 logger.info(f"Loaded workflow configuration from dropdown: {workflow_name}")
+                # Emit signals to trigger UI updates
+                self.configuration_updated.emit(config)
+                self.workflow_changed.emit(workflow_name)
                 return True
             
             return False

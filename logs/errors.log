@@ -9046,3 +9046,365 @@ RuntimeError: dictionary changed size during iteration
 2025-06-25 10:03:03.233 | ERROR    | core.app_redesigned:_validate_model_file:5435 - No vae models available for fallback
 2025-06-25 10:04:04.669 | ERROR    | src.mcp.comfyui_client:queue_prompt:447 - Timeout queuing prompt: 
 2025-06-25 10:04:05.544 | ERROR    | src.mcp.comfyui_client:get_history:532 - Failed to get history: 
+2025-06-25 16:09:19.868 | ERROR    | core.app_redesigned:_update_grids_accent_color:6972 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 16:09:41.185 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 16:52:38.454 | ERROR    | core.app_redesigned:_update_grids_accent_color:6974 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 16:53:01.755 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 17:16:17.576 | ERROR    | core.app_redesigned:_update_grids_accent_color:6974 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 17:16:34.068 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 17:26:45.750 | ERROR    | core.app_redesigned:_update_grids_accent_color:6983 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 17:27:01.044 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 17:34:54.923 | ERROR    | core.app_redesigned:_update_grids_accent_color:7047 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 17:35:09.075 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 17:45:51.669 | ERROR    | core.app_redesigned:_update_grids_accent_color:7106 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 17:46:05.761 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 17:58:17.621 | ERROR    | core.app_redesigned:_on_workflow_changed:6023 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 17:58:17.626 | ERROR    | core.app_redesigned:_on_workflow_changed:6025 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5955, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 17:58:18.053 | ERROR    | core.app_redesigned:_update_grids_accent_color:7106 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 17:58:18.116 | ERROR    | core.app_redesigned:_on_workflow_changed:6023 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 17:58:18.118 | ERROR    | core.app_redesigned:_on_workflow_changed:6025 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5955, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 17:58:42.944 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 18:05:10.859 | ERROR    | core.app_redesigned:_on_workflow_changed:6023 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 18:05:10.864 | ERROR    | core.app_redesigned:_on_workflow_changed:6025 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5955, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 18:05:11.310 | ERROR    | core.app_redesigned:_update_grids_accent_color:7106 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 18:05:11.367 | ERROR    | core.app_redesigned:_on_workflow_changed:6023 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 18:05:11.369 | ERROR    | core.app_redesigned:_on_workflow_changed:6025 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5955, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 18:05:27.340 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 20:45:52.231 | ERROR    | core.app_redesigned:_on_workflow_changed:6023 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 20:45:52.237 | ERROR    | core.app_redesigned:_on_workflow_changed:6025 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5955, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 20:45:52.693 | ERROR    | core.app_redesigned:_on_workflow_changed:6023 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 20:45:52.695 | ERROR    | core.app_redesigned:_on_workflow_changed:6025 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5955, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 20:45:52.701 | ERROR    | core.app_redesigned:_update_grids_accent_color:7106 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 20:46:15.506 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 20:54:32.776 | ERROR    | core.app_redesigned:_on_workflow_changed:6023 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 20:54:32.782 | ERROR    | core.app_redesigned:_on_workflow_changed:6025 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5955, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 20:54:33.237 | ERROR    | core.app_redesigned:_on_workflow_changed:6023 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 20:54:33.241 | ERROR    | core.app_redesigned:_on_workflow_changed:6025 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5955, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 20:54:33.249 | ERROR    | core.app_redesigned:_update_grids_accent_color:7106 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 20:55:06.514 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 20:57:56.381 | ERROR    | core.app_redesigned:_on_workflow_changed:6023 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 20:57:56.387 | ERROR    | core.app_redesigned:_on_workflow_changed:6025 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5955, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 20:57:56.851 | ERROR    | core.app_redesigned:_on_workflow_changed:6023 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 20:57:56.853 | ERROR    | core.app_redesigned:_on_workflow_changed:6025 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5955, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 20:57:56.859 | ERROR    | core.app_redesigned:_update_grids_accent_color:7106 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 20:58:30.973 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 21:07:55.117 | ERROR    | core.app_redesigned:_on_workflow_changed:6023 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 21:07:55.121 | ERROR    | core.app_redesigned:_on_workflow_changed:6025 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5955, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 21:07:55.580 | ERROR    | core.app_redesigned:_on_workflow_changed:6023 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 21:07:55.582 | ERROR    | core.app_redesigned:_on_workflow_changed:6025 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5955, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 21:07:55.588 | ERROR    | core.app_redesigned:_update_grids_accent_color:7106 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 21:09:45.365 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 21:10:13.285 | ERROR    | core.app_ui_methods:_load_parameters_unified:1403 - Failed to load parameters through unified system: [Errno 13] Permission denied: '.'
+2025-06-25 21:10:13.314 | ERROR    | core.app_ui_methods:_load_parameters_unified:1405 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_ui_methods.py", line 1386, in _load_parameters_unified
+    with open(config_path, 'r') as f:
+         ~~~~^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '.'
+
+2025-06-25 21:10:45.271 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5888 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-25 21:10:45.828 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5888 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-25 21:10:46.952 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5888 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-25 21:10:47.369 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5888 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-25 21:11:05.689 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5888 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-25 21:11:06.222 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5888 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-25 21:11:31.485 | ERROR    | core.app_redesigned:_extract_and_save_workflow_parameters:5888 - Failed to extract and save workflow parameters: 'str' object has no attribute 'get'
+2025-06-25 21:11:36.040 | ERROR    | core.app_redesigned:_on_workflow_changed:6023 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 21:11:36.084 | ERROR    | core.app_redesigned:_on_workflow_changed:6025 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5955, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 21:18:46.704 | ERROR    | core.app_redesigned:_on_workflow_changed:6044 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 21:18:46.708 | ERROR    | core.app_redesigned:_on_workflow_changed:6046 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5976, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 21:18:47.158 | ERROR    | core.app_redesigned:_on_workflow_changed:6044 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 21:18:47.160 | ERROR    | core.app_redesigned:_on_workflow_changed:6046 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5976, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 21:18:47.166 | ERROR    | core.app_redesigned:_update_grids_accent_color:7127 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 21:18:55.614 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 21:19:19.986 | ERROR    | src.ui.viewers.threejs_3d_viewer:run_server:112 - Failed to start server on port 8913: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+2025-06-25 21:19:44.120 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 21:19:59.959 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 21:21:55.544 | ERROR    | core.app_redesigned:_on_workflow_changed:6044 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 21:21:55.549 | ERROR    | core.app_redesigned:_on_workflow_changed:6046 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5976, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 21:21:56.002 | ERROR    | core.app_redesigned:_on_workflow_changed:6044 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 21:21:56.004 | ERROR    | core.app_redesigned:_on_workflow_changed:6046 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5976, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 21:21:56.010 | ERROR    | core.app_redesigned:_update_grids_accent_color:7127 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 21:26:20.527 | ERROR    | core.app_redesigned:_on_workflow_changed:6322 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 21:26:20.532 | ERROR    | core.app_redesigned:_on_workflow_changed:6324 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 6254, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 21:26:20.990 | ERROR    | core.app_redesigned:_on_workflow_changed:6322 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 21:26:20.992 | ERROR    | core.app_redesigned:_on_workflow_changed:6324 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 6254, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 21:26:20.998 | ERROR    | core.app_redesigned:_update_grids_accent_color:7405 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 21:26:31.207 | ERROR    | core.app_redesigned:_on_workflow_new_changed:5872 - Failed to handle new workflow change: 'ComfyToC4DAppRedesigned' object has no attribute 'tab_widget'
+2025-06-25 21:26:31.216 | ERROR    | core.app_redesigned:_on_workflow_new_changed:5874 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5830, in _on_workflow_new_changed
+    current_tab = self.tab_widget.currentIndex()
+                  ^^^^^^^^^^^^^^^
+AttributeError: 'ComfyToC4DAppRedesigned' object has no attribute 'tab_widget'
+
+2025-06-25 21:26:41.488 | ERROR    | core.app_redesigned:_on_workflow_new_changed:5872 - Failed to handle new workflow change: 'ComfyToC4DAppRedesigned' object has no attribute 'tab_widget'
+2025-06-25 21:26:41.497 | ERROR    | core.app_redesigned:_on_workflow_new_changed:5874 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 5830, in _on_workflow_new_changed
+    current_tab = self.tab_widget.currentIndex()
+                  ^^^^^^^^^^^^^^^
+AttributeError: 'ComfyToC4DAppRedesigned' object has no attribute 'tab_widget'
+
+2025-06-25 21:27:45.167 | ERROR    | core.app_redesigned:_on_workflow_changed:6317 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 21:27:45.172 | ERROR    | core.app_redesigned:_on_workflow_changed:6319 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 6249, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 21:27:45.636 | ERROR    | core.app_redesigned:_on_workflow_changed:6317 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 21:27:45.638 | ERROR    | core.app_redesigned:_on_workflow_changed:6319 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 6249, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 21:27:45.644 | ERROR    | core.app_redesigned:_update_grids_accent_color:7400 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 21:27:54.387 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 21:27:57.378 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 21:27:58.415 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 21:28:00.060 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 21:28:26.383 | ERROR    | core.app_redesigned:_on_workflow_changed:6317 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 21:28:26.390 | ERROR    | core.app_redesigned:_on_workflow_changed:6319 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 6249, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 21:28:26.848 | ERROR    | core.app_redesigned:_on_workflow_changed:6317 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 21:28:26.851 | ERROR    | core.app_redesigned:_on_workflow_changed:6319 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 6249, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 21:28:26.856 | ERROR    | core.app_redesigned:_update_grids_accent_color:7400 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 21:28:35.464 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 21:28:36.166 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 21:28:37.339 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 21:29:08.448 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 22:13:08.648 | ERROR    | core.app_redesigned:_on_workflow_changed:6381 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 22:13:08.679 | ERROR    | core.app_redesigned:_on_workflow_changed:6383 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 6313, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 22:13:08.863 | ERROR    | core.app_redesigned:_update_grids_accent_color:7464 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 22:13:09.071 | ERROR    | core.app_redesigned:_on_workflow_changed:6381 - ❌ Failed to switch workflow: 'NegativePromptWidget' object has no attribute 'setText'
+2025-06-25 22:13:09.074 | ERROR    | core.app_redesigned:_on_workflow_changed:6383 - Traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 6313, in _on_workflow_changed
+    self.negative_prompt.setText(prompt_text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NegativePromptWidget' object has no attribute 'setText'. Did you mean: 'set_text'?
+
+2025-06-25 22:13:18.755 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 22:13:46.298 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 22:13:47.633 | ERROR    | core.app_redesigned:update_prompts:5864 - ❌ Error updating prompts: PromptMemoryManager.load_workflow_prompts() missing 1 required positional argument: 'workflow_data'
+2025-06-25 22:13:52.874 | ERROR    | core.app_redesigned:update_prompts:5864 - ❌ Error updating prompts: PromptMemoryManager.load_workflow_prompts() missing 1 required positional argument: 'workflow_data'
+2025-06-25 22:14:09.060 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 22:14:10.605 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 22:14:12.945 | ERROR    | core.app_redesigned:update_prompts:5864 - ❌ Error updating prompts: PromptMemoryManager.load_workflow_prompts() missing 1 required positional argument: 'workflow_data'
+2025-06-25 22:14:18.156 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 22:14:20.243 | CRITICAL | __main__:handle_exception:78 - Uncaught exception
+2025-06-25 22:14:23.219 | ERROR    | core.app_redesigned:update_prompts:5864 - ❌ Error updating prompts: PromptMemoryManager.load_workflow_prompts() missing 1 required positional argument: 'workflow_data'
+2025-06-25 22:16:59.405 | ERROR    | core.app_redesigned:_setup_redesigned_ui:649 - Failed to setup UI: name 'default_workflow' is not defined
+2025-06-25 22:16:59.408 | ERROR    | core.app_redesigned:_setup_redesigned_ui:651 - UI setup traceback: Traceback (most recent call last):
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 558, in _setup_redesigned_ui
+    self.content_splitter = self._create_main_content_area()
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 707, in _create_main_content_area
+    left_panel = self._create_enhanced_left_panel()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 748, in _create_enhanced_left_panel
+    image_controls = self._create_image_generation_controls()
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 1082, in _create_image_generation_controls
+    index_new = self.workflow_new_combo.findData(default_workflow)
+                                                 ^^^^^^^^^^^^^^^^
+NameError: name 'default_workflow' is not defined
+
+2025-06-25 22:16:59.409 | ERROR    | __main__:<module>:87 - Unhandled exception: name 'default_workflow' is not defined
+Traceback (most recent call last):
+
+> File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 83, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x000001D933E9DEE0>
+    │       └ <function run at 0x000001D9018CC860>
+    └ <module 'asyncio' from 'C:\\Python313\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x000001D933DF9540>
+           │      └ <function Runner.run at 0x000001D90197ED40>
+           └ <asyncio.runners.Runner object at 0x000001D933DD81A0>
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │                        └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+           │    └ None
+           └ <asyncio.runners.Runner object at 0x000001D933DD81A0>
+  File "C:\Python313\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           │      └ <method 'result' of '_asyncio.Task' objects>
+           └ <Task finished name='Task-1' coro=<main() done, defined at D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c...
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\main.py", line 48, in main
+    main_window = ComfyToC4DApp(config)
+                  │             └ <core.config_adapter.AppConfigAdapter object at 0x000001D9022C2120>
+                  └ <class 'core.app_redesigned.ComfyToC4DAppRedesigned'>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 229, in __init__
+    self._setup_redesigned_ui()
+    │    └ <function ComfyToC4DAppRedesigned._setup_redesigned_ui at 0x000001D933E17380>
+    └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1d9035688a0) at 0x000001D933F598C0>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 558, in _setup_redesigned_ui
+    self.content_splitter = self._create_main_content_area()
+    │                       │    └ <function ComfyToC4DAppRedesigned._create_main_content_area at 0x000001D933E174C0>
+    │                       └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1d9035688a0) at 0x000001D933F598C0>
+    └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1d9035688a0) at 0x000001D933F598C0>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 707, in _create_main_content_area
+    left_panel = self._create_enhanced_left_panel()
+                 │    └ <function ComfyToC4DAppRedesigned._create_enhanced_left_panel at 0x000001D933E17560>
+                 └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1d9035688a0) at 0x000001D933F598C0>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 748, in _create_enhanced_left_panel
+    image_controls = self._create_image_generation_controls()
+                     │    └ <function ComfyToC4DAppRedesigned._create_image_generation_controls at 0x000001D933E17B00>
+                     └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1d9035688a0) at 0x000001D933F598C0>
+
+  File "D:\Yambo Studio Dropbox\Admin\_studio-dashboard-app-dev\comfy-to-c4d\src\core\app_redesigned.py", line 1082, in _create_image_generation_controls
+    index_new = self.workflow_new_combo.findData(default_workflow)
+                │    │                  └ <method 'findData' of 'PySide6.QtWidgets.QComboBox' objects>
+                │    └ <PySide6.QtWidgets.QComboBox(0x1d9039a7200) at 0x000001D9346B5700>
+                └ <core.app_redesigned.ComfyToC4DAppRedesigned(0x1d9035688a0) at 0x000001D933F598C0>
+
+NameError: name 'default_workflow' is not defined
+2025-06-25 22:18:13.612 | ERROR    | core.app_redesigned:_update_workflow_dropdown_for_tab:5756 - Failed to update workflow dropdown for tab 0: 'ComfyToC4DAppRedesigned' object has no attribute 'workflow_combo'
+2025-06-25 22:18:14.055 | ERROR    | core.app_redesigned:_initialize_workflow_parameters:5679 - Failed to initialize workflow parameters: 'ComfyToC4DAppRedesigned' object has no attribute 'workflow_combo'
+2025-06-25 22:18:14.057 | ERROR    | core.app_redesigned:_update_grids_accent_color:7444 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 22:46:53.377 | ERROR    | core.app_redesigned:_update_workflow_dropdown_for_tab:5756 - Failed to update workflow dropdown for tab 0: 'ComfyToC4DAppRedesigned' object has no attribute 'workflow_combo'
+2025-06-25 22:46:53.817 | ERROR    | core.app_redesigned:_update_grids_accent_color:7456 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 22:46:53.864 | ERROR    | core.app_redesigned:_initialize_workflow_parameters:5679 - Failed to initialize workflow parameters: 'ComfyToC4DAppRedesigned' object has no attribute 'workflow_combo'
+2025-06-25 23:01:53.491 | ERROR    | core.app_redesigned:_update_workflow_dropdown_for_tab:5784 - Failed to update workflow dropdown for tab 0: 'ComfyToC4DAppRedesigned' object has no attribute 'workflow_combo'
+2025-06-25 23:01:53.935 | ERROR    | core.app_redesigned:_initialize_workflow_parameters:5707 - Failed to initialize workflow parameters: 'ComfyToC4DAppRedesigned' object has no attribute 'workflow_combo'
+2025-06-25 23:01:53.937 | ERROR    | core.app_redesigned:_update_grids_accent_color:7484 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 23:02:11.060 | ERROR    | core.app_redesigned:_update_workflow_dropdown_for_tab:5784 - Failed to update workflow dropdown for tab 1: 'ComfyToC4DAppRedesigned' object has no attribute 'workflow_combo'
+2025-06-25 23:02:12.206 | ERROR    | core.app_redesigned:_update_workflow_dropdown_for_tab:5784 - Failed to update workflow dropdown for tab 0: 'ComfyToC4DAppRedesigned' object has no attribute 'workflow_combo'
+2025-06-25 23:02:13.481 | ERROR    | core.app_redesigned:_update_workflow_dropdown_for_tab:5784 - Failed to update workflow dropdown for tab 1: 'ComfyToC4DAppRedesigned' object has no attribute 'workflow_combo'
+2025-06-25 23:09:22.759 | ERROR    | core.app_redesigned:_update_grids_accent_color:7459 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 23:16:08.725 | ERROR    | core.app_redesigned:_update_grids_accent_color:7459 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 23:28:48.180 | ERROR    | core.app_redesigned:_update_grids_accent_color:7459 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 23:30:27.681 | ERROR    | core.app_ui_methods:_create_unified_parameter_widget:1707 - Failed to create parameter widget for seed: 
+2025-06-25 23:30:27.728 | ERROR    | core.app_ui_methods:_update_unified_parameter_ui:1574 - ❌ Failed to create widget for: seed
+2025-06-25 23:35:34.453 | ERROR    | core.app_redesigned:_update_grids_accent_color:7459 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 23:35:54.753 | ERROR    | core.app_ui_methods:_create_unified_parameter_widget:1801 - Failed to create parameter widget for seed: 
+2025-06-25 23:35:54.779 | ERROR    | core.app_ui_methods:_update_unified_parameter_ui:1668 - ❌ Failed to create widget for: seed
+2025-06-25 23:37:31.738 | ERROR    | core.app_ui_methods:_create_unified_parameter_widget:1801 - Failed to create parameter widget for seed: 
+2025-06-25 23:37:31.777 | ERROR    | core.app_ui_methods:_update_unified_parameter_ui:1668 - ❌ Failed to create widget for: seed
+2025-06-25 23:45:12.440 | ERROR    | core.app_redesigned:_update_grids_accent_color:7459 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 23:49:09.445 | ERROR    | core.app_redesigned:_update_grids_accent_color:7459 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-25 23:57:51.075 | ERROR    | core.app_redesigned:_update_grids_accent_color:7459 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-26 00:02:56.015 | ERROR    | core.app_redesigned:_update_grids_accent_color:7515 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-26 00:08:36.407 | ERROR    | core.app_redesigned:_update_grids_accent_color:7518 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-26 00:09:24.620 | ERROR    | core.app_redesigned:_update_grids_accent_color:7518 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-26 00:10:09.123 | ERROR    | core.app_redesigned:_update_grids_accent_color:7518 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-26 00:11:36.883 | ERROR    | core.app_redesigned:_update_grids_accent_color:7518 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-26 00:15:44.360 | ERROR    | core.app_redesigned:_update_grids_accent_color:7534 - Failed to update grids accent color: 'ResponsiveStudio3DGrid' object has no attribute 'update_accent_color'
+2025-06-26 01:21:28.906 | ERROR    | core.app_ui_methods:_create_unified_parameter_widget:1739 - Failed to create parameter widget for seed: 
+2025-06-26 01:21:28.926 | ERROR    | core.app_ui_methods:_update_unified_parameter_ui:1548 - ❌ Failed to create widget for: seed
+2025-06-26 09:53:30.050 | CRITICAL | __main__:handle_exception:93 - Uncaught exception
+2025-06-26 10:12:44.545 | ERROR    | core.app_ui_methods:_create_unified_parameter_widget:1739 - Failed to create parameter widget for seed: 
+2025-06-26 10:12:44.613 | ERROR    | core.app_ui_methods:_update_unified_parameter_ui:1548 - ❌ Failed to create widget for: seed

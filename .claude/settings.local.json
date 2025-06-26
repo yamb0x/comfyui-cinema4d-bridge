@@ -105,7 +105,10 @@
       "Bash(npm install:*)",
       "Bash(ccusage)",
       "Bash(npx:*)",
-      "Bash(ccusage monthly)"
+      "Bash(ccusage monthly)",
+      "Bash(for f in comfy_to_c4d_202506{17,18,19,20,21,22,23}*.log)",
+      "Bash(do [ -f \"$f\" ])",
+      "Bash(done)"
     ],
     "deny": []
   }

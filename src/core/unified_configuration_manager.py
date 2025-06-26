@@ -24,10 +24,13 @@ class UnifiedConfigurationManager(QObject, LoggerMixin):
     parameters_updated = Signal(dict)  # Emitted when parameters change
     workflow_loaded = Signal(str)      # Emitted when workflow is loaded
     
-    # Node types to hide from UI (better UX)
+    # Node types to hide from right panel (handled by left panel controls)
     HIDDEN_NODE_TYPES = {
         "Reroute", "LoadImage", "SaveImage", "PreviewImage",
-        "PrimitiveNode", "Note"
+        "PrimitiveNode", "Note", "MarkdownNote",
+        # Nodes handled by left panel controls:
+        "CLIPTextEncode",  # Handled by prompt boxes
+        "EmptyLatentImage", "EmptySD3LatentImage",  # Handled by generation controls
     }
     
     # Priority order for parameter sections
@@ -44,7 +47,13 @@ class UnifiedConfigurationManager(QObject, LoggerMixin):
         "EmptyLatentImage": 7,
         "EmptySD3LatentImage": 7,
         "ControlNetLoader": 8,
-        "QuadrupleCLIPLoader": 9
+        "QuadrupleCLIPLoader": 9,
+        # Hunyuan3D nodes
+        "Hy3DModelLoader": 10,
+        "Hy3DGenerateMesh": 11,
+        "Hy3DVAEDecode": 12,
+        "Hy3DPostprocessMesh": 13,
+        "Hy3DExportMesh": 14
     }
     
     # Node color coding for visual differentiation
@@ -61,7 +70,13 @@ class UnifiedConfigurationManager(QObject, LoggerMixin):
         "EmptyLatentImage": "#795548",    # Brown - Latent
         "EmptySD3LatentImage": "#795548",
         "ControlNetLoader": "#E91E63",    # Pink - ControlNet
-        "QuadrupleCLIPLoader": "#00BCD4"  # Cyan - CLIP
+        "QuadrupleCLIPLoader": "#00BCD4", # Cyan - CLIP
+        # Hunyuan3D nodes
+        "Hy3DModelLoader": "#8BC34A",     # Light Green - 3D Model
+        "Hy3DGenerateMesh": "#FF5722",    # Deep Orange - 3D Generation
+        "Hy3DVAEDecode": "#607D8B",       # Blue Grey - 3D VAE
+        "Hy3DPostprocessMesh": "#9E9E9E", # Grey - Post-processing
+        "Hy3DExportMesh": "#795548"       # Brown - Export
     }
     
     def __init__(self):
@@ -160,7 +175,13 @@ class UnifiedConfigurationManager(QObject, LoggerMixin):
             "EmptyLatentImage": "Image Dimensions",
             "EmptySD3LatentImage": "SD3 Dimensions",
             "ControlNetLoader": "ControlNet",
-            "QuadrupleCLIPLoader": "CLIP Models"
+            "QuadrupleCLIPLoader": "CLIP Models",
+            # Hunyuan3D nodes
+            "Hy3DModelLoader": "3D Model Loading",
+            "Hy3DGenerateMesh": "3D Mesh Generation",
+            "Hy3DVAEDecode": "3D VAE Decoding",
+            "Hy3DPostprocessMesh": "Mesh Post-processing",
+            "Hy3DExportMesh": "Mesh Export"
         }
         return display_names.get(node_type, node_type)
     
@@ -270,7 +291,7 @@ class UnifiedConfigurationManager(QObject, LoggerMixin):
             self._user_overrides = config_data.get("user_overrides", {})
             self._ticked_parameters = set(config_data.get("ticked_parameters", []))
             
-            self.logger.info("Loaded saved unified configuration state")
+            self.logger.debug("Loaded saved unified configuration state")
             
         except Exception as e:
             self.logger.error(f"Failed to load saved configuration: {e}")
@@ -322,3 +343,29 @@ class UnifiedConfigurationManager(QObject, LoggerMixin):
         except Exception as e:
             self.logger.error(f"Failed to import configuration: {e}")
             return False
+    
+    def update_node_colors(self, color_mapping: Dict[str, str]):
+        """Update the NODE_COLORS mapping with new colors"""
+        try:
+            # Update the NODE_COLORS dictionary
+            for node_type, color in color_mapping.items():
+                if node_type in self.NODE_COLORS:
+                    self.NODE_COLORS[node_type] = color
+            
+            # If we have current parameters, update their color information
+            if self._current_parameters:
+                for node_type, section in self._current_parameters.items():
+                    if node_type in color_mapping:
+                        section["color"] = color_mapping[node_type]
+                
+                # Notify observers about the color update
+                self.parameters_updated.emit(self._current_parameters)
+            
+            self.logger.debug(f"Updated node colors for {len(color_mapping)} node types")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to update node colors: {e}")
+    
+    def get_node_color(self, node_type: str) -> str:
+        """Get the color for a specific node type"""
+        return self.NODE_COLORS.get(node_type, "#666666")

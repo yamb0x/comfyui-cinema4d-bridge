@@ -23,9 +23,24 @@ from utils.qt_warnings import suppress_qt_warnings, setup_qt_message_handler
 
 async def main():
     """Main application entry point"""
-    # Setup logging with reduced verbosity
-    setup_logging(debug=False)
-    logger.info("Starting comfy2c4d Application")
+    # Check if debug mode is enabled via settings or environment
+    import os
+    from PySide6.QtCore import QSettings
+    
+    # Check environment variable first
+    env_debug = os.getenv('COMFY_C4D_DEBUG', '').lower() in ('true', '1', 'yes', 'on')
+    
+    # Check saved settings
+    settings = QSettings("ComfyUI-Cinema4D", "Bridge")
+    saved_debug = settings.value("logging/debug_mode", False, type=bool)
+    saved_level = settings.value("logging/level", "INFO")
+    
+    # Enable debug if environment variable is set, debug mode is saved, or log level is DEBUG
+    debug = env_debug or saved_debug or (saved_level == "DEBUG")
+    
+    # Setup logging with determined debug state
+    setup_logging(debug=debug)
+    logger.info(f"Starting comfy2c4d Application (Debug mode: {debug})")
     
     # Suppress Qt warnings
     suppress_qt_warnings()

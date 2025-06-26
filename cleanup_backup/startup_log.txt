@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/mnt/d/Yambo Studio Dropbox/Admin/_studio-dashboard-app-dev/comfy-to-c4d/main.py", line 10, in <module>
+    from PySide6.QtWidgets import QApplication
+ModuleNotFoundError: No module named 'PySide6'

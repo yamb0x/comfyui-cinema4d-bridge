@@ -1,113 +1,123 @@
 {
   "selected_nodes": [
-    "DownloadAndLoadHy3DDelightModel_45",
-    "TransparentBGSession+_48",
-    "SolidMask_56",
-    "ImageCompositeMasked_57",
-    "Note_60",
-    "Hy3DDelightImage_72",
-    "Note_90",
-    "Hy3DModelLoader_52",
-    "Hy3DGenerateMesh_53",
-    "ImageResize+_46",
-    "Hy3DPostprocessMesh_55",
     "Hy3DVAEDecode_54",
-    "Preview3D_50",
-    "LoadImage_92",
-    "Hy3DExportMesh_88"
+    "ImageResize+_46",
+    "TransparentBGSession+_48",
+    "ImageRemoveBackground+_47",
+    "Hy3DModelLoader_52",
+    "Hy3DPostprocessMesh_55",
+    "Hy3DExportMesh_88",
+    "Hy3DGenerateMesh_53"
   ],
   "node_info": {
-    "DownloadAndLoadHy3DDelightModel_45": {
-      "type": "DownloadAndLoadHy3DDelightModel",
-      "id": "45",
-      "title": "DownloadAndLoadHy3DDelightModel",
-      "supported": true
-    },
-    "TransparentBGSession+_48": {
-      "type": "TransparentBGSession+",
-      "id": "48",
-      "title": "TransparentBGSession+",
-      "supported": true
-    },
-    "SolidMask_56": {
-      "type": "SolidMask",
-      "id": "56",
-      "title": "SolidMask",
-      "supported": true
-    },
-    "ImageCompositeMasked_57": {
-      "type": "ImageCompositeMasked",
-      "id": "57",
-      "title": "ImageCompositeMasked",
-      "supported": true
-    },
-    "Note_60": {
-      "type": "Note",
-      "id": "60",
+    "Hy3DVAEDecode_54": {
+      "type": "Hy3DVAEDecode",
+      "id": "54",
       "title": "",
-      "supported": true
-    },
-    "Hy3DDelightImage_72": {
-      "type": "Hy3DDelightImage",
-      "id": "72",
-      "title": "Hy3DDelightImage",
-      "supported": true
-    },
-    "Note_90": {
-      "type": "Note",
-      "id": "90",
-      "title": "",
-      "supported": true
-    },
-    "Hy3DModelLoader_52": {
-      "type": "Hy3DModelLoader",
-      "id": "52",
-      "title": "Hy3DModelLoader",
-      "supported": true
-    },
-    "Hy3DGenerateMesh_53": {
-      "type": "Hy3DGenerateMesh",
-      "id": "53",
-      "title": "Hy3DGenerateMesh",
-      "supported": true
+      "supported": true,
+      "widgets_values": [
+        1.01,
+        384,
+        8000,
+        0,
+        "mc",
+        true,
+        true
+      ]
     },
     "ImageResize+_46": {
       "type": "ImageResize+",
       "id": "46",
-      "title": "ImageResize+",
-      "supported": true
+      "title": "",
+      "supported": false,
+      "widgets_values": [
+        512,
+        512,
+        "lanczos",
+        "pad",
+        "always",
+        2
+      ]
+    },
+    "TransparentBGSession+_48": {
+      "type": "TransparentBGSession+",
+      "id": "48",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        "base",
+        true
+      ]
+    },
+    "ImageRemoveBackground+_47": {
+      "type": "ImageRemoveBackground+",
+      "id": "47",
+      "title": "",
+      "supported": true,
+      "widgets_values": []
+    },
+    "Hy3DModelLoader_52": {
+      "type": "Hy3DModelLoader",
+      "id": "52",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        "hunyun3D-2\\hunyuan3d-dit-v2-0-fp16.safetensors",
+        "sdpa",
+        false
+      ]
     },
     "Hy3DPostprocessMesh_55": {
       "type": "Hy3DPostprocessMesh",
       "id": "55",
-      "title": "Hy3DPostprocessMesh",
-      "supported": true
-    },
-    "Hy3DVAEDecode_54": {
-      "type": "Hy3DVAEDecode",
-      "id": "54",
-      "title": "Hy3DVAEDecode",
-      "supported": true
-    },
-    "Preview3D_50": {
-      "type": "Preview3D",
-      "id": "50",
-      "title": "Preview3D",
-      "supported": true
-    },
-    "LoadImage_92": {
-      "type": "LoadImage",
-      "id": "92",
-      "title": "LoadImage",
-      "supported": true
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        true,
+        true,
+        true,
+        500000,
+        true
+      ]
     },
     "Hy3DExportMesh_88": {
       "type": "Hy3DExportMesh",
       "id": "88",
-      "title": "Hy3DExportMesh",
-      "supported": true
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        "3D/Hy3D",
+        "glb",
+        true
+      ]
+    },
+    "Hy3DGenerateMesh_53": {
+      "type": "Hy3DGenerateMesh",
+      "id": "53",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        5.5,
+        100,
+        123,
+        "fixed",
+        "FlowMatchEulerDiscreteScheduler",
+        true
+      ]
     }
   },
-  "workflow_file": "3d_generation/3D_gen_Hunyuan2_onlymesh.json",
-  "workflow_path": "D:\\Yambo Studio Dropbox\\Admin\\_studio-dashboard-app-dev\\comfy-to-c4d\\workflows\\3d_generation\\3D_gen_Hunyuan2_onlymesh.json"
+  "workflow_file": "3D_gen_Hunyuan2_onlymesh_v04.json",
+  "discovered_node_types": [
+    "Preview3D",
+    "MaskPreview+",
+    "Hy3DVAEDecode",
+    "Hy3DModelLoader",
+    "Hy3DPostprocessMesh",
+    "ImageResize+",
+    "Hy3DExportMesh",
+    "TransparentBGSession+",
+    "LoadImage",
+    "ImageRemoveBackground+",
+    "Hy3DGenerateMesh"
+  ]
 }

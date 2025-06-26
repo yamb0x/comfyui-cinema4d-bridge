@@ -217,7 +217,7 @@ class ResponsiveStudio3DGrid(QScrollArea):
         
         self.models_changed.emit(len(self.models))
         
-        logger.info(f"Added 3D model to grid: {model_path.name}")
+        logger.debug(f"Added 3D model to grid: {model_path.name}")
     
     def remove_model(self, model_path: Path):
         """Remove a model from the grid"""
@@ -262,6 +262,10 @@ class ResponsiveStudio3DGrid(QScrollArea):
         self.accent_color = color
         for card in self.cards:
             card.update_accent_color(color)
+    
+    def update_accent_color(self, color: str):
+        """Update the accent color for all cards (alias for set_accent_color)"""
+        self.set_accent_color(color)
     
     def apply_viewer_settings(self, settings):
         """Apply new viewer settings to all 3D preview cards"""

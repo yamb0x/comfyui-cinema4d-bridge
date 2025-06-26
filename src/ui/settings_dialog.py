@@ -40,7 +40,7 @@ class ApplicationSettingsDialog(QDialog):
         
     def _apply_terminal_theme(self):
         """Apply terminal theme styling to the dialog"""
-        from ui.terminal_theme_complete import get_complete_terminal_theme
+        from src.ui.terminal_theme_complete import get_complete_terminal_theme
         self.setStyleSheet(get_complete_terminal_theme())
         
     def _setup_ui(self):
@@ -173,6 +173,44 @@ class ApplicationSettingsDialog(QDialog):
         
         layout.addWidget(appearance_group)
         
+        # Workflow Parameter Colors section
+        colors_group = QGroupBox("Workflow Parameter Colors")
+        colors_layout = QFormLayout(colors_group)
+        
+        # Color palette for workflow parameter outlines
+        colors_info = QLabel("Choose colors for workflow parameter section outlines:")
+        colors_info.setStyleSheet("color: #cccccc; font-size: 11px; margin-bottom: 8px;")
+        colors_layout.addRow(colors_info)
+        
+        # Initialize default color palette
+        self.workflow_colors = [
+            "#4CAF50",  # Green - Primary sampling
+            "#2196F3",  # Blue - Model loading  
+            "#9C27B0",  # Purple - LoRA
+            "#FF9800",  # Orange - VAE
+            "#00BCD4"   # Cyan - Text encoding
+        ]
+        
+        # Create color palette buttons
+        self.color_buttons = []
+        palette_layout = QHBoxLayout()
+        
+        for i, color in enumerate(self.workflow_colors):
+            color_btn = QPushButton(f"Color {i+1}")
+            color_btn.setStyleSheet(f"background-color: {color}; color: white; padding: 8px; min-width: 80px;")
+            color_btn.clicked.connect(lambda checked, idx=i: self._choose_workflow_color(idx))
+            self.color_buttons.append(color_btn)
+            palette_layout.addWidget(color_btn)
+        
+        colors_layout.addRow("Color Palette:", palette_layout)
+        
+        # Reset colors button
+        reset_colors_btn = QPushButton("Reset to Default Colors")
+        reset_colors_btn.clicked.connect(self._reset_workflow_colors)
+        colors_layout.addRow("", reset_colors_btn)
+        
+        layout.addWidget(colors_group)
+        
         # Console settings
         console_group = QGroupBox("Console Settings")
         console_layout = QFormLayout(console_group)
@@ -262,21 +300,25 @@ class ApplicationSettingsDialog(QDialog):
         widget = QWidget()
         layout = QFormLayout(widget)
         
+        # Logging configuration group
+        logging_group = QGroupBox("Logging Configuration")
+        logging_layout = QFormLayout(logging_group)
+        
         # Log level
         self.log_level_combo = QComboBox()
         self.log_level_combo.addItems(["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"])
         self.log_level_combo.currentTextChanged.connect(self._on_log_level_changed)
-        layout.addRow("Log level:", self.log_level_combo)
+        logging_layout.addRow("Log level:", self.log_level_combo)
         
         # Log to file
         self.log_to_file_check = QCheckBox("Save logs to file")
         self.log_to_file_check.stateChanged.connect(self._on_log_to_file_changed)
-        layout.addRow("File logging:", self.log_to_file_check)
+        logging_layout.addRow("File logging:", self.log_to_file_check)
         
         # Log file rotation
         self.log_rotation_check = QCheckBox("Enable log file rotation")
         self.log_rotation_check.stateChanged.connect(self._on_log_rotation_changed)
-        layout.addRow("Log rotation:", self.log_rotation_check)
+        logging_layout.addRow("Log rotation:", self.log_rotation_check)
         
         # Max log file size
         self.max_log_size_spin = QSpinBox()
@@ -284,12 +326,24 @@ class ApplicationSettingsDialog(QDialog):
         self.max_log_size_spin.setValue(50)
         self.max_log_size_spin.setSuffix(" MB")
         self.max_log_size_spin.valueChanged.connect(self._on_max_log_size_changed)
-        layout.addRow("Max log file size:", self.max_log_size_spin)
+        logging_layout.addRow("Max log file size:", self.max_log_size_spin)
         
-        # Debug mode
-        self.debug_mode_check = QCheckBox("Enable debug mode")
+        layout.addWidget(logging_group)
+        
+        # Debug mode with explanation
+        debug_group = QGroupBox("Debug Mode")
+        debug_layout = QFormLayout(debug_group)
+        
+        self.debug_mode_check = QCheckBox("Enable debug mode (COMFY_C4D_DEBUG)")
+        self.debug_mode_check.setToolTip("When enabled, sets log level to DEBUG and enables verbose output.\nEquivalent to setting COMFY_C4D_DEBUG=true environment variable.")
         self.debug_mode_check.stateChanged.connect(self._on_debug_mode_changed)
-        layout.addRow("Debug mode:", self.debug_mode_check)
+        debug_layout.addRow(self.debug_mode_check)
+        
+        debug_info = QLabel("Note: Debug mode overrides the log level setting above.")
+        debug_info.setStyleSheet("color: #888888; font-size: 11px;")
+        debug_layout.addRow(debug_info)
+        
+        layout.addWidget(debug_group)
         
         return widget
         
@@ -400,7 +454,7 @@ class ApplicationSettingsDialog(QDialog):
     def _load_current_values(self):
         """Load current settings values"""
         from PySide6.QtCore import QSettings
-        settings = QSettings("comfy2c4d", "Bridge")
+        settings = QSettings("ComfyUI-Cinema4D", "Bridge")
         
         # General settings
         self.auto_save_check.setChecked(settings.value("general/auto_save", True, type=bool))
@@ -417,6 +471,15 @@ class ApplicationSettingsDialog(QDialog):
         self.accent_color = settings.value("interface/accent_color", "#4CAF50")
         self.accent_color_btn.setStyleSheet(f"background-color: {self.accent_color}; color: white; padding: 8px;")
         
+        # Load workflow colors (only if color_buttons exist)
+        if hasattr(self, 'color_buttons') and self.color_buttons:
+            saved_colors = settings.value("interface/workflow_colors", self.workflow_colors)
+            if saved_colors:
+                self.workflow_colors = saved_colors
+                for i, color in enumerate(self.workflow_colors):
+                    if i < len(self.color_buttons):
+                        self.color_buttons[i].setStyleSheet(f"background-color: {color}; color: white; padding: 8px; min-width: 80px;")
+        
         self.console_autoscroll_check.setChecked(settings.value("interface/console_autoscroll", True, type=bool))
         self.console_buffer_spin.setValue(settings.value("interface/console_buffer", 1000, type=int))
         self.timestamp_combo.setCurrentText(settings.value("interface/timestamp_format", "HH:MM:SS"))
@@ -429,12 +492,18 @@ class ApplicationSettingsDialog(QDialog):
         self.auto_clear_cache_check.setChecked(settings.value("performance/auto_clear_cache", False, type=bool))
         
         # Logging settings
-        log_level = settings.value("logging/level", "INFO")
+        # Check for both old and new settings keys for compatibility
+        log_level = settings.value("logging/log_level", settings.value("logging/level", "INFO"))
         self.log_level_combo.setCurrentText(log_level)
         self.log_to_file_check.setChecked(settings.value("logging/file_enabled", True, type=bool))
         self.log_rotation_check.setChecked(settings.value("logging/rotation_enabled", True, type=bool))
         self.max_log_size_spin.setValue(settings.value("logging/max_log_size", 50, type=int))
-        self.debug_mode_check.setChecked(settings.value("logging/debug_mode", False, type=bool))
+        
+        # Check environment variable for debug mode as well
+        import os
+        env_debug = os.getenv('COMFY_C4D_DEBUG', '').lower() in ('true', '1', 'yes', 'on')
+        saved_debug = settings.value("logging/debug_mode", False, type=bool)
+        self.debug_mode_check.setChecked(env_debug or saved_debug)
         
         # Apply logging configuration on startup
         try:
@@ -464,7 +533,7 @@ class ApplicationSettingsDialog(QDialog):
         try:
             # Save settings using QSettings
             from PySide6.QtCore import QSettings
-            settings = QSettings("comfy2c4d", "Bridge")
+            settings = QSettings("ComfyUI-Cinema4D", "Bridge")
             
             # General settings
             settings.setValue("general/auto_save", self.auto_save_check.isChecked())
@@ -477,6 +546,7 @@ class ApplicationSettingsDialog(QDialog):
             # Interface settings
             settings.setValue("interface/font_size", self.font_size_spin.value())
             settings.setValue("interface/accent_color", self.accent_color)
+            settings.setValue("interface/workflow_colors", self.workflow_colors)
             settings.setValue("interface/console_autoscroll", self.console_autoscroll_check.isChecked())
             settings.setValue("interface/console_buffer", self.console_buffer_spin.value())
             settings.setValue("interface/timestamp_format", self.timestamp_combo.currentText())
@@ -489,9 +559,10 @@ class ApplicationSettingsDialog(QDialog):
             settings.setValue("performance/auto_clear_cache", self.auto_clear_cache_check.isChecked())
             
             # Logging settings
-            settings.setValue("logging/log_level", self.log_level_combo.currentText())
-            settings.setValue("logging/log_to_file", self.log_to_file_check.isChecked())
-            settings.setValue("logging/log_rotation", self.log_rotation_check.isChecked())
+            # Save with consistent key
+            settings.setValue("logging/level", self.log_level_combo.currentText())
+            settings.setValue("logging/file_enabled", self.log_to_file_check.isChecked())
+            settings.setValue("logging/rotation_enabled", self.log_rotation_check.isChecked())
             settings.setValue("logging/max_log_size", self.max_log_size_spin.value())
             settings.setValue("logging/debug_mode", self.debug_mode_check.isChecked())
             
@@ -524,7 +595,7 @@ class ApplicationSettingsDialog(QDialog):
             try:
                 # Clear all QSettings
                 from PySide6.QtCore import QSettings
-                settings = QSettings("comfy2c4d", "Bridge")
+                settings = QSettings("ComfyUI-Cinema4D", "Bridge")
                 settings.clear()
                 
                 # Reset all UI controls to default values
@@ -540,6 +611,7 @@ class ApplicationSettingsDialog(QDialog):
                 self.font_size_spin.setValue(12)
                 self.accent_color = "#4CAF50"
                 self.accent_color_btn.setStyleSheet(f"background-color: {self.accent_color}; color: white; padding: 8px;")
+                self._reset_workflow_colors()
                 self.console_autoscroll_check.setChecked(True)
                 self.console_buffer_spin.setValue(1000)
                 self.timestamp_combo.setCurrentText("HH:MM:SS")
@@ -591,6 +663,9 @@ class ApplicationSettingsDialog(QDialog):
             
             # Apply accent color to terminal theme
             self._apply_accent_color_to_theme()
+            
+            # Apply workflow colors
+            self._apply_workflow_colors()
             
             # Apply console settings using the safe methods
             self._on_console_autoscroll_changed(self.console_autoscroll_check.isChecked())
@@ -762,70 +837,38 @@ class ApplicationSettingsDialog(QDialog):
     def _apply_log_level(self, level):
         """Apply log level change"""
         try:
-            # Store the current log level setting
+            # Update the COMFY_C4D_DEBUG environment variable based on level
             import os
-            os.environ['LOG_LEVEL'] = level
+            if level == "DEBUG":
+                os.environ['COMFY_C4D_DEBUG'] = 'true'
+            else:
+                os.environ['COMFY_C4D_DEBUG'] = 'false'
             
-            # Convert level to loguru format
-            loguru_level = level.upper()
+            # Re-initialize logger with new settings
+            from src.utils.logger import setup_logging
             
-            # Remove existing handlers and reconfigure
-            logger.remove()
+            # Determine if debug mode should be enabled
+            debug_enabled = (level == "DEBUG") or (os.getenv('COMFY_C4D_DEBUG', '').lower() in ('true', '1', 'yes', 'on'))
             
-            # Add console handler with new level
-            logger.add(
-                lambda msg: print(msg, end=""),
-                level=loguru_level,
-                format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
-                colorize=True
-            )
+            # Get log directory from config
+            log_dir = None
+            if hasattr(self, 'config') and hasattr(self.config, 'base_dir'):
+                log_dir = self.config.base_dir / "logs"
             
-            # Add file logging if enabled
-            if hasattr(self, 'log_to_file_check') and self.log_to_file_check.isChecked():
-                log_file = self.config.base_dir / "logs" / "application.log"
-                log_file.parent.mkdir(exist_ok=True)
-                
-                rotation = None
-                if hasattr(self, 'log_rotation_check') and self.log_rotation_check.isChecked():
-                    max_size = getattr(self, 'max_log_size_spin', None)
-                    if max_size:
-                        rotation = f"{max_size.value()} MB"
-                
-                logger.add(
-                    log_file,
-                    level=loguru_level,
-                    rotation=rotation,
-                    format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
-                    serialize=False
-                )
+            # Reinitialize logging with new settings
+            setup_logging(log_dir=log_dir, debug=debug_enabled)
             
             # Save to settings for persistence
-            settings = QSettings("comfy2c4d", "Bridge")
+            settings = QSettings("ComfyUI-Cinema4D", "Bridge")
             settings.setValue("logging/level", level)
             settings.setValue("logging/file_enabled", getattr(self, 'log_to_file_check', None) and self.log_to_file_check.isChecked())
             settings.setValue("logging/rotation_enabled", getattr(self, 'log_rotation_check', None) and self.log_rotation_check.isChecked())
             
-            # Test the new log level with sample messages
-            logger.debug("Debug logging is now active")
-            logger.info(f"Log level successfully configured to {level}")
-            logger.warning("Warning level logging is active")
-            logger.error("Error level logging is active")
-            logger.critical("Critical level logging is active")
+            # Log the configuration change
+            logger.info(f"Log level configured to {level} (Debug mode: {debug_enabled})")
             
         except Exception as e:
-            # Use print as fallback since logger might be in bad state
-            print(f"Failed to apply log level: {e}")
-            
-            # Try to restore basic logger
-            try:
-                logger.remove()
-                logger.add(
-                    lambda msg: print(msg, end=""),
-                    level="INFO",
-                    format="{time:HH:mm:ss} | {level} | {message}"
-                )
-            except:
-                pass
+            logger.error(f"Failed to apply log level: {e}")
     
     # Auto-save functionality
     def _setup_auto_save(self):
@@ -1225,3 +1268,115 @@ class ApplicationSettingsDialog(QDialog):
                 logger.debug(f"Auto-save interval set to {value} minutes (currently disabled)")
         except Exception as e:
             logger.error(f"Failed to change auto-save interval: {e}")
+    
+    def _choose_workflow_color(self, color_index):
+        """Choose a workflow color for the specified index"""
+        try:
+            current_color = QColor(self.workflow_colors[color_index])
+            color = QColorDialog.getColor(current_color, self, f"Choose Workflow Color {color_index + 1}")
+            if color.isValid():
+                self.workflow_colors[color_index] = color.name()
+                self.color_buttons[color_index].setStyleSheet(
+                    f"background-color: {color.name()}; color: white; padding: 8px; min-width: 80px;"
+                )
+                self._apply_workflow_colors()
+                logger.debug(f"Workflow color {color_index + 1} changed to {color.name()}")
+        except Exception as e:
+            logger.error(f"Failed to choose workflow color: {e}")
+    
+    def _reset_workflow_colors(self):
+        """Reset workflow colors to default values"""
+        try:
+            default_colors = [
+                "#4CAF50",  # Green - Primary sampling
+                "#2196F3",  # Blue - Model loading  
+                "#9C27B0",  # Purple - LoRA
+                "#FF9800",  # Orange - VAE
+                "#00BCD4"   # Cyan - Text encoding
+            ]
+            
+            self.workflow_colors = default_colors.copy()
+            
+            for i, color in enumerate(self.workflow_colors):
+                if i < len(self.color_buttons):
+                    self.color_buttons[i].setStyleSheet(
+                        f"background-color: {color}; color: white; padding: 8px; min-width: 80px;"
+                    )
+            
+            self._apply_workflow_colors()
+            logger.info("Workflow colors reset to defaults")
+        except Exception as e:
+            logger.error(f"Failed to reset workflow colors: {e}")
+    
+    def _apply_workflow_colors(self):
+        """Apply workflow colors to the unified configuration manager"""
+        try:
+            parent_app = self.parent()
+            if not parent_app:
+                logger.debug("No parent application found for workflow colors")
+                return
+                
+            # Ensure we have valid workflow colors
+            if not hasattr(self, 'workflow_colors') or len(self.workflow_colors) < 5:
+                logger.warning("Invalid workflow colors - using defaults")
+                return
+            
+            # Create a mapping for the most common node types
+            color_mapping = {
+                "KSampler": self.workflow_colors[0],
+                "KSamplerAdvanced": self.workflow_colors[0],
+                "CheckpointLoader": self.workflow_colors[1], 
+                "CheckpointLoaderSimple": self.workflow_colors[1],
+                "UNETLoader": self.workflow_colors[1],
+                "LoraLoader": self.workflow_colors[2],
+                "VAELoader": self.workflow_colors[3],
+                "CLIPTextEncode": self.workflow_colors[4],
+                "FluxGuidance": self.workflow_colors[3],
+                "EmptyLatentImage": self.workflow_colors[1],
+                "EmptySD3LatentImage": self.workflow_colors[1],
+                "ControlNetLoader": self.workflow_colors[2],
+                "QuadrupleCLIPLoader": self.workflow_colors[4],
+                # Hunyuan3D nodes
+                "Hy3DModelLoader": self.workflow_colors[1],
+                "Hy3DGenerateMesh": self.workflow_colors[0],
+                "Hy3DVAEDecode": self.workflow_colors[3],
+                "Hy3DPostprocessMesh": self.workflow_colors[2],
+                "Hy3DExportMesh": self.workflow_colors[1]
+            }
+            
+            # Try different possible locations for the unified config manager
+            config_manager = None
+            for attr_name in ['unified_config_manager', 'config_manager', 'parameter_manager']:
+                if hasattr(parent_app, attr_name):
+                    config_manager = getattr(parent_app, attr_name)
+                    if hasattr(config_manager, 'update_node_colors'):
+                        config_manager.update_node_colors(color_mapping)
+                        logger.debug(f"Updated workflow colors via {attr_name}")
+                        break
+            
+            if not config_manager:
+                logger.debug("No unified configuration manager found - storing colors in app config")
+                # Store colors in parent app for later use
+                if hasattr(parent_app, 'config'):
+                    parent_app.config.workflow_colors = self.workflow_colors
+                    parent_app.config.workflow_color_mapping = color_mapping
+            
+            # Also update any existing parameter UI elements
+            if hasattr(parent_app, '_refresh_workflow_parameter_colors'):
+                parent_app._refresh_workflow_parameter_colors()
+            elif hasattr(parent_app, '_load_parameters_unified'):
+                # Try to refresh the current tab's parameters
+                try:
+                    current_tab = getattr(parent_app, 'current_tab_index', 0)
+                    if current_tab == 0:
+                        parent_app._load_parameters_unified('image')
+                    elif current_tab == 1:
+                        parent_app._load_parameters_unified('3d_parameters')
+                    elif current_tab == 2:
+                        parent_app._load_parameters_unified('texture_parameters')
+                except Exception as refresh_error:
+                    logger.debug(f"Could not refresh parameters UI: {refresh_error}")
+                    
+            logger.debug("Applied workflow colors successfully")
+        except Exception as e:
+            logger.error(f"Failed to apply workflow colors: {e}")

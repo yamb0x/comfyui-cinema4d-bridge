@@ -63,7 +63,8 @@ class UICreationMethods:
         
         # Use actual ImageGridWidget for session images (after generation)
         # Hidden by default - we use the scroll area above instead
-        self.session_image_grid = ImageGridWidget(columns=2, thumbnail_size=512)
+        # Reduced thumbnail size from 512 to 320 for better fit and less scrolling
+        self.session_image_grid = ImageGridWidget(columns=3, thumbnail_size=320)
         self.session_image_grid.image_selected.connect(self._on_image_selected)
         self.session_image_grid.hide()  # Hide this - we use the scroll area above
         layout.addWidget(self.session_image_grid)
@@ -80,7 +81,8 @@ class UICreationMethods:
         # Removed header section to save vertical space for image grid
         
         # Use actual ImageGridWidget for all images
-        self.all_images_grid = ImageGridWidget(columns=6, thumbnail_size=180)
+        # Optimized for better responsive behavior across screen sizes
+        self.all_images_grid = ImageGridWidget(columns=5, thumbnail_size=200)
         self.all_images_grid.image_selected.connect(self._on_image_selected)
         layout.addWidget(self.all_images_grid)
         
@@ -141,48 +143,30 @@ class UICreationMethods:
         return widget
         
     def _create_image_parameters(self) -> QWidget:
-        """Create image generation parameters"""
+        """Create image generation parameters - SIMPLIFIED like texture tab"""
         widget = QWidget()
         layout = QVBoxLayout(widget)
         layout.setContentsMargins(12, 12, 12, 12)
         layout.setSpacing(12)
         
-        
-        # Dynamic Parameters section with scrollable area - COMPACT for right panel
+        # Workflow Parameters section - NO SCROLL AREA, direct widget addition like texture tab
         dynamic_section = self._create_parameter_section("Workflow Parameters", compact=True)
         dynamic_section_layout = dynamic_section.layout()
         
-        # Create scrollable area for parameters
-        scroll_area = QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        # Set reasonable size for right panel - compact but usable
-        scroll_area.setMinimumHeight(150)
-        scroll_area.setMaximumHeight(400)  # Prevent excessive expansion
-        scroll_area.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        # Store dynamic layout reference for parameter addition (direct like texture tab)
+        self.dynamic_params_layout = dynamic_section_layout
+        self.dynamic_params_container = dynamic_section  # Add missing container reference
         
-        # Container widget for scrollable content
-        self.dynamic_params_container = QWidget()
-        self.dynamic_params_container.setObjectName("dynamic_params")
-        self.dynamic_params_layout = QVBoxLayout(self.dynamic_params_container)
-        self.dynamic_params_layout.setContentsMargins(8, 8, 8, 8)
-        self.dynamic_params_layout.setSpacing(12)
-        
-        # Info label when no parameters loaded
+        # Info label when no parameters loaded - directly added like texture tab
         info_label = QLabel("Configure workflow parameters from File menu")
         info_label.setObjectName("info_label")
         info_label.setWordWrap(True)
         self.dynamic_params_layout.addWidget(info_label)
         
-        # Set container as scroll area widget
-        scroll_area.setWidget(self.dynamic_params_container)
-        dynamic_section_layout.addWidget(scroll_area)  # Don't give scroll area excessive space
+        # Add the dynamic section directly - NO scroll area wrapper
+        layout.addWidget(dynamic_section)
         
-        # Add the dynamic section without giving it excessive space
-        layout.addWidget(dynamic_section)  # No stretch factor - compact size
-        
-        # Add stretch to push content to top and leave empty space at bottom
+        # Critical: Add stretch to push content to top like texture tab
         layout.addStretch()
         
         return widget
@@ -205,65 +189,27 @@ class UICreationMethods:
     
     def _create_static_3d_parameters(self, layout: QVBoxLayout):
         """Create the static 3D parameters (always available)"""
-        # 3D Model Settings section - COMPACT for right panel
-        model_section = self._create_parameter_section("3D Model Settings", compact=True)
-        model_layout = model_section.layout()
         
-        # Quality
-        quality_label = QLabel("Quality:")
-        quality_label.setObjectName("section_title")
-        self.quality_3d_combo = QComboBox()
-        self.quality_3d_combo.addItems(["Low", "Medium", "High", "Ultra"])
-        self.quality_3d_combo.setCurrentText("High")
-        model_layout.addWidget(quality_label)
-        model_layout.addWidget(self.quality_3d_combo)
+        # DYNAMIC WORKFLOW PARAMETERS SECTION - Same as image tab
+        dynamic_section = self._create_parameter_section("Workflow Parameters", compact=True) 
+        dynamic_section_layout = dynamic_section.layout()
         
-        # Mesh density
-        density_label = QLabel("Mesh Density:")
-        density_label.setObjectName("section_title")
-        self.density_spin = QSpinBox()
-        self.density_spin.setRange(1000, 10000)
-        self.density_spin.setValue(5000)
-        self.density_spin.setSingleStep(500)
-        model_layout.addWidget(density_label)
-        model_layout.addWidget(self.density_spin)
+        # Store dynamic layout reference for unified parameter system
+        self._3d_dynamic_params_layout = dynamic_section_layout
+        self._3d_dynamic_params_container = dynamic_section
         
-        layout.addWidget(model_section)
+        # Info label when no parameters loaded
+        info_label = QLabel("Configure 3D workflow parameters from File menu")
+        info_label.setObjectName("info_label")
+        info_label.setWordWrap(True)
+        self._3d_dynamic_params_layout.addWidget(info_label)
         
-        # Generation Settings section
-        gen_section = self._create_parameter_section("Generation Settings", compact=True)
-        gen_layout = gen_section.layout()
+        # Add the dynamic section
+        layout.addWidget(dynamic_section)
         
-        # Guidance scale
-        guidance_label = QLabel("Guidance Scale:")
-        guidance_label.setObjectName("section_title")
-        self.guidance_3d_spin = QDoubleSpinBox()
-        self.guidance_3d_spin.setRange(1.0, 10.0)
-        self.guidance_3d_spin.setValue(5.5)
-        self.guidance_3d_spin.setSingleStep(0.1)
-        gen_layout.addWidget(guidance_label)
-        gen_layout.addWidget(self.guidance_3d_spin)
         
-        # Inference steps
-        steps_label = QLabel("Inference Steps:")
-        steps_label.setObjectName("section_title")
-        self.steps_3d_spin = QSpinBox()
-        self.steps_3d_spin.setRange(10, 100)
-        self.steps_3d_spin.setValue(50)
-        gen_layout.addWidget(steps_label)
-        gen_layout.addWidget(self.steps_3d_spin)
-        
-        # Seed
-        seed_label = QLabel("Seed:")
-        seed_label.setObjectName("section_title")
-        self.seed_3d_spin = QSpinBox()
-        self.seed_3d_spin.setRange(-1, 2147483647)
-        self.seed_3d_spin.setValue(123)
-        gen_layout.addWidget(seed_label)
-        gen_layout.addWidget(self.seed_3d_spin)
-        
-        layout.addWidget(gen_section)
-        # REMOVED addStretch() - was causing UI height expansion
+        # Critical: Add stretch to push content to top like texture tab (prevents height expansion)
+        layout.addStretch()
     
     def _load_dynamic_3d_parameters_on_demand(self):
         """Load dynamic 3D parameters when Tab 2 is accessed - LAZY LOADING"""
@@ -319,11 +265,32 @@ class UICreationMethods:
         if not selected_nodes:
             return None
             
-        # Create dynamic widget
+        # Create dynamic widget with smart scroll area for many parameters
         widget = QWidget()
-        layout = QVBoxLayout(widget)
-        layout.setContentsMargins(0, 0, 0, 0)
+        main_layout = QVBoxLayout(widget)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
+        
+        # Create scroll area for parameters to prevent app height expansion
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        
+        # Set reasonable height limits to prevent app expansion
+        scroll_area.setMinimumHeight(200)  # Minimum usable height
+        scroll_area.setMaximumHeight(600)  # Prevent excessive height expansion
+        scroll_area.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        
+        # Create container for parameters inside scroll area
+        params_container = QWidget()
+        layout = QVBoxLayout(params_container)
+        layout.setContentsMargins(8, 8, 8, 8)
         layout.setSpacing(12)
+        
+        # Set scroll area content
+        scroll_area.setWidget(params_container)
+        main_layout.addWidget(scroll_area)
         
         # Store widget references for value collection
         if not hasattr(self, 'dynamic_3d_widgets'):
@@ -351,12 +318,12 @@ class UICreationMethods:
             
             for node_key, info in nodes:
                 widgets_values = info.get('widgets_values', [])
-                # Only include nodes that have actual parameter values (not empty or None values)
+                # Include nodes that have ANY parameter values (including defaults/empty)
                 meaningful_params = []
                 if widgets_values:
                     for value in widgets_values:
-                        # Skip empty, None, or default empty values
-                        if value is not None and value != "" and value != [] and value != {}:
+                        # Only skip None values, include everything else (empty strings, 0, false, etc.)
+                        if value is not None:
                             meaningful_params.append(value)
                 
                 if meaningful_params:
@@ -384,21 +351,24 @@ class UICreationMethods:
                     node_label.setObjectName("section_subtitle")
                     section_layout.addWidget(node_label)
                     
-                    # Create widgets for meaningful parameters only
+                    # Create widgets for ALL parameters including defaults (FIXED: Show default values)
                     param_count = 0
                     for i, value in enumerate(widgets_values):
-                        # Skip empty, None, or meaningless values
-                        if value is None or value == "" or value == [] or value == {}:
+                        # Create widgets for ALL parameters including defaults
+                        # Only skip truly undefined values (None), but show empty strings, numbers, etc.
+                        if value is None:
                             continue
                             
                         widget_key = f"{node_key}_widget_{i}"
                         # Get meaningful parameter name based on node type and index
                         param_name = self._get_parameter_name(info.get('type', ''), i, value)
-                        param_widget = self._create_parameter_widget(param_name, value, f"{node_key}_param_{i}")
+                        param_label, param_widget = self._create_parameter_widget(param_name, value, f"{node_key}_param_{i}")
                         
-                        if param_widget:
+                        if param_label and param_widget:
+                            # Add both label and widget directly to layout like texture tab
+                            section_layout.addWidget(param_label)
                             section_layout.addWidget(param_widget)
-                            self.dynamic_3d_widgets[widget_key] = param_widget
+                            self.dynamic_3d_widgets[widget_key] = param_widget  # Store widget for value collection
                             param_count += 1
                     
                     # If no meaningful parameters were created, show a note
@@ -419,6 +389,9 @@ class UICreationMethods:
             info_label.setWordWrap(True)
             info_layout.addWidget(info_label)
             layout.addWidget(info_section)
+        
+        # Add stretch to push parameters to top within scroll area
+        layout.addStretch()
         
         self.logger.debug(f"Created dynamic 3D parameters section for {len(selected_nodes)} configured nodes")
         return widget
@@ -551,22 +524,14 @@ class UICreationMethods:
         # Fallback to generic name
         return f"Parameter {param_index}"
     
-    def _create_parameter_widget(self, label: str, value, param_name: str = None) -> QWidget:
-        """Create a parameter widget based on the value type"""
-        from PySide6.QtWidgets import QHBoxLayout, QSpinBox, QDoubleSpinBox, QLineEdit, QComboBox, QCheckBox
+    def _create_parameter_widget(self, label: str, value, param_name: str = None) -> tuple:
+        """Create parameter widgets (label, input) for direct addition to layout like texture tab"""
+        from PySide6.QtWidgets import QSpinBox, QDoubleSpinBox, QLineEdit, QComboBox, QCheckBox
         
-        # Follow texture parameters pattern exactly - separate label and widget
-        container = QWidget()
-        container.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
-        
-        layout = QVBoxLayout(container)
-        layout.setContentsMargins(0, 2, 0, 2)
-        layout.setSpacing(2)
-        
-        # Create label exactly like texture parameters
+        # Create label exactly like texture parameters - NO container wrapper
         param_label = QLabel(f"{label}:")
         param_label.setObjectName("section_title")  # Match texture parameter styling
-        layout.addWidget(param_label)
+        param_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)  # Fixed sizing
         
         # Create appropriate input widget based on value type
         if isinstance(value, bool):
@@ -576,50 +541,159 @@ class UICreationMethods:
             input_widget = QSpinBox()
             input_widget.setRange(-999999, 999999)
             input_widget.setValue(value)
-            # Use natural sizing like texture parameters
         elif isinstance(value, float):
             input_widget = QDoubleSpinBox()
             input_widget.setRange(-999999.0, 999999.0)
             input_widget.setDecimals(3)
             input_widget.setValue(value)
-            # Use natural sizing like texture parameters
         elif isinstance(value, str):
-            # Check if it looks like a combo box value (common options)
-            common_options = {
-                "scheduler": ["FlowMatchEulerDiscreteScheduler", "DPMSolverMultistepScheduler", "EulerDiscreteScheduler"],
-                "sampler": ["euler", "dpm++", "ddim", "plms"],
-                "quality": ["low", "medium", "high", "ultra"],
-                "format": ["glb", "obj", "ply", "stl"]
-            }
+            # Enhanced dropdown detection with ComfyUI model scanning
+            dropdown_options = self._get_dropdown_options_for_parameter(label, value)
             
-            # Try to detect if this is a dropdown value
-            is_dropdown = False
-            for option_type, options in common_options.items():
-                if value.lower() in [opt.lower() for opt in options]:
-                    input_widget = QComboBox()
-                    input_widget.addItems(options)
+            if dropdown_options:
+                input_widget = QComboBox()
+                input_widget.addItems(dropdown_options)
+                # Set current value if it exists in options
+                if value in dropdown_options:
                     input_widget.setCurrentText(value)
-                    # Use natural sizing like texture parameters
-                    is_dropdown = True
-                    break
-            
-            if not is_dropdown:
+                else:
+                    # Add current value as first option if not found
+                    input_widget.insertItem(0, value)
+                    input_widget.setCurrentIndex(0)
+            else:
                 input_widget = QLineEdit()
                 input_widget.setText(str(value))
-                # Use natural sizing like texture parameters
         else:
             # Fallback to string input
             input_widget = QLineEdit()
             input_widget.setText(str(value))
-            # Use natural sizing like texture parameters
         
-        layout.addWidget(input_widget)  # No flex space - natural sizing
+        # Set fixed sizing policy to prevent expansion like texture tab
+        input_widget.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         
-        # Store reference to the input widget for value retrieval
-        container.input_widget = input_widget
-        container.get_value = lambda: self._get_widget_value(input_widget)
+        # Set responsive width to use full available right panel space
+        # Remove fixed max width constraints to allow responsive sizing
+        # input_widget.setMaximumWidth(max_widget_width)  # REMOVED: Allow full width
         
-        return container
+        # Labels can have reasonable max width for readability
+        param_label.setMaximumWidth(400)  # Reasonable label width for readability
+        
+        # Store reference for value retrieval
+        input_widget.get_value = lambda: self._get_widget_value(input_widget)
+        
+        # Return both widgets for direct addition to layout (NO container wrapper)
+        return param_label, input_widget
+    
+    def _get_dropdown_options_for_parameter(self, label: str, current_value: str) -> list:
+        """Get dropdown options for parameter based on label and current value"""
+        from pathlib import Path
+        
+        # Normalize label for detection
+        label_lower = label.lower()
+        value_lower = current_value.lower() if current_value else ""
+        
+        # Common static options for non-model parameters
+        static_options = {
+            "scheduler": ["FlowMatchEulerDiscreteScheduler", "DPMSolverMultistepScheduler", "EulerDiscreteScheduler", "LMSDiscreteScheduler"],
+            "sampler": ["euler", "euler_ancestral", "heun", "dpm_2", "dpm_2_ancestral", "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_ancestral", "dpmpp_sde", "dpmpp_2m", "ddim", "uni_pc"],
+            "quality": ["low", "medium", "high", "ultra"],
+            "format": ["glb", "obj", "ply", "stl"],
+            "upscale_method": ["nearest-exact", "bilinear", "area", "bicubic", "lanczos"],
+            "mode": ["RGB", "RGBA", "L"],
+        }
+        
+        # Check for static options first
+        for option_type, options in static_options.items():
+            if option_type in label_lower or any(opt.lower() == value_lower for opt in options):
+                return options
+        
+        # ComfyUI models directory scanning
+        comfyui_models_dir = None
+        
+        # Try to find ComfyUI models directory
+        possible_paths = [
+            Path("ComfyUI/models"),
+            Path("../ComfyUI/models"),
+            Path("../../ComfyUI/models"),
+            Path.home() / "ComfyUI/models",
+            Path("D:/Comfy3D_WinPortable/ComfyUI/models"),  # Common Windows path
+            Path("/opt/ComfyUI/models"),  # Common Linux path
+        ]
+        
+        for path in possible_paths:
+            if path.exists() and path.is_dir():
+                comfyui_models_dir = path
+                break
+        
+        if not comfyui_models_dir:
+            return []
+        
+        # Model type detection based on parameter name and current value
+        model_keywords = {
+            "checkpoints": ["checkpoint", "model", "ckpt"],
+            "loras": ["lora", "lora_name"],
+            "vae": ["vae", "vae_name"],
+            "controlnet": ["controlnet", "control"],
+            "upscale_models": ["upscale", "upscaler"],
+            "embeddings": ["embedding", "textual_inversion"],
+            "clip": ["clip"],
+            "clip_vision": ["clip_vision"],
+            "unet": ["unet"],
+            "diffusers": ["diffuser"],
+            "style_models": ["style"],
+            "hypernetworks": ["hypernetwork"],
+            "gligen": ["gligen"],
+        }
+        
+        # Find matching model directory
+        detected_model_type = None
+        for model_type, keywords in model_keywords.items():
+            if any(keyword in label_lower for keyword in keywords):
+                detected_model_type = model_type
+                break
+        
+        # Also check current value for model type hints
+        if not detected_model_type and current_value:
+            for model_type, keywords in model_keywords.items():
+                if any(keyword in value_lower for keyword in keywords):
+                    detected_model_type = model_type
+                    break
+        
+        if not detected_model_type:
+            return []
+        
+        # Scan the specific model directory
+        model_dir = comfyui_models_dir / detected_model_type
+        if not model_dir.exists():
+            return []
+        
+        try:
+            # Get all model files (common extensions)
+            model_extensions = [".ckpt", ".safetensors", ".bin", ".pt", ".pth", ".onnx"]
+            model_files = []
+            
+            for ext in model_extensions:
+                model_files.extend(model_dir.glob(f"*{ext}"))
+                # Also check subdirectories
+                model_files.extend(model_dir.glob(f"*/*{ext}"))
+            
+            # Convert to relative paths from model directory
+            options = []
+            for model_file in sorted(model_files):
+                # Get relative path from model directory
+                relative_path = model_file.relative_to(model_dir)
+                options.append(str(relative_path))
+            
+            # Limit to reasonable number to prevent UI slowdown
+            if len(options) > 100:
+                options = options[:100]
+                options.append("... (more models available)")
+            
+            return options
+            
+        except Exception as e:
+            self.logger.warning(f"Failed to scan model directory {model_dir}: {e}")
+            return []
     
     def _get_widget_value(self, widget):
         """Get value from a widget regardless of type"""
@@ -684,6 +758,43 @@ class UICreationMethods:
         
         self.logger.info(f"Collected {len(params)} parameters from 3D UI")
         return params
+    
+    def _regenerate_config_with_widgets_values(self, workflow_file: str, param_type: str):
+        """Regenerate configuration to include widgets_values from workflow"""
+        try:
+            self.logger.info(f"Regenerating config for {workflow_file} to include widgets_values")
+            
+            # Import the workflow change method from main app
+            if hasattr(self, '_on_workflow_changed'):
+                # Trigger workflow change which will regenerate the config
+                self._on_workflow_changed(workflow_file)
+            else:
+                self.logger.error("_on_workflow_changed method not found - config regeneration failed")
+                
+        except Exception as e:
+            self.logger.error(f"Failed to regenerate config: {e}")
+            # Fallback - try to load parameters anyway
+            self._load_parameters_from_config(param_type)
+    
+    def force_regenerate_all_configs(self):
+        """Force regenerate all parameter configs to include widgets_values"""
+        try:
+            # Force regenerate image config
+            if hasattr(self, 'workflow_combo') and self.workflow_combo.count() > 0:
+                current_workflow = self.workflow_combo.currentData()
+                if current_workflow:
+                    self.logger.info(f"Force regenerating image config for: {current_workflow}")
+                    self._on_workflow_changed(current_workflow)
+            
+            # Force regenerate 3D config
+            if hasattr(self, 'workflow_3d_combo') and self.workflow_3d_combo.count() > 0:
+                current_3d_workflow = self.workflow_3d_combo.currentData() or self.workflow_3d_combo.currentText()
+                if current_3d_workflow:
+                    self.logger.info(f"Force regenerating 3D config for: {current_3d_workflow}")
+                    self._on_workflow_changed(current_3d_workflow)
+                    
+        except Exception as e:
+            self.logger.error(f"Failed to force regenerate configs: {e}")
     
     def _refresh_scene_objects(self):
         """Refresh scene objects - only session models"""
@@ -777,70 +888,28 @@ class UICreationMethods:
         layout.setContentsMargins(12, 12, 12, 12)
         layout.setSpacing(12)
         
-        # Texture Quality section
-        quality_section = self._create_parameter_section("Texture Quality", compact=True)
-        quality_layout = quality_section.layout()
+        # Store reference to allow dynamic parameter injection
+        self._texture_params_widget = widget
+        self._texture_params_layout = layout
         
-        # Resolution
-        res_label = QLabel("Resolution:")
-        res_label.setObjectName("section_title")
-        self.texture_res_combo = QComboBox()
-        self.texture_res_combo.addItems(["512x512", "1024x1024", "2048x2048", "4096x4096"])
-        self.texture_res_combo.setCurrentText("1024x1024")
-        quality_layout.addWidget(res_label)
-        quality_layout.addWidget(self.texture_res_combo)
         
-        # UV unwrap quality
-        uv_label = QLabel("UV Quality:")
-        uv_label.setObjectName("section_title")
-        self.uv_quality_combo = QComboBox()
-        self.uv_quality_combo.addItems(["Standard", "High", "Ultra"])
-        self.uv_quality_combo.setCurrentText("High")
-        quality_layout.addWidget(uv_label)
-        quality_layout.addWidget(self.uv_quality_combo)
+        # DYNAMIC WORKFLOW PARAMETERS SECTION - Same as image tab
+        dynamic_section = self._create_parameter_section("Workflow Parameters", compact=True)
+        dynamic_section_layout = dynamic_section.layout()
         
-        layout.addWidget(quality_section)
+        # Store dynamic layout reference for unified parameter system
+        self._texture_dynamic_params_layout = dynamic_section_layout
+        self._texture_dynamic_params_container = dynamic_section
         
-        # Material Properties section
-        material_section = self._create_parameter_section("Material Properties", compact=True)
-        material_layout = material_section.layout()
+        # Info label when no parameters loaded
+        info_label = QLabel("Configure texture workflow parameters from File menu")
+        info_label.setObjectName("info_label")
+        info_label.setWordWrap(True)
+        self._texture_dynamic_params_layout.addWidget(info_label)
         
-        # Material type
-        mat_label = QLabel("Material Type:")
-        mat_label.setObjectName("section_title")
-        self.material_type_combo = QComboBox()
-        self.material_type_combo.addItems([
-            "PBR (Physical)",
-            "Stylized",
-            "Photorealistic",
-            "Cartoon",
-            "Metallic",
-            "Fabric"
-        ])
-        material_layout.addWidget(mat_label)
-        material_layout.addWidget(self.material_type_combo)
+        # Add the dynamic section
+        layout.addWidget(dynamic_section)
         
-        # Roughness
-        rough_label = QLabel("Roughness:")
-        rough_label.setObjectName("section_title")
-        self.roughness_spin = QDoubleSpinBox()
-        self.roughness_spin.setRange(0.0, 1.0)
-        self.roughness_spin.setValue(0.5)
-        self.roughness_spin.setSingleStep(0.1)
-        material_layout.addWidget(rough_label)
-        material_layout.addWidget(self.roughness_spin)
-        
-        # Metallic
-        metal_label = QLabel("Metallic:")
-        metal_label.setObjectName("section_title")
-        self.metallic_spin = QDoubleSpinBox()
-        self.metallic_spin.setRange(0.0, 1.0)
-        self.metallic_spin.setValue(0.0)
-        self.metallic_spin.setSingleStep(0.1)
-        material_layout.addWidget(metal_label)
-        material_layout.addWidget(self.metallic_spin)
-        
-        layout.addWidget(material_section)
         layout.addStretch()
         
         return widget
@@ -1214,87 +1283,256 @@ class UICreationMethods:
             import traceback
             self.logger.error(f"Traceback: {traceback.format_exc()}")
     
-    def _load_parameters_unified(self, param_type: str):
-        """Load parameters using the unified configuration system"""
+    # Configuration file mapping for all parameter types
+    _CONFIG_FILE_MAP = {
+        "image": "config/image_parameters_config.json",
+        "3d_parameters": "config/3d_parameters_config.json",
+        "texture_parameters": "config/texture_parameters_config.json"
+    }
+
+    def _load_parameters_unified(self, param_type: str, force_workflow_path: Optional[Path] = None):
+        """Load parameters using the unified configuration system
+        
+        This method handles both dropdown-triggered workflow changes and startup loading.
+        When force_workflow_path is provided, it bypasses the saved configuration
+        and loads parameters directly from the specified workflow file.
+        
+        Args:
+            param_type: Type of parameters (image, 3d_parameters, texture_parameters)
+            force_workflow_path: If provided, use this workflow instead of loading from config.
+                                This is used when user selects a workflow from dropdown.
+        
+        Workflow:
+            1. If force_workflow_path is provided (dropdown selection):
+               - Load workflow configuration directly from specified file
+               - Update UI parameters from the new workflow
+               - Update prompt memory with new workflow path
+            2. If no force path (normal startup):
+               - Load workflow path from saved configuration file
+               - Proceed with normal parameter loading
+        
+        Raises:
+            Exception: If workflow loading or parameter update fails
+        """
         try:
-            self.logger.info(f"Loading parameters for {param_type} using unified system")
+            self.logger.debug(f"🔧 Loading parameters for {param_type} using unified system")
+            self.logger.info(f"🔧 Force workflow path: {force_workflow_path}")
+            self.logger.info(f"🔧 Config integration available: {hasattr(self, 'config_integration')}")
             
-            # Map parameter types to configuration files
-            config_map = {
-                "image": "config/image_parameters_config.json",
-                "3d_parameters": "config/3d_parameters_config.json",
-                "texture_parameters": "config/texture_parameters_config.json"
-            }
-            
-            config_path = Path(config_map.get(param_type, ""))
-            if not config_path.exists():
-                self.logger.warning(f"Configuration file not found: {config_path}")
-                return
-            
-            # Load workflow through unified configuration manager
-            with open(config_path, 'r') as f:
-                config = json.load(f)
-            
-            workflow_path = config.get('workflow_path')
-            if workflow_path:
-                workflow_file = Path(workflow_path)
-                if workflow_file.exists():
-                    # Load through unified manager to get organized parameters
-                    params = self.config_integration.config_manager.load_workflow_configuration(workflow_file)
-                    
-                    # Update UI with unified parameters
-                    self._update_unified_parameter_ui(param_type, params)
-                    
-                    # Handle prompt memory
-                    self._update_prompt_memory(config)
+            if force_workflow_path and force_workflow_path.exists():
+                # CASE 1: Dropdown selection - use specified workflow directly
+                self.logger.info(f"🎯 Using forced workflow path: {force_workflow_path}")
+                self._load_workflow_parameters_direct(param_type, force_workflow_path)
+                
+            else:
+                # CASE 2: Normal loading - use saved configuration
+                self.logger.info(f"📂 Loading from saved configuration for {param_type}")
+                self._load_workflow_parameters_from_config(param_type)
                     
         except Exception as e:
-            self.logger.error(f"Failed to load parameters through unified system: {e}")
+            self.logger.error(f"❌ Failed to load parameters through unified system: {e}")
             import traceback
             self.logger.error(f"Traceback: {traceback.format_exc()}")
+
+    def _load_workflow_parameters_direct(self, param_type: str, workflow_file: Path):
+        """Load parameters directly from a workflow file (used for dropdown changes)
+        
+        Args:
+            param_type: Type of parameters (image, 3d_parameters, texture_parameters)
+            workflow_file: Path to the workflow file to load
+        """
+        self.logger.info(f"🔄 Loading workflow parameters directly from {workflow_file.name}")
+        
+        # Load through unified manager to get organized parameters
+        params = self.config_integration.config_manager.load_workflow_configuration(workflow_file)
+        
+        # Update UI with unified parameters
+        self._update_unified_parameter_ui(param_type, params)
+        
+        # Update prompt memory with new workflow path
+        self._update_prompt_memory_for_workflow(param_type, workflow_file)
+
+    def _load_workflow_parameters_from_config(self, param_type: str):
+        """Load parameters from saved configuration file (used for startup)
+        
+        Args:
+            param_type: Type of parameters (image, 3d_parameters, texture_parameters)
+        """
+        config_path = Path(self._CONFIG_FILE_MAP.get(param_type, ""))
+        if not config_path.exists():
+            self.logger.warning(f"⚠️ Configuration file not found: {config_path}")
+            return
+        
+        # Load workflow through unified configuration manager
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+        
+        # Try workflow_path first, then fallback to workflow_file
+        workflow_path = config.get('workflow_path')
+        workflow_file_name = config.get('workflow_file')
+        
+        if workflow_path:
+            # Use full path if available
+            workflow_file = Path(workflow_path)
+        elif workflow_file_name and param_type:
+            # Construct path from workflow_file and param_type
+            workflow_type_map = {
+                "image": "image_generation",
+                "3d_parameters": "3d_generation", 
+                "texture_parameters": "texture_generation"
+            }
+            workflow_type = workflow_type_map.get(param_type, "image_generation")
+            workflow_file = Path("workflows") / workflow_type / workflow_file_name
+            self.logger.info(f"🔨 Constructed workflow path: {workflow_file}")
+        else:
+            workflow_file = None
+        
+        if workflow_file and workflow_file.exists():
+            self.logger.info(f"📁 Loading workflow from config: {workflow_file.name}")
+            
+            # Load through unified manager to get organized parameters
+            params = self.config_integration.config_manager.load_workflow_configuration(workflow_file)
+            
+            # Update UI with unified parameters
+            self._update_unified_parameter_ui(param_type, params)
+            
+            # Handle prompt memory
+            self._update_prompt_memory(config)
+        elif workflow_file:
+            self.logger.warning(f"⚠️ Workflow file not found: {workflow_file}")
+        else:
+            self.logger.warning(f"⚠️ No workflow path or file found in config for {param_type}")
+
+    def _update_prompt_memory_for_workflow(self, param_type: str, workflow_file: Path):
+        """Update prompt memory with new workflow path (used for dropdown changes)
+        
+        Args:
+            param_type: Type of parameters (image, 3d_parameters, texture_parameters)
+            workflow_file: Path to the workflow file
+        """
+        try:
+            config_path = Path(self._CONFIG_FILE_MAP.get(param_type, ""))
+            if config_path.exists():
+                with open(config_path, 'r') as f:
+                    config = json.load(f)
+                # Override with new workflow path
+                config['workflow_path'] = str(workflow_file.absolute())
+                self._update_prompt_memory(config)
+                self.logger.debug(f"✅ Updated prompt memory for {param_type} with workflow {workflow_file.name}")
+            else:
+                self.logger.warning(f"⚠️ Could not update prompt memory - config file not found: {config_path}")
+        except Exception as e:
+            self.logger.error(f"❌ Failed to update prompt memory: {e}")
+
+    def _get_target_layout_for_param_type(self, param_type: str):
+        """Get the appropriate layout for the given parameter type"""
+        try:
+            if param_type == "image":
+                # Image tab uses dynamic_params_layout
+                if hasattr(self, 'dynamic_params_layout'):
+                    return self.dynamic_params_layout
+                else:
+                    self.logger.warning("Image tab dynamic_params_layout not found")
+                    return None
+                    
+            elif param_type == "3d_parameters":
+                # 3D tab uses dynamic params layout
+                if hasattr(self, '_3d_dynamic_params_layout'):
+                    return self._3d_dynamic_params_layout
+                else:
+                    self.logger.warning("3D tab dynamic layout not found")
+                    return None
+                    
+            elif param_type == "texture_parameters":
+                # Texture tab uses dynamic params layout
+                if hasattr(self, '_texture_dynamic_params_layout'):
+                    return self._texture_dynamic_params_layout
+                else:
+                    self.logger.warning("Texture tab dynamic layout not found")
+                    return None
+                    
+            else:
+                self.logger.warning(f"Unknown param_type: {param_type}")
+                return None
+                
+        except Exception as e:
+            self.logger.error(f"Error getting target layout for {param_type}: {e}")
+            return None
+
+    def _clear_dynamic_parameters_for_layout(self, layout):
+        """Clear dynamic parameters from a specific layout"""
+        try:
+            if not layout:
+                return
+                
+            # Remove all widgets from the layout
+            while layout.count():
+                item = layout.takeAt(0)
+                if item.widget():
+                    widget = item.widget()
+                    widget.setParent(None)
+                    widget.deleteLater()
+                    
+            self.logger.debug("Cleared dynamic parameters from layout")
+            
+        except Exception as e:
+            self.logger.error(f"Error clearing parameters from layout: {e}")
     
     def _update_unified_parameter_ui(self, param_type: str, params: Dict[str, Any]):
         """Update UI with parameters from unified configuration manager"""
         try:
-            if not hasattr(self, 'dynamic_params_layout'):
-                self.logger.warning("Dynamic params layout not initialized")
+            # Get the appropriate layout for the parameter type
+            target_layout = self._get_target_layout_for_param_type(param_type)
+            if not target_layout:
+                self.logger.warning(f"No target layout found for param_type: {param_type}")
                 return
             
-            # Clear existing parameters
-            self._clear_dynamic_parameters()
+            # Clear existing parameters for this tab
+            self._clear_dynamic_parameters_for_layout(target_layout)
             
             # Get the unified configuration manager
             config_manager = self.config_integration.config_manager
             
             # Create parameter widgets organized by node type with proper priority
-            for node_id, node_params in sorted(params.items(), 
+            self.logger.info(f"🔧 Creating UI for {len(params)} parameter groups")
+            self.logger.debug(f"🔧 Parameters structure: {list(params.keys())}")
+            for key, value in params.items():
+                self.logger.debug(f"🔧 Group {key}: {key} with {len(value.get('parameters', {}))} parameters")
+            for node_type, node_params in sorted(params.items(), 
                                               key=lambda x: config_manager.PARAMETER_PRIORITY.get(
-                                                  x[1].get('node_type', ''), 999)):
+                                                  x[0], 999)):
                 
-                node_type = node_params.get('node_type', 'Unknown')
+                node_id = node_params.get('node_id', node_type)
+                self.logger.info(f"🎯 Processing node {node_type} (node_id: {node_id})")
                 
                 # Skip hidden node types
                 if node_type in config_manager.HIDDEN_NODE_TYPES:
+                    self.logger.info(f"⏭️ Skipping {node_type} - hidden node type")
                     continue
                 
                 # Check if parameters are ticked for display
-                if not self._are_parameters_ticked(node_id, node_params):
+                if not self._are_parameters_ticked(node_type, node_params):
+                    self.logger.info(f"⏭️ Skipping {node_type} - parameters not ticked")
                     continue
                 
                 # Create section for this node with color coding
-                section_color = config_manager.NODE_COLORS.get(node_type, "#666666")
+                section_color = self._get_node_color_from_settings(node_type)
+                display_name = node_params.get('display_name', node_type)
                 section_widget = self._create_colored_parameter_section(
-                    f"{node_type} #{node_id}", 
+                    f"{display_name} (#{node_id})", 
                     section_color
                 )
+                self.logger.debug(f"✅ Created section for {display_name} (#{node_id})")
                 
                 section_layout = section_widget.layout()
+                param_count = 0
                 
                 # Add parameters for this node
                 for param_name, param_info in node_params.get('parameters', {}).items():
                     if param_name in ['node_type', 'node_title']:
                         continue
                     
+                    self.logger.debug(f"🎯 Creating widget for {param_name}: {param_info}")
                     # Create parameter widget
                     param_widget = self._create_unified_parameter_widget(
                         param_name, 
@@ -1304,12 +1542,17 @@ class UICreationMethods:
                     
                     if param_widget:
                         section_layout.addWidget(param_widget)
+                        param_count += 1
+                        self.logger.debug(f"✅ Added parameter widget: {param_name}")
+                    else:
+                        self.logger.error(f"❌ Failed to create widget for: {param_name}")
                 
-                # Add section to main layout
-                self.dynamic_params_layout.addWidget(section_widget)
+                self.logger.debug(f"✅ Added {param_count} parameter widgets to {display_name} (#{node_id})")
+                # Add section to target layout
+                target_layout.addWidget(section_widget)
             
             # Add stretch at the end
-            self.dynamic_params_layout.addStretch()
+            target_layout.addStretch()
             
             self.logger.info(f"Updated UI with {len(params)} parameter groups")
             
@@ -1324,15 +1567,73 @@ class UICreationMethods:
         # TODO: Implement actual ticked parameter tracking
         return True
     
-    def _create_colored_parameter_section(self, title: str, color: str) -> QGroupBox:
+    def _get_node_color_from_settings(self, node_type: str) -> str:
+        """Get the color for a node type from current settings"""
+        try:
+            from PySide6.QtCore import QSettings
+            settings = QSettings("ComfyUI-Cinema4D", "Bridge")
+            workflow_colors = settings.value("interface/workflow_colors", [
+                "#4CAF50", "#2196F3", "#9C27B0", "#FF9800", "#00BCD4"
+            ])
+            
+            # Ensure we have 5 colors
+            if not workflow_colors or len(workflow_colors) < 5:
+                workflow_colors = ["#4CAF50", "#2196F3", "#9C27B0", "#FF9800", "#00BCD4"]
+            
+            # Map node types to color indices
+            node_color_mapping = {
+                # Primary sampling (Color 1 - Green)
+                "KSampler": 0,
+                "KSamplerAdvanced": 0,
+                "Hy3DGenerateMesh": 0,
+                
+                # Model loading (Color 2 - Blue)
+                "CheckpointLoader": 1, 
+                "CheckpointLoaderSimple": 1,
+                "UNETLoader": 1,
+                "EmptyLatentImage": 1,
+                "EmptySD3LatentImage": 1,
+                "Hy3DModelLoader": 1,
+                "Hy3DExportMesh": 1,
+                
+                # LoRA and ControlNet (Color 3 - Purple)
+                "LoraLoader": 2,
+                "ControlNetLoader": 2,
+                "Hy3DPostprocessMesh": 2,
+                
+                # VAE and FluxGuidance (Color 4 - Orange)
+                "VAELoader": 3,
+                "FluxGuidance": 3,
+                "Hy3DVAEDecode": 3,
+                
+                # Text encoding (Color 5 - Cyan)
+                "CLIPTextEncode": 4,
+                "QuadrupleCLIPLoader": 4,
+            }
+            
+            # Get color index for this node type, default to 0
+            color_index = node_color_mapping.get(node_type, 0)
+            selected_color = workflow_colors[color_index]
+            self.logger.debug(f"🎨 Node {node_type} -> Color {color_index+1}: {selected_color}")
+            return selected_color
+            
+        except Exception as e:
+            self.logger.debug(f"Failed to get node color from settings: {e}")
+            return "#4CAF50"  # Default fallback
+    
+    def _create_colored_parameter_section(self, title: str, color: str = None) -> QGroupBox:
         """Create a parameter section with color-coded header"""
+        # If no color provided, use default
+        if not color:
+            color = "#4CAF50"  # Simple fallback since color should be provided
+        
         section = QGroupBox(title)
         section.setObjectName("colored_parameter_section")
         
         # Apply color to the section header
         section.setStyleSheet(f"""
             QGroupBox#colored_parameter_section {{
-                border: 2px solid {color};
+                border: 1px solid {color};
                 border-radius: 5px;
                 margin-top: 10px;
                 padding-top: 10px;
@@ -1356,8 +1657,10 @@ class UICreationMethods:
         """Create a widget for a unified parameter"""
         try:
             param_type = param_info.get('type', 'string')
-            param_value = param_info.get('value')
+            param_value = param_info.get('current_value', param_info.get('value'))  # Try current_value first, then value
             param_ui_name = param_info.get('ui_name', param_name)
+            
+            self.logger.info(f"🎯 Creating {param_type} widget for {param_ui_name} with value: {param_value}")
             
             # Create container
             container = QWidget()
@@ -1373,11 +1676,27 @@ class UICreationMethods:
             layout.addWidget(label)
             
             # Create appropriate input widget
-            if param_type == 'choice' and 'choices' in param_info:
+            if param_type == 'choice':
+                # Support both 'choices' and 'options' keys
+                choices = param_info.get('choices', param_info.get('options', []))
+                
+                # If no predefined choices, try to get ComfyUI model options
+                if not choices and param_value:
+                    choices = self._get_dropdown_options_for_parameter(param_ui_name, str(param_value))
+                    self.logger.info(f"🎯 Auto-populated choices for {param_ui_name}: {len(choices)} options")
+                
+                self.logger.info(f"🎯 Choice widget for {param_ui_name}: options={len(choices)} items, value={param_value}")
                 input_widget = QComboBox()
-                input_widget.addItems(param_info['choices'])
-                if param_value in param_info['choices']:
+                input_widget.addItems(choices)
+                if param_value and str(param_value) in choices:
                     input_widget.setCurrentText(str(param_value))
+                    self.logger.info(f"✅ Set choice widget to: {param_value}")
+                else:
+                    self.logger.warning(f"⚠️ Value '{param_value}' not in choices (showing {len(choices)} options)")
+                    if param_value:  # Add the current value even if not in choices
+                        input_widget.addItem(str(param_value))
+                        input_widget.setCurrentText(str(param_value))
+                        self.logger.debug(f"✅ Added and set current value: {param_value}")
             elif param_type == 'int':
                 input_widget = QSpinBox()
                 input_widget.setRange(
@@ -1484,7 +1803,7 @@ class UICreationMethods:
             # Use unified configuration system if available
             if hasattr(self, 'config_integration'):
                 self.logger.info("Using unified configuration system for parameter loading")
-                self._load_parameters_unified(param_type)
+                self._load_parameters_unified(param_type, force_workflow_path=None)
                 return
             
             if param_type == "image":
@@ -1499,6 +1818,22 @@ class UICreationMethods:
                     with open(config_path, 'r') as f:
                         config = json.load(f)
                     self.logger.info(f"🔄 Config loaded: {len(config)} keys")
+                    
+                    # Check if config is missing widgets_values and regenerate if needed
+                    node_info = config.get('node_info', {})
+                    needs_regeneration = False
+                    for node_key, node_data in node_info.items():
+                        if node_data.get('supported', False) and 'widgets_values' not in node_data:
+                            needs_regeneration = True
+                            break
+                    
+                    if needs_regeneration:
+                        self.logger.warning("Config missing widgets_values - regenerating from workflow")
+                        workflow_file = config.get('workflow_file', '')
+                        if workflow_file and hasattr(self, 'workflow_combo'):
+                            # Find and trigger workflow change to regenerate config with widgets_values
+                            QTimer.singleShot(100, lambda: self._regenerate_config_with_widgets_values(workflow_file, param_type))
+                            return
                     
                     # Get workflow path and load it
                     workflow_path = config.get('workflow_path')
@@ -1635,12 +1970,19 @@ class UICreationMethods:
                                 continue
                             
                             # Skip nodes without configurable parameters
-                            if not widgets_values:
-                                # Skipping node - no widget values
+                            if not widgets_values or len(widgets_values) == 0:
+                                self.logger.debug(f"Skipping {node_type} #{node_id} - no widget values")
+                                continue
+                            
+                            # Skip nodes that are just display/output nodes (no user-configurable parameters)
+                            display_only_nodes = ['Preview3D', 'SaveImage', 'PreviewImage', 'Note', 'MarkdownNote']
+                            if node_type in display_only_nodes:
+                                self.logger.debug(f"Skipping {node_type} #{node_id} - display only node")
                                 continue
                             
                             # Create group for this node with better organization
                             group_title = self._get_friendly_node_title(node_type, node_id, node.get('title', ''))
+                            self.logger.info(f"Creating parameter group: '{group_title}' for {node_type} #{node_id}")
                             group_box = QGroupBox(group_title)
                             group_box.setObjectName("parameter_group")
                             
@@ -1705,24 +2047,30 @@ class UICreationMethods:
                             
                             if node_def and not node_def.get('skip_ui', False):
                                 widgets_mapping = node_def.get('widgets_mapping', [])
-                                self.logger.debug(f"Found definition with {len(widgets_mapping)} widget mappings")
+                                self.logger.info(f"🔧 NODE: {node_type}_{node_id}")
+                                self.logger.info(f"🔧 WIDGETS_VALUES: {widgets_values}")
+                                self.logger.info(f"🔧 DEFINITION: {len(widgets_mapping)} widget mappings")
                                 
                                 # Create widgets from definition
                                 for i, widget_def in enumerate(widgets_mapping):
                                     if i < len(widgets_values):
                                         # Skip if marked as skip (handled elsewhere in UI)
                                         if widget_def.get('skip', False):
+                                            self.logger.info(f"⏭️ Skipping {widget_def['name']} (marked skip)")
                                             continue
                                         value = widgets_values[i]
-                                        self.logger.debug(f"Creating widget: {widget_def['name']}")
+                                        self.logger.info(f"🎯 Creating widget '{widget_def['name']}' with value: {value} (type: {type(value)})")
+                                        self.logger.info(f"🎯 Widget def: {widget_def}")
                                         # Create widget key as node_type_node_id_param_index
                                         param_key = f"{node_type}_{node_id}_{str(i)}"
                                         widget = self._create_widget_from_definition(widget_def, value, node_type, node_id, param_key)
                                         if widget:
                                             group_layout.addWidget(widget)
-                                            # Added widget: {widget_def['name']}
+                                            self.logger.debug(f"✅ Added widget: {widget_def['name']}")
                                         else:
                                             self.logger.error(f"❌ Failed to create widget: {widget_def['name']}")
+                                    else:
+                                        self.logger.warning(f"⚠️ No value for widget {i}: {widget_def['name']} (have {len(widgets_values)} values)")
                                 
                                 # Add extra widgets
                                 extra_widgets = node_def.get('extra_widgets', [])
@@ -1904,11 +2252,15 @@ class UICreationMethods:
         priority_order = {
             'CheckpointLoaderSimple': 1,
             'CheckpointLoader': 1,
+            'UNETLoader': 1,  # Same priority as checkpoint loaders
+            'VAELoader': 1,
+            'QuadrupleCLIPLoader': 1,
             'LoraLoader': 2,
-            'KSampler': 3,
-            'FluxGuidance': 4,
-            'EmptySD3LatentImage': 5,
-            'CLIPTextEncode': 6,  # Will be handled separately
+            'ModelSamplingSD3': 3,
+            'KSampler': 4,
+            'FluxGuidance': 5,
+            'EmptySD3LatentImage': 6,
+            'CLIPTextEncode': 7,  # Will be handled separately
         }
         
         # Separate and sort nodes
@@ -1964,6 +2316,26 @@ class UICreationMethods:
                 value = str(value) if value is not None else widget_def.get('default', '')
                 if widget_type == 'combo':
                     options = widget_def.get('options', [])
+                    self.logger.info(f"🎯 Creating combo '{name}' with {len(options)} predefined options: {options}")
+                    self.logger.info(f"🎯 Combo value to set: '{value}'")
+                    
+                    # Auto-populate model dropdowns based on parameter name
+                    if not options and name and any(keyword in name.lower() for keyword in ['checkpoint', 'lora', 'vae', 'clip', 'model']):
+                        options = self._get_dropdown_options_for_parameter(name, node_type)
+                        self.logger.info(f"Auto-populated {name} with {len(options)} model options")
+                    # Auto-populate sampler/scheduler dropdowns from ComfyUI standard lists
+                    elif not options and 'sampler' in name.lower():
+                        options = ['euler', 'euler_a', 'heun', 'dpm_2', 'dpm_2_a', 'lms', 'dpm_fast', 'dpm_adaptive', 'dpmpp_2s_a', 'dpmpp_2m', 'dpmpp_2m_sde', 'dpmpp_3m_sde', 'ddpm', 'lcm']
+                        self.logger.info(f"Auto-populated sampler options for {name}")
+                    elif not options and 'scheduler' in name.lower():
+                        options = ['normal', 'karras', 'exponential', 'sgm_uniform', 'simple', 'ddim_uniform']
+                        self.logger.info(f"Auto-populated scheduler options for {name}")
+                    elif not options and 'control' in name.lower():
+                        options = ['fixed', 'increment', 'decrement', 'randomize']
+                        self.logger.info(f"Auto-populated control options for {name}")
+                    
+                    self.logger.info(f"🎯 Final options for '{name}': {options}")
+                    self.logger.info(f"🎯 Value '{value}' in options: {value in options}")
                     return self._create_combo_widget(name, value, options, node_type, node_id, param_key)
                 elif widget_type == 'text_multiline':
                     return self._create_multiline_text_widget(name, value)
@@ -2225,9 +2597,20 @@ class UICreationMethods:
         
         # Value input
         combo = QComboBox()
+        self.logger.info(f"🎯 Adding {len(options)} items to combo '{name}': {options}")
         combo.addItems(options)
+        self.logger.info(f"🎯 Combo '{name}' now has {combo.count()} items")
+        
         if value in options:
             combo.setCurrentText(value)
+            self.logger.info(f"✅ Set combo '{name}' current value to: {value}")
+            self.logger.info(f"✅ Combo '{name}' current text is now: {combo.currentText()}")
+        else:
+            self.logger.error(f"❌ Value '{value}' not found in options for '{name}', options: {options}")
+            self.logger.error(f"❌ Setting combo '{name}' to first option: {options[0] if options else 'NO OPTIONS'}")
+            if options:
+                combo.setCurrentIndex(0)
+            
         combo.setMinimumWidth(120)
         layout.addWidget(combo)
         
@@ -2786,7 +3169,7 @@ class UICreationMethods:
                         placeholder.setStyleSheet("""
                             QLabel {
                                 background-color: #000000;
-                                border: 2px solid #4CAF50;
+                                border: 1px solid #4CAF50;
                                 border-radius: 8px;
                                 padding: 2px;
                             }
@@ -2843,7 +3226,7 @@ class UICreationMethods:
                             # Select
                             self.unified_object_selector.add_image_selection(image_path)
                             self._update_all_unified_selectors()
-                            self.logger.info(f"✅ Added image to selection: {image_path.name}")
+                            self.logger.debug(f"✅ Added image to selection: {image_path.name}")
                             
                             # Visual feedback for selection (get current accent color)
                             from PySide6.QtCore import QSettings
@@ -3367,11 +3750,30 @@ class UICreationMethods:
     
     def _get_friendly_node_title(self, node_type: str, node_id: str, custom_title: str = "") -> str:
         """Get a title for a node - using technical names as requested"""
-        if custom_title:
-            return custom_title
-            
-        # Keep technical node type names
-        return f"{node_type} #{node_id}"
+        if custom_title and custom_title.strip():
+            return f"{custom_title} ({node_type})"
+        
+        # Provide descriptive names for common nodes
+        friendly_names = {
+            'KSampler': 'Sampling Settings',
+            'UNETLoader': 'Model Loader',
+            'VAELoader': 'VAE Loader', 
+            'QuadrupleCLIPLoader': 'CLIP Loader',
+            'CheckpointLoaderSimple': 'Checkpoint Loader',
+            'LoraLoader': 'LoRA Loader',
+            'ModelSamplingSD3': 'Model Sampling',
+            'FluxGuidance': 'Guidance Scale',
+            'EmptySD3LatentImage': 'Latent Image Settings',
+            'Hy3DModelLoader': '3D Model Loader',
+            'Hy3DGenerateMesh': '3D Mesh Generation',
+            'Hy3DDelightImage': '3D Delight Processing',
+            'ImageResize+': 'Image Resize',
+            'SolidMask': 'Mask Settings',
+            'LoadImage': 'Image Input'
+        }
+        
+        friendly_name = friendly_names.get(node_type, node_type)
+        return f"{friendly_name} #{node_id}"
     
     def _on_node_bypass_changed(self, node_id: str, node_type: str, state: int):
         """Handle bypass checkbox state change"""

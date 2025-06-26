@@ -230,7 +230,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
     
     def _on_configuration_updated(self, config: Dict[str, Any]):
         """Handle configuration updates from unified configuration manager"""
-        self.logger.info("Configuration updated from unified manager")
+        self.logger.debug("Configuration updated from unified manager")
         # Configuration updates are handled through the parameter panels
         
     def _on_workflow_changed_unified(self, workflow_name: str):
@@ -265,7 +265,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                         self.workflow_texture_combo.setCurrentIndex(i)
                         break
                         
-            self.logger.info(f"Synchronized all workflow dropdowns to: {workflow_filename}")
+            self.logger.debug(f"Synchronized all workflow dropdowns to: {workflow_filename}")
             
         except Exception as e:
             self.logger.error(f"Failed to sync workflow dropdowns: {e}")
@@ -637,8 +637,9 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             # Initialize workflow parameters after UI is fully set up
             QTimer.singleShot(500, self._initialize_workflow_parameters)
             
-            # Load test models after all initialization is complete
-            QTimer.singleShot(3000, self._load_test_models_on_startup)
+            # Disabled: _load_test_models_on_startup was causing inappropriate model loading
+            # Models are loaded when user switches to View All tab instead
+            # QTimer.singleShot(3000, self._load_test_models_on_startup)
             
             # Setup undo/redo auto snapshots after UI is ready
             QTimer.singleShot(1500, self._auto_create_undo_snapshots)
@@ -950,13 +951,26 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         return panel
         
     def _create_enhanced_right_panel(self) -> QWidget:
-        """Create enhanced right panel with dynamic parameters"""
+        """Create enhanced right panel with dynamic parameters and scroll area"""
         panel = QWidget()
         panel.setObjectName("right_panel")
         
         layout = QVBoxLayout(panel)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
+        
+        # Add scroll area to prevent window resizing when parameters change
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        scroll_area.setFrameStyle(QFrame.NoFrame)  # Remove frame for cleaner look
+        
+        # Create container for the stacked widget
+        scroll_container = QWidget()
+        container_layout = QVBoxLayout(scroll_container)
+        container_layout.setContentsMargins(0, 0, 0, 0)
+        container_layout.setSpacing(0)
         
         # Dynamic parameter stack - NO TABS, USE STACKED WIDGET
         from PySide6.QtWidgets import QStackedWidget
@@ -975,7 +989,11 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         c4d_params = self._create_c4d_parameters()
         self.right_panel_stack.addWidget(c4d_params)
         
-        layout.addWidget(self.right_panel_stack)
+        container_layout.addWidget(self.right_panel_stack)
+        
+        # Set the container as the scroll area's widget
+        scroll_area.setWidget(scroll_container)
+        layout.addWidget(scroll_area)
         
         # Set size constraints for better responsive behavior - GREATLY EXPANDED RANGES
         panel.setMaximumWidth(2000)  # Much higher maximum for full flexibility
@@ -985,14 +1003,28 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         return panel
         
     def _create_image_generation_controls(self) -> QWidget:
-        """Create image generation controls"""
+        """Create image generation controls with scroll area like right panel"""
         widget = QWidget()
         layout = QVBoxLayout(widget)
-        layout.setContentsMargins(12, 12, 12, 12)
-        layout.setSpacing(8)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        
+        # Add scroll area to match right panel behavior
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        scroll_area.setFrameStyle(QFrame.NoFrame)
+        
+        # Create content widget
+        content_widget = QWidget()
+        content_layout = QVBoxLayout(content_widget)
+        content_layout.setContentsMargins(12, 12, 12, 12)
+        content_layout.setSpacing(8)
         
         # Prompt Generation section
         prompt_section = self._create_parameter_section("Prompt Generation")
+        # Remove fixed height to allow natural sizing like right panel
         prompt_layout = prompt_section.layout()
         
         # Positive prompt with magic button inside
@@ -1004,6 +1036,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self.positive_prompt = PositivePromptWidget()
         self.positive_prompt.setMinimumHeight(120)
         self.positive_prompt.setMaximumHeight(120)
+        self.positive_prompt.setFixedHeight(120)
         # Connect magic button to dialog
         self.positive_prompt.magic_prompt_requested.connect(lambda: self._show_magic_prompts_dialog('positive'))
         
@@ -1018,6 +1051,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self.negative_prompt = NegativePromptWidgetWithMagic()
         self.negative_prompt.setMinimumHeight(80)
         self.negative_prompt.setMaximumHeight(80)
+        self.negative_prompt.setFixedHeight(80)
         # Connect magic button to dialog
         self.negative_prompt.magic_prompt_requested.connect(lambda: self._show_magic_prompts_dialog('negative'))
         
@@ -1028,32 +1062,36 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             self.prompt_memory.register_prompt_widget('positive', self.positive_prompt)
             self.prompt_memory.register_prompt_widget('negative', self.negative_prompt)
         
-        layout.addWidget(prompt_section)
+        content_layout.addWidget(prompt_section)
         
         # Generation Controls section
         controls_section = self._create_parameter_section("Generation Controls")
+        # Remove fixed height to allow natural sizing like right panel
         controls_layout = controls_section.layout()
         
-        # Workflow selection
-        workflow_label = QLabel("Workflow:")
+        # WORKFLOW DROPDOWN - Reliable implementation
+        workflow_label = QLabel("WORKFLOW:")
         workflow_label.setObjectName("section_title")
         controls_layout.addWidget(workflow_label)
         
-        self.workflow_combo = QComboBox()
-        # Populate with actual workflow files from image_generation directory
-        self._populate_workflow_combo("image_generation")
+        self.workflow_new_combo = QComboBox()
+        self._populate_workflow_new_combo("image_generation")
         
-        # Set default workflow
+        # Set default workflow for new dropdown
         default_workflow = "image_generation/generate_thermal_shapes.json"
-        index = self.workflow_combo.findData(default_workflow)
-        if index >= 0:
-            self.workflow_combo.setCurrentIndex(index)
+        index_new = self.workflow_new_combo.findData(default_workflow)
+        if index_new >= 0:
+            self.workflow_new_combo.setCurrentIndex(index_new)
         else:
-            # Fallback to first item if default not found
-            if self.workflow_combo.count() > 0:
-                self.workflow_combo.setCurrentIndex(0)
-        # Note: Change handler will be connected later after UI is fully initialized
-        controls_layout.addWidget(self.workflow_combo)
+            if self.workflow_new_combo.count() > 0:
+                self.workflow_new_combo.setCurrentIndex(0)
+        
+        # Connect the new dropdown handler
+        self.workflow_new_combo.currentIndexChanged.connect(self._on_workflow_new_changed)
+        controls_layout.addWidget(self.workflow_new_combo)
+        
+        # COMPATIBILITY: Create reference to new combo for legacy code
+        self.workflow_combo = self.workflow_new_combo
         
         # Image size controls
         size_label = QLabel("Image Size:")
@@ -1128,7 +1166,11 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         refresh_layout.addWidget(clear_btn)
         controls_layout.addLayout(refresh_layout)
         
-        layout.addWidget(controls_section)
+        content_layout.addWidget(controls_section)
+        
+        # Set the content widget in the scroll area
+        scroll_area.setWidget(content_widget)
+        layout.addWidget(scroll_area)
         
         # Objects Selector now shared at bottom of left panel - removed from here
         
@@ -1141,11 +1183,12 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         section.setObjectName("sidebar_section")
         
         if compact:
-            # For right panel: follow texture parameters pattern exactly
-            section.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+            # RIGHT PANEL: Use full available width responsively
+            section.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+            # Remove max width constraint to use full right panel width
         else:
-            # For left panel: can expand in both directions  
-            section.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            # LEFT PANEL: Use fixed heights instead of responsive heights
+            section.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         
         layout = QVBoxLayout(section)
         layout.setContentsMargins(8, 12, 8, 8)
@@ -1154,23 +1197,41 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         return section
         
     def _create_3d_model_controls(self) -> QWidget:
-        """Create 3D model generation controls"""
+        """Create 3D model generation controls with scroll area like right panel"""
         widget = QWidget()
         layout = QVBoxLayout(widget)
-        layout.setContentsMargins(12, 12, 12, 12)
-        layout.setSpacing(8)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        
+        # Add scroll area to match right panel behavior
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        scroll_area.setFrameStyle(QFrame.NoFrame)
+        
+        # Create content widget
+        content_widget = QWidget()
+        content_layout = QVBoxLayout(content_widget)
+        content_layout.setContentsMargins(12, 12, 12, 12)
+        content_layout.setSpacing(8)
         
         # Generation Controls section
         controls_section = self._create_parameter_section("Generation Controls")
+        # Remove fixed height to allow natural sizing like right panel
         controls_layout = controls_section.layout()
         
-        # 3D Workflow selection
-        workflow_label = QLabel("3D Workflow:")
-        workflow_label.setObjectName("section_title")
-        controls_layout.addWidget(workflow_label)
+        # OLD 3D WORKFLOW DROPDOWN REMOVED - Using only the new reliable one below
         
-        self.workflow_3d_combo = QComboBox()
-        controls_layout.addWidget(self.workflow_3d_combo)
+        # 3D WORKFLOW DROPDOWN - Reliable implementation
+        workflow_3d_label = QLabel("3D WORKFLOW:")
+        workflow_3d_label.setObjectName("section_title")
+        controls_layout.addWidget(workflow_3d_label)
+        
+        self.workflow_3d_new_combo = QComboBox()
+        self._populate_workflow_new_combo_3d("3d_generation")
+        self.workflow_3d_new_combo.currentIndexChanged.connect(self._on_workflow_3d_new_changed)
+        controls_layout.addWidget(self.workflow_3d_new_combo)
         
         # Generate button
         self.generate_3d_btn = QPushButton("GENERATE 3D MODELS")
@@ -1188,21 +1249,39 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         refresh_layout.addWidget(clear_btn)
         controls_layout.addLayout(refresh_layout)
         
-        layout.addWidget(controls_section)
+        content_layout.addWidget(controls_section)
+        
+        # Set the content widget in the scroll area
+        scroll_area.setWidget(content_widget)
+        layout.addWidget(scroll_area)
         
         # Objects Selector now shared at bottom of left panel - removed from here
         
         return widget
         
     def _create_texture_controls(self) -> QWidget:
-        """Create texture generation controls"""
+        """Create texture generation controls with scroll area like right panel"""
         widget = QWidget()
         layout = QVBoxLayout(widget)
-        layout.setContentsMargins(12, 12, 12, 12)
-        layout.setSpacing(8)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        
+        # Add scroll area to match right panel behavior
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        scroll_area.setFrameStyle(QFrame.NoFrame)
+        
+        # Create content widget
+        content_widget = QWidget()
+        content_layout = QVBoxLayout(content_widget)
+        content_layout.setContentsMargins(12, 12, 12, 12)
+        content_layout.setSpacing(8)
         
         # Prompt Generation section
         prompt_section = self._create_parameter_section("Prompt Generation")
+        # Remove fixed height to allow natural sizing like right panel
         prompt_layout = prompt_section.layout()
         
         # Positive texture prompt with embedded magic button
@@ -1224,19 +1303,24 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         # Register texture prompts with memory manager (separate from image prompts)
         # Note: These could be tracked separately if needed
         
-        layout.addWidget(prompt_section)
+        content_layout.addWidget(prompt_section)
         
         # Generation Controls section
         controls_section = self._create_parameter_section("Generation Controls")
+        # Remove fixed height to allow natural sizing like right panel
         controls_layout = controls_section.layout()
         
-        # Texture Workflow selection
-        workflow_label = QLabel("Texture Workflow:")
-        workflow_label.setObjectName("section_title")
-        controls_layout.addWidget(workflow_label)
+        # OLD TEXTURE WORKFLOW DROPDOWN REMOVED - Using only the new reliable one below
         
-        self.workflow_texture_combo = QComboBox()
-        controls_layout.addWidget(self.workflow_texture_combo)
+        # TEXTURE WORKFLOW DROPDOWN - Reliable implementation
+        workflow_texture_label = QLabel("TEXTURE WORKFLOW:")
+        workflow_texture_label.setObjectName("section_title")
+        controls_layout.addWidget(workflow_texture_label)
+        
+        self.workflow_texture_new_combo = QComboBox()
+        self._populate_workflow_new_combo_texture("texture_generation")
+        self.workflow_texture_new_combo.currentIndexChanged.connect(self._on_workflow_texture_new_changed)
+        controls_layout.addWidget(self.workflow_texture_new_combo)
         
         # Generate button
         self.generate_texture_btn = QPushButton("GENERATE TEXTURES")
@@ -1255,7 +1339,11 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         refresh_layout.addWidget(clear_btn)
         controls_layout.addLayout(refresh_layout)
         
-        layout.addWidget(controls_section)
+        content_layout.addWidget(controls_section)
+        
+        # Set the content widget in the scroll area
+        scroll_area.setWidget(content_widget)
+        layout.addWidget(scroll_area)
         
         # Objects Selector now shared at bottom of left panel - removed from here
         
@@ -3292,55 +3380,83 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             ))
     
     async def _async_check_texture_workflows(self):
-        """Async method to check texture workflow completions"""
-        # AsyncTaskManager handles concurrent execution prevention
+        """Async method to check texture workflow completions
+        
+        This method safely iterates over texture workflows and handles completions
+        without modifying the dictionary during iteration to prevent RuntimeError.
+        
+        Thread Safety:
+            - Creates a snapshot of workflow items before iteration
+            - Collects completed workflow IDs separately
+            - Removes completed workflows after iteration completes
+        """
         try:
+            # CRITICAL FIX: Create a snapshot of workflow items to prevent RuntimeError
+            # during iteration when the dictionary is modified
+            workflow_items = list(self._texture_workflows.items())
             completed_workflows = []
             
-            for prompt_id, workflow_info in self._texture_workflows.items():
-                # Get workflow history
-                history = await self.comfyui_client.get_history(prompt_id)
-                
-                if prompt_id in history:
-                    workflow_data = history[prompt_id]
-                    status = workflow_data.get("status", {})
-                    
-                    if status.get("completed", False):
-                        # Workflow completed!
-                        self.logger.info(f"Texture workflow {prompt_id} completed for {workflow_info['model_path'].name}")
-                        
-                        # Handle texture results
-                        await self._handle_texture_results(prompt_id, workflow_data, workflow_info['model_path'])
-                        
-                        completed_workflows.append(prompt_id)
-                    else:
-                        # Still running
-                        workflow_info['check_count'] += 1
-                        if workflow_info['check_count'] % 3 == 0:  # Log every 30 seconds
-                            self.logger.debug(f"Texture workflow {prompt_id} still running...")
-                else:
-                    # Not in history yet
-                    workflow_info['check_count'] += 1
-                    if workflow_info['check_count'] > 36:  # Timeout after 6 minutes (36 * 10 seconds)
-                        self.logger.warning(f"Texture workflow {prompt_id} timed out after 6 minutes - checking for files anyway")
-                        # Check for texture files anyway in case they were generated
-                        await self._handle_texture_results(prompt_id, {}, workflow_info['model_path'])
-                        completed_workflows.append(prompt_id)
+            self.logger.debug(f"🔍 Checking {len(workflow_items)} texture workflows")
             
-            # Remove completed workflows
+            for prompt_id, workflow_info in workflow_items:
+                try:
+                    # Skip if workflow was already removed by another process
+                    if prompt_id not in self._texture_workflows:
+                        self.logger.debug(f"⏭️ Workflow {prompt_id} already removed, skipping")
+                        continue
+                    
+                    # Get workflow history
+                    history = await self.comfyui_client.get_history(prompt_id)
+                    
+                    if prompt_id in history:
+                        workflow_data = history[prompt_id]
+                        status = workflow_data.get("status", {})
+                        
+                        if status.get("completed", False):
+                            # Workflow completed!
+                            self.logger.info(f"✅ Texture workflow {prompt_id} completed for {workflow_info['model_path'].name}")
+                            
+                            # Handle texture results
+                            await self._handle_texture_results(prompt_id, workflow_data, workflow_info['model_path'])
+                            
+                            completed_workflows.append(prompt_id)
+                        else:
+                            # Still running - increment check count
+                            if prompt_id in self._texture_workflows:  # Double-check still exists
+                                self._texture_workflows[prompt_id]['check_count'] += 1
+                                if self._texture_workflows[prompt_id]['check_count'] % 3 == 0:  # Log every 30 seconds
+                                    self.logger.debug(f"⏳ Texture workflow {prompt_id} still running (check #{self._texture_workflows[prompt_id]['check_count']})...")
+                    else:
+                        # Not in history yet - increment check count and check for timeout
+                        if prompt_id in self._texture_workflows:  # Double-check still exists
+                            self._texture_workflows[prompt_id]['check_count'] += 1
+                            if self._texture_workflows[prompt_id]['check_count'] > 36:  # Timeout after 6 minutes (36 * 10 seconds)
+                                self.logger.warning(f"⏰ Texture workflow {prompt_id} timed out after 6 minutes - checking for files anyway")
+                                # Check for texture files anyway in case they were generated
+                                await self._handle_texture_results(prompt_id, {}, workflow_info['model_path'])
+                                completed_workflows.append(prompt_id)
+                                
+                except Exception as workflow_error:
+                    self.logger.error(f"❌ Error checking individual texture workflow {prompt_id}: {workflow_error}")
+                    # Continue with other workflows rather than failing entirely
+                    continue
+            
+            # SAFE REMOVAL: Remove completed workflows after iteration is complete
             for prompt_id in completed_workflows:
-                del self._texture_workflows[prompt_id]
+                if prompt_id in self._texture_workflows:
+                    del self._texture_workflows[prompt_id]
+                    self.logger.debug(f"🗑️ Removed completed texture workflow {prompt_id}")
             
             # Stop timer if no more workflows
             if not self._texture_workflows and hasattr(self, 'texture_monitor_timer'):
                 self.texture_monitor_timer.stop()
                 self.texture_monitor_timer = None
-                self.logger.debug("Stopped texture workflow monitoring (all completed)")
+                self.logger.info("🛑 Stopped texture workflow monitoring (all completed)")
                 
         except Exception as e:
-            self.logger.error(f"Error checking texture workflows: {e}")
+            self.logger.error(f"❌ Critical error in texture workflow checking: {e}")
             import traceback
-            self.logger.error(traceback.format_exc())
+            self.logger.error(f"Traceback: {traceback.format_exc()}")
         finally:
             # AsyncTaskManager handles cleanup automatically
             pass
@@ -4214,11 +4330,11 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self._save_last_workflow_state(config)
         
         # Reload parameters from the saved configuration
-        self.logger.info("🔄 Starting UI update after configuration save...")
+        self.logger.debug("🔄 Starting UI update after configuration save...")
         self._load_parameters_from_config("image")
         
         # Refresh UI components after workflow import
-        self.logger.info("🔄 Starting UI refresh after configuration save...")
+        self.logger.debug("🔄 Starting UI refresh after configuration save...")
         self._refresh_ui_after_workflow_import()
         
         self.logger.info("✅ Configuration saved and UI updated!")
@@ -4238,7 +4354,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             with open(persistence_file, 'w') as f:
                 json.dump(state, f, indent=2)
             
-            self.logger.info(f"💾 Saved workflow state: {config.get('workflow_file')}")
+            self.logger.debug(f"💾 Saved workflow state: {config.get('workflow_file')}")
             
         except Exception as e:
             self.logger.error(f"Failed to save workflow state: {e}")
@@ -4331,9 +4447,14 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         except Exception as e:
             self.logger.error(f"Failed to update 3D workflow dropdown: {e}")
         
-        # Reload 3D parameters with new configuration using lazy loading
+        # Reload 3D parameters with new configuration using unified system
         try:
-            self._load_dynamic_3d_parameters_on_demand()
+            if hasattr(self, 'config_integration'):
+                self.logger.info("Loading 3D parameters using unified system")
+                self._load_parameters_unified("3d_parameters")
+            else:
+                self.logger.info("Loading 3D parameters using legacy system")
+                self._load_dynamic_3d_parameters_on_demand()
             self.logger.info("3D parameters UI reloaded with new configuration")
         except Exception as e:
             self.logger.error(f"Failed to reload 3D parameters UI: {e}")
@@ -4435,7 +4556,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         
     def _on_workflow_hint_changed(self, hint: str):
         """Handle workflow hint changes"""
-        self.logger.info(f"Workflow hint: {hint}")
+        self.logger.debug(f"Workflow hint: {hint}")
         
     def _on_all_objects_cleared(self):
         """Handle all objects cleared from unified selector"""
@@ -5595,82 +5716,370 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             self.logger.error(f"Failed to initialize workflow parameters: {e}")
     
     def _update_workflow_dropdown_for_tab(self, tab_index: int):
-        """Update workflow dropdown to show workflows for the current tab"""
+        """Update workflow dropdown to show workflows for the current tab
+        
+        Note: This method is deprecated in favor of the new workflow dropdown system.
+        The new system uses individual dropdowns per tab (workflow_new_combo, workflow_3d_new_combo, etc.)
+        This method is kept for backwards compatibility and startup parameter loading.
+        """
         try:
             # Check if UI is fully initialized before updating workflows
             if not hasattr(self, 'dynamic_params_layout') or not hasattr(self, 'dynamic_params_container'):
-                self.logger.info(f"UI not fully initialized, skipping workflow update for tab {tab_index}")
+                self.logger.debug(f"UI not fully initialized, skipping workflow update for tab {tab_index}")
                 return
             
-            # Map tab indices to workflow types
-            workflow_types = [
-                "image_generation",    # Tab 0: Image Generation
-                "3d_generation",       # Tab 1: 3D Model Generation
-                "texture_generation",  # Tab 2: Texture Generation
-                None                   # Tab 3: Cinema4D Intelligence (no workflows)
-                ]
+            # Map tab indices to workflow types and parameter types
+            workflow_map = {
+                0: {"type": "image_generation", "param_type": "image"},
+                1: {"type": "3d_generation", "param_type": "3d_parameters"}, 
+                2: {"type": "texture_generation", "param_type": "texture_parameters"},
+                3: {"type": None, "param_type": None}  # Cinema4D Intelligence
+            }
             
-            if tab_index < len(workflow_types) and workflow_types[tab_index]:
-                workflow_type = workflow_types[tab_index]
+            tab_info = workflow_map.get(tab_index, {})
+            workflow_type = tab_info.get("type")
+            param_type = tab_info.get("param_type")
             
-                # Re-enable workflow dropdown if it was disabled
-                self.workflow_combo.setEnabled(True)
-            
-                # Temporarily disconnect the change handler to avoid triggering during population
-                try:
-                    self.workflow_combo.currentIndexChanged.disconnect()
-                except TypeError as e:
-                    logger.debug(f"Workflow combo handler not connected yet: {e}")
-            
-                # Populate with workflows for this tab
-                self._populate_workflow_combo(workflow_type)
-            
-                # Set a default workflow if available
-                if self.workflow_combo.count() > 0:
-                    # Try to restore last selected workflow for this tab
-                    last_selected = None
-                    if workflow_type == "image_generation":
-                        # Check if we have a saved selection
-                        config_path = self.config.config_dir / "image_parameters_config.json"
-                        if config_path.exists():
-                            try:
-                                with open(config_path, 'r') as f:
-                                    config = json.load(f)
-                                    last_workflow = config.get('workflow_file', '')
-                                    # Find this workflow in the combo
-                                    for i in range(self.workflow_combo.count()):
-                                        if self.workflow_combo.itemText(i) == last_workflow:
-                                            self.workflow_combo.setCurrentIndex(i)
-                                            last_selected = self.workflow_combo.itemData(i)
-                                            self.logger.info(f"Restored last selected workflow: {last_workflow}")
-                                            break
-                            except (KeyError, ValueError) as e:
-                                logger.debug(f"Could not restore workflow selection: {e}")
+            if workflow_type and param_type:
+                self.logger.info(f"Loading parameters for tab {tab_index} ({workflow_type})")
+                
+                # Load parameters using the unified system instead of old workflow combo
+                if hasattr(self, 'config_integration'):
+                    self._load_parameters_unified(param_type)
+                else:
+                    self._load_parameters_from_config(param_type)
                     
-                    # If no saved selection or not found, use first
-                    if last_selected is None:
-                        self.workflow_combo.setCurrentIndex(0)
-                        last_selected = self.workflow_combo.itemData(0)
-                    
-                    # Only trigger workflow change if UI is fully initialized
-                    if last_selected and hasattr(self, 'dynamic_params_layout'):
-                        self._on_workflow_changed(last_selected)
-            
-                # Reconnect the change handler
-                self.workflow_combo.currentIndexChanged.connect(self._on_workflow_index_changed)
-            
-                self.logger.info(f"Updated workflow dropdown for {workflow_type} tab")
+                self.logger.debug(f"✅ Loaded parameters for {workflow_type} tab")
+                
             elif tab_index == 3:  # Cinema4D Intelligence tab
-                # Disable workflow dropdown for C4D tab as it doesn't use workflows
-                self.workflow_combo.setEnabled(False)
-                self.workflow_combo.clear()
-                self.workflow_combo.addItem("N/A - No workflows for C4D", None)
+                self.logger.debug("Cinema4D Intelligence tab - no workflows needed")
             else:
                 self.logger.warning(f"Unknown tab index: {tab_index}")
             
         except Exception as e:
             self.logger.error(f"Failed to update workflow dropdown for tab {tab_index}: {e}")
     
+    def _populate_workflow_new_combo(self, workflow_type: str = "image_generation"):
+        """Populate the new workflow dropdown with available workflows"""
+        try:
+            self.workflow_new_combo.clear()
+            
+            # Get workflow directory
+            workflow_dir = Path("workflows") / workflow_type
+            if not workflow_dir.exists():
+                self.logger.warning(f"Workflow directory not found: {workflow_dir}")
+                return
+            
+            # Get all JSON files in the workflow directory
+            workflow_files = sorted(workflow_dir.glob("*.json"))
+            
+            for workflow_file in workflow_files:
+                # Create display name (without .json extension)
+                display_name = workflow_file.stem
+                # Store full relative path as data
+                relative_path = f"{workflow_type}/{workflow_file.name}"
+                
+                self.workflow_new_combo.addItem(display_name, relative_path)
+            
+            self.logger.info(f"Populated new workflow dropdown with {len(workflow_files)} workflows")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to populate new workflow dropdown: {e}")
+
+    def _on_workflow_new_changed(self, index: int):
+        """Handle new workflow dropdown change - Complete reload like configuration import"""
+        if index < 0:
+            return
+        
+        # Prevent overlapping workflow changes
+        if hasattr(self, '_workflow_changing') and self._workflow_changing:
+            self.logger.warning("⚠️ Workflow change already in progress, ignoring...")
+            return
+            
+        try:
+            self._workflow_changing = True
+            workflow_path = self.workflow_new_combo.itemData(index)
+            if not workflow_path:
+                return
+                
+            self.logger.info(f"🔄 NEW WORKFLOW: Loading {workflow_path} with complete reload...")
+            
+            # This is the image generation dropdown, so use image parameters
+            param_type = "image"
+            
+            # Step 1: Trigger workflow import (same as configuration loading)
+            if hasattr(self, 'config_integration'):
+                # Load workflow configuration
+                full_workflow_path = Path("workflows") / workflow_path
+                if full_workflow_path.exists():
+                    # Load configuration through unified manager
+                    config = self.config_integration.config_manager.load_workflow_configuration(full_workflow_path)
+                    
+                    if config:
+                        self.logger.info(f"✅ Loaded workflow config successfully")
+                        
+                        # Step 2: Force complete parameter reload with delay, using the selected workflow
+                        def complete_reload():
+                            try:
+                                self.logger.info(f"🔄 Executing complete parameter reload for {param_type} with workflow {workflow_path}...")
+                                # Pass the selected workflow path to force loading from it
+                                if hasattr(self, 'config_integration'):
+                                    self._load_parameters_unified(param_type, full_workflow_path)
+                                else:
+                                    self._load_parameters_from_config(param_type)
+                            except Exception as e:
+                                self.logger.error(f"❌ Error in parameter reload: {e}")
+                            
+                        # Step 3: Update prompts with delay
+                        def update_prompts():
+                            try:
+                                if hasattr(self, 'prompt_memory'):
+                                    self.logger.info(f"🔄 Updating prompts from workflow...")
+                                    # Load workflow data and pass to prompt memory
+                                    import json
+                                    with open(full_workflow_path, 'r') as f:
+                                        workflow_data = json.load(f)
+                                    self.prompt_memory.load_workflow_prompts(full_workflow_path, workflow_data)
+                            except Exception as e:
+                                self.logger.error(f"❌ Error updating prompts: {e}")
+                            finally:
+                                # Reset the workflow changing flag
+                                self._workflow_changing = False
+                                self.logger.info(f"✅ Workflow change completed")
+                                
+                        # Execute with delays to ensure proper sequencing
+                        QTimer.singleShot(50, complete_reload)
+                        QTimer.singleShot(200, update_prompts)
+                        
+                        self.logger.info(f"✅ NEW WORKFLOW: Complete reload initiated for {workflow_path}")
+                    else:
+                        self.logger.error(f"❌ Failed to load workflow configuration")
+                else:
+                    self.logger.error(f"❌ Workflow file not found: {full_workflow_path}")
+            else:
+                self.logger.error(f"❌ Config integration not available")
+                
+        except Exception as e:
+            self.logger.error(f"Failed to handle new workflow change: {e}")
+            import traceback
+            self.logger.error(f"Traceback: {traceback.format_exc()}")
+        finally:
+            # Always reset the flag in case of error
+            if hasattr(self, '_workflow_changing'):
+                self._workflow_changing = False
+
+    def _populate_workflow_new_combo_3d(self, workflow_type: str = "3d_generation"):
+        """Populate the new 3D workflow dropdown with available workflows"""
+        try:
+            self.workflow_3d_new_combo.clear()
+            
+            # Get workflow directory
+            workflow_dir = Path("workflows") / workflow_type
+            if not workflow_dir.exists():
+                self.logger.warning(f"3D Workflow directory not found: {workflow_dir}")
+                return
+            
+            # Get all JSON files in the workflow directory
+            workflow_files = sorted(workflow_dir.glob("*.json"))
+            
+            for workflow_file in workflow_files:
+                # Create display name (without .json extension)
+                display_name = workflow_file.stem
+                # Store full relative path as data
+                relative_path = f"{workflow_type}/{workflow_file.name}"
+                
+                self.workflow_3d_new_combo.addItem(display_name, relative_path)
+            
+            self.logger.info(f"Populated new 3D workflow dropdown with {len(workflow_files)} workflows")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to populate new 3D workflow dropdown: {e}")
+
+    def _on_workflow_3d_new_changed(self, index: int):
+        """Handle new 3D workflow dropdown change - Complete reload like configuration import"""
+        if index < 0:
+            return
+        
+        # Prevent overlapping workflow changes
+        if hasattr(self, '_workflow_3d_changing') and self._workflow_3d_changing:
+            self.logger.warning("⚠️ 3D Workflow change already in progress, ignoring...")
+            return
+            
+        try:
+            self._workflow_3d_changing = True
+            workflow_path = self.workflow_3d_new_combo.itemData(index)
+            if not workflow_path:
+                return
+                
+            self.logger.info(f"🔄 NEW 3D WORKFLOW: Loading {workflow_path} with complete reload...")
+            
+            # Step 1: Trigger workflow import (same as configuration loading)
+            if hasattr(self, 'config_integration'):
+                # Load workflow configuration
+                full_workflow_path = Path("workflows") / workflow_path
+                if full_workflow_path.exists():
+                    # Load configuration through unified manager
+                    config = self.config_integration.config_manager.load_workflow_configuration(full_workflow_path)
+                    
+                    if config:
+                        self.logger.info(f"✅ Loaded 3D workflow config successfully")
+                        
+                        # Step 2: Force complete parameter reload with delay, using the selected workflow
+                        def complete_reload():
+                            try:
+                                self.logger.info(f"🔄 Executing complete 3D parameter reload with workflow {workflow_path}...")
+                                # Pass the selected workflow path to force loading from it
+                                if hasattr(self, 'config_integration'):
+                                    self._load_parameters_unified("3d_parameters", full_workflow_path)
+                                else:
+                                    self._load_parameters_from_config("3d_parameters")
+                            except Exception as e:
+                                self.logger.error(f"❌ Error in 3D parameter reload: {e}")
+                            
+                        # Step 3: Update prompts with delay
+                        def update_prompts():
+                            try:
+                                if hasattr(self, 'prompt_memory'):
+                                    self.logger.info(f"🔄 Updating 3D prompts from workflow...")
+                                    # Load workflow data and pass to prompt memory
+                                    import json
+                                    with open(full_workflow_path, 'r') as f:
+                                        workflow_data = json.load(f)
+                                    self.prompt_memory.load_workflow_prompts(full_workflow_path, workflow_data)
+                            except Exception as e:
+                                self.logger.error(f"❌ Error updating 3D prompts: {e}")
+                            finally:
+                                # Reset the workflow changing flag
+                                self._workflow_3d_changing = False
+                                self.logger.info(f"✅ 3D Workflow change completed")
+                                
+                        # Execute with delays to ensure proper sequencing
+                        QTimer.singleShot(50, complete_reload)
+                        QTimer.singleShot(200, update_prompts)
+                        
+                        self.logger.info(f"✅ NEW 3D WORKFLOW: Complete reload initiated for {workflow_path}")
+                    else:
+                        self.logger.error(f"❌ Failed to load 3D workflow configuration")
+                else:
+                    self.logger.error(f"❌ 3D Workflow file not found: {full_workflow_path}")
+            else:
+                self.logger.error(f"❌ Config integration not available")
+                
+        except Exception as e:
+            self.logger.error(f"Failed to handle new 3D workflow change: {e}")
+            import traceback
+            self.logger.error(f"Traceback: {traceback.format_exc()}")
+        finally:
+            # Always reset the flag in case of error
+            if hasattr(self, '_workflow_3d_changing'):
+                self._workflow_3d_changing = False
+
+    def _populate_workflow_new_combo_texture(self, workflow_type: str = "texture_generation"):
+        """Populate the new texture workflow dropdown with available workflows"""
+        try:
+            self.workflow_texture_new_combo.clear()
+            
+            # Get workflow directory
+            workflow_dir = Path("workflows") / workflow_type
+            if not workflow_dir.exists():
+                self.logger.warning(f"Texture Workflow directory not found: {workflow_dir}")
+                return
+            
+            # Get all JSON files in the workflow directory
+            workflow_files = sorted(workflow_dir.glob("*.json"))
+            
+            for workflow_file in workflow_files:
+                # Create display name (without .json extension)
+                display_name = workflow_file.stem
+                # Store full relative path as data
+                relative_path = f"{workflow_type}/{workflow_file.name}"
+                
+                self.workflow_texture_new_combo.addItem(display_name, relative_path)
+            
+            self.logger.info(f"Populated new texture workflow dropdown with {len(workflow_files)} workflows")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to populate new texture workflow dropdown: {e}")
+
+    def _on_workflow_texture_new_changed(self, index: int):
+        """Handle new texture workflow dropdown change - Complete reload like configuration import"""
+        if index < 0:
+            return
+        
+        # Prevent overlapping workflow changes
+        if hasattr(self, '_workflow_texture_changing') and self._workflow_texture_changing:
+            self.logger.warning("⚠️ Texture Workflow change already in progress, ignoring...")
+            return
+            
+        try:
+            self._workflow_texture_changing = True
+            workflow_path = self.workflow_texture_new_combo.itemData(index)
+            if not workflow_path:
+                return
+                
+            self.logger.info(f"🔄 NEW TEXTURE WORKFLOW: Loading {workflow_path} with complete reload...")
+            
+            # Step 1: Trigger workflow import (same as configuration loading)
+            if hasattr(self, 'config_integration'):
+                # Load workflow configuration
+                full_workflow_path = Path("workflows") / workflow_path
+                if full_workflow_path.exists():
+                    # Load configuration through unified manager
+                    config = self.config_integration.config_manager.load_workflow_configuration(full_workflow_path)
+                    
+                    if config:
+                        self.logger.info(f"✅ Loaded texture workflow config successfully")
+                        
+                        # Step 2: Force complete parameter reload with delay, using the selected workflow
+                        def complete_reload():
+                            try:
+                                self.logger.info(f"🔄 Executing complete texture parameter reload with workflow {workflow_path}...")
+                                # Pass the selected workflow path to force loading from it
+                                if hasattr(self, 'config_integration'):
+                                    self._load_parameters_unified("texture_parameters", full_workflow_path)
+                                else:
+                                    self._load_parameters_from_config("texture_parameters")
+                            except Exception as e:
+                                self.logger.error(f"❌ Error in texture parameter reload: {e}")
+                            
+                        # Step 3: Update prompts with delay
+                        def update_prompts():
+                            try:
+                                if hasattr(self, 'prompt_memory'):
+                                    self.logger.info(f"🔄 Updating texture prompts from workflow...")
+                                    # Load workflow data and pass to prompt memory
+                                    import json
+                                    with open(full_workflow_path, 'r') as f:
+                                        workflow_data = json.load(f)
+                                    self.prompt_memory.load_workflow_prompts(full_workflow_path, workflow_data)
+                            except Exception as e:
+                                self.logger.error(f"❌ Error updating texture prompts: {e}")
+                            finally:
+                                # Reset the workflow changing flag
+                                self._workflow_texture_changing = False
+                                self.logger.info(f"✅ Texture Workflow change completed")
+                                
+                        # Execute with delays to ensure proper sequencing
+                        QTimer.singleShot(50, complete_reload)
+                        QTimer.singleShot(200, update_prompts)
+                        
+                        self.logger.info(f"✅ NEW TEXTURE WORKFLOW: Complete reload initiated for {workflow_path}")
+                    else:
+                        self.logger.error(f"❌ Failed to load texture workflow configuration")
+                else:
+                    self.logger.error(f"❌ Texture Workflow file not found: {full_workflow_path}")
+            else:
+                self.logger.error(f"❌ Config integration not available")
+                
+        except Exception as e:
+            self.logger.error(f"Failed to handle new texture workflow change: {e}")
+            import traceback
+            self.logger.error(f"Traceback: {traceback.format_exc()}")
+        finally:
+            # Always reset the flag in case of error
+            if hasattr(self, '_workflow_texture_changing'):
+                self._workflow_texture_changing = False
+
     def _on_workflow_index_changed(self, index: int):
         """Handle workflow selection index change"""
         if index >= 0:
@@ -5680,9 +6089,30 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 
                 # Use unified configuration system if available
                 if hasattr(self, 'config_integration'):
+                    self.logger.info(f"🔄 Triggering full parameter reload for workflow: {workflow_name}")
                     # Trigger full parameter reload through unified system
                     success = self.config_integration.load_workflow_from_dropdown(workflow_name)
                     if success:
+                        # Force full parameter UI reload (same as initial loading) with small delay to ensure config is ready
+                        current_tab = self.tab_widget.currentIndex()
+                        def reload_parameters():
+                            if current_tab == 0:  # Image generation tab
+                                self.logger.info(f"🔄 Forcing parameter reload for image tab...")
+                                self._load_parameters_from_config("image")
+                            elif current_tab == 1:  # 3D generation tab 
+                                self.logger.info(f"🔄 Forcing parameter reload for 3d tab...")
+                                self._load_parameters_from_config("3d_parameters")
+                            elif current_tab == 2:  # Texture generation tab
+                                self.logger.info(f"🔄 Forcing parameter reload for texture tab...")
+                                self._load_parameters_from_config("texture_parameters")
+                        
+                        # Use QTimer to ensure config is fully loaded before parameter reload
+                        QTimer.singleShot(50, reload_parameters)
+                        
+                        # Also ensure prompts are updated from the new workflow
+                        if hasattr(self, 'prompt_memory'):
+                            QTimer.singleShot(100, lambda: self.prompt_memory.load_workflow_prompts(workflow_name))
+                        
                         # Sync all dropdowns to show the same workflow
                         self._sync_workflow_dropdowns(workflow_name)
                     return
@@ -5843,47 +6273,63 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 if node_type == 'CLIPTextEncode':
                     node_key = f"{node_type}_{node_id}"
                     selected_nodes.append(node_key)
+                    widgets_values = node.get('widgets_values', [])  # Get widgets_values here too
                     node_info[node_key] = {
                         "type": node_type,
                         "id": node_id,
                         "title": title,
-                        "supported": True
+                        "supported": True,
+                        "widgets_values": widgets_values  # CRITICAL FIX: Include actual parameter values
                     }
                     
-                    # Extract prompts for texture generation workflows
-                    if "texture_generation" in workflow_name:
-                        widgets = node.get('widgets_values', [])
-                        if widgets and len(widgets) > 0:
-                            prompt_text = widgets[0]
-                            
-                            # Node 510 is positive prompt, 177 is negative prompt (from texture workflow)
-                            if node_id == "510" and hasattr(self, 'texture_prompt'):
-                                self.texture_prompt.set_text(prompt_text)
-                                self.logger.info(f"Loaded positive prompt from workflow: {prompt_text[:50]}...")
-                            elif node_id == "177" and hasattr(self, 'texture_negative_prompt'):
-                                self.texture_negative_prompt.set_text(prompt_text)
-                                self.logger.info(f"Loaded negative prompt from workflow: {prompt_text[:50]}...")
-                            
-                            # Also try title-based detection
-                            elif "positive" in title.lower() and hasattr(self, 'texture_prompt'):
-                                self.texture_prompt.set_text(prompt_text)
-                                self.logger.info(f"Loaded positive prompt from workflow (by title)")
-                            elif "negative" in title.lower() and hasattr(self, 'texture_negative_prompt'):
-                                self.texture_negative_prompt.set_text(prompt_text)
-                                self.logger.info(f"Loaded negative prompt from workflow (by title)")
+                    # Extract prompts and route to appropriate prompt widgets
+                    widgets = node.get('widgets_values', [])
+                    if widgets and len(widgets) > 0:
+                        prompt_text = widgets[0]
+                        
+                        # Route to appropriate prompt widgets based on workflow type and node title
+                        if "texture_generation" in workflow_name:
+                            # Texture workflow prompts
+                            if node_id == "510" or "positive" in title.lower():
+                                if hasattr(self, 'texture_prompt'):
+                                    self.texture_prompt.setText(prompt_text)
+                                    self.logger.info(f"Loaded texture positive prompt: {prompt_text[:50]}...")
+                            elif node_id == "177" or "negative" in title.lower():
+                                if hasattr(self, 'texture_negative_prompt'):
+                                    self.texture_negative_prompt.set_text(prompt_text)
+                                    self.logger.info(f"Loaded texture negative prompt: {prompt_text[:50]}...")
+                        else:
+                            # Image generation workflow prompts
+                            if "positive" in title.lower():
+                                if hasattr(self, 'positive_prompt'):
+                                    self.positive_prompt.set_text(prompt_text)
+                                    self.logger.info(f"Loaded positive prompt: {prompt_text[:50]}...")
+                            elif "negative" in title.lower():
+                                if hasattr(self, 'negative_prompt'):
+                                    self.negative_prompt.set_text(prompt_text)
+                                    self.logger.info(f"Loaded negative prompt: {prompt_text[:50]}...")
                     
                     continue
                     
                 # Only include nodes with configurable parameters
                 widgets_values = node.get('widgets_values', [])
-                if widgets_values or node_type in ['KSampler', 'FluxGuidance', 'EmptySD3LatentImage']:
+                # Include more node types that should have UI widgets
+                supported_node_types = [
+                    'KSampler', 'FluxGuidance', 'EmptySD3LatentImage', 'UNETLoader', 'VAELoader',
+                    'QuadrupleCLIPLoader', 'ModelSamplingSD3', 'CheckpointLoaderSimple', 'LoraLoader',
+                    'Hy3DModelLoader', 'Hy3DGenerateMesh', 'Hy3DDelightImage', 'SolidMask', 
+                    'ImageCompositeMasked', 'ImageResize+', 'LoadImage'
+                ]
+                
+                if widgets_values or node_type in supported_node_types:
                     node_key = f"{node_type}_{node_id}"
                     selected_nodes.append(node_key)
                     node_info[node_key] = {
                         "type": node_type,
                         "id": node_id,
                         "title": title,
-                        "supported": True
+                        "supported": True,
+                        "widgets_values": widgets_values  # CRITICAL FIX: Include actual parameter values
                     }
             
             # Create updated config
@@ -5919,12 +6365,54 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
             # Refresh the parameters UI
             self._load_parameters_from_config(param_type)
             
+            # Extract and set batch size from EmptyLatentImage node
+            self._extract_batch_size_from_workflow(workflow_json)
+            
+            # Force UI refresh to show loaded parameters
+            QTimer.singleShot(100, lambda: self._force_parameter_ui_refresh(param_type))
+            
             # Successfully switched to workflow
             
         except Exception as e:
             self.logger.error(f"❌ Failed to switch workflow: {e}")
             import traceback
             self.logger.error(f"Traceback: {traceback.format_exc()}")
+    
+    def _extract_batch_size_from_workflow(self, workflow_json: dict):
+        """Extract batch size from EmptyLatentImage node and update UI"""
+        try:
+            for node in workflow_json.get('nodes', []):
+                node_type = node.get('type', '')
+                if node_type in ['EmptyLatentImage', 'EmptySD3LatentImage']:
+                    widgets_values = node.get('widgets_values', [])
+                    if len(widgets_values) >= 3:  # [width, height, batch_size]
+                        batch_size = widgets_values[2]
+                        if hasattr(self, 'batch_size_spin'):
+                            self.batch_size_spin.setValue(int(batch_size))
+                            self.logger.info(f"Set batch size from workflow: {batch_size}")
+                        break
+        except Exception as e:
+            self.logger.warning(f"Failed to extract batch size from workflow: {e}")
+    
+    def _force_parameter_ui_refresh(self, param_type: str):
+        """Force UI refresh to ensure parameters are visible"""
+        try:
+            # Trigger a repaint of the right panel
+            if hasattr(self, 'right_panel_stack'):
+                self.right_panel_stack.repaint()
+                
+            # Check if parameters were actually loaded
+            if hasattr(self, 'dynamic_params_layout'):
+                widget_count = self.dynamic_params_layout.count()
+                self.logger.debug(f"Parameter UI refresh: {widget_count} widgets in layout")
+                
+                if widget_count == 0:
+                    self.logger.warning("No parameter widgets found after refresh - retrying parameter load")
+                    # Retry the parameter loading once
+                    QTimer.singleShot(500, lambda: self._load_parameters_from_config(param_type))
+                    
+        except Exception as e:
+            self.logger.error(f"Failed to force parameter UI refresh: {e}")
                 
     def _load_session_models(self):
         """Load 3D models generated in current session to Scene Objects"""
@@ -5936,7 +6424,13 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                 
     def _load_all_models(self):
         """Load all 3D models from models directory to View All"""
+        # Check if already loading to prevent duplicates
+        if hasattr(self, '_models_loading') and self._models_loading:
+            self.logger.debug("Models are already being loaded, skipping duplicate call")
+            return
+            
         if hasattr(self, 'all_models_grid'):
+            self._models_loading = True  # Set loading flag
             self.logger.info("Found all_models_grid, clearing existing models...")
             self.all_models_grid.clear_models()
             # Use configured models directory
@@ -5984,6 +6478,10 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                     self.logger.debug(f"Added model to View All: {model_path.name}")
                 
                 self.logger.info(f"Successfully loaded {min(len(all_models), 50)} 3D models into View All tab")
+                
+                # Reset loading flag and set loaded flag
+                self._models_loading = False
+                self.view_all_models_loaded = True
             else:
                 self.logger.warning(f"3D models directory does not exist: {models_dir}")
                 # Try local directory as fallback
@@ -6007,8 +6505,14 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
                         self.all_models_grid.add_model(model_path)
                     
                     self.logger.info(f"Loaded {min(len(all_models), 50)} models from local directory")
+            
+            # Reset loading flag
+            self._models_loading = False
+            # Set loaded flag to indicate models have been loaded at least once
+            self.view_all_models_loaded = True
         else:
             self.logger.error("all_models_grid not found - UI not properly initialized")
+            self._models_loading = False
     
     def _ensure_models_loaded(self):
         """Ensure models are loaded - fallback method"""
@@ -6291,7 +6795,7 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         if hasattr(self, 'unified_selectors'):
             self.logger.info(f"Found {len(self.unified_selectors)} tab selector instances")
             for tab_name, selector in self.unified_selectors.items():
-                self.logger.info(f"Tab '{tab_name}' selector visibility: {selector.isVisible()}")
+                self.logger.debug(f"Tab '{tab_name}' selector visibility: {selector.isVisible()}")
             self.logger.info(f"Tab '{tab_name}' selector parent: {selector.parent()}")
         
         # Add a test image to see if it shows up in all selectors
@@ -6903,11 +7407,86 @@ class ComfyToC4DAppRedesigned(QMainWindow, LoggerMixin, UICreationMethods):
         self.logger.info("Application settings have been updated")
         # Apply new settings to the application
         self._apply_saved_accent_color()
+        self._refresh_workflow_parameter_colors()
         
         # Reload ComfyUI wait time
         settings = QSettings("YamboStudio", "ComfyToC4DApp")
         self.comfyui_texture_wait_time = settings.value("comfyui/texture_wait_time", 20, int)
         self.logger.info(f"Updated ComfyUI texture wait time: {self.comfyui_texture_wait_time} seconds")
+    
+    def _refresh_workflow_parameter_colors(self):
+        """Refresh workflow parameter colors after settings change"""
+        try:
+            # Load new workflow colors from settings
+            settings = QSettings("ComfyUI-Cinema4D", "Bridge")
+            workflow_colors = settings.value("interface/workflow_colors", [
+                "#4CAF50", "#2196F3", "#9C27B0", "#FF9800", "#00BCD4"
+            ])
+            
+            if workflow_colors and len(workflow_colors) >= 5:
+                # Update unified configuration manager colors if available
+                if hasattr(self, 'unified_config_manager') and self.unified_config_manager:
+                    color_mapping = {
+                        "KSampler": workflow_colors[0],
+                        "KSamplerAdvanced": workflow_colors[0],
+                        "CheckpointLoader": workflow_colors[1], 
+                        "CheckpointLoaderSimple": workflow_colors[1],
+                        "UNETLoader": workflow_colors[1],
+                        "LoraLoader": workflow_colors[2],
+                        "VAELoader": workflow_colors[3],
+                        "CLIPTextEncode": workflow_colors[4],
+                        "FluxGuidance": workflow_colors[3],
+                        "EmptyLatentImage": workflow_colors[1],
+                        "EmptySD3LatentImage": workflow_colors[1],
+                        "ControlNetLoader": workflow_colors[2],
+                        "QuadrupleCLIPLoader": workflow_colors[4],
+                        # Hunyuan3D nodes
+                        "Hy3DModelLoader": workflow_colors[1],
+                        "Hy3DGenerateMesh": workflow_colors[0],
+                        "Hy3DVAEDecode": workflow_colors[3],
+                        "Hy3DPostprocessMesh": workflow_colors[2],
+                        "Hy3DExportMesh": workflow_colors[1]
+                    }
+                    self.unified_config_manager.update_node_colors(color_mapping)
+                
+                # Store colors in config for parameter creation methods
+                if hasattr(self, 'config'):
+                    self.config.workflow_colors = workflow_colors
+                
+                # Reload parameters for current tab to apply new colors (if main tab widget exists)
+                if hasattr(self, 'main_tab_widget') and self.main_tab_widget:
+                    current_tab = self.main_tab_widget.currentIndex()
+                else:
+                    current_tab = 0  # Default to first tab
+                
+                # Force refresh current tab parameters to apply new colors
+                try:
+                    if current_tab == 0:  # Image Generation
+                        self.logger.debug("🔄 Refreshing Image Generation tab parameters with new colors")
+                        if hasattr(self, '_load_parameters_unified'):
+                            self._load_parameters_unified('image')
+                        else:
+                            self.logger.warning("_load_parameters_unified method not found")
+                    elif current_tab == 1:  # 3D Model Generation  
+                        self.logger.debug("🔄 Refreshing 3D Model Generation tab parameters with new colors")
+                        if hasattr(self, '_load_parameters_unified'):
+                            self._load_parameters_unified('3d_parameters')
+                        else:
+                            self.logger.warning("_load_parameters_unified method not found")
+                    elif current_tab == 2:  # Texture Generation
+                        self.logger.debug("🔄 Refreshing Texture Generation tab parameters with new colors")
+                        if hasattr(self, '_load_parameters_unified'):
+                            self._load_parameters_unified('texture_parameters')
+                        else:
+                            self.logger.warning("_load_parameters_unified method not found")
+                except Exception as refresh_error:
+                    self.logger.error(f"Failed to refresh tab {current_tab} parameters: {refresh_error}")
+                    
+                self.logger.debug("Refreshed workflow parameter colors")
+            else:
+                self.logger.warning("Invalid workflow colors from settings")
+        except Exception as e:
+            self.logger.error(f"Failed to refresh workflow parameter colors: {e}")
     
     def _apply_saved_accent_color(self):
         """Apply saved accent color to the application on startup"""
