@@ -6,8 +6,9 @@ Get comfy2c4d running in under 10 minutes.
 
 - Python 3.12+ installed
 - ComfyUI running at `http://localhost:8188`
-- Cinema4D R2024+ with Python API
-- 16GB+ RAM recommended
+- Cinema4D R2024+ with Python API (optional)
+- 8GB+ RAM recommended
+- CUDA-compatible GPU for optimal performance
 
 ## Installation Steps
 

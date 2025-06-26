@@ -7,10 +7,11 @@
 - **Performance** - ✅ Optimized (10-50x faster navigation)
 - **Documentation** - ✅ Restructured for efficiency
 
-### Active Issues
-- **ComfyUI Data Conversion** - Parameter formatting in workflow submission
-- **Port Binding** - Windows socket permissions on some ports  
-- **File Locks** - ComfyUI holding textured model files
+### Active Issues & Roadmap
+- **Texture Generation** - Debug workflow issues, support batch generation
+- **Cinema4D Integration** - Test NLP Dictionary, implement Claude Code SDK
+- **Settings & Optimization** - Consistent UI, performance improvements
+- **3D Model Views** - Support for untextured model display
 
 ### Key Documentation
 - **[README.md](README.md)** - Project overview

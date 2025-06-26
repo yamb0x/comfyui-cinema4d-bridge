@@ -2,9 +2,9 @@
 
 Complete navigation map for comfy2c4d documentation.
 
-## 🚀 Getting Started
+## Getting Started
 
-- **[README.md](../README.md)** - Project overview and status
+- **[README.md](../README.md)** - Project overview and roadmap
 - **[QUICKSTART.md](../QUICKSTART.md)** - Get running in 10 minutes
 - **[CLAUDE.md](../CLAUDE.md)** - AI assistant reference guide
 
@@ -27,10 +27,10 @@ Complete navigation map for comfy2c4d documentation.
 ## 📂 Additional Resources
 
 ### Feature Guides
-- **Image Generation** - Tab 1 implementation
-- **3D Model Creation** - Tab 2 with Hunyuan 2.0
-- **Texture Generation** - Tab 3 PBR workflows
-- **Cinema4D Control** - Tab 4 NLP integration
+- **Image Generation** - Tab 1 universal workflow support
+- **3D Model Creation** - Tab 2 Hunyuan3D 2.0/Tripo3D with Three.js viewers
+- **Texture Generation** - Tab 3 PBR workflows (debugging in progress)
+- **Cinema4D Control** - Tab 4 MCP + planned Claude Code SDK integration
 
 ### Troubleshooting
 - Common errors and solutions

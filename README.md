@@ -1,50 +1,146 @@
-# comfy2c4d
+================================================================================
+                          COMFYUI TO CINEMA4D BRIDGE
+================================================================================
 
-[![Status](https://img.shields.io/badge/Status-Active%20Development-orange?style=flat-square)](https://github.com/yamb0x/comfyui-cinema4d-bridge)
-[![Python](https://img.shields.io/badge/Python-3.12+-blue?style=flat-square&logo=python)](https://www.python.org/)
-[![Qt](https://img.shields.io/badge/Qt-6-green?style=flat-square&logo=qt)](https://www.qt.io/)
-[![Cinema4D](https://img.shields.io/badge/Cinema4D-R2024+-red?style=flat-square)](https://www.maxon.net/)
+    Connecting AI generation workflows 
+    with Cinema4D 3D world building.
 
-Direct integration of AI latent space models into professional 3D workflows.
+--------------------------------------------------------------------------------
 
-## Problem
+## Overview
 
-AI models generate content in isolation. 3D artists manually bridge this gap.
-This breaks creative flow and limits understanding what's possible with latest models and PBR texture generation.
+This application addresses the workflow gap between AI generation tools and 
+professional 3D software. Rather than manual file transfers and textures linking, 
+it provides a unified interface that maintains creative momentum
+across image generation, 3D modeling, texture creation, and AI tools.
 
-## Solution
+The system dynamically adapts to any ComfyUI workflow through runtime analysis
+and automatic UI generation, ensuring compatibility without dependencies on
+custom nodes or specific configurations.
 
-A focused interface for generating images, 3D meshes, and textures through connected tabs, each triggering ComfyUI workflows while maintaining creative momentum.
+## Architecture
 
-- **Image Generation**: Flux, SD 3.5, and any ComfyUI-compatible model
-- **3D Generation**: Hunyuan 2.0 mesh creation with direct carryover
-- **Texture Generation**: Experimental prompt-driven PBR pipeline
-- **Cinema4D Integration**: Natural language control via MCP
+    ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+    │   Application   │    │   Workflow       │    │   Integration   │
+    │     Layer       │────│    Manager       │────│     Layer       │
+    │                 │    │                  │    │                 │
+    │ • PyQt6 UI      │    │ • Dynamic UI     │    │ • ComfyUI API   │
+    │ • Tab System    │    │ • Node Convert   │    │ • Cinema4D MCP  │
+    │ • State Mgmt    │    │ • Parameter Map  │    │ • File System   │
+    └─────────────────┘    └──────────────────┘    └─────────────────┘
 
 ## Current Status
 
-| Feature | Status | Notes |
-|---------|--------|-------|
-| **Image generation** | ✅ Working | Flux + SD 3.5 |
-| **3D model creation** | ✅ Working | Hunyuan 2.0 |
-| **Texture generation** | ✅ Working | Experimental PBR |
-| **Cinema4D integration** | ✅ Working | MCP + NLP commands |
+┌─────────────────────┬───────────┬────────────────────────────────┐
+│ Component           │ Status    │ Notes                          │
+├─────────────────────┼───────────┼────────────────────────────────┤
+│ Image Generation    │ Complete  │ Universal workflow support     │
+│ 3D Model Creation   │ Complete  │ Hunyuan 3D with live preview  │
+│ Texture Generation  │ Working   │ PBR pipeline implementation    │
+│ Cinema4D Bridge     │ 80%       │ MCP integration active         │
+│ Dynamic UI System   │ Complete  │ Runtime workflow adaptation    │
+└─────────────────────┴───────────┴────────────────────────────────┘
 
-## Quick Links
+## Features
 
-- **[QUICKSTART.md](QUICKSTART.md)** - Get up and running
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Technical details
-- **[CLAUDE.md](CLAUDE.md)** - AI development guide
-- **[Documentation Index](docs/INDEX.md)** - All documentation
+**Image Generation**
+- Universal ComfyUI workflow compatibility
+- Dynamic UI generation from workflow analysis
+- Automatic custom node conversion
+- Cross-tab selection persistence
 
-## Dependencies
+**3D Model Creation**  
+- Hunyuan3D 2.0/Tripo3D integration 
+- Real-time Three.js 3D Viewers
+- Automatic custom node conversion
+- Cross-tab selection persistence
+
+**Texture Generation**
+- PBR material pipeline
+- Real-time Three.js 3D Viewers with PBR material support
+- Procedural texture synthesis via prompt
+- Cinema4D material integration
+
+**Cinema4D Integration**
+- Model Context Protocol communication
+- NLP Dictionary configured
+- Implementing Generated 3D models to Cinema4D
+
+## Next Features (For a complete working bridge) by priority:
+
+**Texture Generation**
+- Fix Texture Generation Workflow (need to debug issues we have)
+- Test and support batch generating texture for multiple models
+
+**Cinema4D Integration**
+- Model Context Protocol communication
+- NLP Dictionary configured 80% - It was done long time ago and we need to test again that we are able to trigger all the commands in cinema4D from the NLP Dictionary
+- NEW PLAN: i Want to replace the NLP system we planned initially to claude code sdk: https://docs.anthropic.com/en/docs/claude-code/sdk (a smart AI that is able to create much more complex scenes using the nlp dictionary we made and claude ai and python capabilites)
+
+**Settings, debug, optimiziations**
+- Consistet settings menu and sub-tabs working across the app
+- Fixing heavy debug we having and overall optimizations for speed and performance
+- fix and improve "magic prompt configuration" menu
+
+**3D Model Creation**  
+- Add different 3D View suppoort for 3d model (untextured models)
+
+
+## Quick Start
+
+### Prerequisites
+- Python 3.12+
+- ComfyUI running on localhost:8188
+- Cinema4D R2024+ (optional)
+
+### Installation
+```bash
+git clone https://github.com/yamb0x/comfyui-cinema4d-bridge.git
+cd comfyui-cinema4d-bridge
+
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# or: venv\Scripts\activate  # Windows
+
+pip install -r requirements.txt
+python main.py
+```
+
+### Configuration
+Copy `.env.example` to `.env` and configure paths as needed.
+The application will auto-detect ComfyUI on first run.
+
+## Documentation
+
+- [QUICKSTART.md](QUICKSTART.md) - Detailed setup guide
+- [ARCHITECTURE.md](ARCHITECTURE.md) - Technical implementation
+- [docs/](docs/) - Complete documentation index
+- [CLAUDE.md](CLAUDE.md) - Development patterns
+
+## Technical Details
+
+**Frontend**: PyQt6 with asynchronous image loading and smart caching
+**Backend**: Python with asyncio event loop management  
+**3D Rendering**: Three.js integration for real-time preview
+**AI Integration**: ComfyUI API with automatic node conversion
+**Cinema4D**: Python API with MCP communication layer
+
+**Key Innovations**:
+- Runtime workflow analysis and UI generation
+- Automatic custom node conversion to standard equivalents  
+- Cross-application state synchronization
+- Memory-efficient asset management with lazy loading
+
+## Requirements
 
 - Python 3.12+
-- ComfyUI (localhost:8188)
-- Cinema4D R2024+ with Python API
-- [ComfyUI MCP Server](https://github.com/joenorton/comfyui-mcp-server)
-- [Cinema4D MCP](https://github.com/ttiimmaacc/cinema4d-mcp)
+- ComfyUI with API enabled
+- 8GB+ RAM recommended
+- CUDA-compatible GPU for optimal performance
 
----
+--------------------------------------------------------------------------------
 
-Built by [Yambo Studio](https://yambo-studio.com) | Not affiliated with ComfyUI or Maxon
+This project aims to bridge the gap between AI generation and professional 3D
+workflows through careful engineering and minimal dependencies.
+
+MIT License | Not affiliated with ComfyUI or Maxon
