@@ -58,6 +58,7 @@ class ParameterRulesEngine:
         ParameterRule("LoraLoader", "lora_name", ParameterPriority.MODEL, "Models", display_name="LoRA Model"),
         ParameterRule("LoraLoader", "strength_model", ParameterPriority.MODEL, "Models", display_name="LoRA Strength"),
         ParameterRule("LoraLoader", "strength_clip", ParameterPriority.MODEL, "Models", display_name="CLIP Strength"),
+        ParameterRule("ControlNetLoader", "control_net_name", ParameterPriority.MODEL, "Models", display_name="ControlNet Model"),
         
         # Dimensions - Medium priority
         ParameterRule("EmptyLatentImage", "width", ParameterPriority.DIMENSIONS, "Dimensions", display_name="Width"),

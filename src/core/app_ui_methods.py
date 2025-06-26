@@ -792,6 +792,13 @@ class UICreationMethods:
                 if current_3d_workflow:
                     self.logger.info(f"Force regenerating 3D config for: {current_3d_workflow}")
                     self._on_workflow_changed(current_3d_workflow)
+            
+            # Force regenerate texture config
+            if hasattr(self, 'workflow_texture_new_combo') and self.workflow_texture_new_combo.count() > 0:
+                current_texture_workflow = self.workflow_texture_new_combo.currentData() or self.workflow_texture_new_combo.currentText()
+                if current_texture_workflow:
+                    self.logger.info(f"Force regenerating texture config for: {current_texture_workflow}")
+                    self._on_workflow_texture_new_changed()
                     
         except Exception as e:
             self.logger.error(f"Failed to force regenerate configs: {e}")
@@ -1463,17 +1470,25 @@ class UICreationMethods:
         """Clear dynamic parameters from a specific layout"""
         try:
             if not layout:
+                self.logger.debug("No layout provided for clearing")
                 return
+            
+            initial_count = layout.count()
+            self.logger.debug(f"Clearing {initial_count} widgets from layout")
                 
             # Remove all widgets from the layout
             while layout.count():
                 item = layout.takeAt(0)
                 if item.widget():
                     widget = item.widget()
+                    widget_name = widget.__class__.__name__
+                    object_name = getattr(widget, 'objectName', lambda: 'unknown')()
+                    self.logger.debug(f"Removing widget: {widget_name} (objectName: {object_name})")
                     widget.setParent(None)
                     widget.deleteLater()
                     
-            self.logger.debug("Cleared dynamic parameters from layout")
+            final_count = layout.count()
+            self.logger.debug(f"Cleared layout: {initial_count} -> {final_count} widgets")
             
         except Exception as e:
             self.logger.error(f"Error clearing parameters from layout: {e}")
@@ -1554,12 +1569,49 @@ class UICreationMethods:
             # Add stretch at the end
             target_layout.addStretch()
             
+            # Force UI refresh to make widgets visible (critical for texture parameters)
+            self._force_parameter_layout_refresh(param_type, target_layout)
+            
             self.logger.info(f"Updated UI with {len(params)} parameter groups")
             
         except Exception as e:
             self.logger.error(f"Failed to update unified parameter UI: {e}")
             import traceback
             self.logger.error(traceback.format_exc())
+    
+    def _force_parameter_layout_refresh(self, param_type: str, target_layout):
+        """Force UI refresh to make parameter widgets visible"""
+        try:
+            # Get the container widget for this parameter type
+            container_widget = None
+            if param_type == "image" and hasattr(self, 'dynamic_params_container'):
+                container_widget = self.dynamic_params_container
+            elif param_type == "3d_parameters" and hasattr(self, '_3d_dynamic_params_container'):
+                container_widget = self._3d_dynamic_params_container
+            elif param_type == "texture_parameters" and hasattr(self, '_texture_dynamic_params_container'):
+                container_widget = self._texture_dynamic_params_container
+            
+            if container_widget:
+                # Force immediate layout update and repaint
+                container_widget.updateGeometry()
+                container_widget.repaint()
+                container_widget.update()
+                
+                # Also ensure the container is visible
+                container_widget.setVisible(True)
+                container_widget.show()
+                
+                self.logger.debug(f"✅ Forced UI refresh for {param_type} parameter container")
+            else:
+                self.logger.warning(f"⚠️ No container widget found for {param_type} - cannot force refresh")
+                
+            # Also force layout update and activation
+            if target_layout:
+                target_layout.update()
+                target_layout.activate()
+                
+        except Exception as e:
+            self.logger.error(f"Failed to force parameter layout refresh: {e}")
     
     def _are_parameters_ticked(self, node_id: str, node_params: Dict[str, Any]) -> bool:
         """Check if parameters for this node should be displayed"""
@@ -1681,8 +1733,10 @@ class UICreationMethods:
                 choices = param_info.get('choices', param_info.get('options', []))
                 
                 # If no predefined choices, try to get ComfyUI model options
-                if not choices and param_value:
-                    choices = self._get_dropdown_options_for_parameter(param_ui_name, str(param_value))
+                if not choices:
+                    # Always try to auto-populate choices, even if param_value is None
+                    search_value = str(param_value) if param_value else param_ui_name.lower()
+                    choices = self._get_dropdown_options_for_parameter(param_ui_name, search_value)
                     self.logger.info(f"🎯 Auto-populated choices for {param_ui_name}: {len(choices)} options")
                 
                 self.logger.info(f"🎯 Choice widget for {param_ui_name}: options={len(choices)} items, value={param_value}")
@@ -1699,11 +1753,23 @@ class UICreationMethods:
                         self.logger.debug(f"✅ Added and set current value: {param_value}")
             elif param_type == 'int':
                 input_widget = QSpinBox()
-                input_widget.setRange(
-                    param_info.get('min', -999999), 
-                    param_info.get('max', 999999)
-                )
-                input_widget.setValue(int(param_value) if param_value is not None else 0)
+                min_val = param_info.get('min', -999999)
+                max_val = param_info.get('max', 999999)
+                input_widget.setRange(min_val, max_val)
+                
+                # Safely handle large integer values (like seeds)
+                if param_value is not None:
+                    safe_value = int(param_value)
+                    # Clamp to widget range if necessary
+                    if safe_value > max_val:
+                        safe_value = max_val
+                        self.logger.debug(f"Clamped large value {param_value} to {max_val} for {param_name}")
+                    elif safe_value < min_val:
+                        safe_value = min_val
+                        self.logger.debug(f"Clamped small value {param_value} to {min_val} for {param_name}")
+                    input_widget.setValue(safe_value)
+                else:
+                    input_widget.setValue(0)
             elif param_type == 'float':
                 input_widget = QDoubleSpinBox()
                 input_widget.setRange(
@@ -2384,7 +2450,7 @@ class UICreationMethods:
         spinbox = QSpinBox()
         spinbox.setRange(min_val, max_val)
         spinbox.setValue(value)
-        spinbox.setMinimumWidth(120)
+        spinbox.setMinimumWidth(80)  # Reduced for more compact panels
         layout.addWidget(spinbox)
         
         # Store reference to the actual input widget for value retrieval
@@ -2433,7 +2499,7 @@ class UICreationMethods:
         spinbox.setDecimals(3 if step < 0.1 else 2)
         spinbox.setSingleStep(step)
         spinbox.setValue(value)
-        spinbox.setMinimumWidth(120)
+        spinbox.setMinimumWidth(80)  # Reduced for more compact panels
         layout.addWidget(spinbox)
         
         # Store reference to the actual input widget for value retrieval
@@ -2461,7 +2527,7 @@ class UICreationMethods:
         layout.setContentsMargins(0, 0, 0, 0)
         
         label = QLabel(f"{name}:")
-        label.setMinimumWidth(100)
+        label.setMinimumWidth(60)  # Reduced for more compact panels
         layout.addWidget(label)
         
         if len(value) > 50:
@@ -2611,7 +2677,7 @@ class UICreationMethods:
             if options:
                 combo.setCurrentIndex(0)
             
-        combo.setMinimumWidth(120)
+        combo.setMinimumWidth(80)  # Reduced for more compact panels
         layout.addWidget(combo)
         
         # Store reference to the actual input widget for value retrieval
@@ -2699,7 +2765,7 @@ class UICreationMethods:
         
         # Label
         label = QLabel(f"{param_name}:")
-        label.setMinimumWidth(120)
+        label.setMinimumWidth(80)  # Reduced for more compact panels
         layout.addWidget(label)
         
         # Create appropriate widget based on value type

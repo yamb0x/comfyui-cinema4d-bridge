@@ -1,72 +1,9 @@
 {
   "selected_nodes": [
-    "Hy3DVAEDecode_54",
-    "ImageResize+_46",
-    "TransparentBGSession+_48",
-    "ImageRemoveBackground+_47",
-    "Hy3DModelLoader_52",
     "Hy3DPostprocessMesh_55",
-    "Hy3DExportMesh_88",
     "Hy3DGenerateMesh_53"
   ],
   "node_info": {
-    "Hy3DVAEDecode_54": {
-      "type": "Hy3DVAEDecode",
-      "id": "54",
-      "title": "",
-      "supported": true,
-      "widgets_values": [
-        1.01,
-        384,
-        8000,
-        0,
-        "mc",
-        true,
-        true
-      ]
-    },
-    "ImageResize+_46": {
-      "type": "ImageResize+",
-      "id": "46",
-      "title": "",
-      "supported": false,
-      "widgets_values": [
-        512,
-        512,
-        "lanczos",
-        "pad",
-        "always",
-        2
-      ]
-    },
-    "TransparentBGSession+_48": {
-      "type": "TransparentBGSession+",
-      "id": "48",
-      "title": "",
-      "supported": true,
-      "widgets_values": [
-        "base",
-        true
-      ]
-    },
-    "ImageRemoveBackground+_47": {
-      "type": "ImageRemoveBackground+",
-      "id": "47",
-      "title": "",
-      "supported": true,
-      "widgets_values": []
-    },
-    "Hy3DModelLoader_52": {
-      "type": "Hy3DModelLoader",
-      "id": "52",
-      "title": "",
-      "supported": true,
-      "widgets_values": [
-        "hunyun3D-2\\hunyuan3d-dit-v2-0-fp16.safetensors",
-        "sdpa",
-        false
-      ]
-    },
     "Hy3DPostprocessMesh_55": {
       "type": "Hy3DPostprocessMesh",
       "id": "55",
@@ -77,17 +14,6 @@
         true,
         true,
         500000,
-        true
-      ]
-    },
-    "Hy3DExportMesh_88": {
-      "type": "Hy3DExportMesh",
-      "id": "88",
-      "title": "",
-      "supported": true,
-      "widgets_values": [
-        "3D/Hy3D",
-        "glb",
         true
       ]
     },
@@ -108,16 +34,16 @@
   },
   "workflow_file": "3D_gen_Hunyuan2_onlymesh_v04.json",
   "discovered_node_types": [
-    "Preview3D",
-    "MaskPreview+",
-    "Hy3DVAEDecode",
-    "Hy3DModelLoader",
-    "Hy3DPostprocessMesh",
-    "ImageResize+",
-    "Hy3DExportMesh",
-    "TransparentBGSession+",
     "LoadImage",
+    "ImageResize+",
+    "TransparentBGSession+",
+    "Hy3DModelLoader",
+    "Hy3DGenerateMesh",
     "ImageRemoveBackground+",
-    "Hy3DGenerateMesh"
+    "Hy3DVAEDecode",
+    "Preview3D",
+    "Hy3DPostprocessMesh",
+    "MaskPreview+",
+    "Hy3DExportMesh"
   ]
 }

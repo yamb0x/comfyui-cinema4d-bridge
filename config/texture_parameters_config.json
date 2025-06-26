@@ -1,20 +1,30 @@
 {
   "selected_nodes": [
+    "ControlNetLoader_185",
     "KSampler_180",
     "EmptyLatentImage_179",
     "Hy3DExportMesh_166",
-    "CLIPTextEncode_510",
-    "CLIPTextEncode_177",
     "UltimateSDUpscale_222",
     "Hy3DExportMesh_99",
+    "CheckpointLoaderSimple_183",
     "CLIPTextEncode_352",
-    "Hy3DLoadMesh_513"
+    "CLIPTextEncode_510",
+    "CLIPTextEncode_177"
   ],
   "node_info": {
+    "ControlNetLoader_185": {
+      "type": "ControlNetLoader",
+      "id": "185",
+      "title": "ControlNetLoader",
+      "supported": true,
+      "widgets_values": [
+        "SDXL\\controlnet-union-sdxl-1.0\\diffusion_pytorch_model_promax.safetensors"
+      ]
+    },
     "KSampler_180": {
       "type": "KSampler",
       "id": "180",
-      "title": "",
+      "title": "KSampler",
       "supported": true,
       "widgets_values": [
         697749537937258,
@@ -29,7 +39,7 @@
     "EmptyLatentImage_179": {
       "type": "EmptyLatentImage",
       "id": "179",
-      "title": "",
+      "title": "EmptyLatentImage",
       "supported": true,
       "widgets_values": [
         1024,
@@ -40,7 +50,7 @@
     "Hy3DExportMesh_166": {
       "type": "Hy3DExportMesh",
       "id": "166",
-      "title": "",
+      "title": "Hy3DExportMesh",
       "supported": true,
       "widgets_values": [
         "3D/Hy3D",
@@ -48,28 +58,10 @@
         false
       ]
     },
-    "CLIPTextEncode_510": {
-      "type": "CLIPTextEncode",
-      "id": "510",
-      "title": "",
-      "supported": true,
-      "widgets_values": [
-        "((masterpiece, photography)) neutral lighting, grey background, overcast daylight, Flat lighting, Soft lighting, rendering, octane, ultra-detailed\n\n\nunique coral, velvet and green moss tones, hairy vines, corallites. high details, eroded"
-      ]
-    },
-    "CLIPTextEncode_177": {
-      "type": "CLIPTextEncode",
-      "id": "177",
-      "title": "",
-      "supported": true,
-      "widgets_values": [
-        "text, watermark, oversaturated, high contrast, nsfw, ((naked)), (chair)"
-      ]
-    },
     "UltimateSDUpscale_222": {
       "type": "UltimateSDUpscale",
       "id": "222",
-      "title": "",
+      "title": "UltimateSDUpscale",
       "supported": true,
       "widgets_values": [
         4,
@@ -97,12 +89,21 @@
     "Hy3DExportMesh_99": {
       "type": "Hy3DExportMesh",
       "id": "99",
-      "title": "",
+      "title": "Hy3DExportMesh",
       "supported": true,
       "widgets_values": [
         "3D/textured/Hy3D_textured",
         "glb",
         true
+      ]
+    },
+    "CheckpointLoaderSimple_183": {
+      "type": "CheckpointLoaderSimple",
+      "id": "183",
+      "title": "CheckpointLoaderSimple",
+      "supported": true,
+      "widgets_values": [
+        "juggernautXL_juggXIByRundiffusion.safetensors"
       ]
     },
     "CLIPTextEncode_352": {
@@ -114,63 +115,75 @@
         "4k, high quality, detail, grey background, front view, ((neutral lighting)), side view, bottom view, top view,\n\nripped clothes, Skin condition"
       ]
     },
-    "Hy3DLoadMesh_513": {
-      "type": "Hy3DLoadMesh",
-      "id": "513",
-      "title": "",
-      "supported": false,
+    "CLIPTextEncode_510": {
+      "type": "CLIPTextEncode",
+      "id": "510",
+      "title": "Positive Prompt",
+      "supported": true,
       "widgets_values": [
-        "3d/Hy3D_00290_.glb"
+        "((masterpiece, photography)) neutral lighting, grey background, overcast daylight, Flat lighting, Soft lighting, rendering, octane, ultra-detailed\n\n\nunique coral, velvet and green moss tones, hairy vines, corallites. high details, eroded"
+      ]
+    },
+    "CLIPTextEncode_177": {
+      "type": "CLIPTextEncode",
+      "id": "177",
+      "title": "Negative Prompt",
+      "supported": true,
+      "widgets_values": [
+        "text, watermark, oversaturated, high contrast, nsfw, ((naked)), (chair)"
       ]
     }
   },
-  "workflow_file": "Model_texturing_juggernautXL_v08.json",
+  "workflow_file": "Model_texturing_juggernautXL_v09.json",
   "discovered_node_types": [
+    "NormalMapSimple",
+    "TransparentBGSession+",
+    "CV2InpaintTexture",
+    "ImageCompositeMasked",
+    "Hy3DMeshVerticeInpaintTexture",
+    "Reroute",
+    "SimpleMath+",
+    "ControlNetApplyAdvanced",
     "Hy3DBakeFromMultiview",
-    "ControlNetLoader",
+    "Hy3DRenderMultiView",
     "Constant Number",
-    "ImageConcatFromBatch",
-    "Hy3DExportMesh",
+    "Upscale Model Loader",
+    "PrimitiveNode",
+    "PrimitiveInt",
     "SolidMask",
+    "Hy3DSampleMultiView",
+    "ResizeMask",
+    "ImageBlend",
+    "Hy3DCameraConfig",
+    "Hy3DMeshUVWrap",
+    "CLIPTextEncode",
+    "ControlNetLoader",
+    "Hy3DExportMesh",
+    "PreviewImage",
     "Hy3DLoadMesh",
+    "EmptyLatentImage",
+    "SaveImage",
+    "Hy3DApplyTexture",
+    "ConditioningConcat",
+    "Hy3DDiffusersSchedulerConfig",
     "MaskToImage",
     "ImageFromBatch",
-    "Hy3DRenderMultiView",
-    "Hy3DMeshUVWrap",
-    "ResizeMask",
-    "DownloadAndLoadHy3DDelightModel",
-    "SomethingToString",
-    "Hy3DApplyTexture",
-    "Hy3DRenderMultiViewDepth",
-    "ImageInvert",
-    "ConditioningConcat",
-    "TransparentBGSession+",
-    "PreviewImage",
-    "Hy3DSampleMultiView",
     "Hy3DSetMeshPBRTextures",
-    "EmptyLatentImage",
-    "Hy3DDelightImage",
-    "UltimateSDUpscale",
-    "DownloadAndLoadHy3DPaintModel",
-    "SaveImage",
-    "ImageRemoveBackground+",
-    "InsertImagesToBatchIndexed",
-    "ImageResizeKJv2",
-    "CLIPTextEncode",
-    "CheckpointLoaderSimple",
-    "Preview3D",
-    "Upscale Model Loader",
-    "CV2InpaintTexture",
-    "Hy3DCameraConfig",
-    "ControlNetApplyAdvanced",
+    "ImageConcatFromBatch",
+    "DownloadAndLoadHy3DDelightModel",
+    "ImageInvert",
     "SetUnionControlNetType",
-    "Hy3DDiffusersSchedulerConfig",
-    "NormalMapSimple",
-    "ImageBlend",
-    "Hy3DMeshVerticeInpaintTexture",
-    "SimpleMath+",
-    "ImageCompositeMasked",
-    "PrimitiveInt",
-    "KSampler"
+    "ImageRemoveBackground+",
+    "VAEDecode",
+    "Preview3D",
+    "DownloadAndLoadHy3DPaintModel",
+    "SomethingToString",
+    "InsertImagesToBatchIndexed",
+    "UltimateSDUpscale",
+    "KSampler",
+    "Hy3DRenderMultiViewDepth",
+    "Hy3DDelightImage",
+    "ImageResizeKJv2",
+    "CheckpointLoaderSimple"
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "current_workflow": "Model_texturing_juggernautXL_v07.json",
+  "current_workflow": "Model_texturing_juggernautXL_v09.json",
   "parameters": {
     "KSampler": {
       "priority": 1,
@@ -105,6 +105,17 @@
           "node_id": 180,
           "node_type": "KSampler",
           "param_name": "denoise"
+        },
+        "": {
+          "node_id": 180,
+          "node_type": "KSampler",
+          "widget_index": 6,
+          "current_value": 1,
+          "type": "int",
+          "ui_name": "Denoise",
+          "min": 0,
+          "max": 1,
+          "default": 1
         }
       },
       "node_id": 180,
@@ -122,6 +133,15 @@
           "node_id": 183,
           "node_type": "CheckpointLoaderSimple",
           "param_name": "ckpt_name"
+        },
+        "": {
+          "node_id": 183,
+          "node_type": "CheckpointLoaderSimple",
+          "widget_index": 0,
+          "current_value": "juggernautXL_juggXIByRundiffusion.safetensors",
+          "type": "choice",
+          "ui_name": "Text 0",
+          "default": "juggernautXL_juggXIByRundiffusion.safetensors"
         }
       },
       "node_id": 183,
@@ -138,6 +158,15 @@
           "node_id": 185,
           "node_type": "ControlNetLoader",
           "param_name": "control_net_name"
+        },
+        "": {
+          "node_id": 185,
+          "node_type": "ControlNetLoader",
+          "widget_index": 0,
+          "current_value": "SDXL\\controlnet-union-sdxl-1.0\\diffusion_pytorch_model_promax.safetensors",
+          "type": "choice",
+          "ui_name": "ControlNet Model",
+          "default": "SDXL\\controlnet-union-sdxl-1.0\\diffusion_pytorch_model_promax.safetensors"
         }
       },
       "node_id": 185,
@@ -179,10 +208,263 @@
           "node_id": 99,
           "node_type": "Hy3DExportMesh",
           "param_name": "overwrite"
+        },
+        "": {
+          "node_id": 99,
+          "node_type": "Hy3DExportMesh",
+          "widget_index": 2,
+          "current_value": true,
+          "type": "bool",
+          "ui_name": "Toggle 2",
+          "default": true
         }
       },
       "node_id": 166,
       "display_name": "Mesh Export"
+    },
+    "UltimateSDUpscale": {
+      "priority": 99,
+      "color": "#666666",
+      "parameters": {
+        "upscale_by": {
+          "ui_name": "Upscale Factor",
+          "type": "float",
+          "min": 1.0,
+          "max": 8.0,
+          "default": 4.0,
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "upscale_by"
+        },
+        "seed": {
+          "ui_name": "Seed",
+          "type": "int",
+          "min": 0,
+          "max": 2147483647,
+          "default": 0,
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "seed"
+        },
+        "control_after_generation": {
+          "ui_name": "Control After Generation",
+          "type": "choice",
+          "options": [
+            "fixed",
+            "increment",
+            "decrement",
+            "randomize"
+          ],
+          "default": "fixed",
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "control_after_generation"
+        },
+        "steps": {
+          "ui_name": "Steps",
+          "type": "int",
+          "min": 1,
+          "max": 150,
+          "default": 30,
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "steps"
+        },
+        "cfg": {
+          "ui_name": "CFG Scale",
+          "type": "float",
+          "min": 1.0,
+          "max": 30.0,
+          "default": 4.0,
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "cfg"
+        },
+        "sampler_name": {
+          "ui_name": "Sampler",
+          "type": "choice",
+          "options": [
+            "euler",
+            "euler_a",
+            "heun",
+            "dpm_2",
+            "dpm_2_a",
+            "lms",
+            "dpm_fast",
+            "dpm_adaptive",
+            "dpmpp_2s_a",
+            "dpmpp_2m",
+            "dpmpp_2m_sde",
+            "dpmpp_3m_sde",
+            "ddpm",
+            "lcm"
+          ],
+          "default": "dpmpp_2m",
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "sampler_name"
+        },
+        "scheduler": {
+          "ui_name": "Scheduler",
+          "type": "choice",
+          "options": [
+            "normal",
+            "karras",
+            "exponential",
+            "sgm_uniform",
+            "simple",
+            "ddim_uniform"
+          ],
+          "default": "karras",
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "scheduler"
+        },
+        "denoise": {
+          "ui_name": "Denoise",
+          "type": "float",
+          "min": 0.0,
+          "max": 1.0,
+          "default": 0.4,
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "denoise"
+        },
+        "mode_type": {
+          "ui_name": "Mode Type",
+          "type": "choice",
+          "options": [
+            "Linear",
+            "Chess",
+            "None"
+          ],
+          "default": "Linear",
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "mode_type"
+        },
+        "tile_width": {
+          "ui_name": "Tile Width",
+          "type": "int",
+          "min": 256,
+          "max": 2048,
+          "default": 1024,
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "tile_width"
+        },
+        "tile_height": {
+          "ui_name": "Tile Height",
+          "type": "int",
+          "min": 256,
+          "max": 2048,
+          "default": 1024,
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "tile_height"
+        },
+        "mask_blur": {
+          "ui_name": "Mask Blur",
+          "type": "int",
+          "min": 0,
+          "max": 64,
+          "default": 8,
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "mask_blur"
+        },
+        "tile_padding": {
+          "ui_name": "Tile Padding",
+          "type": "int",
+          "min": 0,
+          "max": 128,
+          "default": 32,
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "tile_padding"
+        },
+        "seam_fix_mode": {
+          "ui_name": "Seam Fix Mode",
+          "type": "choice",
+          "options": [
+            "None",
+            "Band Pass",
+            "Half Tile",
+            "Half Tile + Intersections"
+          ],
+          "default": "None",
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "seam_fix_mode"
+        },
+        "seam_fix_denoise": {
+          "ui_name": "Seam Fix Denoise",
+          "type": "float",
+          "min": 0.0,
+          "max": 1.0,
+          "default": 1.0,
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "seam_fix_denoise"
+        },
+        "seam_fix_width": {
+          "ui_name": "Seam Fix Width",
+          "type": "int",
+          "min": 0,
+          "max": 128,
+          "default": 64,
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "seam_fix_width"
+        },
+        "seam_fix_mask_blur": {
+          "ui_name": "Seam Fix Mask Blur",
+          "type": "int",
+          "min": 0,
+          "max": 64,
+          "default": 8,
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "seam_fix_mask_blur"
+        },
+        "seam_fix_padding": {
+          "ui_name": "Seam Fix Padding",
+          "type": "int",
+          "min": 0,
+          "max": 128,
+          "default": 16,
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "seam_fix_padding"
+        },
+        "force_uniform_tiles": {
+          "ui_name": "Force Uniform Tiles",
+          "type": "bool",
+          "default": true,
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "force_uniform_tiles"
+        },
+        "tiled_decode": {
+          "ui_name": "Tiled Decode",
+          "type": "bool",
+          "default": false,
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "param_name": "tiled_decode"
+        },
+        "": {
+          "node_id": 222,
+          "node_type": "UltimateSDUpscale",
+          "widget_index": 19,
+          "current_value": false,
+          "type": "bool",
+          "ui_name": "Toggle 19",
+          "default": false
+        }
+      },
+      "node_id": 222,
+      "display_name": "Ultimate SD Upscale"
     }
   },
   "user_overrides": {},

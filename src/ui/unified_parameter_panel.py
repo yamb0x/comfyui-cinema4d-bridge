@@ -36,7 +36,7 @@ class ParameterWidget(QWidget):
         
         # Parameter label
         label = QLabel(self.param_data.get("ui_name", self.param_key))
-        label.setMinimumWidth(120)
+        label.setMinimumWidth(80)  # Reduced for more compact panels
         label.setMaximumWidth(150)
         label.setWordWrap(True)
         layout.addWidget(label)

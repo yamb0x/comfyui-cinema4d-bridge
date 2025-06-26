@@ -124,7 +124,7 @@ class UnifiedObjectSelectionWidget(QWidget):
                 border-radius: 3px;
                 color: #fafafa;
                 padding: 4px;
-                min-width: 200px;
+                min-width: 120px;  /* Reduced for more compact panels */
             }
             QListWidget::item {
                 padding: 8px;

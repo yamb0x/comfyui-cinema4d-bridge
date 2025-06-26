@@ -109,6 +109,28 @@ class WorkflowParameterExtractor:
             "filename_prefix": {"ui_name": "Filename Prefix", "type": "text", "default": "3D/Hy3D"},
             "export_format": {"ui_name": "Export Format", "type": "choice", "options": ["glb", "obj", "ply", "stl"], "default": "glb"},
             "overwrite": {"ui_name": "Overwrite Files", "type": "bool", "default": True}
+        },
+        "UltimateSDUpscale": {
+            "upscale_by": {"ui_name": "Upscale Factor", "type": "float", "min": 1.0, "max": 8.0, "default": 4.0},
+            "seed": {"ui_name": "Seed", "type": "int", "min": 0, "max": 2147483647, "default": 0},
+            "control_after_generation": {"ui_name": "Control After Generation", "type": "choice", "options": ["fixed", "increment", "decrement", "randomize"], "default": "fixed"},
+            "steps": {"ui_name": "Steps", "type": "int", "min": 1, "max": 150, "default": 30},
+            "cfg": {"ui_name": "CFG Scale", "type": "float", "min": 1.0, "max": 30.0, "default": 4.0},
+            "sampler_name": {"ui_name": "Sampler", "type": "choice", "options": ["euler", "euler_a", "heun", "dpm_2", "dpm_2_a", "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_a", "dpmpp_2m", "dpmpp_2m_sde", "dpmpp_3m_sde", "ddpm", "lcm"], "default": "dpmpp_2m"},
+            "scheduler": {"ui_name": "Scheduler", "type": "choice", "options": ["normal", "karras", "exponential", "sgm_uniform", "simple", "ddim_uniform"], "default": "karras"},
+            "denoise": {"ui_name": "Denoise", "type": "float", "min": 0.0, "max": 1.0, "default": 0.4},
+            "mode_type": {"ui_name": "Mode Type", "type": "choice", "options": ["Linear", "Chess", "None"], "default": "Linear"},
+            "tile_width": {"ui_name": "Tile Width", "type": "int", "min": 256, "max": 2048, "default": 1024},
+            "tile_height": {"ui_name": "Tile Height", "type": "int", "min": 256, "max": 2048, "default": 1024},
+            "mask_blur": {"ui_name": "Mask Blur", "type": "int", "min": 0, "max": 64, "default": 8},
+            "tile_padding": {"ui_name": "Tile Padding", "type": "int", "min": 0, "max": 128, "default": 32},
+            "seam_fix_mode": {"ui_name": "Seam Fix Mode", "type": "choice", "options": ["None", "Band Pass", "Half Tile", "Half Tile + Intersections"], "default": "None"},
+            "seam_fix_denoise": {"ui_name": "Seam Fix Denoise", "type": "float", "min": 0.0, "max": 1.0, "default": 1.0},
+            "seam_fix_width": {"ui_name": "Seam Fix Width", "type": "int", "min": 0, "max": 128, "default": 64},
+            "seam_fix_mask_blur": {"ui_name": "Seam Fix Mask Blur", "type": "int", "min": 0, "max": 64, "default": 8},
+            "seam_fix_padding": {"ui_name": "Seam Fix Padding", "type": "int", "min": 0, "max": 128, "default": 16},
+            "force_uniform_tiles": {"ui_name": "Force Uniform Tiles", "type": "bool", "default": True},
+            "tiled_decode": {"ui_name": "Tiled Decode", "type": "bool", "default": False}
         }
     }
     

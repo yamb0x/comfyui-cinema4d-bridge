@@ -107,7 +107,7 @@ class WorkflowImportDialog(QDialog):
         layout.setContentsMargins(0, 0, 0, 0)
         
         label = QLabel("Workflow File:")
-        label.setMinimumWidth(100)
+        label.setMinimumWidth(80)  # Reduced for more compact panels
         layout.addWidget(label)
         
         self.file_path_label = QLabel("No file selected")

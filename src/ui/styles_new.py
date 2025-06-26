@@ -488,7 +488,7 @@ def get_monospace_stylesheet() -> str:
         border: 1px solid #000000;
         padding: 15px;
         margin: 10px;
-        min-width: 280px;
+        min-width: 150px;  /* Reduced for more compact panels */
     }
 
     /* Model viewport styling */
@@ -897,9 +897,9 @@ def get_monospace_stylesheet() -> str:
         border-radius: 3px;
         margin-top: 5px;
         padding-top: 8px;
-        width: 260px;
-        min-width: 260px;
-        max-width: 260px;
+        width: 180px;     /* Reduced for more compact panels */
+        min-width: 150px; /* Reduced for more compact panels */
+        max-width: 300px; /* Increased maximum for flexibility */
     }
     
     QGroupBox[objectName="compact_section"]::title {

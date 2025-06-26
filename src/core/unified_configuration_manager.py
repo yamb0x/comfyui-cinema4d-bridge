@@ -11,6 +11,7 @@ from loguru import logger
 from PySide6.QtCore import QObject, Signal
 
 from src.core.workflow_parameter_extractor import WorkflowParameterExtractor
+from src.core.dynamic_parameter_extractor import DynamicParameterExtractor
 from src.utils.logger import LoggerMixin
 
 
@@ -23,6 +24,7 @@ class UnifiedConfigurationManager(QObject, LoggerMixin):
     # Signals for observer pattern
     parameters_updated = Signal(dict)  # Emitted when parameters change
     workflow_loaded = Signal(str)      # Emitted when workflow is loaded
+    prompts_extracted = Signal(dict)   # Emitted when prompts are extracted from workflow
     
     # Node types to hide from right panel (handled by left panel controls)
     HIDDEN_NODE_TYPES = {
@@ -82,6 +84,7 @@ class UnifiedConfigurationManager(QObject, LoggerMixin):
     def __init__(self):
         super().__init__()
         self._parameter_extractor = WorkflowParameterExtractor()
+        self._dynamic_extractor = DynamicParameterExtractor()  # For nodes not in PARAMETER_MAPPINGS
         self._current_workflow: Optional[str] = None
         self._current_parameters: Dict[str, Any] = {}
         self._user_overrides: Dict[str, Any] = {}  # User modifications take precedence
@@ -99,8 +102,32 @@ class UnifiedConfigurationManager(QObject, LoggerMixin):
         try:
             self.logger.info(f"Loading workflow configuration from: {workflow_path}")
             
-            # Extract raw parameters
+            # First, try to extract parameters using static mappings
             raw_params = self._parameter_extractor.extract_parameters(workflow_path)
+            
+            # For texture generation, also extract parameters dynamically from selected nodes
+            # Check if this is texture generation by looking for texture config
+            texture_config_path = Path("config/texture_parameters_config.json")
+            if texture_config_path.exists() and "texture" in str(workflow_path):
+                try:
+                    with open(texture_config_path, 'r') as f:
+                        texture_config = json.load(f)
+                    
+                    selected_nodes = set(texture_config.get("selected_nodes", []))
+                    self.logger.info(f"🎯 Loading dynamic parameters for {len(selected_nodes)} selected texture nodes")
+                    
+                    # Extract parameters dynamically for selected nodes
+                    dynamic_params = self._dynamic_extractor.extract_all_parameters(workflow_path, selected_nodes)
+                    
+                    # Merge dynamic parameters with static ones
+                    raw_params.update(dynamic_params)
+                    self.logger.info(f"📊 Combined parameters: {len(raw_params)} total (static + dynamic)")
+                    
+                    # Also extract and emit prompts for texture generation
+                    self._extract_and_emit_texture_prompts(workflow_path, texture_config)
+                    
+                except Exception as e:
+                    self.logger.error(f"Failed to load dynamic texture parameters: {e}")
             
             # Organize parameters by node type and priority
             organized_params = self._organize_parameters(raw_params)
@@ -181,7 +208,24 @@ class UnifiedConfigurationManager(QObject, LoggerMixin):
             "Hy3DGenerateMesh": "3D Mesh Generation",
             "Hy3DVAEDecode": "3D VAE Decoding",
             "Hy3DPostprocessMesh": "Mesh Post-processing",
-            "Hy3DExportMesh": "Mesh Export"
+            "Hy3DExportMesh": "Mesh Export",
+            # Dynamic node types
+            "UltimateSDUpscale": "Ultimate SD Upscale",
+            "ControlNetApplyAdvanced": "ControlNet Advanced",
+            "ImageRemoveBackground+": "Background Removal",
+            "TransparentBGSession+": "Transparent Background",
+            "ImageCompositeMasked": "Image Compositing",
+            "SolidMask": "Mask Settings",
+            "ImageBlend": "Image Blending",
+            "ImageInvert": "Image Invert",
+            "ImageResizeKJv2": "Image Resize",
+            "NormalMapSimple": "Normal Map",
+            "CV2InpaintTexture": "Texture Inpainting",
+            "Hy3DMeshVerticeInpaintTexture": "Mesh Vertex Inpainting",
+            "Hy3DApplyTexture": "Apply Texture",
+            "Hy3DBakeFromMultiview": "Bake Multiview",
+            "Hy3DMeshUVWrap": "UV Wrapping",
+            "Hy3DSetMeshPBRTextures": "PBR Textures"
         }
         return display_names.get(node_type, node_type)
     
@@ -369,3 +413,40 @@ class UnifiedConfigurationManager(QObject, LoggerMixin):
     def get_node_color(self, node_type: str) -> str:
         """Get the color for a specific node type"""
         return self.NODE_COLORS.get(node_type, "#666666")
+    
+    def _extract_and_emit_texture_prompts(self, workflow_path: Path, texture_config: Dict[str, Any]):
+        """Extract prompts from texture workflow and emit them via signal"""
+        try:
+            with open(workflow_path, 'r') as f:
+                workflow_data = json.load(f)
+            
+            prompts = {}
+            
+            # Get node info from texture config to map node IDs to types
+            node_info = texture_config.get("node_info", {})
+            
+            # Look for CLIPTextEncode nodes in the workflow
+            for node in workflow_data.get('nodes', []):
+                node_id = str(node.get('id', ''))
+                node_type = node.get('type', '')
+                title = node.get('title', '')
+                widgets_values = node.get('widgets_values', [])
+                
+                if node_type == 'CLIPTextEncode' and widgets_values and len(widgets_values) > 0:
+                    prompt_text = widgets_values[0]
+                    
+                    # Determine if this is positive or negative based on title and known node IDs
+                    if "positive" in title.lower() or node_id == "510":
+                        prompts["texture_positive"] = prompt_text
+                        self.logger.info(f"🎯 Extracted texture positive prompt: {prompt_text[:50]}...")
+                    elif "negative" in title.lower() or node_id == "177":
+                        prompts["texture_negative"] = prompt_text
+                        self.logger.info(f"🎯 Extracted texture negative prompt: {prompt_text[:50]}...")
+            
+            # Emit the prompts via signal
+            if prompts:
+                self.prompts_extracted.emit(prompts)
+                self.logger.info(f"✅ Emitted {len(prompts)} texture prompts via signal")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to extract texture prompts: {e}")
