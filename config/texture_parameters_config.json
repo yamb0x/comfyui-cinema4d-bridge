@@ -1,386 +1,176 @@
 {
   "selected_nodes": [
-    "Preview3D_163",
-    "ResizeMask_189",
-    "DownloadAndLoadHy3DDelightModel_28",
-    "Hy3DDiffusersSchedulerConfig_148",
-    "TransparentBGSession+_186",
-    "ImageBlend_218",
-    "ImageResizeKJv2_188",
-    "ImageCompositeMasked_64",
-    "DownloadAndLoadHy3DPaintModel_85",
-    "Hy3DDiffusersSchedulerConfig_149",
-    "PrimitiveNode_144",
-    "ImageFromBatch_450",
-    "NormalMapSimple_373",
-    "CV2InpaintTexture_104",
-    "SimpleMath+_317",
-    "ImageConcatFromBatch_385",
-    "ImageConcatFromBatch_226",
-    "ImageFromBatch_314",
-    "InsertImagesToBatchIndexed_465",
-    "SolidMask_132",
-    "SaveImage_377",
-    "SaveImage_374",
-    "Hy3DSetMeshPBRTextures_447",
-    "SetUnionControlNetType_320",
-    "Upscale Model Loader_223",
-    "CheckpointLoaderSimple_183",
-    "Hy3DCameraConfig_61",
-    "ControlNetLoader_185",
-    "ImageBlend_356",
-    "ImageResizeKJv2_443",
-    "PrimitiveInt_313",
-    "ImageBlend_209",
-    "Hy3DDelightImage_35",
-    "Hy3DSampleMultiView_88",
-    "Hy3DRenderMultiViewDepth_448",
-    "Hy3DRenderMultiView_79",
-    "UltralyticsDetectorProvider_349",
-    "CLIPTextEncode_352",
     "KSampler_180",
     "EmptyLatentImage_179",
-    "PrimitiveInt_293",
-    "ControlNetApplyAdvanced_198",
-    "ControlNetApplyAdvanced_184",
-    "Preview3D_154",
     "Hy3DExportMesh_166",
     "CLIPTextEncode_510",
     "CLIPTextEncode_177",
-    "SaveImage_182",
-    "SomethingToString_474",
-    "SaveImage_451",
     "UltimateSDUpscale_222",
-    "Constant Number_511",
     "Hy3DExportMesh_99",
+    "CLIPTextEncode_352",
     "Hy3DLoadMesh_513"
   ],
   "node_info": {
-    "Preview3D_163": {
-      "type": "Preview3D",
-      "id": "163",
-      "title": "Preview3D",
-      "supported": true
+    "KSampler_180": {
+      "type": "KSampler",
+      "id": "180",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        697749537937258,
+        "fixed",
+        45,
+        5.5,
+        "dpmpp_2m",
+        "karras",
+        1
+      ]
     },
-    "ResizeMask_189": {
-      "type": "ResizeMask",
-      "id": "189",
-      "title": "ResizeMask",
-      "supported": true
+    "EmptyLatentImage_179": {
+      "type": "EmptyLatentImage",
+      "id": "179",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        1024,
+        1024,
+        1
+      ]
     },
-    "DownloadAndLoadHy3DDelightModel_28": {
-      "type": "DownloadAndLoadHy3DDelightModel",
-      "id": "28",
-      "title": "DownloadAndLoadHy3DDelightModel",
-      "supported": true
+    "Hy3DExportMesh_166": {
+      "type": "Hy3DExportMesh",
+      "id": "166",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        "3D/Hy3D",
+        "glb",
+        false
+      ]
     },
-    "Hy3DDiffusersSchedulerConfig_148": {
-      "type": "Hy3DDiffusersSchedulerConfig",
-      "id": "148",
-      "title": "Hy3DDiffusersSchedulerConfig",
-      "supported": true
+    "CLIPTextEncode_510": {
+      "type": "CLIPTextEncode",
+      "id": "510",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        "((masterpiece, photography)) neutral lighting, grey background, overcast daylight, Flat lighting, Soft lighting, rendering, octane, ultra-detailed\n\n\nunique coral, velvet and green moss tones, hairy vines, corallites. high details, eroded"
+      ]
     },
-    "TransparentBGSession+_186": {
-      "type": "TransparentBGSession+",
-      "id": "186",
-      "title": "TransparentBGSession+",
-      "supported": true
+    "CLIPTextEncode_177": {
+      "type": "CLIPTextEncode",
+      "id": "177",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        "text, watermark, oversaturated, high contrast, nsfw, ((naked)), (chair)"
+      ]
     },
-    "ImageBlend_218": {
-      "type": "ImageBlend",
-      "id": "218",
-      "title": "ImageBlend",
-      "supported": true
+    "UltimateSDUpscale_222": {
+      "type": "UltimateSDUpscale",
+      "id": "222",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        4,
+        0,
+        "fixed",
+        30,
+        4,
+        "dpmpp_2m",
+        "karras",
+        0.4000000000000001,
+        "Linear",
+        1024,
+        1024,
+        8,
+        32,
+        "None",
+        1,
+        64,
+        8,
+        16,
+        true,
+        false
+      ]
     },
-    "ImageResizeKJv2_188": {
-      "type": "ImageResizeKJv2",
-      "id": "188",
-      "title": "ImageResizeKJv2",
-      "supported": true
-    },
-    "ImageCompositeMasked_64": {
-      "type": "ImageCompositeMasked",
-      "id": "64",
-      "title": "ImageCompositeMasked",
-      "supported": true
-    },
-    "DownloadAndLoadHy3DPaintModel_85": {
-      "type": "DownloadAndLoadHy3DPaintModel",
-      "id": "85",
-      "title": "DownloadAndLoadHy3DPaintModel",
-      "supported": true
-    },
-    "Hy3DDiffusersSchedulerConfig_149": {
-      "type": "Hy3DDiffusersSchedulerConfig",
-      "id": "149",
-      "title": "Hy3DDiffusersSchedulerConfig",
-      "supported": true
-    },
-    "PrimitiveNode_144": {
-      "type": "PrimitiveNode",
-      "id": "144",
-      "title": "Primitive: reference image size",
-      "supported": true
-    },
-    "ImageFromBatch_450": {
-      "type": "ImageFromBatch",
-      "id": "450",
-      "title": "ImageFromBatch",
-      "supported": true
-    },
-    "NormalMapSimple_373": {
-      "type": "NormalMapSimple",
-      "id": "373",
-      "title": "NormalMapSimple",
-      "supported": true
-    },
-    "CV2InpaintTexture_104": {
-      "type": "CV2InpaintTexture",
-      "id": "104",
-      "title": "CV2InpaintTexture",
-      "supported": true
-    },
-    "SimpleMath+_317": {
-      "type": "SimpleMath+",
-      "id": "317",
-      "title": "SimpleMath+",
-      "supported": true
-    },
-    "ImageConcatFromBatch_385": {
-      "type": "ImageConcatFromBatch",
-      "id": "385",
-      "title": "ImageConcatFromBatch",
-      "supported": true
-    },
-    "ImageConcatFromBatch_226": {
-      "type": "ImageConcatFromBatch",
-      "id": "226",
-      "title": "ImageConcatFromBatch",
-      "supported": true
-    },
-    "ImageFromBatch_314": {
-      "type": "ImageFromBatch",
-      "id": "314",
-      "title": "ImageFromBatch",
-      "supported": true
-    },
-    "InsertImagesToBatchIndexed_465": {
-      "type": "InsertImagesToBatchIndexed",
-      "id": "465",
-      "title": "InsertImagesToBatchIndexed",
-      "supported": true
-    },
-    "SolidMask_132": {
-      "type": "SolidMask",
-      "id": "132",
-      "title": "SolidMask",
-      "supported": true
-    },
-    "SaveImage_377": {
-      "type": "SaveImage",
-      "id": "377",
-      "title": "SaveImage",
-      "supported": true
-    },
-    "SaveImage_374": {
-      "type": "SaveImage",
-      "id": "374",
-      "title": "SaveImage",
-      "supported": true
-    },
-    "Hy3DSetMeshPBRTextures_447": {
-      "type": "Hy3DSetMeshPBRTextures",
-      "id": "447",
-      "title": "Hy3DSetMeshPBRTextures",
-      "supported": true
-    },
-    "SetUnionControlNetType_320": {
-      "type": "SetUnionControlNetType",
-      "id": "320",
-      "title": "SetUnionControlNetType",
-      "supported": true
-    },
-    "Upscale Model Loader_223": {
-      "type": "Upscale Model Loader",
-      "id": "223",
-      "title": "Upscale Model Loader",
-      "supported": true
-    },
-    "CheckpointLoaderSimple_183": {
-      "type": "CheckpointLoaderSimple",
-      "id": "183",
-      "title": "CheckpointLoaderSimple",
-      "supported": true
-    },
-    "Hy3DCameraConfig_61": {
-      "type": "Hy3DCameraConfig",
-      "id": "61",
-      "title": "Hy3DCameraConfig",
-      "supported": true
-    },
-    "ControlNetLoader_185": {
-      "type": "ControlNetLoader",
-      "id": "185",
-      "title": "ControlNetLoader",
-      "supported": true
-    },
-    "ImageBlend_356": {
-      "type": "ImageBlend",
-      "id": "356",
-      "title": "ImageBlend",
-      "supported": true
-    },
-    "ImageResizeKJv2_443": {
-      "type": "ImageResizeKJv2",
-      "id": "443",
-      "title": "ImageResizeKJv2",
-      "supported": true
-    },
-    "PrimitiveInt_313": {
-      "type": "PrimitiveInt",
-      "id": "313",
-      "title": "Select your main view:",
-      "supported": true
-    },
-    "ImageBlend_209": {
-      "type": "ImageBlend",
-      "id": "209",
-      "title": "ImageBlend",
-      "supported": true
-    },
-    "Hy3DDelightImage_35": {
-      "type": "Hy3DDelightImage",
-      "id": "35",
-      "title": "Hy3DDelightImage",
-      "supported": true
-    },
-    "Hy3DSampleMultiView_88": {
-      "type": "Hy3DSampleMultiView",
-      "id": "88",
-      "title": "Hy3DSampleMultiView",
-      "supported": true
-    },
-    "Hy3DRenderMultiViewDepth_448": {
-      "type": "Hy3DRenderMultiViewDepth",
-      "id": "448",
-      "title": "Hy3DRenderMultiViewDepth",
-      "supported": true
-    },
-    "Hy3DRenderMultiView_79": {
-      "type": "Hy3DRenderMultiView",
-      "id": "79",
-      "title": "Hy3DRenderMultiView",
-      "supported": true
-    },
-    "UltralyticsDetectorProvider_349": {
-      "type": "UltralyticsDetectorProvider",
-      "id": "349",
-      "title": "UltralyticsDetectorProvider",
-      "supported": true
+    "Hy3DExportMesh_99": {
+      "type": "Hy3DExportMesh",
+      "id": "99",
+      "title": "",
+      "supported": true,
+      "widgets_values": [
+        "3D/textured/Hy3D_textured",
+        "glb",
+        true
+      ]
     },
     "CLIPTextEncode_352": {
       "type": "CLIPTextEncode",
       "id": "352",
       "title": "Upscale Prompt",
-      "supported": true
-    },
-    "KSampler_180": {
-      "type": "KSampler",
-      "id": "180",
-      "title": "KSampler",
-      "supported": true
-    },
-    "EmptyLatentImage_179": {
-      "type": "EmptyLatentImage",
-      "id": "179",
-      "title": "EmptyLatentImage",
-      "supported": true
-    },
-    "PrimitiveInt_293": {
-      "type": "PrimitiveInt",
-      "id": "293",
-      "title": "PrimitiveInt",
-      "supported": true
-    },
-    "ControlNetApplyAdvanced_198": {
-      "type": "ControlNetApplyAdvanced",
-      "id": "198",
-      "title": "ControlNetApplyAdvanced",
-      "supported": true
-    },
-    "ControlNetApplyAdvanced_184": {
-      "type": "ControlNetApplyAdvanced",
-      "id": "184",
-      "title": "ControlNetApplyAdvanced",
-      "supported": true
-    },
-    "Preview3D_154": {
-      "type": "Preview3D",
-      "id": "154",
-      "title": "Preview3D",
-      "supported": true
-    },
-    "Hy3DExportMesh_166": {
-      "type": "Hy3DExportMesh",
-      "id": "166",
-      "title": "Hy3DExportMesh",
-      "supported": true
-    },
-    "CLIPTextEncode_510": {
-      "type": "CLIPTextEncode",
-      "id": "510",
-      "title": "CLIPTextEncode",
-      "supported": true
-    },
-    "CLIPTextEncode_177": {
-      "type": "CLIPTextEncode",
-      "id": "177",
-      "title": "CLIPTextEncode",
-      "supported": true
-    },
-    "SaveImage_182": {
-      "type": "SaveImage",
-      "id": "182",
-      "title": "SaveImage",
-      "supported": true
-    },
-    "SomethingToString_474": {
-      "type": "SomethingToString",
-      "id": "474",
-      "title": "SomethingToString",
-      "supported": true
-    },
-    "SaveImage_451": {
-      "type": "SaveImage",
-      "id": "451",
-      "title": "SaveImage",
-      "supported": true
-    },
-    "UltimateSDUpscale_222": {
-      "type": "UltimateSDUpscale",
-      "id": "222",
-      "title": "UltimateSDUpscale",
-      "supported": true
-    },
-    "Constant Number_511": {
-      "type": "Constant Number",
-      "id": "511",
-      "title": "Upscale by",
-      "supported": true
-    },
-    "Hy3DExportMesh_99": {
-      "type": "Hy3DExportMesh",
-      "id": "99",
-      "title": "Hy3DExportMesh",
-      "supported": true
+      "supported": true,
+      "widgets_values": [
+        "4k, high quality, detail, grey background, front view, ((neutral lighting)), side view, bottom view, top view,\n\nripped clothes, Skin condition"
+      ]
     },
     "Hy3DLoadMesh_513": {
       "type": "Hy3DLoadMesh",
       "id": "513",
-      "title": "Hy3DLoadMesh",
-      "supported": true
+      "title": "",
+      "supported": false,
+      "widgets_values": [
+        "3d/Hy3D_00290_.glb"
+      ]
     }
   },
-  "workflow_file": "texture_generation/Model_texturing_juggernautXL_v07.json",
-  "workflow_path": "D:\\Yambo Studio Dropbox\\Admin\\_studio-dashboard-app-dev\\comfy-to-c4d\\workflows\\texture_generation\\Model_texturing_juggernautXL_v07.json"
+  "workflow_file": "Model_texturing_juggernautXL_v08.json",
+  "discovered_node_types": [
+    "Hy3DBakeFromMultiview",
+    "ControlNetLoader",
+    "Constant Number",
+    "ImageConcatFromBatch",
+    "Hy3DExportMesh",
+    "SolidMask",
+    "Hy3DLoadMesh",
+    "MaskToImage",
+    "ImageFromBatch",
+    "Hy3DRenderMultiView",
+    "Hy3DMeshUVWrap",
+    "ResizeMask",
+    "DownloadAndLoadHy3DDelightModel",
+    "SomethingToString",
+    "Hy3DApplyTexture",
+    "Hy3DRenderMultiViewDepth",
+    "ImageInvert",
+    "ConditioningConcat",
+    "TransparentBGSession+",
+    "PreviewImage",
+    "Hy3DSampleMultiView",
+    "Hy3DSetMeshPBRTextures",
+    "EmptyLatentImage",
+    "Hy3DDelightImage",
+    "UltimateSDUpscale",
+    "DownloadAndLoadHy3DPaintModel",
+    "SaveImage",
+    "ImageRemoveBackground+",
+    "InsertImagesToBatchIndexed",
+    "ImageResizeKJv2",
+    "CLIPTextEncode",
+    "CheckpointLoaderSimple",
+    "Preview3D",
+    "Upscale Model Loader",
+    "CV2InpaintTexture",
+    "Hy3DCameraConfig",
+    "ControlNetApplyAdvanced",
+    "SetUnionControlNetType",
+    "Hy3DDiffusersSchedulerConfig",
+    "NormalMapSimple",
+    "ImageBlend",
+    "Hy3DMeshVerticeInpaintTexture",
+    "SimpleMath+",
+    "ImageCompositeMasked",
+    "PrimitiveInt",
+    "KSampler"
+  ]
 }
