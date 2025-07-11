@@ -15,7 +15,6 @@
 ```
 
 # **COMFYUI ↔ CINEMA 4D BRIDGE**
-### *Where AI Generation Meets 3D Creation*
 
 [![Status](https://img.shields.io/badge/🚧_EXPERIMENTAL-NOT_READY-red?style=for-the-badge&labelColor=000000)](https://github.com/yamb0x/comfyui-cinema4d-bridge)
 [![Python](https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python&logoColor=white&labelColor=000000)](https://www.python.org/)
@@ -26,46 +25,15 @@
 
 ---
 
-<div align="center">
-<table>
-<tr>
-<td align="center">
-
-```diff
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@                                                @
-@  ! CRITICAL DEVELOPMENT WARNING !              @
-@                                                @
-@  This project is HIGHLY EXPERIMENTAL          @
-@  Most features are INCOMPLETE or BROKEN       @
-@                                                @
-@  - DO NOT use in production                   @
-@  - DO NOT expect stability                    @
-@  - DO NOT rely on current features            @
-@                                                @
-@  + DO star & watch for updates                @
-@  + DO wait for beta announcement              @
-@  + DO check back in Q2 2024                   @
-@                                                @
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-```
-
-</td>
-</tr>
-</table>
-</div>
+> [!CAUTION]
+> **This project is EXPERIMENTAL and NOT functional.** Most features are incomplete or broken. Do not use in production.
 
 ---
 
 ## 📽️ **DEMO VIDEO**
 
 <div align="center">
-
-> **🎬 To embed video on GitHub:**
-> 1. Upload to YouTube/Vimeo and use their embed code
-> 2. Or drag video into a GitHub issue to get a URL
-> 3. Currently: [**▶️ Download Demo Video (52MB)**](https://github.com/yamb0x/comfyui-cinema4d-bridge/raw/main/mp4/comft2c4d%20tool.mp4)
-
+<div style="padding:65.65% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1100563312?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="ComfyUI -> Cinema4D Bridge Tool Preview"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
 </div>
 
 ---
@@ -79,29 +47,12 @@ Seamlessly bridge **ComfyUI's AI generation capabilities** with **Cinema 4D's pr
 ## 🏗️ **SYSTEM ARCHITECTURE**
 
 ```mermaid
-graph TB
-    subgraph "Frontend Layer"
-        A[PySide6 GUI] --> B[Tab Manager]
-        B --> C[Dark Theme UI]
-        C --> D[3D Viewer Widget]
-    end
-    
-    subgraph "Core Engine"
-        E[Workflow Manager] --> F[State Manager]
-        F --> G[Config System]
-        G --> H[Task Queue]
-    end
-    
-    subgraph "Integration Layer"
-        I[ComfyUI Client] --> J[WebSocket API]
-        K[Cinema4D MCP] --> L[Python Bridge]
-        M[File System] --> N[Asset Manager]
-    end
-    
-    A --> E
-    E --> I
-    E --> K
-    H --> M
+graph LR
+    A[PySide6 UI] --> B[Core Engine]
+    B --> C[ComfyUI API]
+    B --> D[Cinema4D MCP]
+    C --> E[WebSocket]
+    D --> F[Python Bridge]
 ```
 
 ---
@@ -206,12 +157,6 @@ comfy-to-c4d/
 ```
 
 </div>
-
----
-
-## 📜 **LICENSE**
-
-MIT License - See [LICENSE](LICENSE) for details
 
 ---
 
