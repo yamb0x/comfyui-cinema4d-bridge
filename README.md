@@ -33,7 +33,17 @@
 ## 📽️ **DEMO VIDEO**
 
 <div align="center">
-<div style="padding:65.65% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1100563312?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="ComfyUI -> Cinema4D Bridge Tool Preview"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+
+https://github.com/user-attachments/assets/PLACEHOLDER_VIDEO_ID
+
+> **Note:** To embed the video directly on GitHub:
+> 1. Go to [create a new issue](https://github.com/yamb0x/comfyui-cinema4d-bridge/issues/new)
+> 2. Drag `mp4/comft2c4d tool.mp4` into the comment box
+> 3. Copy the generated URL and replace PLACEHOLDER_VIDEO_ID above
+> 4. Cancel the issue (don't submit)
+> 
+> **Alternative:** [▶️ Watch on Vimeo](https://vimeo.com/1100563312) | [📥 Download MP4](https://github.com/yamb0x/comfyui-cinema4d-bridge/raw/main/mp4/comft2c4d%20tool.mp4)
+
 </div>
 
 ---
