@@ -14,23 +14,17 @@
     ╚═╝╩╝╚╝╚═╝╩ ╩╩ ╩    ╩══╩╝                                  
 ```
 
-# **COMFYUI ↔ CINEMA 4D BRIDGE**
-
-[![Status](https://img.shields.io/badge/🚧_EXPERIMENTAL-NOT_READY-red?style=for-the-badge&labelColor=000000)](https://github.com/yamb0x/comfyui-cinema4d-bridge)
-[![Python](https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python&logoColor=white&labelColor=000000)](https://www.python.org/)
-[![ComfyUI](https://img.shields.io/badge/ComfyUI-Required-orange?style=for-the-badge&labelColor=000000)](https://github.com/comfyanonymous/ComfyUI)
-[![Cinema4D](https://img.shields.io/badge/Cinema4D-R21+-purple?style=for-the-badge&labelColor=000000)](https://www.maxon.net/)
 
 </div>
 
 ---
 
 > [!CAUTION]
-> **This project is EXPERIMENTAL and NOT functional.** Most features are incomplete or broken. Do not use in production.
+> **This project is experimental and not fully functional, But you should be fine connecting Claude Code to the database and ask it to connect all the environment varaibles and mcps** Most features are incomplete or broken. Do not use in production.
 
 ---
 
-## 📽️ **DEMO VIDEO**
+## 📽️ **Demo Video**
 
 <div align="center">
 
@@ -38,15 +32,12 @@
 
 </div>
 
----
+## 🎯 **Project**
 
-## 🎯 **PROJECT VISION**
+bridge **ComfyUI's AI generation capabilities** with **Cinema 4D's p tools** for a quick scene creation through an intuitive desktop application.
 
-Seamlessly bridge **ComfyUI's AI generation capabilities** with **Cinema 4D's professional 3D tools** through an intuitive desktop application.
 
----
-
-## 🏗️ **SYSTEM ARCHITECTURE**
+## 🏗️ **App Architecture**
 
 ```mermaid
 graph LR
@@ -59,29 +50,22 @@ graph LR
 
 ---
 
-## ⚡ **FEATURE STATUS**
-
-### ✅ **Currently Working (Limited)**
-- **Basic UI Framework** - PySide6 application with tabs
-- **ComfyUI Connection** - WebSocket integration (80% complete)
-- **Workflow Loading** - JSON workflow execution
+### ✅ ** Working **
+- **Basic UI Framework** - PySide6 application with tabs and responsive design
+- **ComfyUI & Cinema4D connection** - WebSocket integration via MCP
+- **ComfyUI Workflow Loading** - JSON workflow execution working for both image and 3D generation
 - **Configuration System** - Settings and state management
-- **MCP Servers** - Basic Model Context Protocol setup
-
-### 🔄 **In Active Development**
+- **MCP Servers** - Basic Model Context Protocol setup working
 - **3D Model Generation** - Hunyuan2 mesh creation pipeline
-- **Texture Generation** - JuggernautXL PBR texturing
-- **Cinema4D Bridge** - Direct scene import (40% complete)
-- **NLP Commands** - Natural language scene control
-- **3D Preview** - Three.js viewer integration
+- **Texture Generation** - JuggernautXL PBR texturing pipeline
 
-### 📅 **Planned Features**
-- **MoGraph Integration** - AI-driven motion graphics
-- **Audio Reactive** - Sound-to-animation pipeline
-- **Batch Processing** - Queue multiple generations
-- **Cloud Rendering** - Distributed processing
-- **Plugin System** - Extensible architecture
 
+### 📅 **WIP**
+- **Cinema4D Bridge** - Direct scene import (only basic control is implemented)
+- **NLP Commands** - Natural language scene control (70% c4d commands mapped via SDK and experiments)
+- **3D Preview** - New Three.js viewer integrated
+- **MoGraph Integration** - Smart scattering of generated objects on terreins via NLP
+- **Batch Processing** - Queue multiple generations was working but need to revise fully
 ---
 
 ## 🛠️ **TECHNICAL STACK**
@@ -151,8 +135,6 @@ comfy-to-c4d/
 
 ```
 ╔════════════════════════════════════════════╗
-║     🚫 NOT ACCEPTING CONTRIBUTIONS YET     ║
-║                                            ║
 ║  The codebase is changing rapidly.         ║
 ║  Watch this repo for beta announcements.   ║
 ╚════════════════════════════════════════════╝
@@ -164,7 +146,7 @@ comfy-to-c4d/
 
 <div align="center">
 
-**Built with ambition by the AI × 3D Community**
+**Vibe coded by Yambo and Claude Code**
 
 [⬆ Back to Top](#comfyui--cinema-4d-bridge)
 

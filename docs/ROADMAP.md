@@ -1,5 +1,8 @@
 # Development Roadmap
 
+> [!WARNING]
+> **EXPERIMENTAL PROJECT** - This roadmap is aspirational. The project has fundamental issues that need fixing before these features can work.
+
 Current priorities for completing the ComfyUI to Cinema4D bridge.
 
 ## Priority 1: Texture Generation
@@ -20,8 +23,8 @@ Current priorities for completing the ComfyUI to Cinema4D bridge.
 
 ## Priority 2: Cinema4D Integration
 
-**Status**: 80% complete, needs testing and enhancement
-**Timeline**: After texture generation fixes
+**Status**: 40% complete (NOT 80% as previously claimed)
+**Timeline**: Major work needed
 
 ### Current State
 - [x] Model Context Protocol communication setup

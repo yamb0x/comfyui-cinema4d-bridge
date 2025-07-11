@@ -1,95 +1,95 @@
 # Documentation Index
 
-Complete navigation map for comfy2c4d documentation.
+> [!WARNING]
+> **EXPERIMENTAL PROJECT** - This documentation covers a project that is NOT fully functional. Many features described are broken or incomplete.
 
-## Getting Started
+## Getting Started (For Developers)
 
-- **[README.md](../README.md)** - Project overview and roadmap
-- **[QUICKSTART.md](../QUICKSTART.md)** - Get running in 10 minutes
-- **[CLAUDE.md](../CLAUDE.md)** - AI assistant reference guide
+- **[README.md](../README.md)** - Project overview with clear warnings
+- **[QUICKSTART.md](../QUICKSTART.md)** - Developer setup (NOT a working app guide)
+- **[CLAUDE.md](../CLAUDE.md)** - Using Claude Code to fix the project
 
 ## 📚 Core Documentation
 
 ### Setup & Configuration
-- **[SETUP.md](SETUP.md)** - Detailed installation for all platforms
-- **[CONFIG.md](CONFIG.md)** - Configuration files reference
+- **[SETUP.md](SETUP.md)** - Installation guide (for development only)
+- **[CONFIG.md](CONFIG.md)** - Configuration reference
 - **[.env.example](../.env.example)** - Environment variables template
 
 ### Technical Reference
-- **[ARCHITECTURE.md](../ARCHITECTURE.md)** - System design and components
-- **[API.md](API.md)** - MCP endpoints and integration
-- **[PARAMETERS.md](PARAMETERS.md)** - UI generation and workflow rules
+- **[ARCHITECTURE.md](../ARCHITECTURE.md)** - System design (partially implemented)
+- **[API.md](API.md)** - API endpoints (many non-functional)
+- **[PARAMETERS.md](PARAMETERS.md)** - UI parameter system
 
 ### Development
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Development guidelines
-- **[issues/](../issues/)** - Active development tasks
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - How to help fix this project
+- **[issues/](../issues/)** - Known problems and bugs
 
-## 📂 Additional Resources
+## 📂 Feature Status
 
-### Feature Guides
-- **Image Generation** - Tab 1 universal workflow support
-- **3D Model Creation** - Tab 2 Hunyuan3D 2.0/Tripo3D with Three.js viewers
-- **Texture Generation** - Tab 3 PBR workflows (debugging in progress)
-- **Cinema4D Control** - Tab 4 MCP + planned Claude Code SDK integration
+### What's Actually Working ✅
+- Basic UI Framework (PySide6 tabs)
+- ComfyUI Connection (80% functional)
+- Some workflow loading
+- Basic configuration system
 
-### Troubleshooting
-- Common errors and solutions
-- Port configuration issues
-- Virtual environment problems
-- MCP connection debugging
+### What's Partially Working ⚠️
+- 3D Model Generation (Hunyuan3D pipeline)
+- Texture Generation (JuggernautXL pipeline)
+- Three.js viewer (limited functionality)
 
-## 🔍 Quick Links by Topic
+### What's Broken ❌
+- Most Cinema4D features (40% complete)
+- NLP commands (70% mapped but not working)
+- Batch processing
+- Many error handlers
 
-### For New Users
-1. [QUICKSTART.md](../QUICKSTART.md) → [SETUP.md](SETUP.md)
-2. Test with sample workflows
-3. Check [CONFIG.md](CONFIG.md) for customization
+## 🔍 Quick Links by Need
 
-### For Developers
-1. [ARCHITECTURE.md](../ARCHITECTURE.md) → [CONTRIBUTING.md](CONTRIBUTING.md)
-2. [CLAUDE.md](../CLAUDE.md) for AI development
-3. [PARAMETERS.md](PARAMETERS.md) for UI system
+### To Understand the Project
+1. Read [README.md](../README.md) warnings first
+2. Check [ARCHITECTURE.md](../ARCHITECTURE.md) for intended design
+3. Use [CLAUDE.md](../CLAUDE.md) to navigate code
 
-### For Troubleshooting
-1. Check [CLAUDE.md](../CLAUDE.md) "Common Fixes"
-2. Review [SETUP.md](SETUP.md) platform-specific issues
-3. Enable debug logging (see [CONFIG.md](CONFIG.md))
+### To Fix Issues
+1. See [CLAUDE.md](../CLAUDE.md) for debugging help
+2. Check [issues/](../issues/) for known problems
+3. Read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines
+
+### To Configure
+1. Copy `.env.example` to `.env`
+2. See [CONFIG.md](CONFIG.md) for settings
+3. Ask Claude Code for help with MCP setup
 
 ## 📊 Documentation Status
 
-| Document | Purpose | Status |
-|----------|---------|--------|
-| README | Project overview | ✅ Current |
-| QUICKSTART | Fast setup | ✅ Current |
-| ARCHITECTURE | Technical design | ✅ Current |
-| CLAUDE | AI patterns | ✅ Updated daily |
-| SETUP | Detailed install | ✅ Current |
-| CONFIG | File schemas | ✅ Current |
-| API | Integration points | ✅ Current |
-| PARAMETERS | UI system | ✅ Current |
-| CONTRIBUTING | Dev guide | ✅ Current |
+| Document | Reality Check | Actual Status |
+|----------|---------------|---------------|
+| README | Accurate warnings | ✅ Updated |
+| QUICKSTART | For developers only | ✅ Updated |
+| ARCHITECTURE | Describes goals, not reality | ⚠️ Aspirational |
+| CLAUDE | Essential for this project | ✅ Updated |
+| SETUP | Missing experimental warnings | ⚠️ Needs update |
+| CONFIG | Mostly accurate | ⚠️ Needs review |
+| API | Many endpoints don't work | ❌ Misleading |
+| PARAMETERS | Partially implemented | ⚠️ Incomplete |
+| CONTRIBUTING | Needs experimental context | ⚠️ Needs update |
 
 ## 🗂️ Legacy Documentation
 
-Archived documentation from previous versions is available in:
+Archived documentation from previous attempts:
 - `/archive/` - Historical fixes and sessions
-- `/docs/archive/` - Superseded guides
+- `/docs/archive/` - Old guides (likely outdated)
 
-## 💡 Best Practices
+## ⚠️ Important Notes
 
-1. **Start with QUICKSTART** for initial setup
-2. **Reference ARCHITECTURE** for system understanding
-3. **Use CLAUDE.md** during development sessions
-4. **Check CONFIG** for customization options
-5. **Follow CONTRIBUTING** for code submissions
-
-## 🔄 Keeping Docs Updated
-
-- Documentation updates with each feature
-- CLAUDE.md reflects latest patterns
-- Config schemas match actual files
-- API docs track MCP changes
+1. **This is NOT production software** - It's an experimental project
+2. **Many features don't work** - Despite appearing complete in code
+3. **Use Claude Code** - Essential for understanding and fixing
+4. **Check the README warnings** - Before attempting to use
+5. **Focus on core fixes** - Before adding new features
 
 ---
 
-*Last updated: 2025-06-26*
+*Last accurate update: 2025-07-11*
+*Original docs claimed: 2025-06-26 (inaccurate)*

@@ -1,5 +1,8 @@
 # Contributing Guide
 
+> [!IMPORTANT]
+> **EXPERIMENTAL PROJECT** - Focus on fixing broken features, not adding new ones. Use Claude Code to help navigate the codebase.
+
 Guidelines for contributing to the comfy2c4d project.
 
 ## Development Setup

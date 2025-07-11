@@ -1,16 +1,20 @@
 # Detailed Setup Guide
 
-Complete installation instructions for all platforms.
+> [!CAUTION]
+> **EXPERIMENTAL PROJECT** - This setup guide is for developers working on an incomplete project. Most features are broken or non-functional. Do NOT expect a working application after setup.
 
 ## Prerequisites
 
 - **Python 3.10+** (3.12 recommended)
-- **ComfyUI** with required nodes:
-  - ComfyUI-Hy3DWrapper
-  - ComfyUI_essentials
-  - was-node-suite-comfyui
-- **Cinema4D 2024+** with Python API
+- **ComfyUI** installed and running
+- **Cinema4D 2024+** (for C4D features - currently 40% functional)
+- **Claude Code** (HIGHLY RECOMMENDED for debugging)
 - **8GB+ RAM**, GPU with 4GB+ VRAM
+
+### Required ComfyUI Nodes (if testing workflows):
+- ComfyUI-Hy3DWrapper
+- ComfyUI_essentials
+- was-node-suite-comfyui
 
 ## Platform-Specific Setup
 

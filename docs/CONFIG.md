@@ -1,5 +1,8 @@
 # Configuration Files Guide
 
+> [!NOTE]
+> Configuration system is partially functional. Many configured features don't actually work.
+
 Complete reference for all JSON configuration files.
 
 ## Overview

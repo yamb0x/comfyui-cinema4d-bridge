@@ -1,5 +1,8 @@
 # API Reference
 
+> [!WARNING]
+> **Many endpoints are NON-FUNCTIONAL.** This documentation describes intended functionality. Cinema4D integration is only 40% complete.
+
 MCP endpoints and integration points for ComfyUI and Cinema4D.
 
 ## ComfyUI MCP Integration
