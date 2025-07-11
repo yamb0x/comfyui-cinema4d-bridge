@@ -1,218 +1,215 @@
-```
-     _____ _____ _____ _____ __ __ _____ _____    ___   _____ _____ ____  
-    |     |     |     |   __|  |  |  |  |     |  |_  | |     |  |  |    \ 
-    |   --|  |  | | | |   __|_   _|  |  |-   -|  |  _| |   --|__    |  |  |
-    |_____|_____|_|_|_|__|    |_| |_____|_____|  |___| |_____|  |__||____/ 
-                                                                           
-    🔗 B R I D G I N G   A I   C R E A T I V I T Y   W I T H   3 D   P O W E R
-```
-
 <div align="center">
 
-[![Status](https://img.shields.io/badge/🚧_Status-EXPERIMENTAL-ff6b6b?style=for-the-badge)](https://github.com/yamb0x/comfyui-cinema4d-bridge)
-[![Python](https://img.shields.io/badge/Python-3.9+-4c9eff?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-45d298?style=for-the-badge)](LICENSE)
-[![Cinema4D](https://img.shields.io/badge/Cinema_4D-R21+-ff8cc8?style=for-the-badge)](https://www.maxon.net/cinema-4d)
+```
+    ▄████▄   ▒█████   ███▄ ▄███▓  █████▒▓██   ██▓ █    ██  ██▓
+   ▒██▀ ▀█  ▒██▒  ██▒▓██▒▀█▀ ██▒▓██   ▒  ▒██  ██▒ ██  ▓██▒▓██▒
+   ▒▓█    ▄ ▒██░  ██▒▓██    ▓██░▒████ ░   ▒██ ██░▓██  ▒██░▒██▒
+   ▒▓▓▄ ▄██▒▒██   ██░▒██    ▒██ ░▓█▒  ░   ░ ▐██▓░▓▓█  ░██░░██░
+   ▒ ▓███▀ ░░ ████▓▒░▒██▒   ░██▒░▒█░      ░ ██▒▓░▒▒█████▓ ░██░
+   ░ ░▒ ▒  ░░ ▒░▒░▒░ ░ ▒░   ░  ░ ▒ ░       ██▒▒▒ ░▒▓▒ ▒ ▒ ░▓  
+   ░  ▒     ░ ▒ ▒░ ░  ░      ░ ░       ▓██ ░▒░ ░░▒░ ░ ░  ▒ ░
+                                    ░      ▒ ▒ ░░   ░░░ ░ ░  ▒ ░
+    ╔═╗╦╔╗╔╔═╗╔╦╗╔═╗  ╦ ╦╔╦╗     ░        ░ ░        ░      ░  
+    ║  ║║║║║╣ ║║║╠═╣  ╚═╦╝ ║║                ░ ░                
+    ╚═╝╩╝╚╝╚═╝╩ ╩╩ ╩    ╩══╩╝                                  
+```
+
+# **COMFYUI ↔ CINEMA 4D BRIDGE**
+### *Where AI Generation Meets 3D Creation*
+
+[![Status](https://img.shields.io/badge/🚧_EXPERIMENTAL-NOT_READY-red?style=for-the-badge&labelColor=000000)](https://github.com/yamb0x/comfyui-cinema4d-bridge)
+[![Python](https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python&logoColor=white&labelColor=000000)](https://www.python.org/)
+[![ComfyUI](https://img.shields.io/badge/ComfyUI-Required-orange?style=for-the-badge&labelColor=000000)](https://github.com/comfyanonymous/ComfyUI)
+[![Cinema4D](https://img.shields.io/badge/Cinema4D-R21+-purple?style=for-the-badge&labelColor=000000)](https://www.maxon.net/)
 
 </div>
 
 ---
 
+<div align="center">
+<table>
+<tr>
+<td align="center">
+
+```diff
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@                                                @
+@  ! CRITICAL DEVELOPMENT WARNING !              @
+@                                                @
+@  This project is HIGHLY EXPERIMENTAL          @
+@  Most features are INCOMPLETE or BROKEN       @
+@                                                @
+@  - DO NOT use in production                   @
+@  - DO NOT expect stability                    @
+@  - DO NOT rely on current features            @
+@                                                @
+@  + DO star & watch for updates                @
+@  + DO wait for beta announcement              @
+@  + DO check back in Q2 2024                   @
+@                                                @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ```
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║                                                                               ║
-║   ⚠️  C R I T I C A L   W A R N I N G                                        ║
-║                                                                               ║
-║   This project is in ACTIVE DEVELOPMENT and NOT ready for production.        ║
-║   Many features are EXPERIMENTAL, INCOMPLETE, or NON-FUNCTIONAL.              ║
-║                                                                               ║
-║   🚫 DO NOT use in production environments                                    ║
-║   🚫 DO NOT expect stable functionality                                       ║
-║   🚫 DO NOT clone for immediate use                                           ║
-║                                                                               ║
-║   ✅ DO watch for updates                                                     ║
-║   ✅ DO wait for beta release                                                 ║
-║   ✅ DO check back soon!                                                      ║
-║                                                                               ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
-```
 
-## 🎯 Mission
+</td>
+</tr>
+</table>
+</div>
 
-Transform your 3D workflow by seamlessly connecting **ComfyUI's AI superpowers** with **Cinema 4D's creative excellence**.
+---
 
-### 🎬 See It In Action
+## 📽️ **DEMO VIDEO**
 
 <div align="center">
 
-<!-- TO EMBED VIDEO: 
-1. Go to https://github.com/yamb0x/comfyui-cinema4d-bridge/issues/new
-2. Drag and drop the mp4/comft2c4d tool.mp4 file into the issue description
-3. GitHub will generate a URL like: https://github.com/user-attachments/assets/...
-4. Copy that URL and replace the line below
-5. Cancel the issue (don't submit it)
--->
-
-<video width="100%" controls>
-  <source src="mp4/comft2c4d%20tool.mp4" type="video/mp4">
-  
-  [**🎥 CLICK TO WATCH DEMO VIDEO**](mp4/comft2c4d%20tool.mp4)
-</video>
-
-*Experience the future of AI-assisted 3D creation*
+> **🎬 To embed video on GitHub:**
+> 1. Upload to YouTube/Vimeo and use their embed code
+> 2. Or drag video into a GitHub issue to get a URL
+> 3. Currently: [**▶️ Download Demo Video (52MB)**](https://github.com/yamb0x/comfyui-cinema4d-bridge/raw/main/mp4/comft2c4d%20tool.mp4)
 
 </div>
 
 ---
 
-## 🏗️ Architecture
+## 🎯 **PROJECT VISION**
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          COMFYUI → CINEMA4D BRIDGE                          │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ╔═══════════════════╗     ╔═══════════════════╗     ╔═══════════════════╗ │
-│  ║                   ║     ║                   ║     ║                   ║ │
-│  ║  🎨 UI LAYER     ║────▶║  🧠 CORE ENGINE   ║────▶║  🔌 INTEGRATION   ║ │
-│  ║                   ║     ║                   ║     ║                   ║ │
-│  ║ • PySide6 GUI    ║     ║ • Workflow Mgr    ║     ║ • ComfyUI API    ║ │
-│  ║ • Dark Theme     ║     ║ • State Manager   ║     ║ • Cinema4D MCP   ║ │
-│  ║ • Tab System     ║     ║ • Task Queue      ║     ║ • WebSocket      ║ │
-│  ║ • 3D Viewer      ║     ║ • Config System   ║     ║ • File I/O       ║ │
-│  ║                   ║     ║                   ║     ║                   ║ │
-│  ╚═══════════════════╝     ╚═══════════════════╝     ╚═══════════════════╝ │
-│           ▲                         ▲                         ▲             │
-│           │                         │                         │             │
-│           └─────────────────────────┴─────────────────────────┘             │
-│                              🔄 Event Bus                                   │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+Seamlessly bridge **ComfyUI's AI generation capabilities** with **Cinema 4D's professional 3D tools** through an intuitive desktop application.
 
-## 🚀 Feature Matrix
+---
 
-```
-┌──────────────────┬────────────────────────────────────┬─────────┐
-│    CATEGORY      │             FEATURE                │ STATUS  │
-├──────────────────┼────────────────────────────────────┼─────────┤
-│                  │ Image Generation (Stable Diffusion)│   ✅    │
-│  AI GENERATION   │ Texture Synthesis (PBR Materials)  │   🔄    │
-│                  │ 3D Model Creation (Text → Mesh)    │   🔄    │
-│                  │ Audio-Reactive Animations          │   📅    │
-├──────────────────┼────────────────────────────────────┼─────────┤
-│                  │ Direct Scene Import                │   🔄    │
-│  C4D BRIDGE      │ MoGraph Integration                │   🔄    │
-│                  │ Material Auto-Assignment           │   📅    │
-│                  │ NLP Scene Commands                 │   🔄    │
-├──────────────────┼────────────────────────────────────┼─────────┤
-│                  │ Custom Workflow Builder            │   ✅    │
-│  WORKFLOW        │ Batch Processing Engine            │   🔄    │
-│                  │ Real-time Preview                  │   ✅    │
-│                  │ Project Management                 │   ✅    │
-└──────────────────┴────────────────────────────────────┴─────────┘
+## 🏗️ **SYSTEM ARCHITECTURE**
 
-Legend: ✅ Working | 🔄 In Development | 📅 Planned
+```mermaid
+graph TB
+    subgraph "Frontend Layer"
+        A[PySide6 GUI] --> B[Tab Manager]
+        B --> C[Dark Theme UI]
+        C --> D[3D Viewer Widget]
+    end
+    
+    subgraph "Core Engine"
+        E[Workflow Manager] --> F[State Manager]
+        F --> G[Config System]
+        G --> H[Task Queue]
+    end
+    
+    subgraph "Integration Layer"
+        I[ComfyUI Client] --> J[WebSocket API]
+        K[Cinema4D MCP] --> L[Python Bridge]
+        M[File System] --> N[Asset Manager]
+    end
+    
+    A --> E
+    E --> I
+    E --> K
+    H --> M
 ```
 
-## 💻 Tech Stack
+---
+
+## ⚡ **FEATURE STATUS**
+
+### ✅ **Currently Working (Limited)**
+- **Basic UI Framework** - PySide6 application with tabs
+- **ComfyUI Connection** - WebSocket integration (80% complete)
+- **Workflow Loading** - JSON workflow execution
+- **Configuration System** - Settings and state management
+- **MCP Servers** - Basic Model Context Protocol setup
+
+### 🔄 **In Active Development**
+- **3D Model Generation** - Hunyuan2 mesh creation pipeline
+- **Texture Generation** - JuggernautXL PBR texturing
+- **Cinema4D Bridge** - Direct scene import (40% complete)
+- **NLP Commands** - Natural language scene control
+- **3D Preview** - Three.js viewer integration
+
+### 📅 **Planned Features**
+- **MoGraph Integration** - AI-driven motion graphics
+- **Audio Reactive** - Sound-to-animation pipeline
+- **Batch Processing** - Queue multiple generations
+- **Cloud Rendering** - Distributed processing
+- **Plugin System** - Extensible architecture
+
+---
+
+## 🛠️ **TECHNICAL STACK**
+
+<div align="center">
+
+| Component | Technology | Status |
+|:---------:|:----------:|:------:|
+| **Frontend** | PySide6 + Custom Dark Theme | ✅ 75% |
+| **Backend** | Python 3.9+ Async | ✅ 60% |
+| **AI Engine** | ComfyUI WebSocket API | ✅ 80% |
+| **3D Bridge** | Cinema4D Python + MCP | 🔄 40% |
+| **Workflows** | JSON Pipeline System | ✅ Ready |
+| **Storage** | Local File + Config | ✅ Ready |
+
+</div>
+
+---
+
+## 📊 **DEVELOPMENT PROGRESS**
 
 ```
-╔═══════════════╦══════════════════════════════════════════════╗
-║   COMPONENT   ║                 TECHNOLOGY                   ║
-╠═══════════════╬══════════════════════════════════════════════╣
-║   Frontend    ║  PySide6 (Qt) + Custom Dark Theme            ║
-║   Backend     ║  Python 3.9+ with Async/Await                ║
-║   AI Engine   ║  ComfyUI via WebSocket API                   ║
-║   3D Bridge   ║  Cinema 4D Python API + MCP Servers          ║
-║   Workflows   ║  JSON-based Pipeline System                  ║
-║   Storage     ║  Local File System + Config Management       ║
-╚═══════════════╩══════════════════════════════════════════════╝
+Core Systems      ▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░  60%
+UI/UX Design      ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░  75%
+ComfyUI Bridge    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░  80%
+C4D Integration   ▓▓▓▓▓▓▓▓░░░░░░░░░░░░  40%
+Documentation     ▓▓▓▓▓▓░░░░░░░░░░░░░░  30%
+Testing Suite     ▓▓▓▓░░░░░░░░░░░░░░░░  20%
 ```
 
-## 🎨 Workflow Pipeline
+---
 
-```
-     ╔════════════╗      ╔════════════╗      ╔════════════╗
-     ║   PROMPT   ║      ║    NODE    ║      ║   OUTPUT   ║
-     ║   INPUT    ║─────▶║   GRAPH    ║─────▶║   ASSETS   ║
-     ╚════════════╝      ╚════════════╝      ╚════════════╝
-            │                    │                    │
-            ▼                    ▼                    ▼
-     ┌────────────┐      ┌────────────┐      ┌────────────┐
-     │ Text/Image │      │ ComfyUI    │      │ • Images   │
-     │ Parameters │      │ Processing │      │ • Textures │
-     │ Settings   │      │ AI Models  │      │ • 3D Files │
-     └────────────┘      └────────────┘      └────────────┘
-                                │
-                                ▼
-                         ╔════════════╗
-                         ║  CINEMA 4D ║
-                         ║   IMPORT   ║
-                         ╚════════════╝
-```
-
-## 🛠️ Installation
+## 🚀 **QUICK START** *(When Ready)*
 
 ```bash
-# ⚠️ NOT RECOMMENDED YET - WAIT FOR BETA RELEASE ⚠️
+# ⚠️ NOT RECOMMENDED - PROJECT IS NOT FUNCTIONAL YET
 
-# Future installation (when ready):
+# Future installation:
 git clone https://github.com/yamb0x/comfyui-cinema4d-bridge.git
 cd comfyui-cinema4d-bridge
 pip install -r requirements.txt
 python main.py
 ```
 
-## 📊 Project Status
+---
+
+## 📁 **PROJECT STRUCTURE**
 
 ```
-Development Progress
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Core Systems      ████████████░░░░░░░░  60%
-UI/UX             ███████████████░░░░░  75%
-ComfyUI Bridge    ████████████████░░░░  80%
-C4D Integration   ████████░░░░░░░░░░░░  40%
-Documentation     ██████░░░░░░░░░░░░░░  30%
-Testing           ████░░░░░░░░░░░░░░░░  20%
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+comfy-to-c4d/
+├── src/
+│   ├── core/          # Main application logic
+│   ├── ui/            # PySide6 interface components
+│   ├── mcp/           # Model Context Protocol clients
+│   └── c4d/           # Cinema4D integration modules
+├── workflows/         # ComfyUI workflow definitions
+├── mcp_servers/       # MCP server implementations
+├── config/           # Configuration files
+└── mp4/              # Demo videos
 ```
 
-## 🔮 Roadmap
+---
+
+## 🤝 **CONTRIBUTING**
+
+<div align="center">
 
 ```
-2024 Q1  ├─ 🏗️ Core Architecture
-         ├─ ✅ Basic UI Framework
-         └─ ✅ ComfyUI Connection
-         
-2024 Q2  ├─ 🔄 Cinema 4D Bridge
-         ├─ 🔄 Workflow System
-         └─ 🔄 3D Viewer
-         
-2024 Q3  ├─ 📅 Advanced Features
-         ├─ 📅 Plugin System
-         └─ 📅 Beta Release
-         
-2024 Q4  ├─ 📅 Community Features
-         ├─ 📅 Cloud Support
-         └─ 📅 1.0 Release
+╔════════════════════════════════════════════╗
+║     🚫 NOT ACCEPTING CONTRIBUTIONS YET     ║
+║                                            ║
+║  The codebase is changing rapidly.         ║
+║  Watch this repo for beta announcements.   ║
+╚════════════════════════════════════════════╝
 ```
 
-## 🤝 Contributing
+</div>
 
-```
-╔═══════════════════════════════════════════════════════════╗
-║                    🚫 NOT YET OPEN 🚫                     ║
-║                                                           ║
-║  We appreciate your interest! The codebase is currently  ║
-║  evolving rapidly. Watch this repo for announcements     ║
-║  about when we'll open for contributions.                ║
-║                                                           ║
-║  Star ⭐ this repo to stay updated!                      ║
-╚═══════════════════════════════════════════════════════════╝
-```
+---
 
-## 📜 License
+## 📜 **LICENSE**
 
 MIT License - See [LICENSE](LICENSE) for details
 
@@ -220,11 +217,7 @@ MIT License - See [LICENSE](LICENSE) for details
 
 <div align="center">
 
-```
-═══════════════════════════════════════════════════════════════
-     Made with ❤️ and ☕ by the ComfyUI × Cinema 4D Community
-═══════════════════════════════════════════════════════════════
-```
+**Built with ambition by the AI × 3D Community**
 
 [⬆ Back to Top](#comfyui--cinema-4d-bridge)
 
