@@ -1,0 +1,34 @@
+# Core dependencies
+PySide6>=6.6.0  # Qt6 for Python
+asyncio-mqtt>=0.16.1  # For async operations
+aiofiles>=23.2.1  # Async file operations
+watchdog>=3.0.0  # File system monitoring
+Pillow>=10.0.0  # Image processing
+numpy>=1.24.0  # Numerical operations
+trimesh>=4.0.0  # 3D mesh processing and validation
+
+# MCP (Model Context Protocol) clients
+httpx>=0.25.0  # HTTP client for API calls
+websockets>=12.0  # WebSocket support for real-time communication
+mcp-python>=0.1.0  # MCP Python SDK (if available)
+
+# UI and visualization
+pyqtgraph>=0.13.3  # Scientific graphics and plotting
+qasync>=0.27.0  # Qt async integration
+
+# File and data handling
+python-dotenv>=1.0.0  # Environment variables
+pydantic>=2.4.0  # Data validation
+pydantic-settings>=2.0.3  # Settings management
+ruamel.yaml>=0.17.32  # YAML support for configs
+jsonschema>=4.19.0  # JSON schema validation
+
+# Development and debugging
+loguru>=0.7.2  # Advanced logging
+rich>=13.6.0  # Rich terminal output
+pytest>=7.4.0  # Testing framework
+pytest-asyncio>=0.21.1  # Async test support
+pytest-qt>=4.2.0  # Qt testing support
+
+# Cinema4D integration
+pywin32>=306  # Windows COM automation (for C4D on Windows)

@@ -1,0 +1,18 @@
+{
+    "name": "comfyui-mcp-server",
+    "version": "1.0.0",
+    "description": "MCP server for ComfyUI integration",
+    "main": "server.py",
+    "scripts": {
+        "start": "python server.py"
+    },
+    "dependencies": {
+        "mcp": "^0.5.0"
+    },
+    "python_dependencies": [
+        "mcp>=0.5.0",
+        "aiohttp>=3.8.0",
+        "websockets>=11.0.0",
+        "loguru>=0.7.0"
+    ]
+}
