@@ -36,13 +36,6 @@
 
 [![Watch Demo on Vimeo](https://img.shields.io/badge/▶️_Play_Demo-2.5_minutes-00ADEF?style=for-the-badge&logo=vimeo&logoColor=white)](https://vimeo.com/1100563312)
 
-### Options to view:
-1. **[🎬 Stream on Vimeo](https://vimeo.com/1100563312)** (Recommended)
-2. **[📥 Download MP4](https://github.com/yamb0x/comfyui-cinema4d-bridge/raw/main/mp4/comft2c4d%20tool.mp4)** (52MB)
-3. **[📺 YouTube Mirror](#)** (Upload pending)
-
-> 💡 **Tip**: For the best experience, click the Vimeo link above to watch in HD with playback controls.
-
 </div>
 
 ---
